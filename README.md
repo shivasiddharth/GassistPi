@@ -1,19 +1,15 @@
 # GassistPi
-#
-#------------------------------------------------
 #LET'S GET STARTED!
-#------------------------------------------------
-
-
+#----------------------------------
 #FOR USERS WITH AIY KIT START HERE
+#----------------------------------
 #UPDATE KERNEL
-sudo apt-get update
 
+sudo apt-get update
 sudo apt-get install raspberrypi-kernel
 
 #RUN SCRIPTS FOR VOICE HAT
 #download voice hat audio drivers from description onto a thumb drive
-
 #open the folder and copy folders named "audio drivers" and "src" and paste it onto /home/pi directory
 
 #FOR INSTALLING AUDIO SCRIPTS COPY PASTE BELOW IN TERMINAL
@@ -38,9 +34,7 @@ speaker-test -t wav
 #COMMON PROCEDURE STARTS FROM HERE 
 #(FOR BOTH VOICE HAT AND NON-VOICE HAT USERS)
 #------------------------------------------------
-
-#------------------------------------------------
-FOR USERS WITHOUT AIY KIT START HERE AFTER SETTING UP AUDIO DEVICE
+#FOR USERS WITHOUT AIY KIT START HERE AFTER SETTING UP AUDIO DEVICE
 #------------------------------------------------
 
 #1.download credentials--->.json file
@@ -67,7 +61,6 @@ source env/bin/activate
 pip install RPi.GPIO
 
 #Get the library and sample code
-
 
 python -m pip install --upgrade https://github.com/googlesamples/assistant-sdk-python/releases/download/0.3.0/google_assistant_library-0.0.2-py2.py3-none-linux_armv7l.whl
 
