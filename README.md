@@ -1,23 +1,4 @@
 # GassistPi
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Marketplace
-Gist
- @shivasiddharth
- Sign out
- Unwatch 1
-  Star 0
-  Fork 0 shivasiddharth/GassistPi
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Settings Insights 
-Branch: master Find file Copy pathGassistPi/Instructions
-f2ea2c8  10 minutes ago
-@shivasiddharth shivasiddharth Create Instructions
-1 contributor
-RawBlameHistory     
-133 lines (79 sloc)  3.49 KB
 #
 #------------------------------------------------
 #LET'S GET STARTED!
@@ -150,5 +131,3 @@ sudo /home/pi/src/gassist.sh
 #------------------------------------------------
 
 #YOU ARE GOOD TO GO! 
-Contact GitHub API Training Shop Blog About
-© 2017 GitHub, Inc. Terms Privacy Security Status Help
