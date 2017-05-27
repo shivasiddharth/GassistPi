@@ -11,7 +11,7 @@ sudo apt-get update
 sudo apt-get install raspberrypi-kernel
 
 #RUN SCRIPTS FOR VOICE HAT
-#download voice hat audio drivers from description onto a thumb drive
+#download voice hat audio drivers from the github page onto a thumb drive
 
 #open the folder and copy folders named "audio drivers" and "src" and paste it onto /home/pi directory
 
@@ -82,7 +82,7 @@ google-oauthlib-tool --client-secrets /home/pi/assistant.json --scope https://ww
 #COPY THE LINK FROM TERMINAL AND PASTE IT IN THE BROWSER
 #COPY THE AUTHORIZATION CODE FROM THE BROWSER AND PASTE IT IN THE TERMINAL
 
-#DOWNLOAD THE src FILE PROVIDED IN THE DESCRIPTION AND PLACE IT IN /home/pi 
+#DOWNLOAD THE src FILE PROVIDED IN from the github page AND PLACE IT IN /home/pi 
 #MAKE gassist.sh EXECUTABLE
 
 cd /home/pi/src
