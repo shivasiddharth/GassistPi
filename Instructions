@@ -124,9 +124,18 @@ sudo /home/pi/src/gassist.sh
 #Under "Interfaces" tab make "SSH"--->"enabled"
 
 #click "OK"
-
-#------------------------------------------------
+#-----------------------------------------------
 #REBOOT
-#------------------------------------------------
-
 #YOU ARE GOOD TO GO! 
+#-----------------------------------------------
+
+#-----------------------------------------------
+#For Neopixel Indicator
+#-----------------------------------------------
+#Replace the main.py in src folder with the main.py from Neopixel Indicator Folder.
+#REBOOT
+#Change the Pin numbers in the given sketch according to your board and upload it.
+#Follow the circuit diagram given.
+#-----------------------------------------------
+#Now you have your Google Home Like Indicator
+#-----------------------------------------------
