@@ -27,10 +27,10 @@ int numPixels = 12; //Change it according to the number of pixels in your neopix
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(numPixels, neoPixelPin, NEO_GRB + NEO_KHZ800);
 
 //Starting pixels for the Google's 4 colours
-int start1 = 0;
-int start2 = 3;
-int start3 = 6;
-int start4 = 9;
+int start1 = 0; // Same value for Neopixels of all sizes
+int start2 = 3; // 2 for 8 neopixel ring, 6 for 24 neopixel ring and so on
+int start3 = 6; // 4 for 8 neopixel ring, 12 for 24 neopixel ring and so on
+int start4 = 9; // 6 for 8 neopixel ring, 18 for 24 neopixel ring and so on
 
 int brightness = 150;
 int brightDirection = -15;
