@@ -85,20 +85,21 @@ void allOff() {
 void activatecircle() {
   adjustStarts();
 
-  // first 20 pixels = color set #1
+ // first 3 pixels = color set #1
   for ( int i = start1; i < start1 + 1; i++ ) {
     strip.setPixelColor(i, 23, 107, 239 );
   }
 
-  // next 20 pixels = color set #2
+  // next 3 pixels = color set #2
   for ( int i = start2; i < start2 + 1 ; i++ ) {
     strip.setPixelColor(i, 255, 62, 48 );
   }
 
-  // last 20 pixels = color set #3
+  // next 3 pixels = color set #3
   for ( int i = start3; i < start3 + 1; i++ ) {
     strip.setPixelColor(i, 247, 181, 41 );
   }
+  // last 3 pixels = color set #3
   for ( int i = start4; i < start4 + 1; i++ ) {
     strip.setPixelColor(i, 23, 156, 82 );
   }
