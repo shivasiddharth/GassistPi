@@ -98,7 +98,14 @@ sudo /home/pi/src/gassist.sh
 
 #AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT
 
-#TO MAKE IT AUTO START ON BOOT
+*************************************************
+#Two ways to Auto start on boot:
+#1. Autostart with CLI on Boot
+#2. Autostart with Pixel Desktop on Boot
+
+*************************************************
+#1. Autostart with CLI on Boot
+*************************************************
 
 sudo nano /etc/profile
 
@@ -109,15 +116,6 @@ sudo /home/pi/src/gassist.sh
 #SAVE AND EXIT BY PRESSING "CTRL+X" AND "Y" AND "ENTER" TO EXIT
 
 #CLOSE TERMINAL
-
-*************************************************
-#Two ways to Auto start on boot:
-#1. Autostart with CLI on Boot
-#2. Autostart with Pixel Desktop on Boot
-
-*************************************************
-#1. Autostart with CLI on Boot
-*************************************************
 #goto-->preferences-->raspberry pi configurations
 
 #IN RASPBERRY PI CONFIGURATIONS WINDOW
