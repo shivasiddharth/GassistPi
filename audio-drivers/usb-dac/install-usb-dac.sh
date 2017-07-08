@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 #
 # Configure Raspberry Pi audio for USB DAC.
 
@@ -21,5 +21,5 @@ for rcfile in "$asoundrc" "$global_asoundrc"; do
   fi
 done
 
-sudo cp ./asound.conf "$global_asoundrc"
+sudo cp scripts/asound.conf "$global_asoundrc"
 echo "USB DAC config at $global_asoundrc"
