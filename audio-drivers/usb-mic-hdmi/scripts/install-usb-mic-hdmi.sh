@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 #
 # Configure Raspberry Pi audio for USB MIC and HDMI AUDIO OUT.
 
