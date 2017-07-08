@@ -21,5 +21,5 @@ for rcfile in "$asoundrc" "$global_asoundrc"; do
   fi
 done
 
-sudo cp scripts/asound.conf "$global_asoundrc"
+sudo cp ./asound.conf "$global_asoundrc"
 echo "Installing USB MIC and HDMI AUDIO OUT config at $global_asoundrc"
