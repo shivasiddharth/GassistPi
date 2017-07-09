@@ -26,7 +26,7 @@ detector = snowboydecoder.HotwordDetector(model, sensitivity=0.5)
 print('Listening... Press Ctrl+C to exit')
 
 led = Light(17)
-detector.start(detected_callback=snowboydecoder.play_audio_file,led.blink,
+detector.start(detected_callback=snowboydecoder.led.blink,
                interrupt_check=interrupt_callback,
                sleep_time=0.03)
 
