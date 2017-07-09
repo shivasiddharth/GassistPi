@@ -6,7 +6,7 @@ class Light(object):
         self.port = port
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.port, GPIO.OUT)
-        self.on_state = GPIO.HIGH
+        self.on_state = GPIO.LOW
         self.off_state = not self.on_state
 
     def set_on(self):
@@ -27,7 +27,7 @@ class Light(object):
         else:
             self.set_on()
 
-    def blink(self, t=0.3):
+    def blink(self, t=0.05):
         self.set_off()
         self.set_on()
         time.sleep(t)
@@ -37,4 +37,4 @@ if __name__ == "__main__":
     light = Light(17)
     while True:
         light.blink()
-        time.sleep(0.7)
+        time.sleep(0.5)
