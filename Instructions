@@ -140,7 +140,7 @@ sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
 
 #Add the following after @xscreensaver -no-splash
 
-@lxterminal -e "/home/pi/src/gassist.sh"
+@lxterminal -e /home/pi/src/gassist.sh
 
 #SAVE AND EXIT BY PRESSING "CTRL+X" AND "Y" AND "ENTER" TO EXIT
 
