@@ -7,37 +7,37 @@
 *************************************************  
 #INSTALLING AUDIO CONFIG FILES
 *************************************************  
-#UPDATE KERNEL  
+1. UPDATE KERNEL  
 
 sudo apt-get update  
 
 sudo apt-get install raspberrypi-kernel
 
-#RESTART PI
+2. RESTART PI
 
-#CHOOSE THE AUDIO CONFIGURATION ACCORDING TO YOUR SETUP.  
-#(Run the commands till you get .bak notification in the terminal)
+3. CHOOSE THE AUDIO CONFIGURATION ACCORDING TO YOUR SETUP.  
+   (Run the commands till you get .bak notification in the terminal)
 
-#USB DAC users,  
+3.1. USB DAC users,  
 sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
 
-#AIY-HAT users,  
+3.2. AIY-HAT users,  
 sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/configure-driver.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/configure-driver.sh  
   
 sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/install-alsa-config.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/install-alsa-config.sh  
 
-#USB DAC AND HDMI users,  
+3.3. USB DAC AND HDMI users,  
 sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   
-#USB DAC AND AUDIO JACK users,  
+3.4. USB DAC AND AUDIO JACK users,  
 sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   
-#CUSTOM VOICE HAT users,  
+3.5. CUSTOM VOICE HAT users,  
 sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/custom-voice-hat.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/custom-voice-hat.sh  
   
@@ -45,9 +45,9 @@ sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/install-i2s.sh
 sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/install-i2s.sh  
   
   
-#RESTART PI  
+4. RESTART PI  
 
-#CHECK THE SPEAKER'S WORKING IN TERMINAL  
+5. CHECK THE SPEAKER'S WORKING IN TERMINAL  
 
 speaker-test -t wav  
 
@@ -55,13 +55,13 @@ speaker-test -t wav
 CONTINUE AFTER SETTING UP AUDIO
 **********************************************************************   
 
-#1.download credentials--->.json file  
+1. Download credentials--->.json file  
 
-#2.place the .json file in/home/pi directory  
+2. Place the .json file in/home/pi directory  
 
-#3.rename it to assistant--->assistant.json  
+3. Rename it to assistant--->assistant.json  
 
-#IN TERMINAL:copy paste the following commands one by one  
+4. IN TERMINAL:copy paste the following commands one by one  
 
 sudo apt-get update  
 
@@ -73,31 +73,31 @@ env/bin/python -m pip install --upgrade pip setuptools
 
 source env/bin/activate  
 
-#Install RPi.GPIO for Controlling Devices
+5. Install RPi.GPIO for Controlling Devices
 
 pip install RPi.GPIO  
 
-#Get the library and sample code  
+6. Get the library and sample code  
 
 python -m pip install --upgrade google-assistant-library  
 
-#INSTALL AUTHORIZATION TOOL  
+7. INSTALL AUTHORIZATION TOOL  
 
 python -m pip install --upgrade google-auth-oauthlib[tool]  
 
-#RUN THE TOOL(client id already renamed to assistant) just copy paste below  
-
+8. RUN THE TOOL(client id already renamed to assistant) just copy paste below  
 
 google-oauthlib-tool --client-secrets /home/pi/assistant.json --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless  
 
-#COPY THE LINK FROM TERMINAL AND PASTE IT IN THE BROWSER  
+9. COPY THE LINK FROM TERMINAL AND PASTE IT IN THE BROWSER  
 
-#COPY THE AUTHORIZATION CODE FROM THE BROWSER AND PASTE IT IN THE TERMINAL  
+10. COPY THE AUTHORIZATION CODE FROM THE BROWSER AND PASTE IT IN THE TERMINAL  
 
-#TEST BY GIVING SOME VOICE COMMANDS BY TRIGGERING "HEY GOOGLE" FOLLOWED BY YOUR REQUEST
+11. TEST BY GIVING SOME VOICE COMMANDS BY TRIGGERING "HEY GOOGLE" FOLLOWED BY YOUR REQUEST
+
 google-assistant-demo
 
-#AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT  
+12. AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT  
 
 *************************************************  
 #Autostart Headless As A Service  
