@@ -1,11 +1,11 @@
-# GassistPi
+****** # GassistPi
 
 *************************************************  
-#LET'S GET STARTED!  
+******LET'S GET STARTED!  
 *************************************************  
 
 *************************************************  
-#INSTALLING AUDIO CONFIG FILES
+******INSTALLING AUDIO CONFIG FILES
 *************************************************  
 1. UPDATE KERNEL  
 
@@ -52,7 +52,7 @@ sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/install-i2s.sh
 speaker-test -t wav  
 
 **********************************************************************  
-CONTINUE AFTER SETTING UP AUDIO
+******CONTINUE AFTER SETTING UP AUDIO
 **********************************************************************   
 
 1. Download credentials--->.json file  
@@ -100,7 +100,7 @@ google-assistant-demo
 12. AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT  
 
 *************************************************  
-#Autostart Headless As A Service  
+******Autostart Headless As A Service  
 *************************************************  
 1. Make the service installer executable  
 
@@ -118,10 +118,10 @@ sudo systemctl enable gassistpi.service
 
 sudo systemctl start gassistpi.service  
 
-******RESTART and ENJOY*************************  
+******RESTART and ENJOY  
 
 ************************************************  
-#For Neopixel Indicator
+******For Neopixel Indicator
 ************************************************  
 #Replace the main.py in src folder with the main.py from Neopixel Indicator Folder.  
 
@@ -132,5 +132,5 @@ sudo systemctl start gassistpi.service
 #Follow the circuit diagram given.  
 
 ************************************************  
-#Now you have your Google Home Like Indicator  
+******Now you have your Google Home Like Indicator  
 ************************************************  
