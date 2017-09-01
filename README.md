@@ -104,11 +104,11 @@ google-assistant-demo
 *************************************************  
 1. Make the service installer executable  
 
-sudo chmod +x /home/pi/scripts/service-installer.sh  
+sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh  
 
 2. Run the service installer  
 
-sudo /home/pi/scripts/service-installer.sh  
+sudo /home/pi/GassistPi/scripts/service-installer.sh  
 
 3. Enable the service  
 
