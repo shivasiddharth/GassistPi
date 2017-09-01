@@ -22,7 +22,7 @@ import os.path
 import json
 import subprocess
 import google.oauth2.credentials
-import RPi.GPIO as GPIO
+
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
