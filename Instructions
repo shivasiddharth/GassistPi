@@ -99,51 +99,25 @@ sudo /home/pi/src/gassist.sh
 #AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT
 
 *************************************************
-#Two ways to Auto start on boot:
-#1. Autostart with CLI on Boot
-#2. Autostart with Pixel Desktop on Boot
-
+#Autostart Headless As A Service
 *************************************************
-#1. Autostart with CLI on Boot
-*************************************************
+1. Make the service installer executable
 
-sudo nano /etc/profile
+sudo chmod +x /home/pi/scripts/service-installer.sh
 
-#IN THE WINDOW SCROLL DOWN TO LAST LINE AND PASTE BELOW
+2. Run the service installer
 
-sudo /home/pi/src/gassist.sh
+sudo /home/pi/scripts/service-installer.sh
 
-#SAVE AND EXIT BY PRESSING "CTRL+X" AND "Y" AND "ENTER" TO EXIT
+3. Enable the service
 
-#CLOSE TERMINAL
-#goto-->preferences-->raspberry pi configurations
+sudo systemctl enable gassistpi.service
 
-#IN RASPBERRY PI CONFIGURATIONS WINDOW
+4. Start the service
 
-#Under "System" tab in "Boot" section 
+sudo systemctl start gassistpi.service
 
-#change from "To Desktop"--->"To CLI"
-
-#Under "Interfaces" tab make "SSH"--->"enabled"
-
-#click "OK"
-
-#REBOOT
-
-#YOU ARE GOOD TO GO! 
-
-
-************************************************
-#2. Autostart with Pixel Desktop on Boot
-************************************************
-sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
-
-#Add the following after @xscreensaver -no-splash
-
-@lxterminal -e /home/pi/src/gassist.sh
-
-#SAVE AND EXIT BY PRESSING "CTRL+X" AND "Y" AND "ENTER" TO EXIT
-
+******RESTART and ENJOY*************************
 
 ************************************************
 #For Neopixel Indicator
