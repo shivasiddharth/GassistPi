@@ -5,45 +5,54 @@
 *************************************************  
 
 *************************************************  
-#FOR USERS WITH AIY KIT START HERE  
+#INSTALLING AUDIO CONFIG FILES
 *************************************************  
 #UPDATE KERNEL  
 
 sudo apt-get update  
 
-sudo apt-get install raspberrypi-kernel  
+sudo apt-get install raspberrypi-kernel
 
-#RUN SCRIPTS FOR VOICE HAT  
+#RESTART PI
 
-#download voice hat audio drivers from the github page onto a thumb drive  
+#CHOOSE THE AUDIO CONFIGURATION ACCORDING TO YOUR SETUP.  
+#(Run the commands till you get .bak notification in the terminal)
 
-#open the folder and copy folders named "audio drivers" and "src" and paste it onto /home/pi directory  
+#USB DAC users,
+sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
+sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
 
-#FOR INSTALLING AUDIO SCRIPTS COPY PASTE BELOW IN TERMINAL  
+#AIY-HAT users,
+sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/configure-driver.sh
+sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/configure-driver.sh
 
-cd /home/pi/audio-drivers/scripts  
+sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/install-alsa-config.sh
+sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/install-alsa-config.sh
 
-chmod u+x ./configure-driver.sh  
+#USB DAC AND HDMI users,
+sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh
+sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh
 
-chmod u+x ./install-alsa-config.sh  
+#USB DAC AND AUDIO JACK users,
+sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh
+sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh
 
-sudo ./configure-driver.sh  
+#CUSTOM VOICE HAT users,
+sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/custom-voice-hat.sh
+sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/custom-voice-hat.sh
 
-sudo ./install-alsa-config.sh  
+sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/install-i2s.sh
+sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/install-i2s.sh
 
-#(run the above 2 commands till you get .bak notification in the terminal)  
 
-#RESTART RASPBERRY PI  
+#RESTART PI  
 
 #CHECK THE SPEAKER'S WORKING IN TERMINAL  
 
 speaker-test -t wav  
 
-*********************************************************************  
-#COMMON PROCEDURE STARTS FROM HERE  
-#(FOR BOTH VOICE HAT AND NON-VOICE HAT USERS)  
 **********************************************************************  
-FOR USERS WITHOUT AIY KIT START HERE AFTER SETTING UP AUDIO DEVICE
+CONTINUE AFTER SETTING UP AUDIO
 **********************************************************************   
 
 #1.download credentials--->.json file  
@@ -64,7 +73,7 @@ env/bin/python -m pip install --upgrade pip setuptools
 
 source env/bin/activate  
 
-#TO ACTIVATE LED FOR HOTWORD DETECTION ..CONNECT LED to GPIO 25  
+#Install RPi.GPIO for Controlling Devices
 
 pip install RPi.GPIO  
 
@@ -85,18 +94,8 @@ google-oauthlib-tool --client-secrets /home/pi/assistant.json --scope https://ww
 
 #COPY THE AUTHORIZATION CODE FROM THE BROWSER AND PASTE IT IN THE TERMINAL  
 
-#DOWNLOAD THE src FILE PROVIDED IN from the github page AND PLACE IT IN /home/pi     
-#MAKE gassist.sh EXECUTABLE  
-
-cd /home/pi/src  
-
-chmod u+x ./gassist.sh  
-
-#CLOSE AND REOPEN TERMINAL  
-
-sudo /home/pi/src/gassist.sh  
-
-#TEST BY GIVING SOME VOICE COMMANDS BY TRIGGERING "HEY GOOGLE" FOLLOWED BY YOUR REQUEST  
+#TEST BY GIVING SOME VOICE COMMANDS BY TRIGGERING "HEY GOOGLE" FOLLOWED BY YOUR REQUEST
+google-assistant-demo
 
 #AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT  
 
