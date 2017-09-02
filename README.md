@@ -29,11 +29,11 @@ sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/configure-driver.sh
 sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/install-alsa-config.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/install-alsa-config.sh  
 
-3.3. USB DAC AND HDMI users,  
+3.3. USB MIC AND HDMI users,  
 sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   
-3.4. USB DAC AND AUDIO JACK users,  
+3.4. USB MIC AND AUDIO JACK users,  
 sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   
