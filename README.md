@@ -1,5 +1,10 @@
 # GassistPi
-# Headless Google Assistant with Startup Audio and Wakeword Detection Alert
+# Features:
+**1. Headless auto start on boot**  
+**2. Locally Control GPIOs without IFTTT, API.AI, ACTIONS**  
+**3. Startup audio and audio feedback for wakeword detection** 
+**4. Safe shutdown RPi using voice command**  
+
 *************************************************  
 **LET'S GET STARTED!**  
 *************************************************  
