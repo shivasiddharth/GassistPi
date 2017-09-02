@@ -134,8 +134,10 @@ sudo systemctl start gassistpi.service
 ************************************************
 **VOICE CONTROL OF GPIOs**
 ************************************************
-The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in line 85 of the main.py code with your desired trigger word.  
+The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in line 85 of the main.py code with your desired trigger word.
+
 Similarly, you can define your own device names in line 35 under the variable name var.  
+
 The number of GPIO pins declared in line 36 should match the number of devices.  
 
 ************************************************  
