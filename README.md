@@ -26,31 +26,31 @@ sudo apt-get install raspberrypi-kernel
 3. CHOOSE THE AUDIO CONFIGURATION ACCORDING TO YOUR SETUP.  
    (Run the commands till you get .bak notification in the terminal)
 
-3.1. USB DAC users,  
-sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
-sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
+  3.1. USB DAC users,  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
 
-3.2. AIY-HAT users,  
-sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/configure-driver.sh  
-sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/configure-driver.sh  
+  3.2. AIY-HAT users,  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/configure-driver.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/configure-driver.sh  
   
-sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/install-alsa-config.sh  
-sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/install-alsa-config.sh  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/install-alsa-config.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/install-alsa-config.sh  
 
-3.3. USB DAC AND HDMI users,  
-sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
-sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
+  3.3. USB DAC AND HDMI users,  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   
-3.4. USB DAC AND AUDIO JACK users,  
-sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
+  3.4. USB DAC AND AUDIO JACK users,  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   
-3.5. CUSTOM VOICE HAT users,  
-sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/custom-voice-hat.sh  
-sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/custom-voice-hat.sh  
+  3.5. CUSTOM VOICE HAT users,  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/custom-voice-hat.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/custom-voice-hat.sh  
   
-sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/install-i2s.sh  
-sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/install-i2s.sh  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/install-i2s.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/install-i2s.sh  
   
 **Those Using HDMI/Onboard Jack, make sure to force the audio**  
 sudo raspi-config  
@@ -130,6 +130,13 @@ sudo systemctl enable gassistpi.service
 sudo systemctl start gassistpi.service  
 
 **RESTART and ENJOY**  
+
+************************************************
+**VOICE CONTROL OF GPIOs**
+************************************************
+The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in line 85 of the main.py code with your desired trigger word.  
+Similarly, you can define your own device names in line 35 under the variable name var.  
+The number of GPIO pins declared in line 36 should match the number of devices.  
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
