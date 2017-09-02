@@ -44,8 +44,8 @@ sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/custom-voice-hat.
 sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/install-i2s.sh  
 sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/install-i2s.sh  
   
-**Those Using HDMI/Onboard Jack, make sure to force the audio**
-sudo raspi-config
+**Those Using HDMI/Onboard Jack, make sure to force the audio**  
+sudo raspi-config  
 Select advanced options, then audio and choose to force audio  
 
 4. RESTART PI  
