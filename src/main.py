@@ -56,7 +56,7 @@ def process_event(event):
                 if 'on'.lower() in str(event).lower():
                     GPIO.output(pinout, 1)
                     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                elseif 'off'.lower() in str(event).lower():
+                elif 'off'.lower() in str(event).lower():
                     GPIO.output(pinout, 0)
                     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
