@@ -5,7 +5,7 @@
 **3. Startup audio and audio feedback for wakeword detection**   
 **4. Safe shutdown RPi using voice command**  
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7PMAZXFUU5E4J)
+**If you like my work, you can get me a coffee**      [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7PMAZXFUU5E4J)
 
 *************************************************  
 **LET'S GET STARTED!**  
