@@ -29,7 +29,7 @@ import os.path
 import json
 
 import google.oauth2.credentials
-
+import subprocess
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
@@ -45,7 +45,7 @@ def process_event(event):
         event(event.Event): The current event to process.
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        print()
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
         GPIO.output(24,GPIO.HIGH)
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
@@ -66,6 +66,7 @@ def process_event(event):
 
 
 def main():
+    
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('--credentials', type=existing_file,
@@ -82,6 +83,7 @@ def main():
                                                             **json.load(f))
 
     with Assistant(credentials) as assistant:
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         for event in assistant.start():
             process_event(event)
 

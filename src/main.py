@@ -20,15 +20,13 @@ from __future__ import print_function
 import argparse
 import os.path
 import json
-
+import subprocess
 import google.oauth2.credentials
-import RPi.GPIO as GPIO
+
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(25, GPIO.OUT)
 def process_event(event):
     """Pretty prints events.
 
@@ -39,18 +37,17 @@ def process_event(event):
         event(event.Event): The current event to process.
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        print()
-        GPIO.output(25,True)
-
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         print()
-        GPIO.output(25,False)
+        
 
 
 def main():
+    
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('--credentials', type=existing_file,
@@ -67,6 +64,7 @@ def main():
                                                             **json.load(f))
 
     with Assistant(credentials) as assistant:
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         for event in assistant.start():
             process_event(event)
 
