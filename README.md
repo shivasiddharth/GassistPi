@@ -132,7 +132,7 @@ sudo systemctl start gassistpi.service
 **RESTART and ENJOY**  
 
 ************************************************
-**VOICE CONTROL OF GPIOs**
+**VOICE CONTROL OF GPIOs and Pi Shutdown**
 ************************************************
 The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in line 85 of the main.py code with your desired trigger word.
 
