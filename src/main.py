@@ -49,6 +49,7 @@ def process_event(event):
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
     print(event)
     if 'trigger'.lower() in str(event).lower():
+        assistant.stop_conversation()
         for num, name in enumerate(var):
             if name.lower() in str(event).lower():
                 pinout=gpio[num]
