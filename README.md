@@ -17,9 +17,9 @@
 *************************************************  
 1. UPDATE KERNEL  
 
-```sudo apt-get update  ```
+```sudo apt-get update  
 
-```sudo apt-get install raspberrypi-kernel``` 
+   sudo apt-get install raspberrypi-kernel``` 
 
 2. RESTART PI
 
