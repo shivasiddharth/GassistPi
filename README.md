@@ -5,7 +5,7 @@
 *************************************************  
 
 *************************************************  
-**INSTALLING AUDIO CONFIG FILES**
+**INSTALL AUDIO CONFIG FILES**
 *************************************************  
 1. UPDATE KERNEL  
 
@@ -103,7 +103,7 @@ google-assistant-demo
 12. AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT  
 
 *************************************************  
-**Autostart Headless As A Service**  
+**HEADLESS AUTOSTART ON BOOT SERVICE SETUP**  
 *************************************************  
 1. Make the service installer executable  
 
@@ -124,7 +124,7 @@ sudo systemctl start gassistpi.service
 **RESTART and ENJOY**  
 
 ************************************************  
-**For Neopixel Indicator**
+**FOR NEOPIXEL INDICAOR**
 ************************************************  
 #Replace the main.py in src folder with the main.py from Neopixel Indicator Folder.  
 
