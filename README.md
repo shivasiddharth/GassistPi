@@ -1,5 +1,5 @@
 # GassistPi
-# Headless with Startup Audio and Wakeword Detection Alert
+# Headless Google Assistant with Startup Audio and Wakeword Detection Alert
 *************************************************  
 **LET'S GET STARTED!**  
 *************************************************  
