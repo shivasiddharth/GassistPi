@@ -1,10 +1,18 @@
-# GassistPi
+# GassistPi -- Google Assistant on Raspberry Pi
 # Features:
 **1. Headless auto start on boot**  
 **2. Locally Control GPIOs without IFTTT, API.AI, ACTIONS**  
 **3. Startup audio and audio feedback for wakeword detection**   
 **4. Safe shutdown RPi using voice command**  
 
+**If you find my work useful you cna get me a coffee**  
+<!-- Sample of code generated --> 
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="XRWFHW4FMKEGA">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/pt_BR/i/scr/pixel.gif" width="1" height="1">
+</form>
 *************************************************  
 **LET'S GET STARTED!**  
 *************************************************  
