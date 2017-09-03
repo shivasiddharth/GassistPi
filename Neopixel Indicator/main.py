@@ -17,22 +17,32 @@
 
 from __future__ import print_function
 
-
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(24,GPIO.OUT)
-GPIO.setup(27,GPIO.OUT)
-
 import argparse
 import os.path
+import os
 import json
-
-import google.oauth2.credentials
 import subprocess
+import google.oauth2.credentials
+import RPi.GPIO as GPIO
+import time
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+#Number of entities in 'var' and 'PINS' should be the same
+var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
+gpio = (22,23,25)#GPIOS for 'var'. Add other GPIOs that you want
+
+for pin in gpio:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 0)
+
+GPIO.setup(24,GPIO.OUT)
+GPIO.setup(27,GPIO.OUT)
+
+
 
 
 def process_event(event):
@@ -72,7 +82,7 @@ def main():
     parser.add_argument('--credentials', type=existing_file,
                         metavar='OAUTH2_CREDENTIALS_FILE',
                         default=os.path.join(
-                            os.path.expanduser('~/.config'),
+                            os.path.expanduser('/home/pi/.config'),
                             'google-oauthlib-tool',
                             'credentials.json'
                         ),
@@ -86,7 +96,26 @@ def main():
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         for event in assistant.start():
             process_event(event)
-
-
+            usr=event.args
+            if 'trigger'.lower() in str(usr).lower():
+                assistant.stop_conversation()
+                if 'shut down'.lower() in str(usr).lower():
+                    subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    time.sleep(10)
+                    os.system("sudo shutdown -h now")
+                    #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    break
+                else:
+                    for num, name in enumerate(var):
+                        if name.lower() in str(usr).lower():
+                            pinout=gpio[num]
+                            if 'on'.lower()in str(usr).lower():
+                                GPIO.output(pinout, 1)
+                                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            elif 'off'.lower() in str(usr).lower():
+                                GPIO.output(pinout, 0)
+                                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    
 if __name__ == '__main__':
     main()
