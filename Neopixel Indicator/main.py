@@ -38,7 +38,7 @@ gpio = (22,23,25)#GPIOS for 'var'. Add other GPIOs that you want
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
-
+#Neopixel pins not to be included in gpio list of devices. Should be declared seperately.
 GPIO.setup(24,GPIO.OUT)
 GPIO.setup(27,GPIO.OUT)
 
