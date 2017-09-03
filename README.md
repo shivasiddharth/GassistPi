@@ -1,4 +1,4 @@
-**If you like my work, you can get me a coffee** [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7PMAZXFUU5E4J)
+**If you like my work, maybe you can get me a coffee** [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7PMAZXFUU5E4J)
 # GassistPi -- Google Assistant on Raspberry Pi
 # Features:  
 **1. Headless auto start on boot**  
