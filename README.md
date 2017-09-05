@@ -7,7 +7,7 @@
 **4. Safe shutdown RPi using voice command.**  
 
 # Features coming soon:
-**1. Mute button.**
+**1. Mute button.**  
 **2. Multiple wakeword support.**
 
 *************************************************  
