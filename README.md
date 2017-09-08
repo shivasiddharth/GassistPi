@@ -59,7 +59,7 @@ sudo apt-get install raspberrypi-kernel
   3.5. CUSTOM VOICE HAT users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
+  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   
   sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/install-i2s.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-DAC/CUSTOM-VOICE-HAT/install-i2s.sh 
