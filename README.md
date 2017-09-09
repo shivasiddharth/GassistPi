@@ -37,11 +37,11 @@ sudo apt-get install raspberrypi-kernel
 
   3.2. AIY-HAT users,  
   ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/configure-driver.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/configure-driver.sh  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
+  sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
   
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/install-alsa-config.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/AIY-HAT/install-alsa-config.sh  
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
+  sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
   ```
 
   3.3. USB MIC AND HDMI users,  
