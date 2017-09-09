@@ -26,7 +26,6 @@ then
 fi
 
 sudo apt-get update  
-sudo pat-get install raspberrypi-kernel  
 sudo apt-get install python3-dev python3-venv  
 python3 -m venv env  
 env/bin/python -m pip install --upgrade pip setuptools  
