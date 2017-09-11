@@ -42,13 +42,13 @@ except SystemError:
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
-var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
+var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive
 gpio = (22,23,24)#GPIOS for 'var'. Add other GPIOs that you want
 
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
-    
+
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.ConverseResponse.END_OF_UTTERANCE
 DIALOG_FOLLOW_ON = embedded_assistant_pb2.ConverseResult.DIALOG_FOLLOW_ON
@@ -106,8 +106,8 @@ class SampleAssistant(object):
         Returns: True if conversation should continue.
         """
         continue_conversation = False
-        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
-        
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
 
         self.conversation_stream.start_recording()
         logging.info('Recording audio request.')
@@ -134,8 +134,8 @@ class SampleAssistant(object):
                              resp.result.spoken_request_text)
                 usr=resp.result.spoken_request_text
                 if 'trigger' in str(usr):
-                    
-                    
+
+
                     if 'shut down'.lower() in str(usr).lower():
                         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         time.sleep(10)
@@ -273,6 +273,8 @@ def main(api_endpoint, credentials, verbose,
 
         $ python -m googlesamples.assistant -i <input file> -o <output file>
     """
+    if os.path.isfile('/home/pi/GassistPi/pi-on'):
+        os.rename('/home/pi/GassistPi/pi-on','/home/pi/GassistPi/pi-off')
     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
@@ -349,8 +351,12 @@ def main(api_endpoint, credentials, verbose,
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
         wait_for_user_trigger = not once
         while True:
-            if wait_for_user_trigger:
-                click.pause(info='Press Enter to send a new request...')
+            if wait_for_user_trigger and os.path.isfile('/home/pi/GassistPi/pi-on'):
+                continue
+                os.rename('/home/pi/GassistPi/pi-on','/home/pi/GassistPi/pi-off')
+            else:
+                return
+                    #click.pause(info='Press Enter to send a new request...')
             continue_conversation = assistant.converse()
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
