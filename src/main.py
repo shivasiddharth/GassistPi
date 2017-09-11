@@ -29,6 +29,7 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
@@ -38,7 +39,10 @@ gpio = (22,23,24)#GPIOS for 'var'. Add other GPIOs that you want
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
-    
+
+
+        
+
 def process_event(event):
     """Pretty prints events.
 
@@ -61,7 +65,7 @@ def process_event(event):
 
 
 def main():
-    
+    global credentials
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('--credentials', type=existing_file,
@@ -79,7 +83,9 @@ def main():
 
     with Assistant(credentials) as assistant:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        time.sleep(3)
         for event in assistant.start():
+            
             process_event(event)
             usr=event.args
             if 'trigger'.lower() in str(usr).lower():
@@ -100,7 +106,21 @@ def main():
                             elif 'off'.lower() in str(usr).lower():
                                 GPIO.output(pinout, 0)
                                 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                
+            
     
+    
+        
+        
+     
     
 if __name__ == '__main__':
+     
     main()
+
+
+        
+        
+
+        
+        
