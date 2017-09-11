@@ -17,7 +17,7 @@ models = ['/home/pi/GassistPi/wakeword/resources/alexa.umdl', '/home/pi/GassistP
 def signal_handler(signal, frame):
     global interrupted
     interrupted = True
-    
+
 
 
 def interrupt_callback():
@@ -29,22 +29,22 @@ def interrupt_callback():
 ##    print("Usage: python demo.py 1st.model 2nd.model")
 ##    sys.exit(-1)
 
-    
+
 def detected():
-    
-##    if os.path.isfile('/home/pi/GassistPi/pi-1'):
-##        os.rename('/home/pi/GassistPi/pi-1','/home/pi/GassistPi/pi-2')
-##    else:
-##        os.rename('/home/pi/GassistPi/pi-2','/home/pi/GassistPi/pi-1')
-    trig= open(path,'w')
-    trig.write('1')
-    trig.close()
+
+    if os.path.isfile('/home/pi/GassistPi/pi-on'):
+        os.rename('/home/pi/GassistPi/pi-on','/home/pi/GassistPi/pi-off')
+    else:
+        os.rename('/home/pi/GassistPi/pi-off','/home/pi/GassistPi/pi-on')
+##    trig= open(path,'w')
+##    trig.write('1')
+##    trig.close()
     GPIO.output(22,GPIO.HIGH)
     time.sleep(.05)
     GPIO.output(22,GPIO.LOW)
     snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
-    
-    
+
+
 
 # capture SIGINT signal, e.g., Ctrl+C
 signal.signal(signal.SIGINT, signal_handler)
