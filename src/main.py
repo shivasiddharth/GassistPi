@@ -34,7 +34,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
 var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
-gpio = (22,23,24)#GPIOS for 'var'. Add other GPIOs that you want
+gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)

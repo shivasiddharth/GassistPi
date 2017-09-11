@@ -1,0 +1,17 @@
+[Unit]
+Description=Assistant gRPC
+After=network.target
+Requires=snowboy.service
+
+[Service]
+Environment=VIRTUAL_ENV=/home/pi/env
+Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/pi/env/bin/python3 -u /home/pi/env/lib/python3.5/site-packages/googlesamples/assistant/grpc/pushtotalk.py
+WorkingDirectory=/home/pi/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

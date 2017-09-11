@@ -1,0 +1,14 @@
+[Unit]
+Description=Snowboy
+After=network.target
+
+[Service]
+ExecStart=/home/pi/python -u /home/pi/GassistPi/snowboy/snowboy.py
+WorkingDirectory=/home/pi/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

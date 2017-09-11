@@ -12,7 +12,7 @@ GPIO.setwarnings(False)
 interrupted = False
 GPIO.setup(22,GPIO.OUT)
 GPIO.output(22,GPIO.LOW)
-models = ['/home/pi/GassistPi/wakeword/resources/alexa.umdl', '/home/pi/GassistPi/wakeword/resources/Varsha.pmdl']
+models = ['/home/pi/GassistPi/snowboy/resources/alexa.umdl', '/home/pi/GassistPi/snowboy/resources/snowboy.umdl']
 
 def signal_handler(signal, frame):
     global interrupted
@@ -32,17 +32,14 @@ def interrupt_callback():
 
 def detected():
 
-    if os.path.isfile('/home/pi/GassistPi/pi-on'):
-        os.rename('/home/pi/GassistPi/pi-on','/home/pi/GassistPi/pi-off')
-    else:
-        os.rename('/home/pi/GassistPi/pi-off','/home/pi/GassistPi/pi-on')
-##    trig= open(path,'w')
-##    trig.write('1')
-##    trig.close()
+
+    trig= open(path,'w')
+    trig.write('1')
+    trig.close()
     GPIO.output(22,GPIO.HIGH)
     time.sleep(.05)
     GPIO.output(22,GPIO.LOW)
-    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
+##    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
 
 
 
