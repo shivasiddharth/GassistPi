@@ -3,6 +3,7 @@ Description=Snowboy
 After=network.target
 
 [Service]
+<<<<<<< HEAD
 Environment=/home/pi/
 Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ExecStart=/bin/bash /home/pi/GassistPi/snowboy/snowboy.sh start
@@ -11,6 +12,13 @@ Type=forking
 StandardOutput=inherit
 StandardError=inherit
 Restart=on-failure
+=======
+ExecStart=/home/pi/python -u /home/pi/GassistPi/snowboy/snowboy.py
+WorkingDirectory=/home/pi/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+>>>>>>> 165be6f002b6b31c805ef677c73fb6fc8a7eefb3
 User=pi
 
 [Install]
