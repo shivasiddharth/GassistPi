@@ -26,8 +26,7 @@ then
 fi
 
 sudo apt-get install libjack-jackd2-dev -y
-sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y  
-sudo apt-get install swig3.0 python-pyaudio python3-pyaudio sox -y  
-sudo pip install pyaudio  
-sudo apt-get install libatlas-base-dev -y  
-    
+sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
+sudo apt-get install swig3.0 python-pyaudio python3-pyaudio sox -y
+sudo pip install pyaudio
+sudo apt-get install libatlas-base-dev -y

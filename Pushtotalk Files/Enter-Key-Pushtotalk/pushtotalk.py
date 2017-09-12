@@ -43,7 +43,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
 var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
-gpio = (22,23,24)#GPIOS for 'var'. Add other GPIOs that you want
+gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
@@ -56,7 +56,6 @@ CLOSE_MICROPHONE = embedded_assistant_pb2.ConverseResult.CLOSE_MICROPHONE
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
 
-    
 
 class SampleAssistant(object):
     """Sample Assistant that supports follow-on conversations.
@@ -174,11 +173,8 @@ class SampleAssistant(object):
                 logging.info('Expecting follow-on query from user.')
             elif resp.result.microphone_mode == CLOSE_MICROPHONE:
                 continue_conversation = False
-                
         logging.info('Finished playing assistant response.')
-        
         self.conversation_stream.stop_playback()
-        
         return continue_conversation
 
     def gen_converse_requests(self):
@@ -263,7 +259,7 @@ def main(api_endpoint, credentials, verbose,
          audio_iter_size, audio_block_size, audio_flush_size,
          grpc_deadline, once, *args, **kwargs):
     """Samples for the Google Assistant API.
-    
+
     Examples:
       Run the sample with microphone input and speaker output:
 
@@ -277,10 +273,7 @@ def main(api_endpoint, credentials, verbose,
 
         $ python -m googlesamples.assistant -i <input file> -o <output file>
     """
-    
     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(5)
-    
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
 
@@ -356,24 +349,16 @@ def main(api_endpoint, credentials, verbose,
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
         wait_for_user_trigger = not once
         while True:
-            file = open('/home/pi/GassistPi/trigger.txt', 'r')
-            text = file.read()
-            file.close()
-            if str(text)=="1":
-                file = open('/home/pi/GassistPi/trigger.txt', 'w')
-                file.write('No Trigger')
-                file.close()
-                    
-##                click.pause(info='Press Enter to send a new request...')
-                continue_conversation=assistant.converse()
+            if wait_for_user_trigger:
+                click.pause(info='Press Enter to send a new request...')
+            continue_conversation = assistant.converse()
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
-                wait_for_user_trigger = not continue_conversation
+            wait_for_user_trigger = not continue_conversation
 
             # If we only want one conversation, break.
-                if once and (not continue_conversation):
-                    return continue_conversation
-                        
+            if once and (not continue_conversation):
+                break
 
 
 if __name__ == '__main__':
