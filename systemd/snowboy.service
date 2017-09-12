@@ -1,0 +1,17 @@
+[Unit]
+Description=Snowboy
+After=network.target
+
+[Service]
+Environment=/home/pi/
+Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/bin/bash /home/pi/GassistPi/snowboy/snowboy.sh start
+WorkingDirectory=/home/pi/GassistPi/snowboy/
+Type=forking
+StandardOutput=inherit
+StandardError=inherit
+Restart=on-failure
+User=pi
+
+[Install]
+WantedBy=multi-user.target
