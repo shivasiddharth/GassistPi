@@ -125,10 +125,7 @@ google-assistant-demo
 googlesamples-assistant-pushtotalk   
 ```  
 
-8. After verying the working of assistant close and exit the terminal    
-
-9. Copy the pushtotalk.py from "Voice-activation-pushtotalk" folder to the default pushtotalk folder and replace  
-
+8. After verifying the working of assistant, close and exit the terminal    
 
 
 *************************************************  
