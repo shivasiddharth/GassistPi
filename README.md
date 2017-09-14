@@ -94,8 +94,8 @@ speaker-test -t wav
 
 3. Rename it to assistant--->assistant.json  
 
-4. Using the one-line installer for installing Google Assistant and Snowboy dependencies
-   Pi3 and Pi Zero Users use the corresponding scripts
+4. Using the one-line installer for installing Google Assistant and Snowboy dependencies  
+   Pi3 and Pi Zero Users use the corresponding scripts  
 
 	4.1 Make the installers Executable  
 	```
