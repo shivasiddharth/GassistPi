@@ -103,7 +103,7 @@ speaker-test -t wav
 	sudo chmod +x /home/pi/GassistPi/scripts/snowboy-deps-installer.sh  
   
 	```
-	4.2 Execute the installers (Don't be in a hurry and run them parallely, Run them one after the other)  
+	4.2 Execute the installers (Run the snowboy installer first.Don't be in a hurry and run them parallely, Run them one after the other)  
 	```
 	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
@@ -144,34 +144,30 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the services - Pi3 and Armv7 users enable all three services - Pi Zero users enable pushtotalk and snowboy services alone      
+3. Enable the services - Pi3 and Armv7 users enable both the services - Pi Zero users enable snowboy services alone      
 
 ```
 sudo systemctl enable gassistpi-ok-google.service  
-sudo systemctl enable gassistpi-pushtotalk.service
 sudo systemctl enable snowboy.service
 ```  
 
-4. Start the service - Pi3 and Armv7 users start all three services - Pi Zero users start pushtotalk and snowboy services alone  
+4. Start the service - Pi3 and Armv7 users start both the services - Pi Zero users start snowboy services alone  
 
 ```
 sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start gassistpi-pushtotalk.service
 sudo systemctl start snowboy.service   
 ```  
 
 **RESTART and ENJOY**  
-****************************************************
-**Please Don't move or delete the trigger.txt file**  
-****************************************************
+
 ************************************************
 **VOICE CONTROL OF GPIOs and Pi Shutdown**
 ************************************************
 The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in line 85 of the main.py code with your desired trigger word.
 
-Similarly, you can define your own device names in line 35 under the variable name var.  
+Similarly, you can define your own device names under the variable name var.  
 
-The number of GPIO pins declared in line 36 should match the number of devices.  
+The number of GPIO pins declared should match the number of devices.  
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**

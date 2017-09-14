@@ -5,8 +5,8 @@ import RPi.GPIO as GPIO
 import time
 import os
 import subprocess
-
-
+from assistant import Assistant
+subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/snowboy.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 # Demo code for listening two hotwords at the same time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -29,15 +29,13 @@ def interrupt_callback():
 ##    print("Error: need to specify 2 model names")
 ##    print("Usage: python demo.py 1st.model 2nd.model")
 ##    sys.exit(-1)
-
+gassist = Assistant()
 
 def detected():
-    trig= open(path,'w')
-    trig.write('1')
-    trig.close()
     GPIO.output(22,GPIO.HIGH)
     time.sleep(.05)
     GPIO.output(22,GPIO.LOW)
+    gassist.assist()
 ##    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
 
 

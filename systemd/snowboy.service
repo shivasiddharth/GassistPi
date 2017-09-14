@@ -1,16 +1,16 @@
 [Unit]
-Description=Snowboy
+Description=Google Assistant
 After=network.target
 
+
 [Service]
-Environment=/home/pi/
+Environment=VIRTUAL_ENV=/home/pi/env
 Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/bin/bash /home/pi/GassistPi/snowboy/snowboy.sh start
-WorkingDirectory=/home/pi/GassistPi/snowboy/
-Type=forking
+ExecStart=/home/pi/env/bin/python -u /home/pi/GassistPi/snowboy/snowboy.py
+WorkingDirectory=/home/pi/
 StandardOutput=inherit
 StandardError=inherit
-Restart=on-failure
+Restart=always
 User=pi
 
 [Install]

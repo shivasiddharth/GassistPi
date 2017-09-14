@@ -26,12 +26,13 @@ then
 fi
 
 cd /home/pi/
-sudo apt-get update
-sudo apt-get install python3-dev python3-venv
-python3 -m venv env
-env/bin/python -m pip install --upgrade pip setuptools
+sudo apt-get update -y
+sudo apt-get install python-dev python-virtualenv -y
+virtualenv env  
+env/bin/python -m pip install --upgrade pip setuptools  
 source env/bin/activate
 pip install RPi.GPIO
+pip install pyaudio
 python -m pip install --upgrade google-assistant-library
 python -m pip install --upgrade google-assistant-sdk 
 python -m pip install --upgrade google-assistant-sdk[samples]
