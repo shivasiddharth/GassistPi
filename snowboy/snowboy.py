@@ -7,12 +7,15 @@ import os
 import subprocess
 from assistant import Assistant
 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/snowboy.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
 # Demo code for listening two hotwords at the same time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 interrupted = False
 GPIO.setup(22,GPIO.OUT)
 GPIO.output(22,GPIO.LOW)
+
+#Add your custom models here
 models = ['/home/pi/GassistPi/snowboy/resources/alexa.umdl', '/home/pi/GassistPi/snowboy/resources/snowboy.umdl']
 
 def signal_handler(signal, frame):
@@ -37,7 +40,7 @@ def detected():
     GPIO.output(22,GPIO.LOW)
     gassist.assist()
 ##    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
-
+## If you wish enable the audio response tone. Already Google assistant code has one, so this is disabled by default
 
 
 # capture SIGINT signal, e.g., Ctrl+C
