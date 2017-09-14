@@ -1,6 +1,6 @@
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
-**WORKS WITH Pi3 as well as Pi Zero**  
+**Works Pi-3 as well as Pi Zero**  
 
 # Features:  
 **1. Headless auto start on boot with multiple wakeword activation trigger**    
@@ -73,8 +73,8 @@ sudo raspi-config
 ```
 Select advanced options, then audio and choose to force audio
 
-**Those using any other DACs or HATs install the cards as per the manufacturer's guide**
-** and then you can try using the USB-DAC config file after changing the hardware ids**        
+**Those using any other DACs or HATs install the cards as per the manufacturer's guide
+and then you can try using the USB-DAC config file after changing the hardware ids**        
 
 4. Restart Pi
 
@@ -94,7 +94,7 @@ speaker-test -t wav
 
 3. Rename it to assistant--->assistant.json  
 
-4. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
+4. Using the one-line installer for installing Google Assistant and Snowboy dependencies. **Install the installer appropriate to your board. Pi3 and Armv7 users, use the pi3 installer and Pi Zero users ue the pi-zero installer**      
 
 	4.1 Make the installers Executable  
 	```
@@ -103,7 +103,7 @@ speaker-test -t wav
 	sudo chmod +x /home/pi/GassistPi/scripts/snowboy-deps-installer.sh  
   
 	```
-	4.2 Execute the installers (Run the snowboy installer first.Don't be in a hurry and run them parallely, Run them one after the other)  
+	4.2 Execute the installers (Run the snowboy installer first. **Don't be in a hurry and run them parallely, Run them one after the other.Install the installer appropriate to your board. Pi3 and Armv7 users, use the pi3 installer and Pi Zero users ue the pi-zero installer**  
 	```
 	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
@@ -144,14 +144,14 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the services - Pi3 and Armv7 users enable both the services - Pi Zero users enable snowboy services alone      
+3. Enable the services - **Pi3 and Armv7 users enable both the services - Pi Zero users enable snowboy services alone**        
 
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable snowboy.service
 ```  
 
-4. Start the service - Pi3 and Armv7 users start both the services - Pi Zero users start snowboy services alone  
+4. Start the service - **Pi3 and Armv7 users start both the services - Pi Zero users start snowboy services alone**    
 
 ```
 sudo systemctl start gassistpi-ok-google.service  
