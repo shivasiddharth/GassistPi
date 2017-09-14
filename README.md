@@ -1,9 +1,9 @@
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
-**WORKS WITH Pi3 as well as Pi Zero**  
+# WORKS WITH Pi3 as well as Pi Zero 
 
 # Features:  
-**1. Headless auto start on boot with multiple wakeword activation trigger**    
+**1. Headless auto start on boot with multiple wakeword activation trigger (Conenct a LED to GPIO 22 to get a blink when custom wakeword is detected. You will ofcourse have an audio response tone)**    
 **2. Locally Control GPIOs without IFTTT, API.AI, ACTIONS.**  
 **3. Startup audio and audio feedback for wakeword detection.**   
 **4. Safe shutdown RPi using voice command.**  
