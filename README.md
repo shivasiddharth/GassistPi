@@ -164,7 +164,7 @@ sudo systemctl start snowboy.service
 ************************************************
 **VOICE CONTROL OF GPIOs and Pi Shutdown**
 ************************************************
-The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in line 85 of the main.py code with your desired trigger word.
+The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
 
 Similarly, you can define your own device names under the variable name var.  
 
