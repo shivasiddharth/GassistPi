@@ -143,14 +143,14 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the services - **Pi3 and Armv7 users enable both the services - Pi Zero users enable snowboy services alone**        
+3. Enable the services - **Pi3 and Armv7 users enable both the services for custom wakewords - Pi Zero users enable snowboy services alone**        
 
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable snowboy.service
 ```  
 
-4. Start the service - **Pi3 and Armv7 users start both the services - Pi Zero users start snowboy services alone**    
+4. Start the service - **Pi3 and Armv7 users start both the services for custom wakewords - Pi Zero users start snowboy services alone**    
 
 ```
 sudo systemctl start gassistpi-ok-google.service  
