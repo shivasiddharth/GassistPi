@@ -1,14 +1,16 @@
 
-# GassistPi -- Google Assistant on Raspberry Pi
+# GassistPi -- Google Assistant for all Raspberry Pi Boards  
+**WORKS WITH Pi3 as well as Pi Zero**  
+
 # Features:  
-**1. Headless auto start on boot.**  
+**1. Headless auto start on boot with multiple wakeword activation trigger**    
 **2. Locally Control GPIOs without IFTTT, API.AI, ACTIONS.**  
 **3. Startup audio and audio feedback for wakeword detection.**   
 **4. Safe shutdown RPi using voice command.**  
 
 # Features coming soon:
 **1. Mute button.**  
-**2. Multiple wakeword support.**
+
 
 *************************************************  
 **LET'S GET STARTED!**  
@@ -17,16 +19,16 @@
 *************************************************  
 **INSTALL AUDIO CONFIG FILES**
 *************************************************  
-1. UPDATE KERNEL  
+1. Update OS and Kernel    
 
 ```
 sudo apt-get update  
 sudo apt-get install raspberrypi-kernel  
 ``` 
 
-2. RESTART PI
+2. Restart Pi  
 
-3. CHOOSE THE AUDIO CONFIGURATION ACCORDING TO YOUR SETUP.  
+3. Choose the audio configuration according to your setup.    
    (Run the commands till you get .bak notification in the terminal)
 
   3.1. USB DAC users,  
@@ -69,11 +71,14 @@ sudo apt-get install raspberrypi-kernel
 ```
 sudo raspi-config  
 ```
-Select advanced options, then audio and choose to force audio  
+Select advanced options, then audio and choose to force audio
 
-4. RESTART PI  
+**Those using any other DACs or HATs install the cards as per the manufacturer's guide**
+** and then you can try using the USB-DAC config file after changing the hardware ids**        
 
-5. CHECK THE SPEAKER'S WORKING IN TERMINAL  
+4. Restart Pi
+
+5. Check the speaker using the following command    
 
 ```
 speaker-test -t wav  
@@ -89,55 +94,40 @@ speaker-test -t wav
 
 3. Rename it to assistant--->assistant.json  
 
-4. IN TERMINAL:copy paste the following commands one by one  
+4. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
+
+	4.1 Make the installers Executable  
+	```
+	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
+	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo chmod +x /home/pi/GassistPi/scripts/snowboy-deps-installer.sh  
+  
+	```
+	4.2 Execute the installers (Don't be in a hurry and run them parallely, Run them one after the other)  
+	```
+	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
+	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
+	
+	```
+
+5. Copy the google assistant authentication link from terminal and authorize using your google account  
+
+6. Copy the authorization code from browser onto the terminal and press enter    
+
+7. Move into the environment and test the google assistant according to your board  
 
 ```
-sudo apt-get update  
-
-sudo apt-get install python3-dev python3-venv  
-
-python3 -m venv env  
-
-env/bin/python -m pip install --upgrade pip setuptools  
-
 source env/bin/activate  
-```
-
-5. Install RPi.GPIO for Controlling Devices
-
-```
-pip install RPi.GPIO
-``` 
-
-6. Get the library and sample code  
-
-```
-python -m pip install --upgrade google-assistant-library    
+google-assistant-demo 
+googlesamples-assistant-pushtotalk   
 ```  
 
-7. INSTALL AUTHORIZATION TOOL  
+8. After verying the working of assistant close and exit the terminal    
 
-```
-python -m pip install --upgrade google-auth-oauthlib[tool]    
-```  
+9. Copy the pushtotalk.py from "Voice-activation-pushtotalk" folder to the default pushtotalk folder and replace  
 
-8. RUN THE TOOL(client id already renamed to assistant) just copy paste below  
 
-```
-google-oauthlib-tool --client-secrets /home/pi/assistant.json --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless    
-```  
-
-9. COPY THE LINK FROM TERMINAL AND PASTE IT IN THE BROWSER  
-
-10. COPY THE AUTHORIZATION CODE FROM THE BROWSER AND PASTE IT IN THE TERMINAL  
-
-11. TEST BY GIVING SOME VOICE COMMANDS BY TRIGGERING "HEY GOOGLE" FOLLOWED BY YOUR REQUEST
-
-```
-google-assistant-demo  
-```  
-
-12. AFTER EVERYTHING IS WORKING PRESS "CTRL+C" TO COME OUT OF GOOGLE ASSISTANT  
 
 *************************************************  
 **HEADLESS AUTOSTART ON BOOT SERVICE SETUP**  
@@ -145,7 +135,7 @@ google-assistant-demo
 1. Make the service installer executable  
 
 ```
-sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh    
+sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh 
 ```  
 
 2. Run the service installer  
@@ -154,20 +144,26 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the service  
+3. Enable the services - Pi3 and Armv7 users enable all three services - Pi Zero users enable pushtotalk and snowboy services alone      
 
 ```
-sudo systemctl enable gassistpi.service    
+sudo systemctl enable gassistpi-ok-google.service  
+sudo systemctl enable gassistpi-pushtotalk.service
+sudo systemctl enable snowboy.service
 ```  
 
-4. Start the service  
+4. Start the service - Pi3 and Armv7 users start all three services - Pi Zero users start pushtotalk and snowboy services alone  
 
 ```
-sudo systemctl start gassistpi.service    
+sudo systemctl start gassistpi-ok-google.service  
+sudo systemctl start gassistpi-pushtotalk.service
+sudo systemctl start snowboy.service   
 ```  
 
 **RESTART and ENJOY**  
-
+****************************************************
+**Please Don't move or delete the trigger.txt file**  
+****************************************************
 ************************************************
 **VOICE CONTROL OF GPIOs and Pi Shutdown**
 ************************************************

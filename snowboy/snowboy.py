@@ -6,8 +6,7 @@ import time
 import os
 import subprocess
 
-subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/snowboy.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-path = '/home/pi/GassistPi/trigger.txt'
+
 # Demo code for listening two hotwords at the same time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -33,8 +32,6 @@ def interrupt_callback():
 
 
 def detected():
-
-
     trig= open(path,'w')
     trig.write('1')
     trig.close()

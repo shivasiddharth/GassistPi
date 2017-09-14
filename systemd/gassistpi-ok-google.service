@@ -1,7 +1,7 @@
 [Unit]
 Description=Google Assistant
 After=network.target
-Requires=snowboy.service
+
 
 [Service]
 Environment=VIRTUAL_ENV=/home/pi/env
