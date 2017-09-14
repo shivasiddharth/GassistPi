@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Forked and modified from warchildmd's repo https://github.com/warchildmd/google-assistant-hotword-raspi"
+
 """Sample that implements gRPC client for Google Assistant API."""
 
 import json
