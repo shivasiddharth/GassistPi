@@ -94,7 +94,8 @@ speaker-test -t wav
 
 3. Rename it to assistant--->assistant.json  
 
-4. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
+4. Using the one-line installer for installing Google Assistant and Snowboy dependencies
+   Pi3 and Pi Zero Users use the corresponding scripts
 
 	4.1 Make the installers Executable  
 	```
@@ -145,7 +146,6 @@ sudo /home/pi/GassistPi/scripts/service-installer.sh
 ```  
 
 3. Enable the services - Pi3 and Armv7 users enable all three services - Pi Zero users enable pushtotalk and snowboy services alone      
-
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable gassistpi-pushtotalk.service
@@ -159,11 +159,12 @@ sudo systemctl start gassistpi-ok-google.service
 sudo systemctl start gassistpi-pushtotalk.service
 sudo systemctl start snowboy.service   
 ```  
-
-**RESTART and ENJOY**  
 ****************************************************
 **Please Don't move or delete the trigger.txt file**  
 ****************************************************
+**RESTART and ENJOY**  
+
+
 ************************************************
 **VOICE CONTROL OF GPIOs and Pi Shutdown**
 ************************************************
