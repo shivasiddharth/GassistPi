@@ -96,7 +96,7 @@ speaker-test -t wav
 3. Rename it to assistant--->assistant.json  
 
 4. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
-**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero users use the "gassist-installer-pi-zero.sh" installer**  
+**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
 	4.1 Make the installers Executable  
 	```
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
