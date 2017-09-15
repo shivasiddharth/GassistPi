@@ -40,7 +40,7 @@ def detected():
     GPIO.output(22,GPIO.LOW)
     gassist.assist()
 ##    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
-## If you wish enable the audio response tone. Already Google assistant code has one, so this is disabled by default
+## If you wish enable the audio response tone, uncomment the above line. Already Google assistant code has one, so this is disabled by default
 
 
 # capture SIGINT signal, e.g., Ctrl+C
