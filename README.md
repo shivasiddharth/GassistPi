@@ -13,9 +13,9 @@ Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchil
 **2. Neopixel indicator without Arduino.**  
 
 
-*************************************************  
-**LET'S GET STARTED!**  
-*************************************************  
+*******************************************************************************************************************************  
+**This is implemented in Python2 so your existing Google Assistant may not work. So please start by from a fresh copy of latest Raspbian**  
+*******************************************************************************************************************************
 
 *************************************************  
 **INSTALL AUDIO CONFIG FILES**
