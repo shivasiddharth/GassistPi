@@ -16,7 +16,7 @@ GPIO.setup(22,GPIO.OUT)
 GPIO.output(22,GPIO.LOW)
 
 #Add your custom models here
-models = ['/home/pi/GassistPi/snowboy/resources/alexa.umdl', '/home/pi/GassistPi/snowboy/resources/jarvis.pmdl']
+models = ['/home/pi/GassistPi/snowboy/resources/alexa.umdl', '/home/pi/GassistPi/snowboy/resources/snowboy.umdl']
 
 def signal_handler(signal, frame):
     global interrupted
