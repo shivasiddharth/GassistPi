@@ -14,7 +14,7 @@ Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchil
 
 
 *******************************************************************************************************************************  
-**This is implemented in Python2 so your existing Google Assistant may not work. So please start by from a fresh copy of latest Raspbian**  
+**This is implemented in Python2 so your existing Google Assistant may not work. So please start by making a fresh copy of latest Raspbian**  
 *******************************************************************************************************************************
 
 *************************************************  
