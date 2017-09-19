@@ -89,7 +89,7 @@ speaker-test -t wav
 **CONTINUE AFTER SETTING UP AUDIO**
 **********************************************************************   
 
-1. Download credentials--->.json file  
+1. Download credentials--->.json file (refer to this doc for creating credentials https://developers.google.com/assistant/sdk/develop/python/config-dev-project-and-account)   
 
 2. Place the .json file in/home/pi directory  
 
