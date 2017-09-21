@@ -24,7 +24,7 @@ then
     echo "This script must run as $RUN_AS, trying to change user..."
     exec sudo -u $RUN_AS $0
 fi
-sudo pat-get install python-pip -y 
+sudo apt-get install python-pip -y 
 sudo apt-get install libjack-jackd2-dev -y
 sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
 sudo apt-get install swig3.0 python-pyaudio python3-pyaudio sox -y
