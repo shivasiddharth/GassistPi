@@ -108,7 +108,7 @@ class Assistant():
 
         # Stores the current volument percentage.
         # Note: No volume change is currently implemented in this sample
-        self.volume_percentage = 50
+        self.volume_percentage = 80
 
     def assist(self):
         # Configure audio source and sink.
