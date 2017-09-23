@@ -38,8 +38,7 @@ def detected():
     GPIO.output(22,GPIO.HIGH)
     time.sleep(.05)
     GPIO.output(22,GPIO.LOW)
-    ##    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
-  ## If you wish enable the audio response tone, uncomment the above line. Already Google assistant code has one, so this is disabled by default
+    snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
     gassist.assist()
 
 
