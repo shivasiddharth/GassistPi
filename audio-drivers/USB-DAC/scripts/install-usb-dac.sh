@@ -22,4 +22,4 @@ for rcfile in "$asoundrc" "$global_asoundrc"; do
 done
 
 sudo cp scripts/asound.conf "$global_asoundrc"
-echo "USB DAC config at $global_asoundrc"
+echo "Installing USB DAC config at $global_asoundrc"
