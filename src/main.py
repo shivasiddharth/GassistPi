@@ -25,6 +25,7 @@ import subprocess
 import google.oauth2.credentials
 import RPi.GPIO as GPIO
 import time
+import re
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
@@ -35,14 +36,23 @@ GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
 var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
 gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
-
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
 
+GPIO.setup(05, GPIO.OUT)
+pwm=GPIO.PWM(05, 50)
+pwm.start(0)
 
-        
 
+def SetAngle(angle):
+    duty = angle / 18 + 2
+    GPIO.output(05, True)
+    pwm.ChangeDutyCycle(duty)
+    time.sleep(1)
+    GPIO.output(05, False)
+	
+    
 def process_event(event):
     """Pretty prints events.
 
@@ -95,6 +105,10 @@ def main():
                     os.system("sudo shutdown -h now")
                     #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     break
+                    
+                elif 'servo'.lower() in str(usr).lower():
+                    for s in re.findall(r'\b\d+\b', str(usr)):
+                        SetAngle(int(s))                  
                 else:
                     for num, name in enumerate(var):
                         if name.lower() in str(usr).lower():
@@ -105,21 +119,10 @@ def main():
                             elif 'off'.lower() in str(usr).lower():
                                 GPIO.output(pinout, 0)
                                 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                
+               
             
-    
-    
-        
-        
      
     
 if __name__ == '__main__':
      
     main()
-
-
-        
-        
-
-        
-        
