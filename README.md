@@ -4,7 +4,7 @@ Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchil
 
 # Features:  
 **1. Headless auto start on boot with multiple wakeword activation trigger.**    
-**2. Voice Control of GPIOs without IFTTT, api.ai, Actions SDK.**
+**2. Voice Control of GPIOs without IFTTT, api.ai, Actions SDK.**  
 **3. Voice control of servo connected to RPi GPIO.**  
 **4. Safe shutdown RPi using voice command.**  
 **5. Startup audio and audio feedback for wakeword detection.**   
