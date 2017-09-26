@@ -33,16 +33,27 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
 var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
-gpio = (22,23,25)#GPIOS for 'var'. Add other GPIOs that you want
+gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
 #Neopixel pins not to be included in gpio list of devices. Should be declared seperately.
-GPIO.setup(24,GPIO.OUT)
-GPIO.setup(27,GPIO.OUT)
+GPIO.setup(17,GPIO.OUT)
+GPIO.setup(18,GPIO.OUT)
+
+GPIO.setup(27, GPIO.OUT)
+pwm=GPIO.PWM(27, 50)
+pwm.start(0)
 
 
+def SetAngle(angle):
+    duty = angle / 18 + 2
+    GPIO.output(27, True)
+    pwm.ChangeDutyCycle(duty)
+    time.sleep(1)
+    pwm.ChangeDutyCycle(0)
+    GPIO.output(27, False)
 
 
 def process_event(event):
@@ -56,22 +67,22 @@ def process_event(event):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
-        GPIO.output(24,GPIO.HIGH)
+        GPIO.output(17,GPIO.HIGH)
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-       GPIO.output(24,GPIO.LOW)
-       GPIO.output(27,GPIO.HIGH)
+       GPIO.output(17,GPIO.LOW)
+       GPIO.output(18,GPIO.HIGH)
 
     if event.type == EventType.ON_RESPONDING_FINISHED:
-       GPIO.output(27,GPIO.LOW)
-       GPIO.output(24,GPIO.HIGH)
+       GPIO.output(18,GPIO.LOW)
+       GPIO.output(17,GPIO.HIGH)
 
 
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
-        GPIO.output(24,GPIO.LOW)
+        GPIO.output(17,GPIO.LOW)
         print()
 
 
@@ -105,6 +116,12 @@ def main():
                     os.system("sudo shutdown -h now")
                     #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     break
+                
+                elif 'servo'.lower() in str(usr).lower():
+                    for s in re.findall(r'\b\d+\b', str(usr)):
+                        SetAngle(int(s))
+                    if 'zero'.lower() in str(usr).lower():
+                        SetAngle(0)
                 else:
                     for num, name in enumerate(var):
                         if name.lower() in str(usr).lower():
