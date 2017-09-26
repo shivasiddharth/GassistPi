@@ -165,7 +165,7 @@ sudo systemctl start snowboy.service
 *******************************************************************
 Provisions have already been made to accommodate indicators to show Google Assistant's Listening and Speaking Event.  
 
-Connect an LED with a colour of your choice to GPIO17 for Listening and GPIO18 for Speaking Events.  
+Connect a LEDs with colours of your choice to GPIO17 for Listening and GPIO18 for Speaking Events.  
 
 
 ************************************************
@@ -179,7 +179,7 @@ You can define your own device names under the variable name var.
 
 The number of GPIO pins declared should match the number of devices. 
 
-The default keyword for servo motor is 'servo'. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
+The default keyword for servo motor is **servo**. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
 If you wish to change the keyword, you can replace the 'servo' in the main.py(src folder) and assistant.py(snowboy folder) code with your desired keyword for the motor. 
 
 For safe shutdown of the pi, command is: **trigger shutdown**  
