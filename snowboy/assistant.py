@@ -24,6 +24,7 @@ import os
 import click
 import grpc
 import time
+import re
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
@@ -59,6 +60,18 @@ DIALOG_FOLLOW_ON = embedded_assistant_pb2.ConverseResult.DIALOG_FOLLOW_ON
 CLOSE_MICROPHONE = embedded_assistant_pb2.ConverseResult.CLOSE_MICROPHONE
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
+GPIO.setup(27, GPIO.OUT)
+pwm=GPIO.PWM(27, 50)
+pwm.start(0)
+
+
+def SetAngle(angle):
+    duty = angle / 18 + 2
+    GPIO.output(27, True)
+    pwm.ChangeDutyCycle(duty)
+    time.sleep(1)
+    pwm.ChangeDutyCycle(0)
+    GPIO.output(27, False)
 
 class Assistant():
     def __init__(self):
@@ -173,6 +186,12 @@ class Assistant():
                                 time.sleep(10)
                                 os.system("sudo shutdown -h now")
                                 break
+                                
+                            elif 'motor'.lower() in str(usr).lower():
+                                for s in re.findall(r'\b\d+\b', str(usr)):
+                                    SetAngle(int(s))
+		                        if 'zero'.lower() in str(usr).lower():
+			                        SetAngle(0)
                             else:
                                 for num, name in enumerate(var):
                                     if name.lower() in str(usr).lower():
