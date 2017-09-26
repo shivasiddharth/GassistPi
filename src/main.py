@@ -109,7 +109,9 @@ def main():
                     
                 elif 'motor'.lower() in str(usr).lower():
                     for s in re.findall(r'\b\d+\b', str(usr)):
-                        SetAngle(int(s))                  
+                        SetAngle(int(s))
+		    if 'zero'.lower() in str(usr).lower():
+			SetAngle(0)
                 else:
                     for num, name in enumerate(var):
                         if name.lower() in str(usr).lower():
