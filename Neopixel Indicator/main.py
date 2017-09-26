@@ -41,6 +41,8 @@ for pin in gpio:
 #Indicator pins not to be included in gpio list of devices. Should be declared seperately.
 GPIO.setup(17,GPIO.OUT)
 GPIO.setup(18,GPIO.OUT)
+GPIO.output(17, GPIO.LOW)
+GPIO.output(18, GPIO.LOW)
 
 GPIO.setup(27, GPIO.OUT)
 pwm=GPIO.PWM(27, 50)
