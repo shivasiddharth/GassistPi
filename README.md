@@ -159,25 +159,38 @@ sudo systemctl start snowboy.service
 
 **RESTART and ENJOY**  
 
-************************************************
-**VOICE CONTROL OF GPIOs and Pi Shutdown**
-************************************************
-The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
 
-Similarly, you can define your own device names under the variable name var.  
+*******************************************************************
+**Indicators for Google Assistant's Listening and Speaking Events**  
+*******************************************************************
+Provisions have already been made to accommodate indicators to show Google Assistant's Listening and Speaking Event.  
 
-The number of GPIO pins declared should match the number of devices.  
+Connect an LED with a colour of your choice to GPIO17 for Listening and GPIO18 for Speaking Events.  
+
+
+************************************************
+**VOICE CONTROL OF GPIOs, Servo and Pi Shutdown**
+************************************************
+The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi. 
+
+It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the 'trigger'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
+
+You can define your own device names under the variable name var.  
+
+The number of GPIO pins declared should match the number of devices. 
+
+The default keyword for servo motor is 'servo'. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
+If you wish to change the keyword, you can replace the 'servo' in the main.py(src folder) and assistant.py(snowboy folder) code with your desired keyword for the motor. 
+
+For safe shutdown of the pi, command is: **trigger shutdown**  
+
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
 ************************************************  
-#Replace the main.py in src folder with the main.py from Neopixel Indicator Folder.  
+1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
-#Reboot
-
-#Change the Pin numbers in the given sketch according to your board and upload it.  
-
-#Follow the circuit diagram given.  
+2. Follow the circuit diagram given.  
 
 ************************************************  
 **Now you have your Google Home Like Indicator**  
