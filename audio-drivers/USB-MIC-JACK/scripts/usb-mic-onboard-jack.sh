@@ -22,4 +22,5 @@ for rcfile in "$asoundrc" "$global_asoundrc"; do
 done
 
 sudo cp scripts/asound.conf "$global_asoundrc"
-echo "Installing USB MIC and onboard 3.5mm Jack config at $global_asoundrc"
+sudo cp scripts/.asoundrc "$asoundrc"
+echo "Installing USB MIC and onboard 3.5mm Jack config"
