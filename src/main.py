@@ -40,18 +40,18 @@ for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
 
-GPIO.setup(05, GPIO.OUT)
-pwm=GPIO.PWM(05, 50)
+GPIO.setup(27, GPIO.OUT)
+pwm=GPIO.PWM(27, 50)
 pwm.start(0)
 
 
 def SetAngle(angle):
     duty = angle / 18 + 2
-    GPIO.output(05, True)
+    GPIO.output(27, True)
     pwm.ChangeDutyCycle(duty)
     time.sleep(1)
     pwm.ChangeDutyCycle(0)
-    GPIO.output(05, False)
+    GPIO.output(27, False)
 	
     
 def process_event(event):
@@ -107,7 +107,7 @@ def main():
                     #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     break
                     
-                elif 'servo'.lower() in str(usr).lower():
+                elif 'motor'.lower() in str(usr).lower():
                     for s in re.findall(r'\b\d+\b', str(usr)):
                         SetAngle(int(s))                  
                 else:
