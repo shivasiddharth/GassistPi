@@ -35,11 +35,15 @@ def interrupt_callback():
 gassist = Assistant()
 
 def detected():
+    detector.terminate()
     GPIO.output(22,GPIO.HIGH)
     time.sleep(.05)
     GPIO.output(22,GPIO.LOW)
     snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
     gassist.assist()
+    detector.start(detected_callback=callbacks,
+               interrupt_check=interrupt_callback,
+               sleep_time=0.03)
 
 
 
