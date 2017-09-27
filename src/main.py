@@ -40,10 +40,10 @@ for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
 #Indicator pins not to be included in gpio list of devices. Should be declared seperately.
-GPIO.setup(17,GPIO.OUT)
-GPIO.setup(18,GPIO.OUT)
-GPIO.output(17, GPIO.LOW)
-GPIO.output(18, GPIO.LOW)
+GPIO.setup(05,GPIO.OUT)
+GPIO.setup(06,GPIO.OUT)
+GPIO.output(05, GPIO.LOW)
+GPIO.output(06, GPIO.LOW)
 
 GPIO.setup(27, GPIO.OUT)
 pwm=GPIO.PWM(27, 50)
@@ -51,7 +51,7 @@ pwm.start(0)
 
 
 def SetAngle(angle):
-    duty = angle / 18 + 2
+    duty = angle/18 + 2
     GPIO.output(27, True)
     pwm.ChangeDutyCycle(duty)
     time.sleep(1)
@@ -70,22 +70,22 @@ def process_event(event):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
-        GPIO.output(17,GPIO.HIGH)
+        GPIO.output(05,GPIO.HIGH)
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-       GPIO.output(17,GPIO.LOW)
-       GPIO.output(18,GPIO.HIGH)
+       GPIO.output(05,GPIO.LOW)
+       GPIO.output(06,GPIO.HIGH)
 
     if event.type == EventType.ON_RESPONDING_FINISHED:
-       GPIO.output(18,GPIO.LOW)
-       GPIO.output(17,GPIO.HIGH)
+       GPIO.output(06,GPIO.LOW)
+       GPIO.output(05,GPIO.HIGH)
 
 
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
-        GPIO.output(17,GPIO.LOW)
+        GPIO.output(05,GPIO.LOW)
         print()
 
 

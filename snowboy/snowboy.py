@@ -40,7 +40,7 @@ def detected():
     GPIO.output(22,GPIO.LOW)
     snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
     gassist.assist()
-
+    
 
 
 # capture SIGINT signal, e.g., Ctrl+C

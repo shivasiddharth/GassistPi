@@ -55,10 +55,10 @@ for pin in gpio:
     GPIO.output(pin, 0)
 
 #Indicator pins not to be included in gpio list of devices. Should be declared seperately.
-GPIO.setup(17,GPIO.OUT)
-GPIO.setup(18,GPIO.OUT) 
-GPIO.output(17, GPIO.LOW)
-GPIO.output(18, GPIO.LOW)
+GPIO.setup(05,GPIO.OUT)
+GPIO.setup(06,GPIO.OUT) 
+GPIO.output(05, GPIO.LOW)
+GPIO.output(06, GPIO.LOW)
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.ConverseResponse.END_OF_UTTERANCE
@@ -164,7 +164,7 @@ class Assistant():
                 continue_conversation = False
                 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
                 self.conversation_stream.start_recording()
-		GPIO.output(17,GPIO.HIGH)
+		GPIO.output(05,GPIO.HIGH)
                 self.logger.info('Recording audio request.')
 
                 def iter_converse_requests():
@@ -183,7 +183,7 @@ class Assistant():
                         break
                     if resp.event_type == END_OF_UTTERANCE:
                         self.logger.info('End of audio request detected')
-			GPIO.output(17,GPIO.LOW)
+			GPIO.output(05,GPIO.LOW)
                         self.conversation_stream.stop_recording()
                     if resp.result.spoken_request_text:
                         usr=resp.result.spoken_request_text
@@ -215,8 +215,8 @@ class Assistant():
                             continue
                         self.logger.info('Transcript of user request: "%s".',
                                      resp.result.spoken_request_text)
-			GPIO.output(17,GPIO.LOW)
-       			GPIO.output(18,GPIO.HIGH)
+			GPIO.output(05,GPIO.LOW)
+       			GPIO.output(06,GPIO.HIGH)
                         self.logger.info('Playing assistant response.')
                     if len(resp.audio_out.audio_data) > 0:
                         self.conversation_stream.write(resp.audio_out.audio_data)
@@ -232,12 +232,12 @@ class Assistant():
                         self.logger.info('Volume should be set to %s%%', volume_percentage)
                     if resp.result.microphone_mode == DIALOG_FOLLOW_ON:
                         continue_conversation = True
-			GPIO.output(18,GPIO.LOW)
-       			GPIO.output(17,GPIO.HIGH)
+			GPIO.output(06,GPIO.LOW)
+       			GPIO.output(05,GPIO.HIGH)
                         self.logger.info('Expecting follow-on query from user.')
                 self.logger.info('Finished playing assistant response.')
-		GPIO.output(18,GPIO.LOW)
-       		GPIO.output(17,GPIO.LOW)
+		GPIO.output(06,GPIO.LOW)
+       		GPIO.output(05,GPIO.LOW)
                 self.conversation_stream.stop_playback()
         except Exception as e:
             self._create_assistant()
