@@ -1,6 +1,6 @@
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
  
-Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
+**Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
 
 # Features:  
 **1. Headless auto start on boot with multiple wakeword activation trigger.**    
