@@ -32,7 +32,7 @@ sudo apt-get install raspberrypi-kernel
 3. Choose the audio configuration according to your setup.    
    (Run the commands till you get .bak notification in the terminal)
 
-  3.1. USB DAC users,  
+  3.1. USB DAC or USB Sound CARD users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh 
