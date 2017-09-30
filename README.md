@@ -188,14 +188,11 @@ For safe shutdown of the pi, command is: **trigger shutdown**
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
 ************************************************  
-#Replace the main.py in src folder with the main.py from Neopixel Indicator Folder.  
+1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
-#Reboot
-
-#Change the Pin numbers in the given sketch according to your board and upload it.  
-
-#Follow the circuit diagram given.  
+2. Follow the circuit diagram given.  
 
 ************************************************  
 **Now you have your Google Home Like Indicator**  
 ************************************************  
+
