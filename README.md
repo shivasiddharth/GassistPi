@@ -168,8 +168,16 @@ sudo systemctl start snowboy.service
 
 **RESTART and ENJOY**  
 
+*******************************************************************
+**Indicators for Google Assistant's Listening and Speaking Events**  
+*******************************************************************
+Provisions have already been made to accommodate indicators to show Google Assistant's Listening and Speaking Event.  
+
+Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
+
+
 ************************************************
-**VOICE CONTROL OF GPIOs and Pi Shutdown**
+**VOICE CONTROL OF GPIOs, Servo and Pi Shutdown**
 ************************************************
 The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi. 
 
@@ -183,7 +191,7 @@ The default keyword for servo motor is **servo**. For example, the command **tri
 If you wish to change the keyword, you can replace the 'servo' in the main.py(src folder) and assistant.py(snowboy folder) code with your desired keyword for the motor. 
 
 For safe shutdown of the pi, command is: **trigger shutdown**  
- 
+
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
@@ -195,4 +203,3 @@ For safe shutdown of the pi, command is: **trigger shutdown**
 ************************************************  
 **Now you have your Google Home Like Indicator**  
 ************************************************  
-
