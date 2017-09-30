@@ -17,6 +17,14 @@ Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchil
 **This is implemented in Python2 so your existing Google Assistant may not work. So please start by making a fresh copy of latest Raspbian Stretch**  
 *******************************************************************************************************************************
 
+*************************************************
+**First Step- Clone the Project Files on to Pi**   
+*************************************************
+1. Open the terminal and execute the following  
+
+git clone https://github.com/shivasiddharth/GassistPi    
+
+
 *************************************************  
 **INSTALL AUDIO CONFIG FILES**
 *************************************************  
