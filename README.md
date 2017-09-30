@@ -4,13 +4,15 @@
 
 # Features:  
 **1. Headless auto start on boot with multiple wakeword activation trigger.**    
-**2. Locally Control GPIOs without IFTTT, API.AI, ACTIONS.**  
-**3. Startup audio and audio feedback for wakeword detection.**   
+**2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**  
+**3. Voice control of servo connected to RPi GPIO.**  
 **4. Safe shutdown RPi using voice command.**  
+**5. Startup audio and audio feedback for wakeword detection.**   
 
 # Features coming soon:
 **1. Mute button.**  
 **2. Neopixel indicator without Arduino.**  
+
 
 
 *******************************************************************************************************************************  
@@ -169,11 +171,19 @@ sudo systemctl start snowboy.service
 ************************************************
 **VOICE CONTROL OF GPIOs and Pi Shutdown**
 ************************************************
-The default GPIO and shutdown trigger word is "trigger" if you wish to change the trigger word, you can replace the 'trigger'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
+The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi. 
 
-Similarly, you can define your own device names under the variable name var.  
+It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the 'trigger'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
 
-The number of GPIO pins declared should match the number of devices.  
+You can define your own device names under the variable name var.  
+
+The number of GPIO pins declared should match the number of devices. 
+
+The default keyword for servo motor is **servo**. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
+If you wish to change the keyword, you can replace the 'servo' in the main.py(src folder) and assistant.py(snowboy folder) code with your desired keyword for the motor. 
+
+For safe shutdown of the pi, command is: **trigger shutdown**  
+ 
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
