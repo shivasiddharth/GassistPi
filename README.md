@@ -175,8 +175,6 @@ Provisions have already been made to accommodate indicators to show Google Assis
 
 Connect a LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
-Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
-
 ************************************************
 **VOICE CONTROL OF GPIOs, Servo and Pi Shutdown**
 ************************************************
@@ -186,13 +184,13 @@ It has been intentionally included to prevent control actions due to false posit
 
 It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the '**trigger**'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
 
-You can define your own device names under the variable name var.  
+You can define your own device names under the variable name var in action.py script.  
 
 The number of GPIO pins declared should match the number of devices. 
 
 The default keyword for servo motor is **servo**. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
 
-If you wish to change the keyword, you can replace the 'servo' in the action.py code with your desired keyword for the motor. 
+If you wish to change the keyword, you can replace the 'servo' in the action.py script with your desired keyword for the motor. 
 
 For safe shutdown of the pi, command is: **trigger shutdown**  
 
