@@ -23,6 +23,8 @@ import subprocess
 import os
 import click
 import grpc
+import time
+import re
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
@@ -30,7 +32,7 @@ import RPi.GPIO as GPIO
 from google.assistant.embedded.v1alpha1 import embedded_assistant_pb2
 from google.rpc import code_pb2
 from tenacity import retry, stop_after_attempt, retry_if_exception
-from GassistPi.actions.actions import Action
+
 
 try:
     from googlesamples.assistant.grpc import (
@@ -44,14 +46,19 @@ except SystemError:
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+#Number of entities in 'var' and 'PINS' should be the same
+var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
+gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
-#Indicator pins declaration
+for pin in gpio:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 0)
+
+#Indicator pins not to be included in gpio list of devices. Should be declared seperately.
 GPIO.setup(05,GPIO.OUT)
-GPIO.setup(06,GPIO.OUT)
+GPIO.setup(06,GPIO.OUT) 
 GPIO.output(05, GPIO.LOW)
 GPIO.output(06, GPIO.LOW)
-
-gassistaction = Action()
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.ConverseResponse.END_OF_UTTERANCE
@@ -59,7 +66,18 @@ DIALOG_FOLLOW_ON = embedded_assistant_pb2.ConverseResult.DIALOG_FOLLOW_ON
 CLOSE_MICROPHONE = embedded_assistant_pb2.ConverseResult.CLOSE_MICROPHONE
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
+GPIO.setup(27, GPIO.OUT)
+pwm=GPIO.PWM(27, 50)
+pwm.start(0)
 
+
+def SetAngle(angle):
+    duty = angle / 18 + 2
+    GPIO.output(27, True)
+    pwm.ChangeDutyCycle(duty)
+    time.sleep(1)
+    pwm.ChangeDutyCycle(0)
+    GPIO.output(27, False)
 
 class Assistant():
     def __init__(self):
@@ -88,7 +106,7 @@ class Assistant():
         self.grpc_channel = google.auth.transport.grpc.secure_authorized_channel(
             self.credentials, self.http_request, self.api_endpoint)
         logging.info('Connecting to %s', self.api_endpoint)
-
+        
         self.audio_sample_rate = audio_helpers.DEFAULT_AUDIO_SAMPLE_RATE
         self.audio_sample_width = audio_helpers.DEFAULT_AUDIO_SAMPLE_WIDTH
         self.audio_iter_size = audio_helpers.DEFAULT_AUDIO_ITER_SIZE
@@ -144,7 +162,7 @@ class Assistant():
         try:
             while continue_conversation:
                 continue_conversation = False
-                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
                 self.conversation_stream.start_recording()
 		GPIO.output(05,GPIO.HIGH)
                 self.logger.info('Recording audio request.')
@@ -170,9 +188,29 @@ class Assistant():
                     if resp.result.spoken_request_text:
                         usr=resp.result.spoken_request_text
                         if 'trigger' in str(usr):
-                            gassistaction(usr)
-                            return continue_conversation
-
+                                     
+                            if 'shut down'.lower() in str(usr).lower():
+                                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                time.sleep(10)
+                                os.system("sudo shutdown -h now")
+                                break
+                                
+                            elif 'servo'.lower() in str(usr).lower():
+                                for s in re.findall(r'\b\d+\b', str(usr)):
+                                    SetAngle(int(s))
+		                if 'zero'.lower() in str(usr).lower():
+			            SetAngle(0)
+                            else:
+                                for num, name in enumerate(var):
+                                    if name.lower() in str(usr).lower():
+                                        pinout=gpio[num]
+                                        if 'on'.lower()in str(usr).lower():
+                                            GPIO.output(pinout, 1)
+                                            subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                        elif 'off'.lower() in str(usr).lower():
+                                            GPIO.output(pinout, 0)
+                                            subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                        return continue_conversation
                         else:
                             continue
                         self.logger.info('Transcript of user request: "%s".',
@@ -230,7 +268,7 @@ class Assistant():
 
     @retry(reraise=True, stop=stop_after_attempt(3),
            retry=retry_if_exception(is_grpc_error_unavailable))
-
+    
     # This generator yields ConverseRequest to send to the gRPC
     # Google Assistant API.
     def gen_converse_requests(self):

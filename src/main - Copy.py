@@ -16,28 +16,48 @@
 
 
 from __future__ import print_function
-import RPi.GPIO as GPIO
+
 import argparse
 import os.path
 import os
 import json
 import subprocess
 import google.oauth2.credentials
+import RPi.GPIO as GPIO
+import time
+import re
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
-from GassistPi.actions.actions import Action
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+#Number of entities in 'var' and 'PINS' should be the same
+var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
+gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
-#Indicator Pins
+for pin in gpio:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 0)
+#Indicator pins not to be included in gpio list of devices. Should be declared seperately.
 GPIO.setup(05,GPIO.OUT)
 GPIO.setup(06,GPIO.OUT)
 GPIO.output(05, GPIO.LOW)
 GPIO.output(06, GPIO.LOW)
 
-gassistaction = Action()
+GPIO.setup(27, GPIO.OUT)
+pwm=GPIO.PWM(27, 50)
+pwm.start(0)
+
+
+def SetAngle(angle):
+    duty = angle/18 + 2
+    GPIO.output(27, True)
+    pwm.ChangeDutyCycle(duty)
+    time.sleep(1)
+    pwm.ChangeDutyCycle(0)
+    GPIO.output(27, False)
+
 
 def process_event(event):
     """Pretty prints events.
@@ -49,7 +69,7 @@ def process_event(event):
         event(event.Event): The current event to process.
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
         GPIO.output(05,GPIO.HIGH)
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
@@ -70,7 +90,7 @@ def process_event(event):
 
 
 def main():
-
+    
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('--credentials', type=existing_file,
@@ -93,7 +113,29 @@ def main():
             usr=event.args
             if 'trigger'.lower() in str(usr).lower():
                 assistant.stop_conversation()
-                gassistaction(usr)
-
+                if 'shut down'.lower() in str(usr).lower():
+                    subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    time.sleep(10)
+                    os.system("sudo shutdown -h now")
+                    #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    break
+                
+                elif 'servo'.lower() in str(usr).lower():
+                    for s in re.findall(r'\b\d+\b', str(usr)):
+                        SetAngle(int(s))
+                    if 'zero'.lower() in str(usr).lower():
+                        SetAngle(0)
+                else:
+                    for num, name in enumerate(var):
+                        if name.lower() in str(usr).lower():
+                            pinout=gpio[num]
+                            if 'on'.lower()in str(usr).lower():
+                                GPIO.output(pinout, 1)
+                                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            elif 'off'.lower() in str(usr).lower():
+                                GPIO.output(pinout, 0)
+                                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    
 if __name__ == '__main__':
     main()
