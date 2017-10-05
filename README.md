@@ -1,6 +1,6 @@
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
-**Works with Pi3 as well as Pi Zero  
-Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
+ 
+**Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
 
 # Features:  
 **1. Headless auto start on boot with multiple wakeword activation trigger.**    
@@ -14,9 +14,18 @@ Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchil
 **2. Neopixel indicator without Arduino.**  
 
 
+
 *******************************************************************************************************************************  
 **This is implemented in Python2 so your existing Google Assistant may not work. So please start by making a fresh copy of latest Raspbian Stretch**  
 *******************************************************************************************************************************
+
+*************************************************
+**First Step- Clone the Project Files on to Pi**   
+*************************************************
+1. Open the terminal and execute the following  
+
+git clone https://github.com/shivasiddharth/GassistPi    
+
 
 *************************************************  
 **INSTALL AUDIO CONFIG FILES**
@@ -33,7 +42,7 @@ sudo apt-get install raspberrypi-kernel
 3. Choose the audio configuration according to your setup.    
    (Run the commands till you get .bak notification in the terminal)
 
-  3.1. USB DAC users,  
+  3.1. USB DAC or USB Sound CARD users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh 
@@ -97,7 +106,7 @@ speaker-test -t wav
 3. Rename it to assistant--->assistant.json  
 
 4. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
-**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
+**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi B 1+ users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
 	4.1 Make the installers Executable  
 	```
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
@@ -143,14 +152,14 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the services - **Pi3 and Armv7 users, if you need custom wakeword functionality, then enable both the services, else enable just the "gassistpi-ok-ggogle.service" - Pi Zero users, enable snowboy services alone**        
+3. Enable the services - **Pi3 and Armv7 users, if you need custom wakeword functionality, then enable both the services, else enable just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi B 1+ users, enable snowboy services alone**        
 
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable snowboy.service
 ```  
 
-4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero users, start snowboy services alone**    
+4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi B 1+ users, start snowboy services alone**    
 
 ```
 sudo systemctl start gassistpi-ok-google.service  
@@ -159,22 +168,35 @@ sudo systemctl start snowboy.service
 
 **RESTART and ENJOY**  
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 83537d6771cf227d3d80475329b7e05fc17e2b9c
 *******************************************************************
 **Indicators for Google Assistant's Listening and Speaking Events**  
 *******************************************************************
 Provisions have already been made to accommodate indicators to show Google Assistant's Listening and Speaking Event.  
 
+<<<<<<< HEAD
 Connect a LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
+=======
+Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
+>>>>>>> 83537d6771cf227d3d80475329b7e05fc17e2b9c
 
 
 ************************************************
 **VOICE CONTROL OF GPIOs, Servo and Pi Shutdown**
 ************************************************
 The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi. 
+<<<<<<< HEAD
 
 It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the 'trigger'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
 
+=======
+
+It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the 'trigger'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
+
+>>>>>>> 83537d6771cf227d3d80475329b7e05fc17e2b9c
 You can define your own device names under the variable name var.  
 
 The number of GPIO pins declared should match the number of devices. 
