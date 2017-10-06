@@ -90,10 +90,10 @@ def main():
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         for event in assistant.start():
             process_event(event)
-            usr=event.args
-            if 'trigger'.lower() in str(usr).lower():
+            usrcmd=str(event.args).lower
+            if 'trigger'.lower() in usrcmd:
                 assistant.stop_conversation()
-                gassistaction(usr)
+                gassistaction(usrcmd)
 
 if __name__ == '__main__':
     main()
