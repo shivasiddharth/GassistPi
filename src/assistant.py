@@ -30,7 +30,7 @@ import RPi.GPIO as GPIO
 from google.assistant.embedded.v1alpha1 import embedded_assistant_pb2
 from google.rpc import code_pb2
 from tenacity import retry, stop_after_attempt, retry_if_exception
-from actions import Action
+from local-actions import Action
 
 try:
     from googlesamples.assistant.grpc import (
