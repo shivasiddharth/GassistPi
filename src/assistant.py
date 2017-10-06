@@ -168,9 +168,9 @@ class Assistant():
 			            GPIO.output(05,GPIO.LOW)
                         self.conversation_stream.stop_recording()
                     if resp.result.spoken_request_text:
-                        usr=resp.result.spoken_request_text
-                        if 'trigger' in str(usr):
-                            gassistaction(usr)
+                        usrcmd=str(resp.result.spoken_request_text).lower
+                        if 'trigger' in usrcmd:
+                            gassistaction(usrcmd)
                             return continue_conversation
 
                         else:
