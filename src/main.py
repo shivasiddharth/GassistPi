@@ -26,7 +26,7 @@ import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
-from GassistPi.actions.actions import Action
+from actions import Action
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)

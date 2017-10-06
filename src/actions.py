@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-#This is different from AIY Kit's actions  
-#Copy Pasting AIY Kit's actions commands will not work  
+#This is different from AIY Kit's actions
+#Copying and Pasting AIY Kit's actions commands will not work
 
-
+import os
+import os.path
 import RPi.GPIO as GPIO
 import time
 import re
@@ -34,21 +35,21 @@ def SetAngle(angle):
 
 def Action(phrase):
     phrase=phrase.lower()
-    if 'shut down'.lower() in phrase:
+    if 'shut down' in phrase:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         time.sleep(10)
         os.system("sudo shutdown -h now")
         #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         break
 
-    if 'servo'.lower() in phrase:
+    if 'servo' in phrase:
         for s in re.findall(r'\b\d+\b', str(usr)):
             SetAngle(int(s))
-    if 'zero'.lower() in phrase:
+    if 'zero' in phrase:
         SetAngle(0)
 
     #****Create your own actions***********
-    if 'çustom-keyword'.lower() in phrase:
+    if 'çustom-keyword' in phrase:
     #Custom actions here for the detected custom-keyword
     #**************************************
 
@@ -56,9 +57,9 @@ def Action(phrase):
         for num, name in enumerate(var):
             if name.lower() in phrase:
                 pinout=gpio[num]
-                if 'on'.lower()in phrase:
+                if 'on' in phrase:
                     GPIO.output(pinout, 1)
                     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                elif 'off'.lower() in phrase:
+                elif 'off' in phrase:
                     GPIO.output(pinout, 0)
                     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
