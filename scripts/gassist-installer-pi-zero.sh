@@ -28,6 +28,7 @@ fi
 cd /home/pi/
 sudo apt-get update -y
 sudo apt-get install python-dev python-virtualenv -y
+sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
 virtualenv env 
 env/bin/python -m pip install --upgrade pip setuptools 
 source env/bin/activate
