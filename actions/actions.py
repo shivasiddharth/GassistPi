@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#This is different from AIY Kit's actions  
+#Copy Pasting AIY Kit's actions commands will not work  
 
 
 import RPi.GPIO as GPIO
