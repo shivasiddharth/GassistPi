@@ -16,7 +16,7 @@ GPIO.setup(22,GPIO.OUT)
 GPIO.output(22,GPIO.LOW)
 
 #Add your custom models here
-models = ['/home/pi/GassistPi/snowboy/resources/alexa.umdl', '/home/pi/GassistPi/snowboy/resources/snowboy.umdl']
+models = ['/home/pi/GassistPi/src/resources/alexa.umdl', '/home/pi/GassistPi/src/resources/snowboy.umdl']
 
 def signal_handler(signal, frame):
     global interrupted
@@ -40,7 +40,7 @@ def detected():
     GPIO.output(22,GPIO.LOW)
     snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
     gassist.assist()
-    
+
 
 
 # capture SIGINT signal, e.g., Ctrl+C
