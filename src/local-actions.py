@@ -34,7 +34,6 @@ def SetAngle(angle):
     GPIO.output(27, False)
 
 def Action(phrase):
-    phrase=phrase.lower()
     if 'shut down' in phrase:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         time.sleep(10)
