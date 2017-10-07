@@ -39,8 +39,7 @@ def Action(phrase):
         time.sleep(10)
         os.system("sudo shutdown -h now")
         #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        break
-
+        
     if 'servo' in phrase:
         for s in re.findall(r'\b\d+\b', str(usr)):
             SetAngle(int(s))
@@ -48,7 +47,7 @@ def Action(phrase):
         SetAngle(0)
 
     #****Create your own actions***********
-    if 'çustom-keyword' in phrase:
+    #if 'çustom-keyword' in phrase:
     #Custom actions here for the detected custom-keyword
     #**************************************
 
