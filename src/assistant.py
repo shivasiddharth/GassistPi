@@ -30,7 +30,7 @@ import RPi.GPIO as GPIO
 from google.assistant.embedded.v1alpha1 import embedded_assistant_pb2
 from google.rpc import code_pb2
 from tenacity import retry, stop_after_attempt, retry_if_exception
-from local-actions import Action
+from actions import Action
 
 try:
     from googlesamples.assistant.grpc import (
@@ -51,7 +51,7 @@ GPIO.setup(06,GPIO.OUT)
 GPIO.output(05, GPIO.LOW)
 GPIO.output(06, GPIO.LOW)
 
-gassistaction = Action()
+
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.ConverseResponse.END_OF_UTTERANCE
@@ -168,9 +168,9 @@ class Assistant():
 			GPIO.output(05,GPIO.LOW)
                         self.conversation_stream.stop_recording()
                     if resp.result.spoken_request_text:
-                        usrcmd=str(resp.result.spoken_request_text).lower
-                        if 'trigger' in usrcmd:
-                            gassistaction(usrcmd)
+                        usrcmd=resp.result.spoken_request_text
+                        if 'trigger' in str(usrcmd).lower():
+                            Action(str(usrcmd).lower())
                             return continue_conversation
 
                         else:
@@ -198,6 +198,7 @@ class Assistant():
        			GPIO.output(05,GPIO.HIGH)
                         self.logger.info('Expecting follow-on query from user.')
                 self.logger.info('Finished playing assistant response.')
+
 		GPIO.output(06,GPIO.LOW)
        		GPIO.output(05,GPIO.LOW)
                 self.conversation_stream.stop_playback()

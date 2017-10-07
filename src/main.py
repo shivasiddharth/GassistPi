@@ -26,7 +26,7 @@ import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
-from local-actions import Action
+from actions import Action
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -37,7 +37,6 @@ GPIO.setup(06,GPIO.OUT)
 GPIO.output(05, GPIO.LOW)
 GPIO.output(06, GPIO.LOW)
 
-gassistaction = Action()
 
 def process_event(event):
     """Pretty prints events.
@@ -90,10 +89,10 @@ def main():
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         for event in assistant.start():
             process_event(event)
-            usrcmd=str(event.args).lower
-            if 'trigger'.lower() in usrcmd:
+            usrcmd=event.args
+            if 'trigger'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
-                gassistaction(usrcmd)
+                Action(str(usrcmd).lower())
 
 if __name__ == '__main__':
     main()
