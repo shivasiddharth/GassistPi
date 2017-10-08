@@ -26,7 +26,7 @@ then
 fi
 
 cd /home/pi/
-sudo pip3 install mps-youtube youtube-dl -y
+sudo pip3 install mps-youtube youtube-dl 
 sudo apt-get install vlc -y
 mpsyt set player vlc, set playerargs ,exit
 sudo apt-get update -y
