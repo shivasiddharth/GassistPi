@@ -31,7 +31,8 @@ from google.assistant.embedded.v1alpha1 import embedded_assistant_pb2
 from google.rpc import code_pb2
 from tenacity import retry, stop_after_attempt, retry_if_exception
 from actions import Action
-
+from actions import YouTube
+from actions import stop
 try:
     from googlesamples.assistant.grpc import (
         assistant_helpers,
@@ -172,6 +173,12 @@ class Assistant():
                         if 'trigger' in str(usrcmd).lower():
                             Action(str(usrcmd).lower())
                             return continue_conversation
+                        if 'play'.lower() in str(usrcmd).lower():
+                            YouTube(str(usrcmd).lower())
+                            return continue_conversation
+                        if 'stop'.lower() in str(usrcmd).lower():
+                            stop()
+                            return continue_conversation                            
 
                         else:
                             continue

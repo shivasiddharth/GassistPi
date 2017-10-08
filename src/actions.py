@@ -24,6 +24,7 @@ GPIO.setup(27, GPIO.OUT)
 pwm=GPIO.PWM(27, 50)
 pwm.start(0)
 
+playshell = None
 
 def SetAngle(angle):
     duty = angle/18 + 2
@@ -33,25 +34,36 @@ def SetAngle(angle):
     pwm.ChangeDutyCycle(0)
     GPIO.output(27, False)
 
+def YouTube(phrase):
+    idx=phrase.find('play')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track=track.strip()
+    global playshell
+    if (playshell == None):
+        playshell = subprocess.Popen(["/usr/local/bin/mpsyt",""],stdin=subprocess.PIPE ,stdout=subprocess.PIPE)
+    print("Playing: " + track)
+    playshell.stdin.write(bytes('/' + track + '\n1\n'))
+    playshell.stdin.flush()
+
+def stop():
+    pkill = subprocess.Popen(["/usr/bin/pkill","vlc"],stdin=subprocess.PIPE)
+
 def Action(phrase):
     if 'shut down' in phrase:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         time.sleep(10)
         os.system("sudo shutdown -h now")
         #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        break
+        
 
     if 'servo' in phrase:
-        for s in re.findall(r'\b\d+\b', str(usr)):
+        for s in re.findall(r'\b\d+\b', phrase):
             SetAngle(int(s))
     if 'zero' in phrase:
         SetAngle(0)
-
-    #****Create your own actions***********
-    if 'çustom-keyword' in phrase:
-    #Custom actions here for the detected custom-keyword
-    #**************************************
-
+    
     else:
         for num, name in enumerate(var):
             if name.lower() in phrase:

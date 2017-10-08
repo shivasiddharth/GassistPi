@@ -27,6 +27,8 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from actions import Action
+from actions import YouTube
+from actions import stop
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -93,6 +95,11 @@ def main():
             if 'trigger'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
+            if 'play'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                YouTube(str(usrcmd).lower())
+            if 'stop'.lower() in str(usrcmd).lower():
+                stop()
 
 if __name__ == '__main__':
     main()
