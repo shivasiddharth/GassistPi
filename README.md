@@ -173,9 +173,7 @@ sudo systemctl start snowboy.service
 *******************************************************************
 **INDICATORS for GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
 *******************************************************************
-Provisions have already been made to accommodate indicators to show Google Assistant's Listening and Speaking Event.  
-
-Connect a LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
+Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
 ************************************************
 **VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
