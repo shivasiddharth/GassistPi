@@ -189,7 +189,7 @@ If you wish to change the keyword, you can replace the 'servo' in the action.py 
 For safe shutdown of the pi, command is: **trigger shutdown**  
 
 You can define your own custom actions in the **actions.py** script.  
-**THE ACTIONS SCRIPT OF THIS PROJECT IS DIIFERENT FROM AIY KIT's SCRIPT, COPY PASTING THE COMMANDS FROM AIY's ACTION SCRIPT WILL NOT WORK HERE.**    
+**THE ACTIONS SCRIPT OF THIS PROJECT IS DIFFERENT FROM AIY KIT's SCRIPT, COPY PASTING THE COMMANDS FROM AIY's ACTION SCRIPT WILL NOT WORK HERE.**    
 
 ************************************************
 **MUSIC STREAMING from YOUTUBE**  
