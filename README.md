@@ -3,11 +3,13 @@
 **Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
 
 # Features:  
-**1. Headless auto start on boot with multiple wakeword activation trigger.**    
+**1. Headless auto start on boot with multiple custom wakeword activation trigger.**    
 **2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**  
 **3. Voice control of servo connected to RPi GPIO.**  
 **4. Safe shutdown RPi using voice command.**  
-**5. Startup audio and audio feedback for wakeword detection.**   
+**5. Stream Music from YouTube.**  
+**6. Indicator lights for assistant listening and speaking events.**  
+**7. Startup audio and audio feedback for wakeword detection.**   
 
 # Features coming soon:
 **1. Mute button.**  
@@ -20,7 +22,7 @@
 *******************************************************************************************************************************
 
 *************************************************
-**First Step- Clone the Project Files on to Pi**   
+**FIRST STEP- CLONE the PROJECT on to Pi**   
 *************************************************
 1. Open the terminal and execute the following  
 
@@ -96,7 +98,7 @@ speaker-test -t wav
 ```  
 
 **********************************************************************  
-**CONTINUE AFTER SETTING UP AUDIO**
+**CONTINUE after SETTING UP AUDIO**
 **********************************************************************   
 
 1. Download credentials--->.json file (refer to this doc for creating credentials https://developers.google.com/assistant/sdk/develop/python/config-dev-project-and-account)   
@@ -138,7 +140,7 @@ googlesamples-assistant-pushtotalk
 
 
 *************************************************  
-**HEADLESS AUTOSTART ON BOOT SERVICE SETUP**  
+**HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
 *************************************************  
 1. Make the service installer executable  
 
@@ -152,14 +154,14 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the services - **Pi3 and Armv7 users, if you need custom wakeword functionality, then enable both the services, else enable just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi B 1+ users, enable snowboy services alone**        
+3. Enable the services - **Pi3 and Armv7 users, if you need custom wakeword functionality, then enable both the services, else enable just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, enable snowboy services alone**        
 
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable snowboy.service
 ```  
 
-4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi B 1+ users, start snowboy services alone**    
+4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, start snowboy services alone**    
 
 ```
 sudo systemctl start gassistpi-ok-google.service  
@@ -169,30 +171,36 @@ sudo systemctl start snowboy.service
 **RESTART and ENJOY**  
 
 *******************************************************************
-**Indicators for Google Assistant's Listening and Speaking Events**  
+**INDICATORS for GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
 *******************************************************************
 Provisions have already been made to accommodate indicators to show Google Assistant's Listening and Speaking Event.  
 
 Connect a LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
 ************************************************
-**VOICE CONTROL OF GPIOs, Servo and Pi Shutdown**
+**VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
 ************************************************
 The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi. 
 
-It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the '**trigger**' in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
-
-It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the '**trigger**'in the main.py(src folder) and assistant.py(snowboy folder) code with your desired trigger word.
-
-You can define your own device names under the variable name var in action.py script.  
-
-The number of GPIO pins declared should match the number of devices. 
+It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the '**trigger**'in the main.py and assistant.py code with your desired trigger word.
 
 The default keyword for servo motor is **servo**. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
 
 If you wish to change the keyword, you can replace the 'servo' in the action.py script with your desired keyword for the motor. 
 
 For safe shutdown of the pi, command is: **trigger shutdown**  
+
+You can define your own custom actions in the **actions.py** script.  
+**THE ACTIONS SCRIPT OF THIS PROJECT IS DIIFERENT FROM AIY KIT's SCRIPT, COPY PASTING THE COMMANDS FROM AIY's ACTION SCRIPT WILL NOT WORK HERE.**    
+
+************************************************
+**MUSIC STREAMING from YOUTUBE**  
+************************************************
+Default keyword for playing music from YouTube is **Play**. For example, **Play I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
+
+Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
+
+**Due to the Pi Zero's limitations, users are advised to not use the Music streaming fueatures. Music streaming will bump the CPU usage on a Pi Zero.**  
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
