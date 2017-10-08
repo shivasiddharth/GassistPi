@@ -30,9 +30,10 @@ sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
 mpsyt set player vlc, set playerargs ,exit
 sudo apt-get update -y
+sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
 sudo apt-get install python-dev python-virtualenv -y
-virtualenv env
-env/bin/python -m pip install --upgrade pip setuptools
+virtualenv env 
+env/bin/python -m pip install --upgrade pip setuptools 
 source env/bin/activate
 pip install RPi.GPIO
 pip install pyaudio
