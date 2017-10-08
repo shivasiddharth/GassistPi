@@ -6,7 +6,7 @@ import time
 import os
 import subprocess
 from assistant import Assistant
-subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/customwakeword2.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/customwakeword.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # Demo code for listening two hotwords at the same time
 GPIO.setmode(GPIO.BCM)
