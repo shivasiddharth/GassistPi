@@ -3,7 +3,7 @@
 **Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
 
 # Features:  
-**1. Headless auto start on boot with multiple custom wakeword activation trigger.**    
+**1. Headless auto start on boot with multiple custom wakeword activation triggers.**    
 **2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**  
 **3. Voice control of servo connected to RPi GPIO.**  
 **4. Safe shutdown RPi using voice command.**  
