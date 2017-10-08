@@ -23,7 +23,6 @@ import subprocess
 import os
 import click
 import grpc
-import time
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
@@ -31,8 +30,9 @@ import RPi.GPIO as GPIO
 from google.assistant.embedded.v1alpha1 import embedded_assistant_pb2
 from google.rpc import code_pb2
 from tenacity import retry, stop_after_attempt, retry_if_exception
-
-
+from actions import Action
+from actions import YouTube
+from actions import stop
 try:
     from googlesamples.assistant.grpc import (
         assistant_helpers,
@@ -45,19 +45,21 @@ except SystemError:
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-#Number of entities in 'var' and 'PINS' should be the same
-var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive 
-gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
-for pin in gpio:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, 0)
-    
+#Indicator pins declaration
+GPIO.setup(05,GPIO.OUT)
+GPIO.setup(06,GPIO.OUT)
+GPIO.output(05, GPIO.LOW)
+GPIO.output(06, GPIO.LOW)
+
+
+
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.ConverseResponse.END_OF_UTTERANCE
 DIALOG_FOLLOW_ON = embedded_assistant_pb2.ConverseResult.DIALOG_FOLLOW_ON
 CLOSE_MICROPHONE = embedded_assistant_pb2.ConverseResult.CLOSE_MICROPHONE
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
+
 
 
 class Assistant():
@@ -87,7 +89,7 @@ class Assistant():
         self.grpc_channel = google.auth.transport.grpc.secure_authorized_channel(
             self.credentials, self.http_request, self.api_endpoint)
         logging.info('Connecting to %s', self.api_endpoint)
-        
+
         self.audio_sample_rate = audio_helpers.DEFAULT_AUDIO_SAMPLE_RATE
         self.audio_sample_width = audio_helpers.DEFAULT_AUDIO_SAMPLE_WIDTH
         self.audio_iter_size = audio_helpers.DEFAULT_AUDIO_ITER_SIZE
@@ -143,8 +145,9 @@ class Assistant():
         try:
             while continue_conversation:
                 continue_conversation = False
-                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
+                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 self.conversation_stream.start_recording()
+		GPIO.output(05,GPIO.HIGH)
                 self.logger.info('Recording audio request.')
 
                 def iter_converse_requests():
@@ -163,31 +166,26 @@ class Assistant():
                         break
                     if resp.event_type == END_OF_UTTERANCE:
                         self.logger.info('End of audio request detected')
+			GPIO.output(05,GPIO.LOW)
                         self.conversation_stream.stop_recording()
                     if resp.result.spoken_request_text:
-                        usr=resp.result.spoken_request_text
-                        if 'trigger' in str(usr):
-                                     
-                            if 'shut down'.lower() in str(usr).lower():
-                                subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                                time.sleep(10)
-                                os.system("sudo shutdown -h now")
-                                break
-                            else:
-                                for num, name in enumerate(var):
-                                    if name.lower() in str(usr).lower():
-                                        pinout=gpio[num]
-                                        if 'on'.lower()in str(usr).lower():
-                                            GPIO.output(pinout, 1)
-                                            subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                                        elif 'off'.lower() in str(usr).lower():
-                                            GPIO.output(pinout, 0)
-                                            subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Device-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                                        return continue_conversation
+                        usrcmd=resp.result.spoken_request_text
+                        if 'trigger' in str(usrcmd).lower():
+                            Action(str(usrcmd).lower())
+                            return continue_conversation
+                        if 'play'.lower() in str(usrcmd).lower():
+                            YouTube(str(usrcmd).lower())
+                            return continue_conversation
+                        if 'stop'.lower() in str(usrcmd).lower():
+                            stop()
+                            return continue_conversation                            
+
                         else:
                             continue
                         self.logger.info('Transcript of user request: "%s".',
                                      resp.result.spoken_request_text)
+			GPIO.output(05,GPIO.LOW)
+       			GPIO.output(06,GPIO.HIGH)
                         self.logger.info('Playing assistant response.')
                     if len(resp.audio_out.audio_data) > 0:
                         self.conversation_stream.write(resp.audio_out.audio_data)
@@ -203,8 +201,13 @@ class Assistant():
                         self.logger.info('Volume should be set to %s%%', volume_percentage)
                     if resp.result.microphone_mode == DIALOG_FOLLOW_ON:
                         continue_conversation = True
+			GPIO.output(06,GPIO.LOW)
+       			GPIO.output(05,GPIO.HIGH)
                         self.logger.info('Expecting follow-on query from user.')
                 self.logger.info('Finished playing assistant response.')
+
+		GPIO.output(06,GPIO.LOW)
+       		GPIO.output(05,GPIO.LOW)
                 self.conversation_stream.stop_playback()
         except Exception as e:
             self._create_assistant()
@@ -235,7 +238,7 @@ class Assistant():
 
     @retry(reraise=True, stop=stop_after_attempt(3),
            retry=retry_if_exception(is_grpc_error_unavailable))
-    
+
     # This generator yields ConverseRequest to send to the gRPC
     # Google Assistant API.
     def gen_converse_requests(self):
