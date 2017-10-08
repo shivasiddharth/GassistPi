@@ -198,7 +198,7 @@ Default keyword for playing music from YouTube is **Play**. For example, **Play 
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 
-**Due to the Pi Zero's limitations, users are advised to not use the Music streaming fueatures. Music streaming will bump the CPU usage on a Pi Zero.**  
+**Due to the Pi Zero's limitations, users are advised to not use the Music streaming fueature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
