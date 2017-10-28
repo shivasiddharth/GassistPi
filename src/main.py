@@ -102,6 +102,7 @@ def main():
             if 'stop'.lower() in str(usrcmd).lower():
                 stop()
             if 'tune into'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
                 radio(str(usrcmd).lower())
 
 if __name__ == '__main__':
