@@ -16,6 +16,10 @@ GPIO.setwarnings(False)
 var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive
 gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
+#Number of station names and station links should be the same
+stn-name=('Radio 1', 'Radio 2', 'Radio 3', 'Radio 4')#Add more stations if you want
+stn-link=(http://www.radiofeeds.co.uk/bbcradio2.pls, http://www.radiofeeds.co.uk/bbc6music.pls, http://c5icy.prod.playlists.ihrhls.com/1469_icy, http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3)
+
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
@@ -27,6 +31,13 @@ pwm.start(0)
 
 playshell = None
 
+def radio(phrase):
+    for num, name in enumerate(stn-name):
+        if name.lower() in phrase:
+            station=stn-link[num]
+            p = subprocess.Popen(["/usr/bin/vlc",station],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+                
+                
 def SetAngle(angle):
     duty = angle/18 + 2
     GPIO.output(27, True)
