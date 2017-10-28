@@ -100,6 +100,8 @@ def main():
                 YouTube(str(usrcmd).lower())
             if 'stop'.lower() in str(usrcmd).lower():
                 stop()
+            if 'tune into'.lower() in str(usrcmd).lower():
+                radio(str(usrcmd).lower())
 
 if __name__ == '__main__':
     main()
