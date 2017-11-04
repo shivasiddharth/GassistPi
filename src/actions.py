@@ -16,6 +16,17 @@ GPIO.setwarnings(False)
 var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive
 gpio = (23,24,25)#GPIOS for 'var'. Add other GPIOs that you want
 
+#Number of station names and station links should be the same
+stnname=('Radio One', 'Radio 2', 'Radio 3', 'Radio 5')#Add more stations if you want
+stnlink=('http://www.radiofeeds.co.uk/bbcradio2.pls', 'http://www.radiofeeds.co.uk/bbc6music.pls', 'http://c5icy.prod.playlists.ihrhls.com/1469_icy', 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3')
+
+#IP Address of ESP
+ip='xxxxxxxxxxxx'
+
+#Declaration of ESP names
+devname=('Device 1', 'Device 2', 'Device 3')
+devid=('/Device1', '/Device2', '/Device3')
+
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
@@ -27,6 +38,25 @@ pwm.start(0)
 
 playshell = None
 
+def radio(phrase):
+    for num, name in enumerate(stnname):
+        if name.lower() in phrase:
+            station=stnlink[num]
+            p = subprocess.Popen(["/usr/bin/vlc",station],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+
+def ESP(phrase):
+    for num, name in enumerate(devname):
+        if name.lower() in phrase:
+            dev=devid[num]
+            if 'on' in phrase:
+                ctrl='=ON'
+            elif 'off' in phrase:
+                ctrl='=OFF'
+            subprocess.Popen(["elinks", ip + dev + ctrl],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+            time.sleep(2)
+            subprocess.Popen(["/usr/bin/pkill","elinks"],stdin=subprocess.PIPE)
+
+                    
 def SetAngle(angle):
     duty = angle/18 + 2
     GPIO.output(27, True)

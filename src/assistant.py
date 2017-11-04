@@ -33,6 +33,9 @@ from tenacity import retry, stop_after_attempt, retry_if_exception
 from actions import Action
 from actions import YouTube
 from actions import stop
+from actions import radio
+from actions import ESP
+
 try:
     from googlesamples.assistant.grpc import (
         assistant_helpers,
@@ -178,8 +181,13 @@ class Assistant():
                             return continue_conversation
                         if 'stop'.lower() in str(usrcmd).lower():
                             stop()
-                            return continue_conversation                            
-
+                            return continue_conversation
+                        if 'tune into'.lower() in str(usrcmd).lower():
+                            radio(str(usrcmd).lower())
+                            return continue_conversation
+                        if 'wireless'.lower() in str(usrcmd).lower():
+                            ESP(str(usrcmd).lower())
+                            return continue_conversation
                         else:
                             continue
                         self.logger.info('Transcript of user request: "%s".',

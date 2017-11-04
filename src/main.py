@@ -29,6 +29,8 @@ from google.assistant.library.file_helpers import existing_file
 from actions import Action
 from actions import YouTube
 from actions import stop
+from actions import radio
+from actions import ESP
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -100,6 +102,12 @@ def main():
                 YouTube(str(usrcmd).lower())
             if 'stop'.lower() in str(usrcmd).lower():
                 stop()
+            if 'tune into'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                radio(str(usrcmd).lower())
+            if 'wireless'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                ESP(str(usrcmd).lower())
 
 if __name__ == '__main__':
     main()
