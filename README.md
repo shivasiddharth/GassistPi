@@ -1,15 +1,17 @@
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
- 
+
 **Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
 
 # Features:  
 **1. Headless auto start on boot with multiple custom wakeword activation triggers.**    
-**2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**  
-**3. Voice control of servo connected to RPi GPIO.**  
-**4. Safe shutdown RPi using voice command.**  
-**5. Stream Music from YouTube.**  
-**6. Indicator lights for assistant listening and speaking events.**  
-**7. Startup audio and audio feedback for wakeword detection.**   
+**2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**
+**3. Voice control of NodeMCU without IFTTT and MQTT.**  
+**4. Radio streaming.**  
+**5. Voice control of servo connected to RPi GPIO.**  
+**6. Safe shutdown RPi using voice command.**  
+**7. Stream Music from YouTube.**  
+**8. Indicator lights for assistant listening and speaking events.**  
+**9. Startup audio and audio feedback for wakeword detection.**   
 
 # Features coming soon:
 **1. Mute button.**  
@@ -37,7 +39,7 @@ git clone https://github.com/shivasiddharth/GassistPi
 ```
 sudo apt-get update  
 sudo apt-get install raspberrypi-kernel  
-``` 
+```
 
 2. Restart Pi  
 
@@ -47,14 +49,14 @@ sudo apt-get install raspberrypi-kernel
   3.1. USB DAC or USB Sound CARD users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh 
-  ``` 
+  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
+  ```
 
   3.2. AIY-HAT users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
   sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-  
+
   sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
   sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
   ```
@@ -64,22 +66,22 @@ sudo apt-get install raspberrypi-kernel
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   ```
-  
+
   3.4. USB MIC AND AUDIO JACK users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh 
-  ``` 
-  
+  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh
+  ```
+
   3.5. CUSTOM VOICE HAT users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  
+
   sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
-  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh 
-  ``` 
-  
+  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
+  ```
+
 **Those Using HDMI/Onboard Jack, make sure to force the audio**  
 ```
 sudo raspi-config  
@@ -114,14 +116,14 @@ speaker-test -t wav
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
 	sudo chmod +x /home/pi/GassistPi/scripts/snowboy-deps-installer.sh  
-  
+
 	```
 	4.2 Execute the installers (Run the snowboy installer first. **Don't be in a hurry and Don't run them parallely, Run them one after the other**
 	```
 	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
-	
+
 	```
 
 5. Copy the google assistant authentication link from terminal and authorize using your google account  
@@ -132,7 +134,7 @@ speaker-test -t wav
 
 ```
 source env/bin/activate  
-google-assistant-demo 
+google-assistant-demo
 googlesamples-assistant-pushtotalk   
 ```  
 
@@ -145,7 +147,7 @@ googlesamples-assistant-pushtotalk
 1. Make the service installer executable  
 
 ```
-sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh 
+sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 ```  
 
 2. Run the service installer  
@@ -178,22 +180,39 @@ Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for 
 ************************************************
 **VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
 ************************************************
-The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi. 
+The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi.
 
 It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the '**trigger**'in the main.py and assistant.py code with your desired trigger word.
 
 The default keyword for servo motor is **servo**. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
 
-If you wish to change the keyword, you can replace the 'servo' in the action.py script with your desired keyword for the motor. 
+If you wish to change the keyword, you can replace the 'servo' in the action.py script with your desired keyword for the motor.
 
 For safe shutdown of the pi, command is: **trigger shutdown**  
 
 You can define your own custom actions in the **actions.py** script.  
-**THE ACTIONS SCRIPT OF THIS PROJECT IS DIFFERENT FROM AIY KIT's SCRIPT, COPY PASTING THE COMMANDS FROM AIY's ACTION SCRIPT WILL NOT WORK HERE. FOR A BETTER UNDERSTANDING OF THE ACTIONS FILE, FOLLOW THE YOUTUBE VIDEO.**    
+**THE ACTIONS SCRIPT OF THIS PROJECT IS DIFFERENT FROM AIY KIT's SCRIPT, COPY PASTING THE COMMANDS FROM AIY's ACTION SCRIPT WILL NOT WORK HERE. FOR A BETTER UNDERSTANDING OF THE ACTIONS FILE, FOLLOW THE FOLLOWING YOUTUBE VIDEO.**    
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=-MmxWWgceCg
-" target="_blank"><img src="http://img.youtube.com/vi/-MmxWWgceCg/0.jpg" 
+" target="_blank"><img src="http://img.youtube.com/vi/-MmxWWgceCg/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
+
+
+************************************************
+**VOICE CONTROL of NodeMCU**
+************************************************
+Download the Arduino IDE code for Nodemcu from here: https://github.com/shivasiddharth/iotwemos/blob/master/Google-Home-NodeMCU.ino  
+
+Add the wifi credentials, make the desired changes and upload the Arduino code onto the NodeMCU and get the IP address from the serial monitor.  
+
+Add the NodeMCU's IP address in the actions.py file.  
+
+**FOR GUIDELINES ON MODIFYING THE ARDUINO CODE AND ACTIONS.PY FILE, FOLLOW THE FOLLOWING YOUTUBE VIDEO.**    
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ae0iwJ62uaM
+" target="_blank"><img src="http://img.youtube.com/vi/ae0iwJ62uaM/0.jpg"
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
+
 
 ************************************************
 **MUSIC STREAMING from YOUTUBE**  
@@ -202,7 +221,25 @@ Default keyword for playing music from YouTube is **Play**. For example, **Play 
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 
-**Due to the Pi Zero's limitations, users are advised to not use the Music streaming fueature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
+**Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
+
+
+************************************************
+**RADIO STREAMING**  
+************************************************
+Default keyword for streaming radio is **tune into**. For example, **tune into Radio 2** command will open the corresponding radio stream listed in the actions.py file.    
+
+Radio streaming has been enabled for both OK-Google and Custom hotwords/wakewords.
+
+Useful links for obtaining radio streaming links:
+http://www.radiosure.com/stations/  
+
+http://www.live-radio.net/worldwide.shtml  
+
+http://worldradiomap.com/map/  
+
+**Due to the Pi Zero's limitations, users are advised to not use the Radio streaming feature. Radio streaming will send the CPU usage of Pi Zero into next galaxy.**  
+
 
 ************************************************  
 **FOR NEOPIXEL INDICAOR**
@@ -212,5 +249,13 @@ Music streaming has been enabled for both OK-Google and Custom hotwords/wakeword
 2. Follow the circuit diagram given.  
 
 ************************************************  
-**Now you have your Google Home Like Indicator**  
+**LIST OF GPIOs USED**  
 ************************************************  
+   GPIO Number (BCM)     *  Purpose
+************************************************
+   05 and 06             *  Google assistant listening and responding
+   22                    *  Snowboy wakeword indicator
+   23,24,25              *  Voice control of devices connected to GPIO
+   27                    *  Voice control of servo
+
+** Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**   
