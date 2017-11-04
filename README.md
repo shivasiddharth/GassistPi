@@ -257,5 +257,5 @@ http://worldradiomap.com/map/
 | 22                | Snowboy wakeword indicator                 |  
 | 23,24,25          | Voice control of devices connected to GPIO |  
 | 27                | Voice control of servo                     |  
-    
-** Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**     
+
+** Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**          
