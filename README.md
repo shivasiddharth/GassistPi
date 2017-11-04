@@ -4,7 +4,7 @@
 
 # Features:  
 **1. Headless auto start on boot with multiple custom wakeword activation triggers.**    
-**2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**
+**2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
 **3. Voice control of NodeMCU without IFTTT and MQTT.**  
 **4. Radio streaming.**  
 **5. Voice control of servo connected to RPi GPIO.**  
@@ -231,7 +231,7 @@ Default keyword for streaming radio is **tune into**. For example, **tune into R
 
 Radio streaming has been enabled for both OK-Google and Custom hotwords/wakewords.
 
-Useful links for obtaining radio streaming links:
+Useful links for obtaining radio streaming links:   
 http://www.radiosure.com/stations/  
 
 http://www.live-radio.net/worldwide.shtml  
@@ -251,11 +251,11 @@ http://worldradiomap.com/map/
 ************************************************  
 **LIST OF GPIOs USED**  
 ************************************************  
-   GPIO Number (BCM)     *  Purpose
-************************************************
-   05 and 06             *  Google assistant listening and responding
-   22                    *  Snowboy wakeword indicator
-   23,24,25              *  Voice control of devices connected to GPIO
-   27                    *  Voice control of servo
-
-** Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**   
+   GPIO Number (BCM)     *  Purpose             
+************************************************     
+   05 and 06             *  Google assistant listening and responding    
+   22                    *  Snowboy wakeword indicator    
+   23,24,25              *  Voice control of devices connected to GPIO    
+   27                    *  Voice control of servo     
+    
+** Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**     
