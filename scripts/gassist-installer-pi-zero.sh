@@ -28,7 +28,7 @@ fi
 cd /home/pi/
 sudo pip3 install mps-youtube youtube-dl 
 sudo apt-get install vlc -y
-mpsyt set player vlc, set playerargs ,exit
+mpsyt set player epiphany-browser, set playerargs ,exit
 sudo apt-get install elinks -y
 sudo apt-get update -y
 sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
