@@ -28,6 +28,7 @@ fi
 cd /home/pi/
 sudo pip3 install mps-youtube youtube-dl 
 sudo apt-get install vlc -y
+sudo apt-get install chromium-browser -y
 mpsyt set player chromium-browser, set playerargs ,exit
 sudo apt-get install elinks -y
 sudo apt-get update -y
