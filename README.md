@@ -20,7 +20,7 @@
 
 
 *******************************************************************************************************************************  
-**This is implemented in Python2 so your existing Google Assistant may not work. So please start by making a fresh copy of latest Raspbian Stretch**  
+**This is implemented in Python2 so if you already have Google Assistant in Python3 it may not work. CLI or Raspbian Lite does not support all Features. So please start by making a fresh copy of latest Raspbian Stretch Desktop. **  
 *******************************************************************************************************************************
 
 *************************************************
