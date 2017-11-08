@@ -54,7 +54,8 @@ GPIO.setup(05,GPIO.OUT)
 GPIO.setup(06,GPIO.OUT)
 GPIO.output(05, GPIO.LOW)
 GPIO.output(06, GPIO.LOW)
-
+led=GPIO.PWM(25,1)
+led.start(0)
 
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
@@ -151,6 +152,7 @@ class Assistant():
                 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 self.conversation_stream.start_recording()
 		GPIO.output(05,GPIO.HIGH)
+		led.ChangeDutyCycle(100)
                 self.logger.info('Recording audio request.')
 
                 def iter_converse_requests():
@@ -170,6 +172,7 @@ class Assistant():
                     if resp.event_type == END_OF_UTTERANCE:
                         self.logger.info('End of audio request detected')
 			GPIO.output(05,GPIO.LOW)
+			led.ChangeDutyCycle(0)
                         self.conversation_stream.stop_recording()
                     if resp.result.spoken_request_text:
                         usrcmd=resp.result.spoken_request_text
@@ -194,6 +197,7 @@ class Assistant():
                                      resp.result.spoken_request_text)
 			GPIO.output(05,GPIO.LOW)
        			GPIO.output(06,GPIO.HIGH)
+			led.ChangeDutyCycle(50)
                         self.logger.info('Playing assistant response.')
                     if len(resp.audio_out.audio_data) > 0:
                         self.conversation_stream.write(resp.audio_out.audio_data)
@@ -211,11 +215,13 @@ class Assistant():
                         continue_conversation = True
 			GPIO.output(06,GPIO.LOW)
        			GPIO.output(05,GPIO.HIGH)
+			led.ChangeDutyCycle(100)
                         self.logger.info('Expecting follow-on query from user.')
                 self.logger.info('Finished playing assistant response.')
 
 		GPIO.output(06,GPIO.LOW)
        		GPIO.output(05,GPIO.LOW)
+		led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_playback()
         except Exception as e:
             self._create_assistant()
