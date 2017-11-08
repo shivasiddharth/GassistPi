@@ -252,10 +252,11 @@ http://worldradiomap.com/map/
 **LIST OF GPIOs USED**  
 ************************************************  
 | GPIO Number (BCM) | Purpose                                    | 
-|-------------------|--------------------------------------------|   
+|-------------------|--------------------------------------------|
+| 25                | Assistant activity indicator for AIY Kits  | 
 | 05 and 06         | Google assistant listening and responding  |  
 | 22                | Snowboy wakeword indicator                 |  
-| 23,24,25          | Voice control of devices connected to GPIO |  
+| 12,13,24          | Voice control of devices connected to GPIO |  
 | 27                | Voice control of servo                     |  
 
 **Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**          
