@@ -26,15 +26,15 @@ then
 fi
 
 cd /home/pi/
-sudo pip3 install mps-youtube youtube-dl 
+sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
 sudo apt-get install chromium-browser -y
 mpsyt set player chromium-browser, set playerargs ,exit
 sudo apt-get install elinks -y
 sudo apt-get update -y
-sudo apt-get install python-dev python-virtualenv -y
+sudo apt-get install python3-dev python3-venv -y
 sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
-virtualenv env
+python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools
 source env/bin/activate
 pip install RPi.GPIO
