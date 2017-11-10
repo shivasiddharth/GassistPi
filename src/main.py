@@ -100,10 +100,6 @@ def main():
 
     with Assistant(credentials) as assistant:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if os.path.isfile("/home/pi/GassistPi/src/mute"):
-            assistant.set_mic_mute(True)
-        else:
-            assistant.set_mic_mute(False)
         for event in assistant.start():
             process_event(event)
             usrcmd=event.args
