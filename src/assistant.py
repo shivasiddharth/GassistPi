@@ -50,6 +50,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 #Indicator pins declaration
+GPIO.setup(25, GPIO.OUT)
 GPIO.setup(5,GPIO.OUT)
 GPIO.setup(6,GPIO.OUT)
 GPIO.output(5, GPIO.LOW)
