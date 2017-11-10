@@ -50,10 +50,10 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 #Indicator pins declaration
-GPIO.setup(05,GPIO.OUT)
-GPIO.setup(06,GPIO.OUT)
-GPIO.output(05, GPIO.LOW)
-GPIO.output(06, GPIO.LOW)
+GPIO.setup(5,GPIO.OUT)
+GPIO.setup(6,GPIO.OUT)
+GPIO.output(5, GPIO.LOW)
+GPIO.output(6, GPIO.LOW)
 led=GPIO.PWM(25,1)
 led.start(0)
 
@@ -151,7 +151,7 @@ class Assistant():
                 continue_conversation = False
                 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 self.conversation_stream.start_recording()
-		GPIO.output(05,GPIO.HIGH)
+		GPIO.output(5,GPIO.HIGH)
 		led.ChangeDutyCycle(100)
                 self.logger.info('Recording audio request.')
 
@@ -171,7 +171,7 @@ class Assistant():
                         break
                     if resp.event_type == END_OF_UTTERANCE:
                         self.logger.info('End of audio request detected')
-			GPIO.output(05,GPIO.LOW)
+			GPIO.output(5,GPIO.LOW)
 			led.ChangeDutyCycle(0)
                         self.conversation_stream.stop_recording()
                     if resp.result.spoken_request_text:
@@ -195,8 +195,8 @@ class Assistant():
                             continue
                         self.logger.info('Transcript of user request: "%s".',
                                      resp.result.spoken_request_text)
-			GPIO.output(05,GPIO.LOW)
-       			GPIO.output(06,GPIO.HIGH)
+			GPIO.output(5,GPIO.LOW)
+       			GPIO.output(6,GPIO.HIGH)
 			led.ChangeDutyCycle(50)
                         self.logger.info('Playing assistant response.')
                     if len(resp.audio_out.audio_data) > 0:
@@ -213,14 +213,14 @@ class Assistant():
                         self.logger.info('Volume should be set to %s%%', volume_percentage)
                     if resp.result.microphone_mode == DIALOG_FOLLOW_ON:
                         continue_conversation = True
-			GPIO.output(06,GPIO.LOW)
-       			GPIO.output(05,GPIO.HIGH)
+			GPIO.output(6,GPIO.LOW)
+       			GPIO.output(5,GPIO.HIGH)
 			led.ChangeDutyCycle(100)
                         self.logger.info('Expecting follow-on query from user.')
                 self.logger.info('Finished playing assistant response.')
 
-		GPIO.output(06,GPIO.LOW)
-       		GPIO.output(05,GPIO.LOW)
+		GPIO.output(6,GPIO.LOW)
+       		GPIO.output(5,GPIO.LOW)
 		led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_playback()
         except Exception as e:
