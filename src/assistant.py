@@ -197,7 +197,7 @@ class Assistant():
                         self.logger.info('Transcript of user request: "%s".',
                                      resp.result.spoken_request_text)
 			GPIO.output(5,GPIO.LOW)
-       			GPIO.output(6,GPIO.HIGH)
+			GPIO.output(6,GPIO.HIGH)
 			led.ChangeDutyCycle(50)
                         self.logger.info('Playing assistant response.')
                     if len(resp.audio_out.audio_data) > 0:
@@ -215,13 +215,12 @@ class Assistant():
                     if resp.result.microphone_mode == DIALOG_FOLLOW_ON:
                         continue_conversation = True
 			GPIO.output(6,GPIO.LOW)
-       			GPIO.output(5,GPIO.HIGH)
+			GPIO.output(5,GPIO.HIGH)
 			led.ChangeDutyCycle(100)
                         self.logger.info('Expecting follow-on query from user.')
                 self.logger.info('Finished playing assistant response.')
-
 		GPIO.output(6,GPIO.LOW)
-       		GPIO.output(5,GPIO.LOW)
+		GPIO.output(5,GPIO.LOW)
 		led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_playback()
         except Exception as e:
