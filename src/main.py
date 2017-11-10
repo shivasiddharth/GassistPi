@@ -37,8 +37,8 @@ GPIO.setwarnings(False)
 
 #Indicator Pins
 GPIO.setup(25, GPIO.OUT)
-GPIO.setup(05,GPIO.OUT)
-GPIO.setup(06,GPIO.OUT)
+GPIO.setup(05, GPIO.OUT)
+GPIO.setup(06, GPIO.OUT)
 GPIO.output(05, GPIO.LOW)
 GPIO.output(06, GPIO.LOW)
 led=GPIO.PWM(25,1)
