@@ -75,7 +75,7 @@ def YouTube(phrase):
     if (playshell == None):
         playshell = subprocess.Popen(["/usr/local/bin/mpsyt",""],stdin=subprocess.PIPE ,stdout=subprocess.PIPE)
     print("Playing: " + track)
-    playshell.stdin.write(bytes('/' + track + '\n1\n'))
+    playshell.stdin.write(bytes('/' + track + '\n1\n','utf-8'))
     playshell.stdin.flush()
 
 def stop():
