@@ -15,12 +15,14 @@
 
 # Features coming soon:
 **1. Mute button.**  
-**2. Neopixel indicator without Arduino.**  
-
-
+**2. Blinkt! RGB indicator. (Neopixel is interfering with Pi Audio and I2S so cannot be used without arduino).**   
 
 *******************************************************************************************************************************  
-**This is implemented in Python2 so if you already have Google Assistant in Python3 it may not work. CLI or Raspbian Lite does not support all Features. So please start by making a fresh copy of latest Raspbian Stretch Desktop.**    
+**Finally !! The project has been update to Python3. This means a better snowboy control and lower CPU utilization on Pi Zero Boards.**  **Users who installed GassistPi prior to 11/11/2017, please reformat the SD Card and re-install the Assistant to update the project to Python3.**  
+*******************************************************************************************************************************
+
+*******************************************************************************************************************************  
+**CLI or Raspbian Lite does not support all features. So please start by making a fresh copy of latest Raspbian Stretch Desktop.**    
 *******************************************************************************************************************************
 
 *************************************************
