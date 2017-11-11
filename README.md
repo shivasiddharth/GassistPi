@@ -159,17 +159,19 @@ sudo /home/pi/GassistPi/scripts/service-installer.sh
 ```  
 
 3. Enable the services - **Pi3 and Armv7 users, if you need custom wakeword functionality, then enable both the services, else enable just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, enable snowboy services alone**        
-
+**To stop music playback using a pushbutton connected to GPIO 23 enable stopbutton.service**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable snowboy.service
+sudo systemctl enable stopbutton.service  
 ```  
 
-4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, start snowboy services alone**    
-
+4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, start snowboy.service alone**    
+**To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**  
 ```
 sudo systemctl start gassistpi-ok-google.service  
 sudo systemctl start snowboy.service   
+sudo systemctl start stopbutton.service  
 ```  
 
 **RESTART and ENJOY**  
@@ -178,6 +180,12 @@ sudo systemctl start snowboy.service
 **INDICATORS for GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
 *******************************************************************
 Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
+
+*******************************************************************
+**PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK**  
+*******************************************************************
+Connect a pushbutton between GPIO23 and Ground. Using this pushbutton, now you can stop the music or radio playback.  
+
 
 ************************************************
 **VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
@@ -253,12 +261,13 @@ http://worldradiomap.com/map/
 ************************************************  
 **LIST OF GPIOs USED**  
 ************************************************  
-| GPIO Number (BCM) | Purpose                                    | 
-|-------------------|--------------------------------------------|
-| 25                | Assistant activity indicator for AIY Kits  | 
-| 05 and 06         | Google assistant listening and responding  |  
-| 22                | Snowboy wakeword indicator                 |  
-| 12,13,24          | Voice control of devices connected to GPIO |  
-| 27                | Voice control of servo                     |  
+| GPIO Number (BCM) | Purpose                                        | 
+|-------------------|------------------------------------------------|
+| 25                | Assistant activity indicator for AIY Kits      | 
+| 23                | Pushbutton to stop music/radio AIY and others  |    
+| 05 and 06         | Google assistant listening and responding      |  
+| 22                | Snowboy wakeword indicator                     |  
+| 12,13,24          | Voice control of devices connected to GPIO     |  
+| 27                | Voice control of servo                         |  
 
 **Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**          
