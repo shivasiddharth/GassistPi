@@ -3,15 +3,16 @@
 **Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
 
 # Features:  
-**1. Headless auto start on boot with multiple custom wakeword activation triggers.**    
-**2. Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
-**3. Voice control of NodeMCU without IFTTT and MQTT.**  
-**4. Radio streaming.**  
-**5. Voice control of servo connected to RPi GPIO.**  
-**6. Safe shutdown RPi using voice command.**  
-**7. Stream Music from YouTube.**  
-**8. Indicator lights for assistant listening and speaking events.**  
-**9. Startup audio and audio feedback for wakeword detection.**   
+**1.  Headless auto start on boot with multiple custom wakeword activation triggers.**    
+**2.  Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
+**3.  Voice control of NodeMCU without IFTTT and MQTT.**  
+**4.  Radio streaming.**  
+**5.  Voice control of servo connected to RPi GPIO.**  
+**6.  Safe shutdown RPi using voice command.**  
+**7.  Stream Music from YouTube.**  
+**8.  Indicator lights for assistant listening and speaking events.**  
+**9.  Startup audio and audio feedback for wakeword detection.**   
+**10. Pushbutton service to stop Music or Radio playback.**   
 
 # Features coming soon:
 **1. Mute button.**  
