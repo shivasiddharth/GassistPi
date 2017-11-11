@@ -264,7 +264,7 @@ http://worldradiomap.com/map/
 | GPIO Number (BCM) | Purpose                                        | 
 |-------------------|------------------------------------------------|
 | 25                | Assistant activity indicator for AIY Kits      | 
-| 23                | Pushbutton to stop music/radio AIY and otehrs  |    
+| 23                | Pushbutton to stop music/radio AIY and others  |    
 | 05 and 06         | Google assistant listening and responding      |  
 | 22                | Snowboy wakeword indicator                     |  
 | 12,13,24          | Voice control of devices connected to GPIO     |  
