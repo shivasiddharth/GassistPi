@@ -80,7 +80,7 @@ def YouTube(phrase):
 
 def stop():
     pkill = subprocess.Popen(["/usr/bin/pkill","vlc"],stdin=subprocess.PIPE)
-    os.system("pkill chromium")
+   
     
 
 def Action(phrase):
