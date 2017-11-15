@@ -23,7 +23,8 @@
 *******************************************************************************************************************************
 
 *******************************************************************************************************************************  
-**CLI or Raspbian Lite does not support all features. So please start by making a fresh copy of latest Raspbian Stretch Desktop.**    
+**CLI or Raspbian Lite does not support all features. So please start by making a fresh copy of latest Raspbian Stretch Desktop.**   
+**The AIY Voice HAT image has environemnt in a directory different than this project. So please use the Standard Raspbian Desktop image**  
 *******************************************************************************************************************************
 
 *************************************************
