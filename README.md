@@ -23,7 +23,7 @@
 *******************************************************************************************************************************
 
 *******************************************************************************************************************************  
-**CLI or Raspbian Lite does not support all features and the AIY Voice HAT image has environemnt in a directory different than this project. So please use the Standard Raspbian Desktop image**  
+**CLI or Raspbian Lite does not support all features. So please use the Standard Raspbian Desktop image**  
 *******************************************************************************************************************************
 
 *************************************************
