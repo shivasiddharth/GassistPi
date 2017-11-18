@@ -23,7 +23,7 @@
 *******************************************************************************************************************************
 
 *******************************************************************************************************************************  
-**CLI or Raspbian Lite does not support all features. So please use the Standard Raspbian Desktop image**  
+**CLI or Raspbian Lite does not support all features and Custom wakeword does not work with Google's AIY image. So please use the Standard Raspbian Desktop image- Link https://www.raspberrypi.org/downloads/raspbian/**  
 *******************************************************************************************************************************
 
 *************************************************
