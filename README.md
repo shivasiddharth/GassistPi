@@ -48,8 +48,7 @@ sudo apt-get install raspberrypi-kernel
 
 3. Choose the audio configuration according to your setup.   
 **The speaker-test command is used to initialize alsa, so please do not skip that.  
-AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.          
-(Run the 'install'commands till you get .bak notification in the terminal)**  
+AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.  **  
 
   3.1. USB DAC or USB Sound CARD users,  
   ```
@@ -84,11 +83,11 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
 
   3.5. CUSTOM VOICE HAT users,  
   ```
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
+  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh 
+  sudo reboot 
   sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  sudo reboot    
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
-  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
   speaker-test   
   ```
 
