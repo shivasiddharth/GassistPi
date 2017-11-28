@@ -130,10 +130,10 @@ speaker-test -t wav
 	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
 	**Don't be in a hurry and Don't run them parallely, Run them one after the other**
 	```
+	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
-	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
-
+	
 	```
 
 5. Copy the google assistant authentication link from terminal and authorize using your google account  
