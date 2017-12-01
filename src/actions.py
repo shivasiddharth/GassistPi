@@ -43,8 +43,8 @@ playshell = None
 
 #Parcel Tracking declarations
 #If you want to use parcel tracking, register for a free account at: https://www.aftership.com
-#Add the API and uncooment next two lines
-#api = aftership.APIv4('AFTERSHIP-API') 
+#Add the API number and uncomment next two lines
+#api = aftership.APIv4('YOUR-AFTERSHIP-API-NUMBER') 
 #couriers = api.couriers.all.get()
 number = ''
 slug=''
