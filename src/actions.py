@@ -11,7 +11,7 @@ import re
 import subprocess
 import aftership
 import urllib2, json
-
+import feedparser
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -117,6 +117,21 @@ def track():
         trackinfo= ("Parcel Number " + str(x+1)+ " with tracking id " + parcelid + " is "+ description)
         say(trackinfo)
         time.sleep(10)
+
+#RSS Feed Reader
+def feed():
+    
+URL="http://feeds.feedburner.com/ndtvnews-world-news"
+feed=feedparser.parse(URL)
+title=feed['feed']['title']
+for x in range(0,10):
+ content=feed['entries'][x]['title']
+ print(content)
+print("")
+print("")
+for y in range(0,10):
+ summary=feed['entries'][y]['summary']
+ print(summary)
 
 #GPIO Device Control
 def Action(phrase):
