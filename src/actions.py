@@ -9,6 +9,9 @@ import RPi.GPIO as GPIO
 import time
 import re
 import subprocess
+import aftership
+import urllib2, json
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -38,12 +41,23 @@ pwm.start(0)
 
 playshell = None
 
+#Parcel Tracking declarations
+#If you want to use parcel tracking, register for a free account at: https://www.aftership.com
+#Add the API and uncooment next two lines
+#api = aftership.APIv4('AFTERSHIP-API') 
+#couriers = api.couriers.all.get()
+number = ''
+slug=''
+
+
+#Radio Station Streaming
 def radio(phrase):
     for num, name in enumerate(stnname):
         if name.lower() in phrase:
             station=stnlink[num]
             p = subprocess.Popen(["/usr/bin/vlc",station],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
 
+#ESP6266 Devcies control            
 def ESP(phrase):
     for num, name in enumerate(devname):
         if name.lower() in phrase:
@@ -56,7 +70,7 @@ def ESP(phrase):
             time.sleep(2)
             subprocess.Popen(["/usr/bin/pkill","elinks"],stdin=subprocess.PIPE)
 
-                    
+#Stepper Motor control                    
 def SetAngle(angle):
     duty = angle/18 + 2
     GPIO.output(27, True)
@@ -65,6 +79,7 @@ def SetAngle(angle):
     pwm.ChangeDutyCycle(0)
     GPIO.output(27, False)
 
+#Play Youtube Music    
 def YouTube(phrase):
     idx=phrase.find('play')
     track=phrase[idx:]
@@ -81,8 +96,18 @@ def YouTube(phrase):
 def stop():
     pkill = subprocess.Popen(["/usr/bin/pkill","vlc"],stdin=subprocess.PIPE)
    
-    
+#Parcel Tracking
+def track():
+    text=api.trackings.get(tracking=dict(slug=slug, tracking_number=number))
+    numtrack=len(text['trackings'])
+    print("Total Number of Parcels: " + str(numtrack))
+    for x in range(0,numtrack):
+        numcheck=len(text[ 'trackings'][x]['checkpoints'])
+        description = text['trackings'][x]['checkpoints'][numcheck-1]['message']
+        parcelid=text['trackings'][x]['tracking_number']
+        trackinfo= ("Parcel Number " + str(x+1)+ " with tracking id " + parcelid + " is "+ description)
 
+#GPIO Device Control
 def Action(phrase):
     if 'shut down' in phrase:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Pi-Close.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
