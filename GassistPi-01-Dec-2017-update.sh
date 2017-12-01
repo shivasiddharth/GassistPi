@@ -42,11 +42,13 @@ sudo apt-get install elinks -y
 sudo apt-get update -y
 sudo apt-get install python3-dev python3-venv -y
 sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
+#New dependency
 sudo apt-get install libttspico0 libttspico-utils libttspico-data -y
 #Dependencies till 01-12-2017
 source env/bin/activate
 pip install RPi.GPIO
 pip install pyaudio
+#New dependency
 pip install aftership
 #Dependencies till 01-12-2017
 echo "GassistPi updated.... Please Reboot"
