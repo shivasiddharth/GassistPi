@@ -24,6 +24,7 @@ then
     echo "This script must run as $RUN_AS, trying to change user..."
     exec sudo -u $RUN_AS $0
 fi
+
 sudo systemctl stop gassistpi-ok-google.service
 sudo systemctl stop snowboy.service
 sudo systemctl stop stopbutton.service
