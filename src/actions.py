@@ -39,7 +39,11 @@ pwm=GPIO.PWM(27, 50)
 pwm.start(0)
 
 #Stopbutton
-GPIO.setup(25, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+
+#Led Indicator
+led=GPIO.PWM(25,1)
+led.start(0)
 
 playshell = None
 
