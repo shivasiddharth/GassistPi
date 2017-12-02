@@ -49,7 +49,8 @@ sudo apt-get install libttspico0 libttspico-utils libttspico-data -y
 source env/bin/activate
 pip install RPi.GPIO
 pip install pyaudio
-#New dependency
+#New dependencies
 pip install aftership
+pip install feedparser
 #Dependencies till 01-12-2017
 echo "GassistPi updated.... Please Reboot"
