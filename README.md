@@ -48,7 +48,7 @@ sudo apt-get install raspberrypi-kernel
 
 3. Choose the audio configuration according to your setup.   
 **The speaker-test command is used to initialize alsa, so please do not skip that.  
-AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.  **  
+AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.**  
 
   3.1. USB DAC or USB Sound CARD users,  
   ```
