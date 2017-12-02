@@ -13,14 +13,23 @@
 **8.   Indicator lights for assistant listening and speaking events.**  
 **9.   Startup audio and audio feedback for wakeword detection.**   
 **10.  Pushbutton service to stop Music or Radio playback.**   
+**11.  Parcel tracking using Aftership API.**  
+**12.  RSS Feed streaming.**  
 
 # Features coming soon:
 **1. Mute button.**  
 **2. Blinkt! RGB indicator. (Neopixel is interfering with Pi Audio and I2S so cannot be used without arduino).**   
 
+
 *******************************************************************************************************************************  
 **Finally !! The project has been update to Python3. This means a better snowboy control and lower CPU utilization on Pi Zero Boards.**  **Users who installed GassistPi prior to 12th Nov 2017, please reformat the SD Card and re-install the Assistant to update the project to Python3.**  
 *******************************************************************************************************************************
+
+*******************************************************************************************************************************
+**Existing Python3 GassistPi users, update the project using the script: https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-01-Dec-2017-update.sh**  
+**New users, folow the instructions in this document.**  
+*******************************************************************************************************************************
+
 
 *******************************************************************************************************************************  
 **CLI or Raspbian Lite does not support all features and Custom wakeword does not work with Google's AIY image. So please use the Standard Raspbian Desktop image- Link https://www.raspberrypi.org/downloads/raspbian/**  
@@ -258,9 +267,30 @@ http://worldradiomap.com/map/
 
 **Due to the Pi Zero's limitations, users are advised to not use the Radio streaming feature. Radio streaming will send the CPU usage of Pi Zero into next galaxy.**  
 
+***********************************************  
+**FOR PARCEL TRACKING**  
+***********************************************  
+The default keyword for tracking parcel is **parcel**. For example, you can say **where is my parcel** or **track my parcel**.  
+
+Regsiter for a free account with Aftership at https://www.aftership.com gnereate an API number and add parcels to the tracking list.
+The generated API number should be added to the actions.py script at the indicated location. For a better understanding follow the attached youtube video.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=WOyYL46s-q0
+" target="_blank"><img src="http://img.youtube.com/vi/WOyYL46s-q0/0.jpg"
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 ************************************************  
-**FOR NEOPIXEL INDICAOR**
+**FOR RSS FEEDS**  
+************************************************  
+Default keywords for playing RSS feeds is **feed** or **news** or **quote**. Example usage, **top tech news** will play the top technology news, **top world news** will play top news related to different countires, **top sports news** will play the top sports related news and **quote of the day** will give some quotes.
+
+Do not mix the commands with **Play** as that has been associated with music streaming from YouTube.  
+
+**numfeeds** variable within the feed function in actions.py file is the feed limit. Certain RSS feeds can have upto 60 items and **numfeeds** variable limits the number of items to stream. The default value has been set to 10, which if you want can change.  
+
+
+************************************************  
+**FOR NEOPIXEL INDICATOR**
 ************************************************  
 1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
