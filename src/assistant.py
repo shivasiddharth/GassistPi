@@ -198,7 +198,7 @@ class Assistant():
                         if 'parcel'.lower() in str(usrcmd).lower():
                             track()
                             return continue_conversation
-                        if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower():
+                        if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
                             feed(str(usrcmd).lower())
                             return continue_conversation
                         else:
