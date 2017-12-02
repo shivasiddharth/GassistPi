@@ -167,9 +167,9 @@ def feed(phrase):
         numfeeds=feedlength
     title=feed['feed']['title']
     say(title)
-    for x in range(0,numfeeds):
-        #To stop the feed, press and hold stop button
-        while GPIO.input(24):
+    #To stop the feed, press and hold stop button
+    while GPIO.input(25):
+        for x in range(0,numfeeds):
             content=feed['entries'][x]['title']
             print(content)
             say(content)
