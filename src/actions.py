@@ -168,14 +168,21 @@ def feed(phrase):
     title=feed['feed']['title']
     say(title)
     #To stop the feed, press and hold stop button
-    while GPIO.input(25):
+    while GPIO.input(23):
         for x in range(0,numfeeds):
             content=feed['entries'][x]['title']
             print(content)
             say(content)
             summary=feed['entries'][x]['summary']
             print(summary)
-            say(summary)        
+            say(summary)
+            if not GPIO.input(23):
+              break
+        if x == numfeeds-1:
+            break
+        else:
+            continue
+
     
 
 #GPIO Device Control
