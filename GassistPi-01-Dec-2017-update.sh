@@ -28,7 +28,7 @@ fi
 sudo systemctl stop gassistpi-ok-google.service
 sudo systemctl stop snowboy.service
 sudo systemctl stop stopbutton.service
-sudo mv /home/pi/GassistPi mv /home/pi/GassistPi.bak-$(date +%F)
+sudo mv /home/pi/GassistPi /home/pi/GassistPi.bak-$(date +%F)
 git clone https://github.com/shivasiddharth/GassistPi
 cd /home/pi/
 sudo apt-get install libjack-jackd2-dev -y
