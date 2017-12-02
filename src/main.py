@@ -123,7 +123,7 @@ def main():
             if 'parcel'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 track()
-            if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower():
+            if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 feed(str(usrcmd).lower())
 
