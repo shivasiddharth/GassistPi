@@ -42,6 +42,7 @@ pwm.start(0)
 GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 #Led Indicator
+GPIO.setup(25, GPIO.OUT)
 led=GPIO.PWM(25,1)
 led.start(0)
 
