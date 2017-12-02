@@ -43,6 +43,7 @@ sudo apt-get install elinks -y
 sudo apt-get update -y
 sudo apt-get install python3-dev python3-venv -y
 sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
+sudo apt-get install npm -y
 #New dependency
 sudo apt-get install libttspico0 libttspico-utils libttspico-data -y
 #Dependencies till 01-12-2017
