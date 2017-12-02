@@ -38,6 +38,9 @@ GPIO.setup(27, GPIO.OUT)
 pwm=GPIO.PWM(27, 50)
 pwm.start(0)
 
+#Stopbutton
+GPIO.setup(25, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+
 playshell = None
 
 #Parcel Tracking declarations
@@ -160,13 +163,15 @@ def feed(phrase):
     title=feed['feed']['title']
     say(title)
     for x in range(0,numfeeds):
-        content=feed['entries'][x]['title']
-        print(content)
-        say(content)
-        summary=feed['entries'][x]['summary']
-        print(summary)
-        say(summary)
-        #time.sleep(10)
+        #To stop the feed, press and hold stop button
+        while GPIO.input(24):
+            content=feed['entries'][x]['title']
+            print(content)
+            say(content)
+            summary=feed['entries'][x]['summary']
+            print(summary)
+            say(summary)        
+    
 
 #GPIO Device Control
 def Action(phrase):
