@@ -10,7 +10,6 @@ import time
 import re
 import subprocess
 import aftership
-import urllib2, json
 import feedparser
 
 GPIO.setmode(GPIO.BCM)
