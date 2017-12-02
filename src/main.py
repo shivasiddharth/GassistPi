@@ -31,6 +31,9 @@ from actions import YouTube
 from actions import stop
 from actions import radio
 from actions import ESP
+from actions import track
+from actions import feed
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -117,6 +120,12 @@ def main():
             if 'wireless'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 ESP(str(usrcmd).lower())
+            if 'parcel'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                track()
+            if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                feed(str(usrcmd).lower())
 
 if __name__ == '__main__':
     main()

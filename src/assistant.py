@@ -35,6 +35,9 @@ from actions import YouTube
 from actions import stop
 from actions import radio
 from actions import ESP
+from actions import track
+from actions import feed
+
 
 try:
     from googlesamples.assistant.grpc import (
@@ -191,6 +194,12 @@ class Assistant():
                             return continue_conversation
                         if 'wireless'.lower() in str(usrcmd).lower():
                             ESP(str(usrcmd).lower())
+                            return continue_conversation
+                        if 'parcel'.lower() in str(usrcmd).lower():
+                            track()
+                            return continue_conversation
+                        if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower():
+                            feed(str(usrcmd).lower())
                             return continue_conversation
                         else:
                             continue
