@@ -40,6 +40,7 @@ source env/bin/activate
 pip install RPi.GPIO
 pip install pyaudio
 pip install aftership
+pip install feedparser
 python -m pip install --upgrade google-assistant-sdk
 python -m pip install --upgrade google-assistant-sdk[samples]
 python -m pip install --upgrade google-auth-oauthlib[tool]
