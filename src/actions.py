@@ -3,6 +3,7 @@
 #This is different from AIY Kit's actions
 #Copying and Pasting AIY Kit's actions commands will not work
 
+from kodijson import Kodi
 import os
 import os.path
 import RPi.GPIO as GPIO
