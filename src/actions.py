@@ -323,8 +323,8 @@ def albumretrieve(query):
         say(feedback)
         kodialbum(reqalbum)#Calling the function to fetch tracks from the album
     else:
-        print('Sorry, I could not find tracks from that album. But, here is a list of other albums')
-        say("Sorry, I could not find tracks from that album. But, here is a list of other albums")
+        print('Sorry, I could not find that album. But, here is a list of other vailable albums')
+        say("Sorry, I could not find that album. But, here is a list of other vailable albums")
         for i in range(0,numalbums):
             Albumname=str(Albums["result"]["albums"][i]["label"])
             print(Albumname)
