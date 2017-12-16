@@ -26,6 +26,9 @@ YOUTUBE_API_VERSION = 'v3'
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodi = Kodi("http://localhost:8080/jsonrpc", "kodi", "kodi")
+musicdirectory="/home/pi/Downloads/Music/"
+videodirectory="/home/pi/Downloads/Video/"
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -198,7 +201,7 @@ def feed(phrase):
         else:
             continue
 
-            
+
 #Function to search YouTube and get videoid
 def youtube_search(query):
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
@@ -223,7 +226,7 @@ def youtube_search(query):
   # matching videos, channels, and playlists.
 
   for search_result in search_response.get('items', []):
-                  
+
     if search_result['id']['kind'] == 'youtube#video':
       videos.append('%s (%s)' % (search_result['snippet']['title'],
                                  search_result['id']['videoId']))
@@ -264,6 +267,140 @@ def youtube_search(query):
 
   kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
   say("Playing YouTube video on Kodi")
+
+
+#Function to fetch tracks from an album
+def kodialbum(query):
+    albumcontents=[]
+    kodi.Playlist.Clear(playlistid=0)
+    songs=kodi.AudioLibrary.GetSongs({ "limits": { "start" : 0, "end": 200 }, "properties": [ "artist", "duration", "album", "track" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": True } })
+    print(songs)
+    for root, directories, files in os.walk(musicdirectory):
+        musicfiles=kodi.Files.GetDirectory({"directory": root, "media": "music"})
+        print(musicfiles)
+        nummusicfiles=len(musicfiles["result"]["files"])
+        numsongs=len(songs["result"]["songs"])
+        i=0
+        j=0
+        for i in range(0,numsongs):
+            if query.lower() in str(songs["result"]["songs"][i]["album"]).lower():
+                for j in range(0,nummusicfiles):
+                    name=musicfiles["result"]["files"][j]["label"]
+                    if str(songs["result"]["songs"][i]["label"]).lower() in str(name).lower():
+                        path=musicfiles["result"]["files"][j]["file"]
+                        albumcontents.append(songs["result"]["songs"][i]["label"])
+                        kodi.Playlist.Add(playlistid=0, item={"file": path})
+
+    if len(albumcontents)!=0:
+        print(albumcontents)
+        playinginfo=("Playing "+str(len(albumcontents))+" tracks from album")
+        print(playinginfo)
+        say(playinginfo)
+        kodi.Player.open(item={"playlistid": 0},options={"repeat": "all"})
+    else:
+        print("Sorry, I could not find tracks from that album")
+        say("Sorry, I could not find tracks from that album")
+
+
+#Function to retrieve the name of requested album from the user command
+def albumretrieve(query):
+    i=0
+    Albumnames=[]
+    Albums=kodi.AudioLibrary.GetAlbums({ "limits": { "start" : 0, "end": 200 }, "properties": ["playcount", "artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "ascending", "method": "album", "ignorearticle": True } })
+    numalbums=len(Albums["result"]["albums"])
+    for i in range(0,numalbums):
+        Albumnames.append(Albums["result"]["albums"][i]["label"])
+        if str(Albums["result"]["albums"][i]["label"]).lower() in str(query).lower():
+            reqalbum=(Albums["result"]["albums"][i]["label"])
+            break
+        else:
+            reqalbum=""
+    if reqalbum!="":
+        print(Albumnames)
+        print(reqalbum)
+        feedback=("Album, "+reqalbum+""found")
+        print(feedback)
+        say(feedback)
+        kodialbum(reqalbum)#Calling the function to fetch tracks from the album
+    else:
+        print('Sorry, I could not find tracks from that album. But, here is a list of other albums')
+        say("Sorry, I could not find tracks from that album. But, here is a list of other albums")
+        for i in range(0,numalbums):
+            Albumname=str(Albums["result"]["albums"][i]["label"])
+            print(Albumname)
+            say(Albumname)
+
+
+#Function to play requested single track or video/movie on kodi
+def singleplaykodi(query):
+    kodi.Playlist.Clear(playlistid=0)
+    i=0
+    idx=query.find('play')
+    track=query[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track = track.replace('on Kodi','',1)
+    track=track.strip()
+    say("Searching for your file")
+    if 'song'.lower() in str(track).lower():
+        track = track.replace('song','',1)
+        track=track.strip()
+        musicfiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
+        nummusicfiles=len(musicfiles["result"]["files"])
+        print('Total number of files: '+ str(nummusicfiles)))
+        for i in range(0,nummusicfiles):
+           name=musicfiles["result"]["files"][i]["label"]
+           if str(track).lower() in str(name).lower():
+               print('Matching file found')
+               path=musicfiles["result"]["files"][i]["file"]
+               print(path)
+               say("Playing "+name+" song")
+               kodi.Player.open(item={"file": path})
+    elif 'movie'.lower() in str(track).lower():
+        track = track.replace('movie','',1)
+        track=track.strip()
+        videofiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "video"})
+        numvideofiles=len(videofiles["result"]["files"])
+        print('Total number of files: '+ str(numvideofiles)))
+        for i in range(0,numvideofiles):
+           name=videofiles["result"]["files"][i]["label"]
+           if str(track).lower() in str(name).lower():
+               print('Matching file found')
+               path=videofiles["result"]["files"][i]["file"]
+               print(path)
+               say("Playing "+name+" movie")
+               kodi.Player.open(item={"file": path})
+    else:
+        say("Sorry, I am unable to help you with that now")
+
+
+#Function to check what is currently playing
+def whatisplaying():
+    players=kodi.Player.GetActivePlayers()
+    playid=players["result"][0]["playerid"]
+    typeplaying=players["result"][0]["type"]
+
+    if typeplaying=="video" and playid==1:
+        currentvid=kodi.Player.GetItem({ "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 })
+        print(currentvid["result"]["item"]["title"])
+        playingcontent=("Movie titled, "+(currentvid["result"]["item"]["title"])+", is currently playing")
+        print(playingcontent)
+        say(playingcontent)
+    elif typeplaying=="audio" and playid==0:
+        currentaud=kodi.Player.GetItem({ "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 })
+        print(currentaud["result"]["item"]["title"])
+        print(currentaud["result"]["item"]["album"])
+        if (currentaud["result"]["item"]["album"]) !=[] and (currentaud["result"]["item"]["album"]) !=str("") and (currentaud["result"]["item"]["artist"])!=[] and (currentaud["result"]["item"]["artist"])!=str(""):
+            playingcontent=("Song titled, '"+(currentaud["result"]["item"]["title"])+"', from the album "+(currentaud["result"]["item"]["album"])+", by "+str((currentaud["result"]["item"]["artist"][0]))+", is currently playing")
+            print(playingcontent)
+            say(playingcontent)
+        else:
+            playingcontent=("Song titled, "+(currentaud["result"]["item"]["title"])+", is currently playing")
+            print(playingcontent)
+            say(playingcontent)
+    else:
+        print("Is anything even playing")
+        say("Is anything even playing ?")
 
 
 
