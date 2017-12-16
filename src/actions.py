@@ -339,7 +339,7 @@ def singleplaykodi(query):
     track=query[idx:]
     track=track.replace("'}", "",1)
     track = track.replace('play','',1)
-    track = track.replace('on Kodi','',1)
+    track = track.replace('on kodi','',1)
     track=track.strip()
     say("Searching for your file")
     if 'song'.lower() in str(track).lower():
