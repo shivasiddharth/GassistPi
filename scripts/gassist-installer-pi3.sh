@@ -41,8 +41,10 @@ pip install RPi.GPIO
 pip install pyaudio
 pip install aftership
 pip install feedparser
+pip install kodi-json
+python -m pip install --upgrade google-api-python-client
 python -m pip install --upgrade google-assistant-library
 python -m pip install --upgrade google-assistant-sdk
 python -m pip install --upgrade google-assistant-sdk[samples]
-python -m pip install --upgrade google-auth-oauthlib[tool]
+python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 google-oauthlib-tool --client-secrets /home/pi/assistant.json --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless

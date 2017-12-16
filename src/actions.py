@@ -201,6 +201,13 @@ def feed(phrase):
         else:
             continue
 
+#Function to get Kodi Volume and Mute status
+def mutevolstatus():
+    status= kodi.Application.GetProperties({"properties": ("volume","muted")})
+    mutestatus=volmutstatus["result"]["muted"])
+    volstatus=(volmutstatus["result"]["volume"])
+    return mutestatus, volstatus
+
 
 #Function to search YouTube and get videoid
 def youtube_search(query):
@@ -342,7 +349,7 @@ def singleplaykodi(query):
     track = track.replace('on kodi','',1)
     track=track.strip()
     say("Searching for your file")
-    if 'song'.lower() in str(track).lower():
+    if 'song'.lower() in str(track).lower() or 'track'.lower() in str(track).lower() or 'audio'.lower() in str(track).lower():
         track = track.replace('song','',1)
         track=track.strip()
         musicfiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
@@ -356,7 +363,7 @@ def singleplaykodi(query):
                print(path)
                say("Playing "+name+" song")
                kodi.Player.open(item={"file": path})
-    elif 'movie'.lower() in str(track).lower():
+    elif 'movie'.lower() in str(track).lower() or 'video'.lower() in str(track).lower():
         track = track.replace('movie','',1)
         track=track.strip()
         videofiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "video"})
@@ -401,7 +408,105 @@ def whatisplaying():
     else:
         print("Is anything even playing")
         say("Is anything even playing ?")
+        
 
+#Functions for actions on KODI
+def kodiactions(phrase):
+    if 'youtube'.lower() in str(phrase).lower():
+        query=str(phrase).lower()
+        idx=query.find('play')
+        track=query[idx:]
+        track=track.replace("'}", "",1)
+        track = track.replace('play','',1)
+        track = track.replace('on kodi','',1)
+        if 'youtube'.lower() in track:
+            track=track.replace('youtube','',1)
+        elif 'video'.lower() in track:
+            track=track.replace('video','',1)
+        else:
+            track=track.strip()
+        print(track)
+        say("Fetching YouTube links for, "+track+)
+        youtube_search(track)
+    elif 'what'.lower() in str(phrase).lower() and 'playing'.lower() in str(phrase).lower():
+        whatisplaying()
+    elif 'play'.lower() in str(phrase).lower() and 'album'.lower() in str(phrase).lower():
+        albumretrieve(phrase)
+    elif 'play'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
+        singleplaykodi(phrase)
+    elif 'shuffle'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower() or 'music'.lower() in str(phrase).lower()):
+        kodi.Playlist.Clear(playlistid=0)
+        musicfiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
+        nummusicfiles=len(musicfiles["result"]["files"])
+        for i in range(0,nummusicfiles):
+           path=musicfiles["result"]["files"][i]["file"]
+           kodi.Playlist.Add(playlistid=0, item={"file": path})
+        kodi.Player.open(item={"playlistid": 0},options={"repeat": "all"})
+        players=kodi.Player.GetActivePlayers()
+        playid=players["result"][0]["playerid"]
+        kodi.Player.SetShuffle({"playerid":0,"shuffle":True})
+    elif 'repeat'.lower() in str(phrase).lower():
+        players=kodi.Player.GetActivePlayers()
+        playid=players["result"][0]["playerid"]
+        if 'this'.lower() in str(phrase).lower() or 'one'.lower() in str(phrase).lower() or str(1).lower() in str(phrase).lower():
+            kodi.Player.SetRepeat({"playerid": playid,"repeat": "one"})
+        elif 'all'.lower() in str(phrase).lower():
+            kodi.Player.SetRepeat({"playerid": playid,"repeat": "all"})
+        elif 'off'.lower() in str(phrase).lower() or 'disable'.lower() in str(phrase).lower() or 'none'.lower() in str(phrase).lower():
+            kodi.Player.SetRepeat({"playerid": playid,"repeat": "one"})
+    elif 'shuffle'.lower() in str(phrase).lower() and 'turn'.lower() in str(phrase).lower():
+        players=kodi.Player.GetActivePlayers()
+        playid=players["result"][0]["playerid"]
+        if 'on'.lower() in str(phrase).lower():
+            kodi.Player.SetShuffle({"playerid": playid,"shuffle":True})
+        elif 'off'.lower() in str(phrase).lower():
+            kodi.Player.SetShuffle({"playerid": playid,"shuffle":False})
+    elif 'play'.lower() in str(phrase).lower() and 'next'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
+        players=kodi.Player.GetActivePlayers()
+        playid=players["result"][0]["playerid"]
+        kodi.Player.GoTo({"playerid":playid,"to":"next"})
+    elif 'play'.lower() in str(phrase).lower() and 'previous'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
+        players=kodi.Player.GetActivePlayers()
+        playid=players["result"][0]["playerid"]
+        kodi.Player.GoTo({"playerid":playid,"to":"previous"})
+    elif 'scroll'.lower() in str(phrase).lower():
+        players=kodi.Player.GetActivePlayers()
+        playid=players["result"][0]["playerid"]
+        if 'back'.lower() in str(phrase).lower() or 'backward'.lower() in str(phrase).lower():
+            if 'a bit'.lower() in str(phrase).lower() or 'little'.lower() in str(phrase).lower():
+                kodi.Player.Seek({ "playerid": playid, "value": "smallbackward" })
+            else:
+                kodi.Player.Seek({ "playerid": playid, "value": "bigbackward" })
+        elif 'front'.lower() in str(phrase).lower() or 'forward'.lower() in str(phrase).lower():
+            if 'a bit'.lower() in str(phrase).lower() or 'little'.lower() in str(phrase).lower():
+                kodi.Player.Seek({ "playerid": playid, "value": "smallforward" })
+            else:
+                kodi.Player.Seek({ "playerid": playid, "value": "bigforward" })
+    elif 'set'.lower() in str(phrase).lower() and 'volume'.lower() in str(phrase).lower():
+        for s in re.findall(r'\b\d+\b', phrase):
+            kodi.Application.SetVolume({"volume": int(s)})
+    elif 'toggle mute'.lower() in str(phrase).lower():
+        status=mutevolstatus()
+        if status[0]==False:
+            kodi.Application.SetMute({"mute": True})
+            say("Muting Kodi")
+        elif status[0]==True:
+            kodi.Application.SetMute({"mute": False})
+            say("Disabling mute on Kodi")
+    elif 'get'.lower() in str(phrase).lower() and 'volume'.lower() in str(phrase).lower():
+        status=mutevolstatus()
+        vollevel=status[1]
+        say("Currently, Kodi's volume is set at: "+str(vollevel))
+    elif 'home'.lower() in str(phrase).lower() and 'go'.lower() in str(phrase).lower():
+        kodi.GUI.ActivateWindow({"window":"home"})
+    elif 'player'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
+        kodi.GUI.ActivateWindow({"window":"playercontrols"})
+    elif 'videos'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
+        kodi.GUI.ActivateWindow({"window":"videos"})
+    elif 'music'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
+        kodi.GUI.ActivateWindow({"window":"music"})
+    elif 'settings'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
+        kodi.GUI.ActivateWindow({"window":"settings"})
 
 
 #GPIO Device Control

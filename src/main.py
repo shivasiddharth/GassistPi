@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+from kodijson import Kodi, PLAYER_VIDEO
 from __future__ import print_function
 import RPi.GPIO as GPIO
 import argparse
@@ -33,6 +33,14 @@ from actions import radio
 from actions import ESP
 from actions import track
 from actions import feed
+from actions import kodiactions
+
+#Login with default kodi/kodi credentials
+#kodi = Kodi("http://localhost:8080/jsonrpc")
+
+#Login with custom credentials
+# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
+kodi = Kodi("http://localhost:8080/jsonrpc", "kodi", "kodi")
 
 
 GPIO.setmode(GPIO.BCM)
@@ -61,6 +69,7 @@ def process_event(event):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        kodi.Application.SetMute({"mute": True})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
 
@@ -74,13 +83,13 @@ def process_event(event):
        GPIO.output(5,GPIO.HIGH)
        led.ChangeDutyCycle(100)
 
-
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
+        kodi.Application.SetMute({"mute": False})
         print()
 
 
@@ -126,6 +135,9 @@ def main():
             if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 feed(str(usrcmd).lower())
+            if 'on kodi'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                kodiactions(str(usrcmd).lower())
 
 if __name__ == '__main__':
     main()
