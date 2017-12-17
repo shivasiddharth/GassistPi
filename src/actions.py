@@ -31,8 +31,7 @@ musicdirectory="/home/pi/Music/"
 videodirectory="/home/pi/Videos/"
 windowcmd=["Home","Settings","Weather","Videos","Music","Player"]
 window=["home","settings","weather","videos","music","playercontrols"]
-movecmd=["left","right","up","down","back","select","info","player"]
-move=["Input.Left()","Input.Right()","Input.Up()","Input.Down","Input.Back()","Input.Select()","Input.Info()","Input.ShowOSD"]
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -525,12 +524,13 @@ def kodiactions(phrase):
         elif 'all'.lower() in str(phrase).lower():
             kodi.Player.SetRepeat({"playerid": playid,"repeat": "all"})
         elif 'off'.lower() in str(phrase).lower() or 'disable'.lower() in str(phrase).lower() or 'none'.lower() in str(phrase).lower():
-            kodi.Player.SetRepeat({"playerid": playid,"repeat": "one"})
+            kodi.Player.SetRepeat({"playerid": playid,"repeat": "off"})
     elif 'shuffle'.lower() in str(phrase).lower() and 'turn'.lower() in str(phrase).lower():
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
         cmd=str(phrase).lower()
         cmd=cmd.replace('on kodi','',1)
+        cmd=cmd.strip()
         if 'on'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":True})
         elif 'off'.lower() in str(cmd).lower():
@@ -600,11 +600,22 @@ def kodiactions(phrase):
             playid=players["result"][0]["playerid"]
             kodi.Player.Stop({"playerid": playid})
     elif 'move'.lower() in str(phrase).lower() or 'show'.lower():
-        for num, name in enumerate(movecmd):
-            if name.lower() in str(phrase).lower():
-                move=window[num]
-                kodi.move
-
+        if 'left'.lower() in str(phrase).lower():
+            kodi.Input.Left()
+        elif 'right'.lower() in str(phrase).lower():
+            kodi.Input.Right()
+        elif 'up'.lower() in str(phrase).lower():
+            kodi.Input.Up()
+        elif 'down'.lower() in str(phrase).lower():
+            kodi.Input.Down
+        elif 'back'.lower() in str(phrase).lower():
+            kodi.Input.Back()
+        elif 'select'.lower() in str(phrase).lower():
+            kodi.Input.Select()
+        elif 'info'.lower() in str(phrase).lower():
+            kodi.Input.Info()
+        elif 'player'.lower() in str(phrase).lower():
+            kodi.Input.ShowOSD
 
 #GPIO Device Control
 def Action(phrase):
