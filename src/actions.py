@@ -204,7 +204,7 @@ def feed(phrase):
 #Function to get Kodi Volume and Mute status
 def mutevolstatus():
     status= kodi.Application.GetProperties({"properties": ("volume","muted")})
-    mutestatus=volmutstatus["result"]["muted"])
+    mutestatus=(volmutstatus["result"]["muted"])
     volstatus=(volmutstatus["result"]["volume"])
     return mutestatus, volstatus
 
@@ -325,7 +325,7 @@ def albumretrieve(query):
     if reqalbum!="":
         print(Albumnames)
         print(reqalbum)
-        feedback=("Album, "+reqalbum+""found")
+        feedback=("Album, "+reqalbum+"found")
         print(feedback)
         say(feedback)
         kodialbum(reqalbum)#Calling the function to fetch tracks from the album
@@ -354,7 +354,7 @@ def singleplaykodi(query):
         track=track.strip()
         musicfiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
         nummusicfiles=len(musicfiles["result"]["files"])
-        print('Total number of files: '+ str(nummusicfiles)))
+        print("Total number of files: "+ str(nummusicfiles))
         for i in range(0,nummusicfiles):
            name=musicfiles["result"]["files"][i]["label"]
            if str(track).lower() in str(name).lower():
@@ -368,7 +368,7 @@ def singleplaykodi(query):
         track=track.strip()
         videofiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "video"})
         numvideofiles=len(videofiles["result"]["files"])
-        print('Total number of files: '+ str(numvideofiles)))
+        print("Total number of files: "+ str(numvideofiles))
         for i in range(0,numvideofiles):
            name=videofiles["result"]["files"][i]["label"]
            if str(track).lower() in str(name).lower():
@@ -408,7 +408,7 @@ def whatisplaying():
     else:
         print("Is anything even playing")
         say("Is anything even playing ?")
-        
+
 
 #Functions for actions on KODI
 def kodiactions(phrase):
@@ -426,7 +426,7 @@ def kodiactions(phrase):
         else:
             track=track.strip()
         print(track)
-        say("Fetching YouTube links for, "+track+)
+        say("Fetching YouTube links for, "+track)
         youtube_search(track)
     elif 'what'.lower() in str(phrase).lower() and 'playing'.lower() in str(phrase).lower():
         whatisplaying()
