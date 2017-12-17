@@ -279,11 +279,19 @@ def youtube_search(query):
 #Function to fetch tracks from an album
 def kodialbum(query):
     albumcontents=[]
+    directories=[]
     kodi.Playlist.Clear(playlistid=0)
     songs=kodi.AudioLibrary.GetSongs({ "limits": { "start" : 0, "end": 200 }, "properties": [ "artist", "duration", "album", "track" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": True } })
     print(songs)
-    for root, directories, files in os.walk(musicdirectory):
-        musicfiles=kodi.Files.GetDirectory({"directory": root, "media": "music"})
+    files=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
+    numfiles=len(files["result"]["files"])
+    for a in range(0,numfiles):
+        if (files["result"]["files"][a]["filetype"])=="directory":
+            directories.append(files["result"]["files"][i]["file"])
+
+    for b in range(0,len(directories)):
+        folder=directories[b]
+        musicfiles=kodi.Files.GetDirectory({"directory": folder, "media": "music"})
         print(musicfiles)
         nummusicfiles=len(musicfiles["result"]["files"])
         numsongs=len(songs["result"]["songs"])
@@ -300,7 +308,7 @@ def kodialbum(query):
 
     if len(albumcontents)!=0:
         print(albumcontents)
-        playinginfo=("Playing "+str(len(albumcontents))+" tracks from album")
+        playinginfo=("Playing "+str(len(albumcontents))+" tracks from album "+query)
         print(playinginfo)
         say(playinginfo)
         kodi.Player.open(item={"playlistid": 0},options={"repeat": "all"})
