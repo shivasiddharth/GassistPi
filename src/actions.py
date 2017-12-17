@@ -573,7 +573,7 @@ def kodiactions(phrase):
         status=mutevolstatus()
         vollevel=status[1]
         say("Currently, Kodi's volume is set at: "+str(vollevel))
-    elif 'go to'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
+    elif 'go to'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower():
         for num, name in enumerate(windowcmd):
             if name.lower() in str(phrase).lower():
                 activwindow=window[num]
@@ -585,7 +585,7 @@ def kodiactions(phrase):
         else:
             playid=players["result"][0]["playerid"]
             kodi.Player.PlayPause({"playerid": playid,"play": False})
-    elif 'resume'.lower() in str(phrase).lower()
+    elif 'resume'.lower() in str(phrase).lower():
         players=kodi.Player.GetActivePlayers()
         if players["result"]==[]:
             say("There is nothing playing")

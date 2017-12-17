@@ -32,6 +32,7 @@ from actions import radio
 from actions import ESP
 from actions import track
 from actions import feed
+from actions import kodiactions
 from actions import mutevolstatus
 
 #Login with default kodi/kodi credentials
