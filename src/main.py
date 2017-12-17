@@ -68,7 +68,7 @@ def process_event(event):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        kodi.Application.SetMute({"mute": True})
+##        kodi.Application.SetMute({"mute": True})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
 
@@ -88,7 +88,7 @@ def process_event(event):
             event.args and not event.args['with_follow_on_turn']):
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
-        kodi.Application.SetMute({"mute": False})
+##        kodi.Application.SetMute({"mute": False})
         print()
 
 
