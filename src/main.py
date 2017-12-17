@@ -15,7 +15,6 @@
 # limitations under the License.
 
 from kodijson import Kodi, PLAYER_VIDEO
-from __future__ import print_function
 import RPi.GPIO as GPIO
 import argparse
 import os.path
@@ -118,7 +117,7 @@ def main():
             if 'trigger'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
-            if 'play'.lower() in str(usrcmd).lower():
+            if 'stream'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 YouTube(str(usrcmd).lower())
             if 'stop'.lower() in str(usrcmd).lower():
