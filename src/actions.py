@@ -14,6 +14,7 @@ import re
 import subprocess
 import aftership
 import feedparser
+import json
 
 #YouTube API Constants
 DEVELOPER_KEY = 'AIzaSyBdRKh2BzKPR4uHVVYWHyhx1oMmv_UJIkc'
@@ -28,7 +29,10 @@ YOUTUBE_API_VERSION = 'v3'
 kodi = Kodi("http://localhost:8080/jsonrpc", "kodi", "kodi")
 musicdirectory="/home/pi/Music/"
 videodirectory="/home/pi/Videos/"
-
+windowcmd=["Home","Settings","Weather","Videos","Music","Player"]
+window=["home","settings","weather","videos","music","playercontrols"]
+movecmd=["left","right","up","down","back","select","info","player"]
+move=["Input.Left()","Input.Right()","Input.Up()","Input.Down","Input.Back()","Input.Select()","Input.Info()","Input.ShowOSD"]
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -200,6 +204,7 @@ def feed(phrase):
             break
         else:
             continue
+
 
 #Function to get Kodi Volume and Mute status
 def mutevolstatus():
@@ -483,6 +488,7 @@ def shufflekodi():
     players=kodi.Player.GetActivePlayers()
     playid=players["result"][0]["playerid"]
     kodi.Player.SetShuffle({"playerid":0,"shuffle":True})
+    say("Shuffling your music")
 
 
 #Functions for actions on KODI
@@ -523,9 +529,11 @@ def kodiactions(phrase):
     elif 'shuffle'.lower() in str(phrase).lower() and 'turn'.lower() in str(phrase).lower():
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
-        if 'on'.lower() in str(phrase).lower():
+        cmd=str(phrase).lower()
+        cmd=cmd.replace('on kodi','',1)
+        if 'on'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":True})
-        elif 'off'.lower() in str(phrase).lower():
+        elif 'off'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":False})
     elif 'play'.lower() in str(phrase).lower() and 'next'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         players=kodi.Player.GetActivePlayers()
@@ -551,6 +559,8 @@ def kodiactions(phrase):
     elif 'set'.lower() in str(phrase).lower() and 'volume'.lower() in str(phrase).lower():
         for s in re.findall(r'\b\d+\b', phrase):
             kodi.Application.SetVolume({"volume": int(s)})
+            with open('/home/pi/.volume.json', 'w') as f:
+                   json.dump(int(s), f)
     elif 'toggle mute'.lower() in str(phrase).lower():
         status=mutevolstatus()
         if status[0]==False:
@@ -563,16 +573,37 @@ def kodiactions(phrase):
         status=mutevolstatus()
         vollevel=status[1]
         say("Currently, Kodi's volume is set at: "+str(vollevel))
-    elif 'home'.lower() in str(phrase).lower() and 'go'.lower() in str(phrase).lower():
-        kodi.GUI.ActivateWindow({"window":"home"})
-    elif 'player'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
-        kodi.GUI.ActivateWindow({"window":"playercontrols"})
-    elif 'videos'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
-        kodi.GUI.ActivateWindow({"window":"videos"})
-    elif 'music'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
-        kodi.GUI.ActivateWindow({"window":"music"})
-    elif 'settings'.lower() in str(phrase).lower() and ('go'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
-        kodi.GUI.ActivateWindow({"window":"settings"})
+    elif 'go to'.lower() in str(phrase).lower() or 'open'.lower() in str(phrase).lower()):
+        for num, name in enumerate(windowcmd):
+            if name.lower() in str(phrase).lower():
+                activwindow=window[num]
+                kodi.GUI.ActivateWindow({"window": activwindow})
+    elif 'pause'.lower() in str(phrase).lower():
+        players=kodi.Player.GetActivePlayers()
+        if players["result"]==[]:
+            say("There is nothing playing")
+        else:
+            playid=players["result"][0]["playerid"]
+            kodi.Player.PlayPause({"playerid": playid,"play": False})
+    elif 'resume'.lower() in str(phrase).lower()
+        players=kodi.Player.GetActivePlayers()
+        if players["result"]==[]:
+            say("There is nothing playing")
+        else:
+            playid=players["result"][0]["playerid"]
+            kodi.Player.PlayPause({"playerid": playid,"play": True})
+    elif 'stop'.lower() in str(phrase).lower():
+        players=kodi.Player.GetActivePlayers()
+        if players["result"]==[]:
+            say("There is nothing playing")
+        else:
+            playid=players["result"][0]["playerid"]
+            kodi.Player.Stop({"playerid": playid})
+    elif 'move'.lower() in str(phrase).lower() or 'show'.lower():
+        for num, name in enumerate(movecmd):
+            if name.lower() in str(phrase).lower():
+                move=window[num]
+                kodi.move
 
 
 #GPIO Device Control
