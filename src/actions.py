@@ -287,22 +287,26 @@ def kodialbum(query):
     numfiles=len(files["result"]["files"])
     for a in range(0,numfiles):
         if (files["result"]["files"][a]["filetype"])=="directory":
-            directories.append(files["result"]["files"][i]["file"])
+            folder=files["result"]["files"][a]["file"]
+            musicfiles=kodi.Files.GetDirectory({"directory": folder, "media": "music"})
+            print(musicfiles)
+            nummusicfiles=len(musicfiles["result"]["files"])
+            numsongs=len(songs["result"]["songs"])
+            for i in range(0,numsongs):
+                if query.lower() in str(songs["result"]["songs"][i]["album"]).lower():
+                    for j in range(0,nummusicfiles):
+                        name=musicfiles["result"]["files"][j]["label"]
+                        if str(songs["result"]["songs"][i]["label"]).lower() in str(name).lower():
+                            path=musicfiles["result"]["files"][j]["file"]
+                            albumcontents.append(songs["result"]["songs"][i]["label"])
+                            kodi.Playlist.Add(playlistid=0, item={"file": path})
 
-    for b in range(0,len(directories)):
-        folder=directories[b]
-        musicfiles=kodi.Files.GetDirectory({"directory": folder, "media": "music"})
-        print(musicfiles)
-        nummusicfiles=len(musicfiles["result"]["files"])
-        numsongs=len(songs["result"]["songs"])
-        i=0
-        j=0
-        for i in range(0,numsongs):
-            if query.lower() in str(songs["result"]["songs"][i]["album"]).lower():
-                for j in range(0,nummusicfiles):
-                    name=musicfiles["result"]["files"][j]["label"]
+        elif (files["result"]["files"][a]["filetype"])=="file":
+            for i in range(0,numsongs):
+                if query.lower() in str(songs["result"]["songs"][i]["album"]).lower():
+                    name=files["result"]["files"][a]["label"]
                     if str(songs["result"]["songs"][i]["label"]).lower() in str(name).lower():
-                        path=musicfiles["result"]["files"][j]["file"]
+                        path=files["result"]["files"][a]["file"]
                         albumcontents.append(songs["result"]["songs"][i]["label"])
                         kodi.Playlist.Add(playlistid=0, item={"file": path})
 
@@ -358,33 +362,65 @@ def singleplaykodi(query):
     track=track.strip()
     say("Searching for your file")
     if 'song'.lower() in str(track).lower() or 'track'.lower() in str(track).lower() or 'audio'.lower() in str(track).lower():
-        track = track.replace('song','',1)
+        if 'song'.lower() in str(track).lower():
+            track = track.replace('song','',1)
+        elif 'track'.lower() in str(track).lower():
+            track = track.replace('track','',1)
+        elif 'audio'.lower() in str(track).lower():
+            track = track.replace('audio','',1)
         track=track.strip()
         musicfiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
         nummusicfiles=len(musicfiles["result"]["files"])
         print("Total number of files: "+ str(nummusicfiles))
-        for i in range(0,nummusicfiles):
-           name=musicfiles["result"]["files"][i]["label"]
-           if str(track).lower() in str(name).lower():
-               print('Matching file found')
-               path=musicfiles["result"]["files"][i]["file"]
-               print(path)
-               say("Playing "+name+" song")
-               kodi.Player.open(item={"file": path})
+        for a in range(0,nummusicfiles):
+            if (musicfiles["result"]["files"][a]["filetype"])=="directory":
+                folder=musicfiles["result"]["files"][a]["file"]
+                files=kodi.Files.GetDirectory({"directory": folder, "media": "music"})
+                numfiles=len(files["result"]["files"])
+                for i in range(0,numfiles):
+                   name=files["result"]["files"][i]["label"]
+                   if str(track).lower() in str(name).lower():
+                       print('Matching file found')
+                       path=files["result"]["files"][i]["file"]
+                       print(path)
+                       say("Playing "+name+" song")
+                       kodi.Player.open(item={"file": path})
+            elif (musicfiles["result"]["files"][a]["filetype"])=="file":
+                name=musifiles["result"]["files"][a]["label"]
+                if str(track).lower() in str(name).lower():
+                    print('Matching file found')
+                    path=musifiles["result"]["files"][a]["file"]
+                    print(path)
+                    say("Playing "+name+" song")
+                    kodi.Player.open(item={"file": path})
+
     elif 'movie'.lower() in str(track).lower() or 'video'.lower() in str(track).lower():
         track = track.replace('movie','',1)
         track=track.strip()
         videofiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "video"})
         numvideofiles=len(videofiles["result"]["files"])
         print("Total number of files: "+ str(numvideofiles))
-        for i in range(0,numvideofiles):
-           name=videofiles["result"]["files"][i]["label"]
-           if str(track).lower() in str(name).lower():
-               print('Matching file found')
-               path=videofiles["result"]["files"][i]["file"]
-               print(path)
-               say("Playing "+name+" movie")
-               kodi.Player.open(item={"file": path})
+        for a in range(0,numvideofiles):
+            if (videofiles["result"]["files"][a]["filetype"])=="directory":
+                folder=videofiles["result"]["files"][a]["file"]
+                files=kodi.Files.GetDirectory({"directory": folder, "media": "video"})
+                numfiles=len(files["result"]["files"])
+                for i in range(0,numfiles):
+                   name=files["result"]["files"][i]["label"]
+                   if str(track).lower() in str(name).lower():
+                       print('Matching file found')
+                       path=files["result"]["files"][i]["file"]
+                       print(path)
+                       say("Playing "+name+" movie")
+                       kodi.Player.open(item={"file": path})
+            elif (videofiles["result"]["files"][a]["filetype"])=="file":
+                name=videofiles["result"]["files"][a]["label"]
+                if str(track).lower() in str(name).lower():
+                    print('Matching file found')
+                    path=videofiles["result"]["files"][a]["file"]
+                    print(path)
+                    say("Playing "+name+" movie")
+                    kodi.Player.open(item={"file": path})
     else:
         say("Sorry, I am unable to help you with that now")
 
@@ -394,7 +430,6 @@ def whatisplaying():
     players=kodi.Player.GetActivePlayers()
     playid=players["result"][0]["playerid"]
     typeplaying=players["result"][0]["type"]
-
     if typeplaying=="video" and playid==1:
         currentvid=kodi.Player.GetItem({ "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 1 })
         print(currentvid["result"]["item"]["title"])
@@ -416,6 +451,29 @@ def whatisplaying():
     else:
         print("Is anything even playing")
         say("Is anything even playing ?")
+
+#Function to shuffle Kodi tracks
+def shufflekodi():
+    kodi.Playlist.Clear(playlistid=0)
+    files=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
+    numfiles=len(musicfiles["result"]["files"])
+    for a in range(0,numfiles):
+        if (files["result"]["files"][a]["filetype"])=="directory":
+            directories.append(files["result"]["files"][i]["file"])
+        elif (files["result"]["files"][a]["filetype"])=="file":
+            path=files["result"]["files"][a]["file"]
+            kodi.Playlist.Add(playlistid=0, item={"file": path})
+    for i in range(0,len(directories)):
+        folder=directories[i]
+        songs=kodi.Files.GetDirectory({"directory": folder, "media": "music"})
+        numsongs=len(musicfiles["result"]["files"])
+        for j in range(0,numsongs):
+            path=songs["result"]["files"][j]["file"]
+            kodi.Playlist.Add(playlistid=0, item={"file": path})
+    kodi.Player.open(item={"playlistid": 0},options={"repeat": "all"})
+    players=kodi.Player.GetActivePlayers()
+    playid=players["result"][0]["playerid"]
+    kodi.Player.SetShuffle({"playerid":0,"shuffle":True})
 
 
 #Functions for actions on KODI
@@ -443,16 +501,7 @@ def kodiactions(phrase):
     elif 'play'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         singleplaykodi(phrase)
     elif 'shuffle'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower() or 'music'.lower() in str(phrase).lower()):
-        kodi.Playlist.Clear(playlistid=0)
-        musicfiles=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
-        nummusicfiles=len(musicfiles["result"]["files"])
-        for i in range(0,nummusicfiles):
-           path=musicfiles["result"]["files"][i]["file"]
-           kodi.Playlist.Add(playlistid=0, item={"file": path})
-        kodi.Player.open(item={"playlistid": 0},options={"repeat": "all"})
-        players=kodi.Player.GetActivePlayers()
-        playid=players["result"][0]["playerid"]
-        kodi.Player.SetShuffle({"playerid":0,"shuffle":True})
+        shufflekodi()
     elif 'repeat'.lower() in str(phrase).lower():
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
