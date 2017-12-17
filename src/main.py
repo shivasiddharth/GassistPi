@@ -40,7 +40,7 @@ from actions import mutevolstatus
 
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
-kodi = Kodi("http://localhost:8080/jsonrpc", "kodi", "kodi")
+kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
 
 
 GPIO.setmode(GPIO.BCM)

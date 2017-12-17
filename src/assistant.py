@@ -37,7 +37,8 @@ from actions import radio
 from actions import ESP
 from actions import track
 from actions import feed
-
+from actions import kodiactions
+from actions import mutevolstatus
 
 try:
     from googlesamples.assistant.grpc import (
@@ -47,6 +48,13 @@ try:
 except SystemError:
     import assistant_helpers
     import audio_helpers
+
+#Login with default kodi/kodi credentials
+#kodi = Kodi("http://localhost:8080/jsonrpc")
+
+#Login with custom credentials
+# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
+kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
 
 
 GPIO.setmode(GPIO.BCM)
@@ -155,6 +163,11 @@ class Assistant():
                 continue_conversation = False
                 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 self.conversation_stream.start_recording()
+                status=mutevolstatus()
+                vollevel=status[1]
+                with open('/home/pi/.volume.json', 'w') as f:
+                       json.dump(vollevel, f)
+                kodi.Application.SetVolume({"volume": 0})
                 GPIO.output(5,GPIO.HIGH)
                 led.ChangeDutyCycle(100)
                 self.logger.info('Recording audio request.')
@@ -183,7 +196,7 @@ class Assistant():
                         if 'trigger' in str(usrcmd).lower():
                             Action(str(usrcmd).lower())
                             return continue_conversation
-                        if 'play'.lower() in str(usrcmd).lower():
+                        if 'stream'.lower() in str(usrcmd).lower():
                             YouTube(str(usrcmd).lower())
                             return continue_conversation
                         if 'stop'.lower() in str(usrcmd).lower():
@@ -200,6 +213,9 @@ class Assistant():
                             return continue_conversation
                         if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
                             feed(str(usrcmd).lower())
+                            return continue_conversation
+                        if 'on kodi'.lower() in str(usrcmd).lower():
+                            kodiactions(str(usrcmd).lower())
                             return continue_conversation
                         else:
                             continue
@@ -231,6 +247,9 @@ class Assistant():
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
+                with open('/home/pi/.volume.json', 'r') as f:
+                       vollevel = json.load(f)
+                       kodi.Application.SetVolume({"volume": vollevel})
                 self.conversation_stream.stop_playback()
         except Exception as e:
             self._create_assistant()

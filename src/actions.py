@@ -26,9 +26,9 @@ YOUTUBE_API_VERSION = 'v3'
 
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
-kodi = Kodi("http://localhost:8080/jsonrpc", "kodi", "kodi")
-musicdirectory="/home/pi/Music/"
-videodirectory="/home/pi/Videos/"
+kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
+musicdirectory="/home/osmc/Music/"
+videodirectory="/home/osmc/Movies/"
 windowcmd=["Home","Settings","Weather","Videos","Music","Player"]
 window=["home","settings","weather","videos","music","playercontrols"]
 
@@ -486,7 +486,7 @@ def shufflekodi():
     kodi.Player.open(item={"playlistid": 0},options={"repeat": "all"})
     players=kodi.Player.GetActivePlayers()
     playid=players["result"][0]["playerid"]
-    kodi.Player.SetShuffle({"playerid":0,"shuffle":True})
+    kodi.Player.SetShuffle({"playerid":playid,"shuffle":True})
     say("Shuffling your music")
 
 
@@ -525,7 +525,7 @@ def kodiactions(phrase):
             kodi.Player.SetRepeat({"playerid": playid,"repeat": "all"})
         elif 'off'.lower() in str(phrase).lower() or 'disable'.lower() in str(phrase).lower() or 'none'.lower() in str(phrase).lower():
             kodi.Player.SetRepeat({"playerid": playid,"repeat": "off"})
-    elif 'shuffle'.lower() in str(phrase).lower() and 'turn'.lower() in str(phrase).lower():
+    elif 'turn'.lower() in str(phrase).lower() and 'shuffle'.lower() in str(phrase).lower():
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
         cmd=str(phrase).lower()
@@ -533,8 +533,10 @@ def kodiactions(phrase):
         cmd=cmd.strip()
         if 'on'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":True})
+            print('Turning on shuffle')
         elif 'off'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":False})
+            print('Turning off shuffle')
     elif 'play'.lower() in str(phrase).lower() and 'next'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
@@ -607,7 +609,7 @@ def kodiactions(phrase):
         elif 'up'.lower() in str(phrase).lower():
             kodi.Input.Up()
         elif 'down'.lower() in str(phrase).lower():
-            kodi.Input.Down
+            kodi.Input.Down()
         elif 'back'.lower() in str(phrase).lower():
             kodi.Input.Back()
         elif 'select'.lower() in str(phrase).lower():
