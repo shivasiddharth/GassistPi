@@ -22,7 +22,7 @@
 *******************************************************************************************************************************
 
 *******************************************************************************************************************************
-**Existing Python3 GassistPi users, update the project using the script: https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-01-Dec-2017-update.sh**  
+**Existing Python3 GassistPi users, update the project using the script: https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-19-Dec-2017-update.sh**  
 **New users, folow the instructions in this document.**  
 *******************************************************************************************************************************
 
