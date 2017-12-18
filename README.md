@@ -32,7 +32,7 @@
 *******************************************************************************************************************************
 
 *************************************************
-**FIRST STEP- CLONE the PROJECT on to Pi**   
+## **FIRST STEP- CLONE the PROJECT on to Pi**   
 *************************************************
 1. Open the terminal and execute the following  
 
@@ -40,7 +40,7 @@ git clone https://github.com/shivasiddharth/GassistPi
 
 
 *************************************************  
-**INSTALL AUDIO CONFIG FILES**
+## **INSTALL AUDIO CONFIG FILES**
 *************************************************  
 1. Update OS and Kernel    
 
@@ -114,7 +114,7 @@ speaker-test -t wav
 ```  
 
 **********************************************************************  
-**CONTINUE after SETTING UP AUDIO**
+## **CONTINUE after SETTING UP AUDIO**
 **********************************************************************   
 
 1. Download credentials--->.json file (refer to this doc for creating credentials https://developers.google.com/assistant/sdk/develop/python/config-dev-project-and-account)   
@@ -157,7 +157,7 @@ googlesamples-assistant-pushtotalk
 
 
 *************************************************  
-**HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
+## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
 *************************************************  
 1. Make the service installer executable  
 
@@ -190,18 +190,18 @@ sudo systemctl start stopbutton.service
 **RESTART and ENJOY**  
 
 *******************************************************************
-**INDICATORS for GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
+## **INDICATORS for GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
 *******************************************************************
 Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
 *******************************************************************
-**PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK**  
+## **PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK**  
 *******************************************************************
 Connect a pushbutton between GPIO23 and Ground. Using this pushbutton, now you can stop the music or radio playback.  
 
 
 ************************************************
-**VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
+## **VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
 ************************************************
 The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi.
 
@@ -222,7 +222,7 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
 ************************************************
-**VOICE CONTROL of NodeMCU**
+## **VOICE CONTROL of NodeMCU**
 ************************************************
 Download the Arduino IDE code for Nodemcu from here: https://github.com/shivasiddharth/iotwemos/blob/master/Google-Home-NodeMCU.ino  
 
@@ -238,7 +238,7 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
 ************************************************
-**MUSIC STREAMING from YOUTUBE**  
+## **MUSIC STREAMING from YOUTUBE**  
 ************************************************
 Default keyword for playing music from YouTube is **Play**. For example, **Play I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
 
@@ -248,7 +248,7 @@ Music streaming has been enabled for both OK-Google and Custom hotwords/wakeword
 
 
 ************************************************
-**RADIO STREAMING**  
+## **RADIO STREAMING**  
 ************************************************
 Default keyword for streaming radio is **tune into**. For example, **tune into Radio 2** command will open the corresponding radio stream listed in the actions.py file.    
 
@@ -264,7 +264,7 @@ http://worldradiomap.com/map/
 **Due to the Pi Zero's limitations, users are advised to not use the Radio streaming feature. Radio streaming will send the CPU usage of Pi Zero into next galaxy.**  
 
 ***********************************************  
-**FOR PARCEL TRACKING**  
+## **FOR PARCEL TRACKING**  
 ***********************************************  
 The default keyword for tracking parcel is **parcel**. For example, you can say **where is my parcel** or **track my parcel**.  
 
@@ -276,7 +276,7 @@ The generated API number should be added to the actions.py script at the indicat
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 ************************************************  
-**FOR RSS FEEDS**  
+## **FOR RSS FEEDS**  
 ************************************************  
 Default keywords for playing RSS feeds is **feed** or **news** or **quote**. Example usage, **top tech news** will play the top technology news, **top world news** will play top news related to different countires, **top sports news** will play the top sports related news and **quote of the day** will give some quotes.
 
@@ -286,7 +286,7 @@ Do not mix the commands with **Play** as that has been associated with music str
 
 
 ************************************************  
-**KODI INTEGRATION**  
+## **KODI INTEGRATION**  
 ************************************************  
 ### Adding YouTube API and Generating API Key
 The Kodi integration uses YouTube Data API v3  for getting video links. First step is to add the API to the project and create an API KEY.
