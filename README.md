@@ -350,14 +350,14 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 
 
 ************************************************  
-**FOR NEOPIXEL INDICATOR**
+## **FOR NEOPIXEL INDICATOR**
 ************************************************  
 1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
 2. Follow the circuit diagram given.  
 
 ************************************************  
-**LIST OF GPIOs USED**  
+## **LIST OF GPIOs USED**  
 ************************************************  
 | GPIO Number (BCM) | Purpose                                        | 
 |-------------------|------------------------------------------------|
