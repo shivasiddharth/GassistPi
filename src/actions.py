@@ -17,7 +17,7 @@ import feedparser
 import json
 
 #YouTube API Constants
-DEVELOPER_KEY = 'AIzaSyBdRKh2BzKPR4uHVVYWHyhx1oMmv_UJIkc'
+DEVELOPER_KEY = 'PASTE YOUR YOUTUBE API KEY HERE'
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
