@@ -205,6 +205,7 @@ def feed(phrase):
             continue
 
 
+##-------Start of functions defined for Kodi Actions--------------
 #Function to get Kodi Volume and Mute status
 def mutevolstatus():
     status= kodi.Application.GetProperties({"properties": ("volume","muted")})
@@ -356,6 +357,56 @@ def albumretrieve(query):
             say(Albumname)
 
 
+#Function to fetch songs rendered by an artist
+def kodiartist(query):
+    artistcontents=[]
+    directories=[]
+    kodi.Playlist.Clear(playlistid=0)
+    songs=kodi.AudioLibrary.GetSongs({ "limits": { "start" : 0, "end": 200 }, "properties": [ "artist", "duration", "album", "track" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": True } })
+    numsongs=len(songs["result"]["songs"])
+    print(songs)
+    files=kodi.Files.GetDirectory({"directory": musicdirectory, "media": "music"})
+    print(files)
+    numfiles=len(files["result"]["files"])
+    for a in range(0,numfiles):
+        if (files["result"]["files"][a]["filetype"])=="directory":
+            folder=files["result"]["files"][a]["file"]
+            musicfiles=kodi.Files.GetDirectory({"directory": folder, "media": "music"})
+            print(musicfiles)
+            nummusicfiles=len(musicfiles["result"]["files"])
+            numsongs=len(songs["result"]["songs"])
+            for i in range(0,numsongs):
+                if query.lower() in str(songs["result"]["songs"][i]["artist"]).lower():
+                    for j in range(0,nummusicfiles):
+                        name=musicfiles["result"]["files"][j]["label"]
+                        if str(songs["result"]["songs"][i]["label"]).lower() in str(name).lower():
+                            path=musicfiles["result"]["files"][j]["file"]
+                            artistcontents.append(songs["result"]["songs"][i]["label"])
+                            kodi.Playlist.Add(playlistid=0, item={"file": path})
+
+        elif (files["result"]["files"][a]["filetype"])=="file":
+            for i in range(0,numsongs):
+                if query.lower() in str(songs["result"]["songs"][i]["artist"]).lower():
+                    name=files["result"]["files"][a]["label"]
+                    if str(songs["result"]["songs"][i]["label"]).lower() in str(name).lower():
+                        path=files["result"]["files"][a]["file"]
+                        artistcontents.append(songs["result"]["songs"][i]["label"])
+                        kodi.Playlist.Add(playlistid=0, item={"file": path})
+
+    if len(artistcontents)!=0:
+        print(artistcontents)
+        if len(artistcontents)==1:
+            playinginfo=("Playing "+str(len(artistcontents))+" track rendered by "+query)
+        else:
+            playinginfo=("Playing "+str(len(artistcontents))+" tracks rendered by "+query)
+        print(playinginfo)
+        say(playinginfo)
+        kodi.Player.open(item={"playlistid": 0},options={"repeat": "all"})
+    else:
+        print("Sorry, I could not find tracks rendered by that artist")
+        say("Sorry, I could not find tracks rendered by that artist")
+
+
 #Function to play requested single track or video/movie on kodi
 def singleplaykodi(query):
     kodi.Playlist.Clear(playlistid=0)
@@ -464,6 +515,7 @@ def whatisplaying():
             print("Is anything even playing")
             say("Is anything even playing ?")
 
+
 #Function to shuffle Kodi tracks
 def shufflekodi():
     directories=[]
@@ -512,6 +564,16 @@ def kodiactions(phrase):
         whatisplaying()
     elif 'play'.lower() in str(phrase).lower() and 'album'.lower() in str(phrase).lower():
         albumretrieve(phrase)
+    elif 'play'.lower() in str(phrase).lower() and 'artist'.lower() in str(phrase).lower():
+        query=str(phrase).lower()
+        idx = query.find('artist')
+        artist = query[idx:]
+        artist = artist.replace("'}", "",1)
+        artist = artist.replace('artist','',1)
+        artist = artist.replace('on kodi','',1)
+        artist = artist.strip()
+        kodiartist(artist)
+        say("Searching for renditions")
     elif 'play'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         singleplaykodi(phrase)
     elif 'shuffle'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower() or 'music'.lower() in str(phrase).lower()):
@@ -618,6 +680,8 @@ def kodiactions(phrase):
             kodi.Input.Info()
         elif 'player'.lower() in str(phrase).lower():
             kodi.Input.ShowOSD
+
+##--------End of functions defined for Kodi Actions--------------------            
 
 #GPIO Device Control
 def Action(phrase):
