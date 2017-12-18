@@ -15,7 +15,7 @@
 **10.  Pushbutton service to stop Music or Radio playback.**   
 **11.  Parcel tracking using Aftership API.**  
 **12.  RSS Feed streaming.**  
-**13.  Control of Kodi or Kodi Integration
+**13.  Control of Kodi or Kodi Integration**.    
 
 *******************************************************************************************************************************  
 **Finally !! The project has been update to Python3. This means a better snowboy control and lower CPU utilization on Pi Zero Boards.**  **Users who installed GassistPi prior to 12th Nov 2017, please reformat the SD Card and re-install the Assistant to update the project to Python3.**  
