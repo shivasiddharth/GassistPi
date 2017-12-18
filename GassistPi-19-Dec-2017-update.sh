@@ -50,7 +50,8 @@ pip install RPi.GPIO
 pip install pyaudio
 pip install aftership
 pip install feedparser
-#New Dependencies 
+#New Dependencies
+pip install kodi-json
 python -m pip install --upgrade google-api-python-client
 python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 # Dependencies Till 19th Dec 2017
