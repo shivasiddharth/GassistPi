@@ -572,8 +572,8 @@ def kodiactions(phrase):
         artist = artist.replace('artist','',1)
         artist = artist.replace('on kodi','',1)
         artist = artist.strip()
-        kodiartist(artist)
         say("Searching for renditions")
+        kodiartist(artist)        
     elif 'play'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         singleplaykodi(phrase)
     elif 'shuffle'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower() or 'music'.lower() in str(phrase).lower()):
