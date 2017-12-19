@@ -163,11 +163,12 @@ class Assistant():
                 continue_conversation = False
                 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 self.conversation_stream.start_recording()
-                status=mutevolstatus()
-                vollevel=status[1]
-                with open('/home/pi/.volume.json', 'w') as f:
-                       json.dump(vollevel, f)
-                kodi.Application.SetVolume({"volume": 0})
+                #Uncomment the following, after starting Kodi
+                #status=mutevolstatus()
+                #vollevel=status[1]
+                #with open('/home/pi/.volume.json', 'w') as f:
+                       #json.dump(vollevel, f)
+                #kodi.Application.SetVolume({"volume": 0})
                 GPIO.output(5,GPIO.HIGH)
                 led.ChangeDutyCycle(100)
                 self.logger.info('Recording audio request.')
@@ -247,9 +248,10 @@ class Assistant():
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
-                with open('/home/pi/.volume.json', 'r') as f:
-                       vollevel = json.load(f)
-                       kodi.Application.SetVolume({"volume": vollevel})
+                #Uncomment the following, after starting Kodi
+                #with open('/home/pi/.volume.json', 'r') as f:
+                       #vollevel = json.load(f)
+                       #kodi.Application.SetVolume({"volume": vollevel})
                 self.conversation_stream.stop_playback()
         except Exception as e:
             self._create_assistant()
