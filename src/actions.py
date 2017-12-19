@@ -129,10 +129,10 @@ def SetAngle(angle):
 
 #Play Youtube Music
 def YouTube(phrase):
-    idx=phrase.find('play')
+    idx=phrase.find('stream')
     track=phrase[idx:]
     track=track.replace("'}", "",1)
-    track = track.replace('play','',1)
+    track = track.replace('stream','',1)
     track=track.strip()
     global playshell
     if (playshell == None):
