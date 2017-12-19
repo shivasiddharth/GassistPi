@@ -193,27 +193,28 @@ class Assistant():
                         self.conversation_stream.stop_recording()
                     if resp.result.spoken_request_text:
                         usrcmd=resp.result.spoken_request_text
-                        if 'trigger' in str(usrcmd).lower():
-                            Action(str(usrcmd).lower())
-                            return continue_conversation
-                        if 'stream'.lower() in str(usrcmd).lower():
-                            YouTube(str(usrcmd).lower())
-                            return continue_conversation
-                        if 'stop'.lower() in str(usrcmd).lower():
-                            stop()
-                            return continue_conversation
-                        if 'tune into'.lower() in str(usrcmd).lower():
-                            radio(str(usrcmd).lower())
-                            return continue_conversation
-                        if 'wireless'.lower() in str(usrcmd).lower():
-                            ESP(str(usrcmd).lower())
-                            return continue_conversation
-                        if 'parcel'.lower() in str(usrcmd).lower():
-                            track()
-                            return continue_conversation
-                        if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
-                            feed(str(usrcmd).lower())
-                            return continue_conversation
+                        usrcmd=(str(usrcmd) + " on kodi")
+                        # if 'trigger' in str(usrcmd).lower():
+                        #     Action(str(usrcmd).lower())
+                        #     return continue_conversation
+                        # if 'stream'.lower() in str(usrcmd).lower():
+                        #     YouTube(str(usrcmd).lower())
+                        #     return continue_conversation
+                        # if 'stop'.lower() in str(usrcmd).lower():
+                        #     stop()
+                        #     return continue_conversation
+                        # if 'tune into'.lower() in str(usrcmd).lower():
+                        #     radio(str(usrcmd).lower())
+                        #     return continue_conversation
+                        # if 'wireless'.lower() in str(usrcmd).lower():
+                        #     ESP(str(usrcmd).lower())
+                        #     return continue_conversation
+                        # if 'parcel'.lower() in str(usrcmd).lower():
+                        #     track()
+                        #     return continue_conversation
+                        # if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+                        #     feed(str(usrcmd).lower())
+                        #     return continue_conversation
                         if 'on kodi'.lower() in str(usrcmd).lower():
                             kodiactions(str(usrcmd).lower())
                             return continue_conversation

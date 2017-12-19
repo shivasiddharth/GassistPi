@@ -121,26 +121,27 @@ def main():
         for event in assistant.start():
             process_event(event)
             usrcmd=event.args
-            if 'trigger'.lower() in str(usrcmd).lower():
-                assistant.stop_conversation()
-                Action(str(usrcmd).lower())
-            if 'stream'.lower() in str(usrcmd).lower():
-                assistant.stop_conversation()
-                YouTube(str(usrcmd).lower())
-            if 'stop'.lower() in str(usrcmd).lower():
-                stop()
-            if 'tune into'.lower() in str(usrcmd).lower():
-                assistant.stop_conversation()
-                radio(str(usrcmd).lower())
-            if 'wireless'.lower() in str(usrcmd).lower():
-                assistant.stop_conversation()
-                ESP(str(usrcmd).lower())
-            if 'parcel'.lower() in str(usrcmd).lower():
-                assistant.stop_conversation()
-                track()
-            if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
-                assistant.stop_conversation()
-                feed(str(usrcmd).lower())
+            usrcmd=(str(usrcmd) + " on kodi")
+            # if 'trigger'.lower() in str(usrcmd).lower():
+            #     assistant.stop_conversation()
+            #     Action(str(usrcmd).lower())
+            # if 'stream'.lower() in str(usrcmd).lower():
+            #     assistant.stop_conversation()
+            #     YouTube(str(usrcmd).lower())
+            # if 'stop'.lower() in str(usrcmd).lower():
+            #     stop()
+            # if 'tune into'.lower() in str(usrcmd).lower():
+            #     assistant.stop_conversation()
+            #     radio(str(usrcmd).lower())
+            # if 'wireless'.lower() in str(usrcmd).lower():
+            #     assistant.stop_conversation()
+            #     ESP(str(usrcmd).lower())
+            # if 'parcel'.lower() in str(usrcmd).lower():
+            #     assistant.stop_conversation()
+            #     track()
+            # if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+            #     assistant.stop_conversation()
+            #     feed(str(usrcmd).lower())
             if 'on kodi'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kodiactions(str(usrcmd).lower())
