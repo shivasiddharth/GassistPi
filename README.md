@@ -308,7 +308,7 @@ The webserver is disabled by default and has to be manually enabled by the user.
 For Kodi to play the YouTube video, you need to add and enable the YouTube Plugin on Kodi.  
 
 ### Command Sytanxes for Kodi Control  
-**Note that "on Kodi" should be used in all the commands. If you want to use it exclusively, for Kodi Control, replace the given main.py and assistants.py file with the ones provieded in the extras/Kodi Intergration/ folder. In that, "on kodi" has been programatically added and other functions have been disabled.**  
+**Note that "on Kodi" should be used in all the commands. If you want to use it exclusively, for Kodi Control, replace the given main.py and assistants.py file with the ones provieded in the extras/Kodi Intergration/ folder. In that, "on kodi" has been programatically added and other functions have been disabled,even genral queries like time and weather will not work. It is to be used only for the following Kodi commands.**  
 
 | Command Syntax    | What it does                                        | 
 |-------------------|------------------------------------------------|
