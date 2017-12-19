@@ -1,0 +1,168 @@
+#!/usr/bin/env python
+
+# Copyright (C) 2017 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from kodijson import Kodi, PLAYER_VIDEO
+import RPi.GPIO as GPIO
+import argparse
+import os.path
+import os
+import json
+import subprocess
+import google.oauth2.credentials
+from google.assistant.library import Assistant
+from google.assistant.library.event import EventType
+from google.assistant.library.file_helpers import existing_file
+from actions import Action
+from actions import YouTube
+from actions import stop
+from actions import radio
+from actions import ESP
+from actions import track
+from actions import feed
+from actions import kodiactions
+from actions import mutevolstatus
+from actions import say
+from actions import youtube_search
+#Login with default kodi/kodi credentials
+#kodi = Kodi("http://localhost:8080/jsonrpc")
+
+#Login with custom credentials
+# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
+kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
+
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+#Indicator Pins
+GPIO.setup(25, GPIO.OUT)
+GPIO.setup(5, GPIO.OUT)
+GPIO.setup(6, GPIO.OUT)
+GPIO.output(5, GPIO.LOW)
+GPIO.output(6, GPIO.LOW)
+led=GPIO.PWM(25,1)
+led.start(0)
+
+
+
+
+def process_event(event):
+    """Pretty prints events.
+
+    Prints all events that occur with two spaces between each new
+    conversation and a single space between turns of a conversation.
+
+    Args:
+        event(event.Event): The current event to process.
+    """
+    if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #Uncomment the following after starting the Kodi
+        #status=mutevolstatus()
+        #vollevel=status[1]
+        #with open('/home/pi/.volume.json', 'w') as f:
+               #json.dump(vollevel, f)
+        #kodi.Application.SetVolume({"volume": 0})
+        GPIO.output(5,GPIO.HIGH)
+        led.ChangeDutyCycle(100)
+
+    if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
+       GPIO.output(5,GPIO.LOW)
+       GPIO.output(6,GPIO.HIGH)
+       led.ChangeDutyCycle(50)
+
+    if event.type == EventType.ON_RESPONDING_FINISHED:
+       GPIO.output(6,GPIO.LOW)
+       GPIO.output(5,GPIO.HIGH)
+       led.ChangeDutyCycle(100)
+
+    print(event)
+
+    if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
+            event.args and not event.args['with_follow_on_turn']):
+        GPIO.output(5,GPIO.LOW)
+        led.ChangeDutyCycle(0)
+        #Uncomment the following after starting the Kodi
+        #with open('/home/pi/.volume.json', 'r') as f:
+               #vollevel = json.load(f)
+               #kodi.Application.SetVolume({"volume": vollevel})
+        print()
+
+
+def main():
+
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('--credentials', type=existing_file,
+                        metavar='OAUTH2_CREDENTIALS_FILE',
+                        default=os.path.join(
+                            os.path.expanduser('/home/pi/.config'),
+                            'google-oauthlib-tool',
+                            'credentials.json'
+                        ),
+                        help='Path to store and read OAuth2 credentials')
+    args = parser.parse_args()
+    with open(args.credentials, 'r') as f:
+        credentials = google.oauth2.credentials.Credentials(token=None,
+                                                            **json.load(f))
+
+    with Assistant(credentials) as assistant:
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        for event in assistant.start():
+            process_event(event)
+            usrcmd=event.args
+            if 'trigger'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                Action(str(usrcmd).lower())
+            if 'stream'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                YouTube(str(usrcmd).lower())
+            if 'stop'.lower() in str(usrcmd).lower():
+                stop()
+            if 'tune into'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                radio(str(usrcmd).lower())
+            if 'wireless'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                ESP(str(usrcmd).lower())
+            if 'parcel'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                track()
+            if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                feed(str(usrcmd).lower())
+            if 'youtube'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                query=str(usrcmd).lower()
+                idx=query.find('play')
+                track=query[idx:]
+                track=track.replace("'}", "",1)
+                track = track.replace('play','',1)
+                if 'youtube'.lower() in track:
+                    track=track.replace('youtube','',1)
+                elif 'video'.lower() in track:
+                    track=track.replace('video','',1)
+                else:
+                    track=track.strip()
+                print(track)
+                say("Fetching YouTube links for, "+track)
+                youtube_search(track)
+            if 'on kodi'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                kodiactions(str(usrcmd).lower())
+
+if __name__ == '__main__':
+    main()
