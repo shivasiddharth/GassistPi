@@ -1,3 +1,6 @@
+Google Has Just Released an Update to Make the Pi Detectable on the Home App, This project Needs to be modified accordingly, so this project will not be usable for time being. Once its ready, You can see it in the git here.
+
+
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
 
 **Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
