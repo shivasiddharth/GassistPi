@@ -1,4 +1,4 @@
-Google Has Just Released an Update to Make the Pi Detectable on the Home App, This project Needs to be modified accordingly, so this project will not be usable for time being. For more info please read through this https://developers.googleblog.com/2017/12/the-google-assistant-sdk-new-languages.html Once its ready, You can see it in the git here.
+Google Has Just Released an Update to Make the Pi Detectable on the Home App, This project Needs to be modified accordingly, so the google-assistant-demo command or pushtotalk will not be usable for time being. For more info please read through this https://developers.googleblog.com/2017/12/the-google-assistant-sdk-new-languages.html Once its ready, You can see it in the git here.
 
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
