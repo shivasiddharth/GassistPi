@@ -59,4 +59,4 @@ google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.goo
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
           --product-name "GassistPi" --nickname $nickname --model $modelid
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
-googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
+googlesamples-assistant-pushtotalk --project_id $projid --device_model_id $modelid
