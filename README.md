@@ -3,8 +3,6 @@ Google Has Just Released an Update to Make the Pi Detectable on the Home App, Th
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
 
-**Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
-
 # Features:  
 **1.   Headless auto start on boot with multiple custom wakeword activation triggers.**    
 **2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
