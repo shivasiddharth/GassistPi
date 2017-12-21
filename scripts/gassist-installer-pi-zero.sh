@@ -57,6 +57,6 @@ python -m pip install --upgrade google-assistant-sdk[samples]
 python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
-          --product-name "GassistPi" --nickname $nickname --model $modelid
+          --product-name $prodname --type Light --model $modelid
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 googlesamples-assistant-pushtotalk --project_id $projid --device_model_id $modelid
