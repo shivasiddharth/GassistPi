@@ -76,7 +76,7 @@ echo ""
 parse_user_input 1 1 0
 USER_RESPONSE=$?
 if [ "$USER_RESPONSE" = "$YES_ANSWER" ]; then
-  continue
+  return
 elif [ "$USER_RESPONSE" = "$NO_ANSWER" ]; then
   read -r -p "Enter the your full credential file name including .json extension: " credname
   echo ""
