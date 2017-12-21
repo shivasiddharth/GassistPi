@@ -63,23 +63,26 @@ read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
 read -r -p "Enter a nickname for your device: " nickname
 echo ""
-echo "Credentials file name is >> $credname"
-echo ""
-echo "Project id is >> $projid"
-echo ""
-echo "Nickname for your device is >> $nickname"
-echo ""
-echo ""
-echo "Is this information correct?"
-echo ""
-echo ""
-parse_user_input 1 1 0
-USER_RESPONSE=$?
-if [ "$USER_RESPONSE" = "$YES_ANSWER" ]; then
-  return
-fi
-set -o errexit
 
+check-values()
+{
+  echo "Credentials file name is >> $credname"
+  echo ""
+  echo "Project id is >> $projid"
+  echo ""
+  echo "Nickname for your device is >> $nickname"
+  echo ""
+  echo ""
+  echo "Is this information correct?"
+  echo ""
+  echo ""
+  parse_user_input 1 1 0
+  USER_RESPONSE=$?
+  if [ "$USER_RESPONSE" = "$YES_ANSWER" ]; then
+    return
+  fi
+}
+set -o errexit
 scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
 
 # make sure we're running as the owner of the checkout directory
@@ -89,9 +92,8 @@ then
     echo "This script must run as $RUN_AS, trying to change user..."
     exec sudo -u $RUN_AS $0
 fi
-
+check-answer()
 modelid=$projid-$(date +%F)
-
 cd /home/pi/
 sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
