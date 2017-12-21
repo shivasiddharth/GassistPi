@@ -58,10 +58,6 @@ python -m pip install --upgrade google-assistant-sdk[samples]
 python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
-<<<<<<< HEAD
           --product-name $prodname --type Light --model $modelid
-=======
-          --product-name "GassistPi" --nickname $nickname --model $modelid
->>>>>>> f6d604ad74c1e3f5a5a615ff6c506c5265ad0696
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
