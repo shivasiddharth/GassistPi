@@ -67,6 +67,7 @@ parse_user_input()
     printf "Please enter a valid response.\n"
   done
 }
+clear
 echo ""
 read -r -p "Enter the your full credential file name including .json extension: " credname
 echo ""
