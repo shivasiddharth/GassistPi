@@ -16,7 +16,6 @@
 
 from kodijson import Kodi, PLAYER_VIDEO
 import RPi.GPIO as GPIO
-from __future__ import print_function
 import argparse
 import os.path
 import os
