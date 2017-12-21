@@ -77,13 +77,6 @@ parse_user_input 1 1 0
 USER_RESPONSE=$?
 if [ "$USER_RESPONSE" = "$YES_ANSWER" ]; then
   return
-elif [ "$USER_RESPONSE" = "$NO_ANSWER" ]; then
-  read -r -p "Enter the your full credential file name including .json extension: " credname
-  echo ""
-  read -r -p "Enter the your Google Cloud Console Project-Id: " projid
-  echo ""
-  read -r -p "Enter a nickname for your device: " nickname
-  echo ""
 fi
 set -o errexit
 
