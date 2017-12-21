@@ -34,7 +34,7 @@ read -r -p "Enter a nickname for your device: " nickname
 echo ""
 
 modelid=$projid-$(date +%F)
-
+echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
 sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y

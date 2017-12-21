@@ -33,7 +33,7 @@ read -r -p "Enter a nickname for your device: " nickname
 echo ""
 
 modelid=$projid-$(date +%F)
-
+echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
 sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
@@ -58,6 +58,5 @@ python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-htt
 google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
           --product-name "GassistPi" --nickname $nickname --model $modelid
-echo "The model-id used for the project is $modelid " >> /home/pi/modelid.txt
 echo "Testing the installed google assistant"
 googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
