@@ -29,7 +29,7 @@ read -r -p "Enter the your full credential file name including .json extension: 
 echo ""
 read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
-read -r -p "Enter a nickname for your device: " nickname
+read -r -p "Enter a product name for your device: " prodname
 echo ""
 
 modelid=$projid-$(date +%Y%m%d%H%M%S )
@@ -51,12 +51,13 @@ pip install pyaudio
 pip install aftership
 pip install feedparser
 pip install kodi-json
+pip install --upgrade google-api-python-client
 python -m pip install --upgrade google-assistant-library
 python -m pip install --upgrade google-assistant-sdk
 python -m pip install --upgrade google-assistant-sdk[samples]
 python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
-          --product-name "GassistPi" --nickname $nickname --model $modelid
-echo "Testing the installed google assistant"
+          --product-name $prodname --type Light --model $modelid
+echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
