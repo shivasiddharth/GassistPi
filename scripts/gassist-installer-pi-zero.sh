@@ -12,18 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-set -o errexit
-
-scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
-
-# make sure we're running as the owner of the checkout directory
-RUN_AS="$(ls -ld "$scripts_dir" | awk 'NR==1 {print $3}')"
-if [ "$USER" != "$RUN_AS" ]
-then
-    echo "This script must run as $RUN_AS, trying to change user..."
-    exec sudo -u $RUN_AS $0
-fi
 YES_ANSWER=1
 NO_ANSWER=2
 QUIT_ANSWER=3
@@ -88,7 +76,7 @@ echo ""
 parse_user_input 1 1 0
 USER_RESPONSE=$?
 if [ "$USER_RESPONSE" = "$YES_ANSWER" ]; then
-  return
+  continue
 elif [ "$USER_RESPONSE" = "$NO_ANSWER" ]; then
   read -r -p "Enter the your full credential file name including .json extension: " credname
   echo ""
@@ -97,7 +85,20 @@ elif [ "$USER_RESPONSE" = "$NO_ANSWER" ]; then
   read -r -p "Enter a nickname for your device: " nickname
   echo ""
 fi
+
+set -o errexit
+
+scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+
+# make sure we're running as the owner of the checkout directory
+RUN_AS="$(ls -ld "$scripts_dir" | awk 'NR==1 {print $3}')"
+if [ "$USER" != "$RUN_AS" ]
+then
+    echo "This script must run as $RUN_AS, trying to change user..."
+    exec sudo -u $RUN_AS $0
+fi
 modelid=$projid-$(date +%F)
+
 cd /home/pi/
 sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
