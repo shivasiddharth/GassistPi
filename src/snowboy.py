@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 import time
 import os
 import subprocess
-from assistant import Assistant
+from assistant import SampleAssistant
 subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/customwakeword.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # Demo code for listening two hotwords at the same time
@@ -32,7 +32,7 @@ def interrupt_callback():
 ##    print("Error: need to specify 2 model names")
 ##    print("Usage: python demo.py 1st.model 2nd.model")
 ##    sys.exit(-1)
-gassist = Assistant()
+gassist = SampleAssistant()
 
 def detected():
     detector.terminate()
