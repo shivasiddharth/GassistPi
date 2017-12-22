@@ -1,3 +1,5 @@
+
+
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
 *******************************************************************************************************************************
 ## GassistPi modified for the updated SDK  
