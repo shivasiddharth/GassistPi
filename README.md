@@ -16,7 +16,10 @@
 **13.  Control of Kodi or Kodi Integration**.    
 
 *******************************************************************************************************************************
+##GassistPi modified for the updated SDK
 **Custom wakewords/snowboy has been removed/disabled due to audio related errors. For Pi Zero users instead of snowboy, a pushbutton trigger based assistant running on gRPC API has been added with all the custom features operable.**  
+
+**Process of setting up audio has not changed, however the process of seting up Google Assistant has change slightly, so please go through the given intructions.**  
 *******************************************************************************************************************************  
 **The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  
 *******************************************************************************************************************************
