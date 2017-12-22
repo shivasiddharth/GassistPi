@@ -116,7 +116,7 @@ speaker-test -t wav
 
 2. Place the .json file in/home/pi directory **DO NOT RENAME**  
 
-3. Using the one-line installer for installing Google Assistant    
+3. Use the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
 	4.1 Make the installers Executable  
 	
