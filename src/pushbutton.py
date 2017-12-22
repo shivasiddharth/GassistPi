@@ -14,6 +14,7 @@
 
 """Sample that implements a gRPC client for the Google Assistant API."""
 
+
 import concurrent.futures
 import json
 import logging
@@ -21,12 +22,24 @@ import os
 import os.path
 import sys
 import uuid
-
+import RPi.GPIO as GPIO
+import argparse
+import subprocess
 import click
 import grpc
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
+from kodijson import Kodi, PLAYER_VIDEO
+from actions import Action
+from actions import YouTube
+from actions import stop
+from actions import radio
+from actions import ESP
+from actions import track
+from actions import feed
+from actions import kodiactions
+from actions import mutevolstatus
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -35,7 +48,7 @@ from google.assistant.embedded.v1alpha2 import (
 from tenacity import retry, stop_after_attempt, retry_if_exception
 
 try:
-    from . import (
+    from googlesamples.assistant.grpc import (
         assistant_helpers,
         audio_helpers,
         device_helpers
@@ -44,6 +57,28 @@ except SystemError:
     import assistant_helpers
     import audio_helpers
     import device_helpers
+
+#Login with default kodi/kodi credentials
+#kodi = Kodi("http://localhost:8080/jsonrpc")
+
+#Login with custom credentials
+# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
+kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+#Trigger Pin
+GPIO.setup(22, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+
+#Indicator Pins
+GPIO.setup(25, GPIO.OUT)
+GPIO.setup(5, GPIO.OUT)
+GPIO.setup(6, GPIO.OUT)
+GPIO.output(5, GPIO.LOW)
+GPIO.output(6, GPIO.LOW)
+led=GPIO.PWM(25,1)
+led.start(0)
 
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
@@ -115,8 +150,16 @@ class SampleAssistant(object):
         """
         continue_conversation = False
         device_actions_futures = []
-
+        subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.conversation_stream.start_recording()
+        #Uncomment the following after starting the Kodi
+        #status=mutevolstatus()
+        #vollevel=status[1]
+        #with open('/home/pi/.volume.json', 'w') as f:
+               #json.dump(vollevel, f)
+        #kodi.Application.SetVolume({"volume": 0})
+        GPIO.output(5,GPIO.HIGH)
+        led.ChangeDutyCycle(100)
         logging.info('Recording audio request.')
 
         def iter_assist_requests():
@@ -132,11 +175,44 @@ class SampleAssistant(object):
             assistant_helpers.log_assist_response_without_audio(resp)
             if resp.event_type == END_OF_UTTERANCE:
                 logging.info('End of audio request detected')
+                GPIO.output(5,GPIO.LOW)
+                led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
+                if resp.result.spoken_request_text:
+                    usrcmd=resp.result.spoken_request_text
+                    if 'trigger' in str(usrcmd).lower():
+                        Action(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'stream'.lower() in str(usrcmd).lower():
+                        YouTube(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'stop'.lower() in str(usrcmd).lower():
+                        stop()
+                        return continue_conversation
+                    if 'tune into'.lower() in str(usrcmd).lower():
+                        radio(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'wireless'.lower() in str(usrcmd).lower():
+                        ESP(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'parcel'.lower() in str(usrcmd).lower():
+                        track()
+                        return continue_conversation
+                    if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+                        feed(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'on kodi'.lower() in str(usrcmd).lower():
+                        kodiactions(str(usrcmd).lower())
+                        return continue_conversation
+                    else:
+                        continue
             if resp.speech_results:
                 logging.info('Transcript of user request: "%s".',
                              ' '.join(r.transcript
                                       for r in resp.speech_results))
+                GPIO.output(5,GPIO.LOW)
+                GPIO.output(6,GPIO.HIGH)
+                led.ChangeDutyCycle(50)
                 logging.info('Playing assistant response.')
             if len(resp.audio_out.audio_data) > 0:
                 self.conversation_stream.write(resp.audio_out.audio_data)
@@ -150,6 +226,9 @@ class SampleAssistant(object):
                 self.conversation_stream.volume_percentage = volume_percentage
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
+                GPIO.output(6,GPIO.LOW)
+                GPIO.output(5,GPIO.HIGH)
+                led.ChangeDutyCycle(100)
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
                 continue_conversation = False
@@ -166,6 +245,13 @@ class SampleAssistant(object):
             concurrent.futures.wait(device_actions_futures)
 
         logging.info('Finished playing assistant response.')
+        GPIO.output(6,GPIO.LOW)
+        GPIO.output(5,GPIO.LOW)
+        led.ChangeDutyCycle(0)
+        #Uncomment the following, after starting Kodi
+        #with open('/home/pi/.volume.json', 'r') as f:
+               #vollevel = json.load(f)
+               #kodi.Application.SetVolume({"volume": vollevel})                
         self.conversation_stream.stop_playback()
         return continue_conversation
 
@@ -418,12 +504,10 @@ def main(api_endpoint, credentials, project_id,
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
         wait_for_user_trigger = not once
         while True:
-            if wait_for_user_trigger:
-                click.pause(info='Press Enter to send a new request...')
-            continue_conversation = assistant.assist()
-            # wait for user trigger if there is no follow-up turn in
-            # the conversation.
-            wait_for_user_trigger = not continue_conversation
+            while GPIO.input(22):
+                time.sleep(0.01)
+                if not GPIO.input(22):
+                   assistant.assist()
 
             # If we only want one conversation, break.
             if once and (not continue_conversation):
