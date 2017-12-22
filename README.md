@@ -1,10 +1,7 @@
-Google Has Just Released an Update to Make the Pi Detectable on the Home App, This project Needs to be modified accordingly, so this project will not be usable for time being. For more info please read through this https://developers.googleblog.com/2017/12/the-google-assistant-sdk-new-languages.html Once its ready, You can see it in the git here.
-
-
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
 
 # Features:  
-**1.   Headless auto start on boot with multiple custom wakeword activation triggers.**    
+**1.   Headless auto start on boot.**    
 **2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
 **4.   Radio streaming.**  
@@ -18,13 +15,10 @@ Google Has Just Released an Update to Make the Pi Detectable on the Home App, Th
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration**.    
 
+*******************************************************************************************************************************
+**Custom wakewords/snowboy has been removed/disabled due to audio related errors. For Pi Zero users instead of snowboy, a pushbutton trigger based assistant running on gRPC API has been added with all the custom features operable.**  
 *******************************************************************************************************************************  
 **The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  
-*******************************************************************************************************************************
-
-*******************************************************************************************************************************
-**Existing Python3 GassistPi users, update the project using the script: https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-19-Dec-2017-update.sh**  
-**New users, folow the instructions in this document.**  
 *******************************************************************************************************************************
 
 
@@ -122,17 +116,16 @@ speaker-test -t wav
 
 2. Place the .json file in/home/pi directory  
 
-3. Rename it to assistant--->assistant.json  
-
-4. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
-**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
+3. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
+**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
 	4.1 Make the installers Executable  
+	
 	```
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
-	sudo chmod +x /home/pi/GassistPi/scripts/snowboy-deps-installer.sh  
-
+	
 	```
+	
 	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
 	**Don't be in a hurry and Don't run them parallely, Run them one after the other**
 	```
