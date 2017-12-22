@@ -114,9 +114,9 @@ speaker-test -t wav
 
 1. Download credentials--->.json file (refer to this doc for creating credentials https://developers.google.com/assistant/sdk/develop/python/config-dev-project-and-account)   
 
-2. Place the .json file in/home/pi directory  
+2. Place the .json file in/home/pi directory **DO NOT RENAME**  
 
-3. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
+3. Using the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
 	4.1 Make the installers Executable  
 	
@@ -126,10 +126,8 @@ speaker-test -t wav
 	
 	```
 	
-	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
-	**Don't be in a hurry and Don't run them parallely, Run them one after the other**
+	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 	```
-	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
 
@@ -139,13 +137,7 @@ speaker-test -t wav
 
 6. Copy the authorization code from browser onto the terminal and press enter    
 
-7. Move into the environment and test the google assistant according to your board  
-
-```
-source env/bin/activate  
-google-assistant-demo
-googlesamples-assistant-pushtotalk   
-```  
+7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Volume Up" command.
 
 8. After verifying the working of assistant, close and exit the terminal    
 
@@ -153,31 +145,33 @@ googlesamples-assistant-pushtotalk
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
 *************************************************  
-1. Make the service installer executable  
+1. Open the service files in the /home/pi/GassistPi/systemd/ directory and add your project and model ids in the indicated places and save the file.
+
+2. Make the service installer executable  
 
 ```
 sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 ```  
 
-2. Run the service installer  
+3. Run the service installer  
 
 ```
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the services - **Pi3 and Armv7 users, if you need custom wakeword functionality, then enable both the services, else enable just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, enable snowboy services alone**        
+4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **To stop music playback using a pushbutton connected to GPIO 23 enable stopbutton.service**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
-sudo systemctl enable snowboy.service
+sudo systemctl enable gassistpi-push-button.service
 sudo systemctl enable stopbutton.service  
 ```  
 
-4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, start snowboy.service alone**    
-**To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**  
+5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
+**To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start snowboy.service   
+sudo systemctl start gassistpi-push-button.service
 sudo systemctl start stopbutton.service  
 ```  
 
