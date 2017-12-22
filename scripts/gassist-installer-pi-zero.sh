@@ -24,26 +24,46 @@ then
     echo "This script must run as $RUN_AS, trying to change user..."
     exec sudo -u $RUN_AS $0
 fi
+clear
+echo ""
+read -r -p "Enter the your full credential file name including .json extension: " credname
+echo ""
+read -r -p "Enter the your Google Cloud Console Project-Id: " projid
+echo ""
+read -r -p "Enter a nickname for your device: " nickname
+echo ""
 
+modelid=$projid-$(date +%Y%m%d%H%M%S )
+echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
+#--------------GassistPi Deps----------------------------------------------------
 sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
 mpsyt set player vlc, set playerargs ,exit
 sudo apt-get install elinks -y
+#--------------------------------------------------------------------------------
 sudo apt-get update -y
+#--------------GassistPi Deps----------------------------------------------------
 sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
 sudo apt-get install libttspico0 libttspico-utils libttspico-data -y
+#--------------------------------------------------------------------------------
 sudo apt-get install python3-dev python3-venv -y
 python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools
 source env/bin/activate
 pip install RPi.GPIO
+#--------------GassistPi Deps----------------------------------------------------
 pip install pyaudio
 pip install aftership
 pip install feedparser
 pip install kodi-json
-python -m pip install --upgrade google-api-python-client
+pip install --upgrade google-api-python-client
+#--------------------------------------------------------------------------------
 python -m pip install --upgrade google-assistant-sdk
 python -m pip install --upgrade google-assistant-sdk[samples]
 python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
-google-oauthlib-tool --client-secrets /home/pi/assistant.json --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
+google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
+googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
+          --product-name $prodname --type LIGHT --model $modelid
+echo "Testing the installed google assistant. Make a note of the generated Device-Id"
+googlesamples-assistant-pushtotalk --project_id $projid --device_model_id $modelid

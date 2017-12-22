@@ -1,12 +1,15 @@
-Google Has Just Released an Update to Make the Pi Detectable on the Home App, This project Needs to be modified accordingly, so the google-assistant-demo command or pushtotalk will not be usable for time being. For more info please read through this https://developers.googleblog.com/2017/12/the-google-assistant-sdk-new-languages.html Once its ready, You can see it in the git here.
 
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
+*******************************************************************************************************************************
+## GassistPi modified for the updated SDK  
+**Custom wakewords/snowboy has been removed/disabled due to audio related errors. For Pi Zero users instead of snowboy, a pushbutton trigger based assistant running on gRPC API has been added with all the custom features operable.**  
 
-**Pi Zero - forked and modified from warchildmd's repo (https://github.com/warchildmd/google-assistant-hotword-raspi)**  
+**Process of setting up audio has not changed, however the process of seting up Google Assistant has change slightly, so please go through the given intructions.**  
+*******************************************************************************************************************************
 
 # Features:  
-**1.   Headless auto start on boot with multiple custom wakeword activation triggers.**    
+**1.   Headless auto start on boot.**    
 **2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
 **4.   Radio streaming.**  
@@ -20,13 +23,9 @@ Google Has Just Released an Update to Make the Pi Detectable on the Home App, Th
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration**.    
 
-*******************************************************************************************************************************  
-**Finally !! The project has been update to Python3. This means a better snowboy control and lower CPU utilization on Pi Zero Boards.**  **Users who installed GassistPi prior to 12th Nov 2017, please reformat the SD Card and re-install the Assistant to update the project to Python3.**  
-*******************************************************************************************************************************
 
-*******************************************************************************************************************************
-**Existing Python3 GassistPi users, update the project using the script: https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-19-Dec-2017-update.sh**  
-**New users, folow the instructions in this document.**  
+*******************************************************************************************************************************  
+**The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  
 *******************************************************************************************************************************
 
 
@@ -61,7 +60,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   3.1. USB DAC or USB Sound CARD users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh 
+  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
   speaker-test  
   ```
 
@@ -92,8 +91,8 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   3.5. CUSTOM VOICE HAT users,  
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
-  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh 
-  sudo reboot 
+  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
+  sudo reboot
   sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   speaker-test   
@@ -122,39 +121,30 @@ speaker-test -t wav
 
 1. Download credentials--->.json file (refer to this doc for creating credentials https://developers.google.com/assistant/sdk/develop/python/config-dev-project-and-account)   
 
-2. Place the .json file in/home/pi directory  
+2. Place the .json file in/home/pi directory **DO NOT RENAME**  
 
-3. Rename it to assistant--->assistant.json  
-
-4. Using the one-line installer for installing Google Assistant and Snowboy dependencies    
-**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
+3. Use the one-line installer for installing Google Assistant    
+**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
 	4.1 Make the installers Executable  
+	
 	```
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
-	sudo chmod +x /home/pi/GassistPi/scripts/snowboy-deps-installer.sh  
-
+	
 	```
-	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. Snowboy installer is common for both**  
-	**Don't be in a hurry and Don't run them parallely, Run them one after the other**
+	
+	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 	```
-	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
-	
+
 	```
 
 5. Copy the google assistant authentication link from terminal and authorize using your google account  
 
 6. Copy the authorization code from browser onto the terminal and press enter    
 
-7. Move into the environment and test the google assistant according to your board  
-
-```
-source env/bin/activate  
-google-assistant-demo
-googlesamples-assistant-pushtotalk   
-```  
+7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Volume Up" command.
 
 8. After verifying the working of assistant, close and exit the terminal    
 
@@ -162,31 +152,33 @@ googlesamples-assistant-pushtotalk
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
 *************************************************  
-1. Make the service installer executable  
+1. Open the service files in the /home/pi/GassistPi/systemd/ directory and add your project and model ids in the indicated places and save the file.
+
+2. Make the service installer executable  
 
 ```
 sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 ```  
 
-2. Run the service installer  
+3. Run the service installer  
 
 ```
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-3. Enable the services - **Pi3 and Armv7 users, if you need custom wakeword functionality, then enable both the services, else enable just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, enable snowboy services alone**        
+4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **To stop music playback using a pushbutton connected to GPIO 23 enable stopbutton.service**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
-sudo systemctl enable snowboy.service
+sudo systemctl enable gassistpi-push-button.service
 sudo systemctl enable stopbutton.service  
 ```  
 
-4. Start the service - **Pi3 and Armv7 users, if you need custom wakeword functionality, then start both the services, else start just the "gassistpi-ok-ggogle.service" - Pi Zero, Pi A and Pi 1 B+ users, start snowboy.service alone**    
-**To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**  
+5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
+**To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start snowboy.service   
+sudo systemctl start gassistpi-push-button.service
 sudo systemctl start stopbutton.service  
 ```  
 
@@ -302,7 +294,7 @@ The Kodi integration uses YouTube Data API v3  for getting video links. First st
 7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.  
 
 ### Enabling HTTP Control on Kodi
-The webserver is disabled by default and has to be manually enabled by the user. 
+The webserver is disabled by default and has to be manually enabled by the user.
 1. This can be done in Settings → Services → Control → Allow remote control via HTTP.   
 2. Set the port number to 8080, username to kodi and password to kodi  
 (username and password should be in lowercase).
@@ -313,14 +305,14 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 ### Command Sytanxes for Kodi Control  
 **Note that "on Kodi" should be used in all the commands. If you want to use it exclusively, for Kodi Control, replace the given main.py and assistants.py file with the ones provieded in the extras/Kodi Intergration/ folder. In that, "on kodi" has been programatically added and other functions have been disabled,even genral queries like time and weather will not work. It is to be used only for the following Kodi commands.**  
 
-| Command Syntax    | What it does                                        | 
+| Command Syntax    | What it does                                        |
 |-------------------|------------------------------------------------|
-| Hey Google, Shuffle my songs on kodi               | Shuffles all the songs added to the kodi library      | 
+| Hey Google, Shuffle my songs on kodi               | Shuffles all the songs added to the kodi library      |
 | Hey Google, Play songs from _Album name_ on kodi               | Plays all the songs under the mentioned Album name  |    
 | Hey Google, Play songs by, _Artist name_ on kodi        | Plays all the songs rendered by the mentioned artist      |  
-| Hey Google, Play _Song name_ song on kodi               | Plays the requested song, if it has been added to the library         | 
+| Hey Google, Play _Song name_ song on kodi               | Plays the requested song, if it has been added to the library         |
 | Hey Google, Play _Movie name_ movie on kodi         | Plays the requested movie, if it has been added to the library     |  
-| Hey Google, From YouTube, Play _Youtube Video_ on kodi        | Fetches the YouTube video and plays it on Kodi                  | 
+| Hey Google, From YouTube, Play _Youtube Video_ on kodi        | Fetches the YouTube video and plays it on Kodi                  |
 | Hey Google, What is playing? on kodi                  | Tells you by voice as to what is currently playing |
 | Hey Google, Repeat this or Repeat one on kodi  | Repeats the current track playing|
 | Hey Google, Repeat all on kodi| Changes repeat mode to all |
@@ -348,8 +340,8 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | Hey Google, Move Down on kodi | Moves selection pointer down |
 | Hey Google, Move Left on kodi | Moves selection pointer left |
 | Hey Google, Move Right on kodi | Moves selection pointer right |
-| Hey Google, Move Back on kodi| Goes back, equivalent to esc key | 
-| Hey Google, Move Select on kodi| Makes a sletion, equivalent to enter key | 
+| Hey Google, Move Back on kodi| Goes back, equivalent to esc key |
+| Hey Google, Move Select on kodi| Makes a sletion, equivalent to enter key |
 
 
 ************************************************  
@@ -362,9 +354,9 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 ************************************************  
 ## **LIST OF GPIOs USED**  
 ************************************************  
-| GPIO Number (BCM) | Purpose                                        | 
+| GPIO Number (BCM) | Purpose                                        |
 |-------------------|------------------------------------------------|
-| 25                | Assistant activity indicator for AIY Kits      | 
+| 25                | Assistant activity indicator for AIY Kits      |
 | 23                | Pushbutton to stop music/radio AIY and others  |    
 | 05 and 06         | Google assistant listening and responding      |  
 | 22                | Snowboy wakeword indicator                     |  
