@@ -179,8 +179,8 @@ class SampleAssistant(object):
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
-                if resp.result.spoken_request_text:
-                    usrcmd=resp.result.spoken_request_text
+                if resp.speech_results:
+                    usrcmd=resp.speech_results
                     if 'trigger' in str(usrcmd).lower():
                         Action(str(usrcmd).lower())
                         return continue_conversation
