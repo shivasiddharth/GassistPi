@@ -235,7 +235,7 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 ************************************************
 ## **MUSIC STREAMING from YOUTUBE**  
 ************************************************
-Default keyword for playing music from YouTube is **Play**. For example, **Play I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
+Default keyword for playing music from YouTube is **Stream**. For example, **Stream I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 
