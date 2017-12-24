@@ -359,7 +359,7 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | 25                | Assistant activity indicator for AIY Kits      |
 | 23                | Pushbutton to stop music/radio AIY and others  |    
 | 05 and 06         | Google assistant listening and responding      |  
-| 22                | Snowboy wakeword indicator                     |  
+| 22                | Pushbutton trigger for gRPC API. Connect a pushbutton between GPIO 22 and GRND for manually triggering                     |  
 | 12,13,24          | Voice control of devices connected to GPIO     |  
 | 27                | Voice control of servo                         |  
 
