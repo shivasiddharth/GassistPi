@@ -179,13 +179,30 @@ class SampleAssistant(object):
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()                                   
-            if resp.speech_results:
+            if resp.speech_results:                      
+                logging.info('Transcript of user request: "%s".',
+                             ' '.join(r.transcript
+                                      for r in resp.speech_results))
                 usrcmd=resp.speech_results
+                print(str(usrcmd))
                 if 'trigger' in str(usrcmd).lower():
                     Action(str(usrcmd).lower())
                     return continue_conversation
                 if 'stream'.lower() in str(usrcmd).lower():
-                    YouTube(str(usrcmd).lower())
+                    track=str(usrcmd).lower()
+                    idx=track.find('stability')
+                    track=track[:idx]
+                    track=track.replace("stability","",1)
+                    track=track.strip()
+                    idx=track.find('stream')
+                    track=track[:idx]
+                    track=track.replace("stream","",1)
+                    track=track.replace("","",1)
+                    track=("stream " + track)
+                    track=track.replace('[transcript: "','',1)
+                    track=track.strip()
+                    print(track)
+                    YouTube(track)
                     return continue_conversation
                 if 'stop'.lower() in str(usrcmd).lower():
                     stop()
@@ -206,10 +223,7 @@ class SampleAssistant(object):
                     kodiactions(str(usrcmd).lower())
                     return continue_conversation
                 else:
-                    continue        
-                logging.info('Transcript of user request: "%s".',
-                             ' '.join(r.transcript
-                                      for r in resp.speech_results))
+                    continue 
                 GPIO.output(5,GPIO.LOW)
                 GPIO.output(6,GPIO.HIGH)
                 led.ChangeDutyCycle(50)
