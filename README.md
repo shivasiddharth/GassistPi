@@ -6,6 +6,8 @@
 **Custom wakewords/snowboy has been removed/disabled due to audio related errors. For Pi Zero users instead of snowboy, a pushbutton trigger based assistant running on gRPC API has been added with all the custom features operable.**  
 
 **Process of setting up audio has not changed, however the process of seting up Google Assistant has change slightly, so please go through the given intructions.**  
+
+**Please Note: When using custom actions with pushtotalk, the keywords should be said last**  
 *******************************************************************************************************************************
 
 # Features:  
