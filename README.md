@@ -7,7 +7,7 @@
 
 **Process of setting up audio has not changed, however the process of seting up Google Assistant has change slightly, so please go through the given intructions.**  
 
-**Please Note: When using custom actions with pushtotalk, the keywords should be said last**  
+**Please Note: When using custom actions with pushbutton.py, the keywords should be said last**  
 *******************************************************************************************************************************
 
 # Features:  
