@@ -178,7 +178,8 @@ class SampleAssistant(object):
                 logging.info('End of audio request detected')
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
-                self.conversation_stream.stop_recording()                                   
+                self.conversation_stream.stop_recording()
+                print('Full Speech Result '+str(resp.speech_results))
             if resp.speech_results:                      
                 logging.info('Transcript of user request: "%s".',
                              ' '.join(r.transcript
@@ -518,11 +519,18 @@ def main(api_endpoint, credentials, project_id,
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
         wait_for_user_trigger = not once
         while True:
-            while GPIO.input(22):
-                time.sleep(0.01)
-                if not GPIO.input(22):
-                   assistant.assist()
-
+            if wait_for_user_trigger:
+                button_state=GPIO.input(22)
+                if button_state==True:
+                    continue
+                else:
+                    pass                
+            continue_conversation = assistant.assist()
+            # wait for user trigger if there is no follow-up turn in
+            # the conversation.
+            wait_for_user_trigger = not continue_conversation
+                         
+                   
             # If we only want one conversation, break.
             if once and (not continue_conversation):
                 break
