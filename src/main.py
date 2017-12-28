@@ -143,6 +143,7 @@ def register_device(project_id, credentials, device_model_id, device_id):
         r = session.post(base_url, data=json.dumps({
             'id': device_id,
             'model_id': device_model_id,
+            'client_type': 'SDK_LIBRARY'
         }))
         if r.status_code != 200:
             raise Exception('failed to register device: ' + r.text)
