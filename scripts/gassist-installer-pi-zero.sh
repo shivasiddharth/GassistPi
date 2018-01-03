@@ -30,7 +30,7 @@ read -r -p "Enter the your full credential file name including .json extension: 
 echo ""
 read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
-read -r -p "Enter a nickname for your device: " nickname
+read -r -p "Enter a product name for your device: " prodname
 echo ""
 
 modelid=$projid-$(date +%Y%m%d%H%M%S )
