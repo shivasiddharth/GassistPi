@@ -23,7 +23,8 @@
 **10.  Pushbutton service to stop Music or Radio playback.**   
 **11.  Parcel tracking using Aftership API.**  
 **12.  RSS Feed streaming.**  
-**13.  Control of Kodi or Kodi Integration**.    
+**13.  Control of Kodi or Kodi Integration**.
+**14.  Streaming music from Google Play Music.**    
 
 
 *******************************************************************************************************************************  
