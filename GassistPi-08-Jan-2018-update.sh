@@ -31,7 +31,7 @@ sudo mv /home/pi/GassistPi /home/pi/GassistPi.bak-$(date +%F)
 git clone https://github.com/shivasiddharth/GassistPi
 cd /home/pi/
 #----------------------#New Dependencies------------------
-sudo apt-get install libxml2-dev libxslt-dev python-dev
+sudo apt-get install libxml2-dev libxslt-dev python-dev -y
 sudo apt-get install mpv -y
 mkdir /home/pi/.config/mpv/scripts/
 mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
