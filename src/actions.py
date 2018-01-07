@@ -269,8 +269,8 @@ def mutevolstatus():
     return mutestatus, volstatus
 
 
- def kodi_youtube(query):
-     fullurl,urlid=youtube_search(query)
+def kodi_youtube(query):
+    fullurl,urlid=youtube_search(query)
 
  #If you want to see the URL, uncomment the following line
  #print(YouTubeURL)
