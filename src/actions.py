@@ -279,8 +279,8 @@ def kodi_youtube(query):
  #os.system("vlc "+YouTubeURL)
  #say("Playing YouTube video")
 
-  kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
-  say("Playing YouTube video on Kodi")
+    kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
+    say("Playing YouTube video on Kodi")
 
 
 #Function to fetch tracks from an album
