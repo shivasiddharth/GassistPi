@@ -54,6 +54,6 @@ python -m pip install --upgrade google-api-python-client
 python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 #New Dependencies
 pip install requests
-pip install urllib3
+pip install urllib2
 pip install gmusicapi
 # Dependencies Till 08th Jan 2018
