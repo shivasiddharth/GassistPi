@@ -37,7 +37,9 @@ mkdir /home/pi/.config/mpv/scripts/
 mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
 sudo apt-get install mplayer -y
 #---------------------------------------------------------
+sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
+mpsyt set player vlc, set playerargs ,exit
 sudo apt-get install elinks -y
 sudo apt-get update -y
 sudo apt-get install python3-dev python3-venv -y
@@ -54,5 +56,6 @@ python -m pip install --upgrade google-api-python-client
 python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 #New Dependencies
 pip install requests
+pip install urllib3
 pip install gmusicapi
 # Dependencies Till 08th Jan 2018
