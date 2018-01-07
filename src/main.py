@@ -27,6 +27,7 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 DEVICE_API_URL = 'https://embeddedassistant.googleapis.com/v1alpha2'
+from actions import say
 from actions import Action
 from actions import YouTube
 from actions import stop
@@ -36,6 +37,10 @@ from actions import track
 from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
+from actions import play_playlist
+from actions import play_songs
+from actions import play_album
+from actions import play_artist
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -206,6 +211,97 @@ def main():
             if 'on kodi'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kodiactions(str(usrcmd).lower())
+            if 'google music'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                os.system('pkill mpv')
+                if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
+                    os.system('rm /home/pi/GassistPi/src/trackchange.py')
+                    os.system('echo -e "from music import play_playlist\nfrom music import play_songs\nfrom music import play_album\nfrom music import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    if 'all the songs'.lower() in str(usrcmd).lower():
+                        os.system('echo -e "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                        say("Playing all your songs")
+                        play_songs()
+                    if 'playlist'.lower() in str(usrcmd).lower():
+                        if 'first'.lower() in str(usrcmd).lower() or 'one'.lower() in str(usrcmd).lower()  or '1'.lower() in str(usrcmd).lower():
+                            os.system('echo -e "play_playlist(0)\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            say("Playing songs from your playlist")
+                            play_playlist(0)
+                        else:
+                            say("Sorry I am unable to help")
+                    if 'album'.lower() in str(usrcmd).lower():
+                        req=str(usrcmd).lower()
+                        idx=(req).find('album')
+                        album=req[idx:]
+                        album=album.replace("'}", "",1)
+                        album = album.replace('album','',1)
+                        if 'from'.lower() in req:
+                            album = album.replace('from','',1)
+                            album = album.replace('google music','',1)
+                        else:
+                            album = album.replace('google music','',1)
+                        album=album.strip()
+                        os.system('echo -e "play_playlist($album)\n"')
+                        say("Looking for songs from the album")
+                        play_album(album)
+                    if 'artist'.lower() in str(usrcmd).lower():
+                        req=str(usrcmd).lower()
+                        idx=(req).find('artist')
+                        artist=req[idx:]
+                        artist=artist.replace("'}", "",1)
+                        artist = artist.replace('artist','',1)
+                        if 'from'.lower() in req:
+                            artist = artist.replace('from','',1)
+                            artist = artist.replace('google music','',1)
+                        else:
+                            artist = artist.replace('google music','',1)
+                        artist=artist.strip()
+                        os.system('echo -e "play_artist($artist)\n" >> /home/pi/GassistPi/src/trackchange.py')
+                        say("Looking for songs rendered by the artist")
+                        play_artist(artist)
+                else:
+                    os.system('echo -e "from music import play_playlist\nfrom music import play_songs\nfrom music import play_album\nfrom music import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    if 'all the songs'.lower() in str(usrcmd).lower():
+                        os.system('echo -e "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                        say("Playing all your songs")
+                        play_songs()
+                    if 'playlist'.lower() in str(usrcmd).lower():
+                        if 'first'.lower() in str(usrcmd).lower() or 'one'.lower() in str(usrcmd).lower()  or '1'.lower() in str(usrcmd).lower():
+                            os.system('echo -e "play_playlist(0)\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            say("Playing songs from your playlist")
+                            play_playlist(0)
+                        else:
+                            say("Sorry I am unable to help")
+                    if 'album'.lower() in str(usrcmd).lower():
+                        req=str(usrcmd).lower()
+                        idx=(req).find('album')
+                        album=req[idx:]
+                        album=album.replace("'}", "",1)
+                        album = album.replace('album','',1)
+                        if 'from'.lower() in req:
+                            album = album.replace('from','',1)
+                            album = album.replace('google music','',1)
+                        else:
+                            album = album.replace('google music','',1)
+                        album=album.strip()
+                        os.system('echo -e "play_playlist($album)\n"')
+                        say("Looking for songs from the album")
+                        play_album(album)
+                    if 'artist'.lower() in str(usrcmd).lower():
+                        req=str(usrcmd).lower()
+                        idx=(req).find('artist')
+                        artist=req[idx:]
+                        artist=artist.replace("'}", "",1)
+                        artist = artist.replace('artist','',1)
+                        if 'from'.lower() in req:
+                            artist = artist.replace('from','',1)
+                            artist = artist.replace('google music','',1)
+                        else:
+                            artist = artist.replace('google music','',1)
+                        artist=artist.strip()
+                        os.system('echo -e "play_artist($artist)\n" >> /home/pi/GassistPi/src/trackchange.py')
+                        say("Looking for songs rendered by the artist")
+                        play_artist(artist)
+
 
 
 if __name__ == '__main__':

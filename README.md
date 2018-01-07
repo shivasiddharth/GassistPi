@@ -24,7 +24,7 @@
 **11.  Parcel tracking using Aftership API.**  
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration**.
-**14.  Streaming music from Google Play Music.**    
+**14.  Streaming music from Google Play Music (It is computationally intensive so actions added only for Pi3 and Pi2).**    
 
 
 *******************************************************************************************************************************  
@@ -129,13 +129,13 @@ speaker-test -t wav
 3. Use the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
 	4.1 Make the installers Executable  
-	
+
 	```
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
-	
+
 	```
-	
+
 	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 	```
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
@@ -238,11 +238,49 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 ************************************************
 ## **MUSIC STREAMING from YOUTUBE**  
 ************************************************
-Default keyword for playing music from YouTube is **Stream**. For example, **Stream I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
+The updated music streaming features autoplaying of YouTube suggestions. This makes use of the YouTube Data API v3.
+### Adding YouTube API and Generating API Key
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. Move your mouse pointer over "API and services" and choose "credentials".
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the actions.py script at the indicated location.  
+6. "From the API and services" option, select library and in the search bar type youtube, select "YouTube Data API v3" API and click on "ENABLE".
+7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
+
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 
+Default keyword for playing music from YouTube is **Stream**. For example, **Stream I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
+
 **Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
+
+************************************************
+## **MUSIC STREAMING from Google Music**  
+************************************************
+The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
+
+Enter your Google userid and password in the actions.py file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
+
+##Getting app specific password:
+Refer to this page on google help - https://support.google.com/accounts/answer/185833?hl=en
+
+##What you can do:
+Play all your songs in loop using the syntax: **"Hey Google, Play my songs from Google Music"**
+
+Play songs added to the user created playlist (does not include: most played playlist, thumsup playlist, etc) using the syntax: **"Hey Google, Play songs from the first playlist in Google Music"**
+Playlists are sorted by date created, if you have multiple playlists, use a similar syntax replacing first with second, third etc. Also you need to make suitable changes in the main.py (It has been commented in the script to help)
+
+Play songs by a particular artist using the syntax: **"Hey Google, Play songs by artist YOUR_ARTIST_NAME from Google Music"**
+
+Play songs from particular album using the syntax: **"Hey Google, Play songs from album YOUR_ALBUM_NAME from Google Music"**
+
+##What you cannot do at the moment: (some features may be added later):
+Change tracks
+Shuffle tracks
+Repeat tracks
+
+**Due to the Pi Zero's limitations, and computationally intensive nature of the Google Music streaming feature, this action has not been enabled for Pi Zero.**  
 
 
 ************************************************

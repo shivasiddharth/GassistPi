@@ -6,6 +6,7 @@
 from kodijson import Kodi, PLAYER_VIDEO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from gmusicapi import Mobileclient
 import os
 import os.path
 import RPi.GPIO as GPIO
@@ -15,6 +16,8 @@ import subprocess
 import aftership
 import feedparser
 import json
+import requests
+import urllib2
 
 #YouTube API Constants
 DEVELOPER_KEY = 'PASTE YOUR YOUTUBE API KEY HERE'
@@ -84,6 +87,13 @@ topnews = "http://feeds.bbci.co.uk/news/rss.xml"
 sportsnews = "http://feeds.feedburner.com/ndtvsports-latest"
 quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 
+#Google Music
+song_ids=[]
+track_ids=[]
+api = Mobileclient()
+# If you are using two-step-authentication for google accounts, then generate and use app specific password
+logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
+
 
 #Text to speech converter
 def say(words):
@@ -127,21 +137,7 @@ def SetAngle(angle):
     pwm.ChangeDutyCycle(0)
     GPIO.output(27, False)
 
-#Play Youtube Music
-def YouTube(phrase):
-    idx=phrase.find('stream')
-    track=phrase[idx:]
-    track=track.replace("'}", "",1)
-    track = track.replace('stream','',1)
-    track=track.strip()
-    global playshell
-    if (playshell == None):
-        playshell = subprocess.Popen(["/usr/local/bin/mpsyt",""],stdin=subprocess.PIPE ,stdout=subprocess.PIPE)
 
-    print("Playing: " + track)
-    say("Playing " + track)
-    playshell.stdin.write(bytes('/' + track + '\n1\n','utf-8'))
-    playshell.stdin.flush()
 
 def stop():
     pkill = subprocess.Popen(["/usr/bin/pkill","vlc"],stdin=subprocess.PIPE)
@@ -205,15 +201,6 @@ def feed(phrase):
             continue
 
 
-##-------Start of functions defined for Kodi Actions--------------
-#Function to get Kodi Volume and Mute status
-def mutevolstatus():
-    status= kodi.Application.GetProperties({"properties": ("volume","muted")})
-    mutestatus=(status["result"]["muted"])
-    volstatus=(status["result"]["volume"])
-    return mutestatus, volstatus
-
-
 #Function to search YouTube and get videoid
 def youtube_search(query):
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
@@ -269,6 +256,21 @@ def youtube_search(query):
   else:
       urlid=videoids[0]
       YouTubeURL=("https://www.youtube.com/watch?v="+videoids[0])
+
+  return YouTubeURL,urlid
+
+
+##-------Start of functions defined for Kodi Actions--------------
+#Function to get Kodi Volume and Mute status
+def mutevolstatus():
+    status= kodi.Application.GetProperties({"properties": ("volume","muted")})
+    mutestatus=(status["result"]["muted"])
+    volstatus=(status["result"]["volume"])
+    return mutestatus, volstatus
+
+
+ def kodi_youtube(query):
+     fullurl,urlid=youtube_search(query)
 
  #If you want to see the URL, uncomment the following line
  #print(YouTubeURL)
@@ -559,7 +561,7 @@ def kodiactions(phrase):
             track=track.strip()
         print(track)
         say("Fetching YouTube links for, "+track)
-        youtube_search(track)
+        kodi_youtube(track)
     elif 'what'.lower() in str(phrase).lower() and 'playing'.lower() in str(phrase).lower():
         whatisplaying()
     elif 'play'.lower() in str(phrase).lower() and 'album'.lower() in str(phrase).lower():
@@ -573,7 +575,7 @@ def kodiactions(phrase):
         artist = artist.replace('on kodi','',1)
         artist = artist.strip()
         say("Searching for renditions")
-        kodiartist(artist)        
+        kodiartist(artist)
     elif 'play'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         singleplaykodi(phrase)
     elif 'shuffle'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower() or 'music'.lower() in str(phrase).lower()):
@@ -681,7 +683,278 @@ def kodiactions(phrase):
         elif 'player'.lower() in str(phrase).lower():
             kodi.Input.ShowOSD
 
-##--------End of functions defined for Kodi Actions--------------------            
+##--------End of functions defined for Kodi Actions--------------------
+
+##-------Start of functions defined for Google Music-------------------
+
+def loadsonglist():
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
+            songs_list= json.load(input_file)
+##            print(songs_list)
+    else:
+        songs_list= api.get_all_songs()
+        with open('/home/pi/songs.json', 'w') as output_file:
+            json.dump(songs_list, output_file)
+    for i in range(0,len(songs_list)):
+        song_ids.append(songs_list[i]['id'])
+    songsnum=len(songs_list)
+    return song_ids, songsnum
+
+def loadartist(artistname):
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
+            songs_list= json.load(input_file)
+##            print(songs_list)
+    else:
+        songs_list= api.get_all_songs()
+        with open('/home/pi/songs.json', 'w') as output_file:
+            json.dump(songs_list, output_file)
+    for i in range(0,len(songs_list)):
+        if artistname.lower() in (songs_list[i]['albumArtist']).lower():
+            song_ids.append(songs_list[i]['id'])
+        else:
+            print("Artist not found")
+    songsnum=len(song_ids)
+    return song_ids, songsnum
+
+def loadalbum(albumname):
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
+            songs_list= json.load(input_file)
+##            print(songs_list)
+    else:
+        songs_list= api.get_all_songs()
+        with open('/home/pi/songs.json', 'w') as output_file:
+            json.dump(songs_list, output_file)
+    for i in range(0,len(songs_list)):
+        if albumname.lower() in (songs_list[i]['album']).lower():
+            song_ids.append(songs_list[i]['id'])
+        else:
+            print("Album not found")
+    songsnum=len(song_ids)
+    return song_ids, songsnum
+
+def loadplaylist(playlistnum):
+    if os.path.isfile("/home/pi/playlist.json"):
+        with open('/home/pi/playlist.json','r') as input_file:
+            playlistcontents= json.load(input_file)
+    else:
+        playlistcontents=api.get_all_user_playlist_contents()
+        with open('/home/pi/playlist.json', 'w') as output_file:
+            json.dump(playlistcontents, output_file)
+##        print(playlistcontents[0]['tracks'])
+
+    for k in range(0,len(playlistcontents[playlistnum]['tracks'])):
+        track_ids.append(playlistcontents[playlistnum]['tracks'][k]['trackId'])
+##        print(track_ids)
+    tracksnum=len(playlistcontents[playlistnum]['tracks'])
+    return track_ids, tracksnum
+
+def refreshlists():
+    playlistcontents=api.get_all_user_playlist_contents()
+    songs_list= api.get_all_songs()
+    with open('/home/pi/songs.json', 'w') as output_file:
+        json.dump(songs_list, output_file)
+    with open('/home/pi/playlist.json', 'w') as output_file:
+        json.dump(playlist_list, output_file)
+
+def play_playlist(playlistnum):
+
+    if os.path.isfile("/home/pi/.gmusicplaylistplayer.json"):
+        with open('/home/pi/.gmusicplaylistplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='off'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadplaylist(playlistnum)
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+
+def play_songs():
+
+    if os.path.isfile("/home/pi/.gmusicsongsplayer.json"):
+        with open('/home/pi/.gmusicplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='off'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadsonglist()
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+
+def play_album(albumname):
+    if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
+        with open('/home/pi/.gmusicplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='off'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadalbum(albumname)
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+
+
+def play_artist(artistname):
+    if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
+        with open('/home/pi/.gmusicplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='off'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadartist(artistname)
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        print(streamurl)
+        os.system("mpv "+"'"+streamurl+"'")
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+#----------End of functions defined for Google Music---------------------------
+
+#----------Getting urls for YouTube autoplay-----------------------------------
+def fetchautoplaylist(url,numvideos):
+    videourl=url
+    autonum=numvideos
+    autoplay_urls=[]
+    autoplay_urls.append(videourl)
+    for i in range(0,autonum):
+        response = urllib2.urlopen(videourl)
+        webContent = response.read()
+        idx=webContent.find("Up next")
+        getid=webContent[idx:]
+        idx=getid.find('<a href="/watch?v=')
+        getid=getid[idx:]
+        getid=getid.replace('<a href="/watch?v=',"",1)
+        getid=getid.strip()
+        idx=getid.find('"')
+        videoid=getid[:idx]
+        videourl=('https://www.youtube.com/watch?v='+videoid)
+        if not videourl in autoplay_urls:
+            i=i+1
+            autoplay_urls.append(videourl)
+        else:
+            i=i-1
+            continue
+##    print(autoplay_urls)
+    return autoplay_urls
+
+#Play Youtube Music
+def YouTube(phrase):
+    idx=phrase.find('stream')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('stream','',1)
+    track=track.strip()
+    say("Getting links")
+    fullurl,urlid=youtube_search(track)
+    autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
+    autourls=str(autourls)
+    autourls=autourls.replace('[',"",1)
+    autourls=autourls.replace(']', "",1)
+    autourls=autourls.strip()
+    say("Playing "+track)
+    os.system("vlc -Z --no-video "+autourls)
+
 
 #GPIO Device Control
 def Action(phrase):
