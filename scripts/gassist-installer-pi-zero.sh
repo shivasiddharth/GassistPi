@@ -42,7 +42,9 @@ sudo apt-get install mpv -y
 mkdir /home/pi/.config/mpv/scripts/
 mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
 sudo apt-get install mplayer -y
+sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
+mpsyt set player vlc, set playerargs ,exit
 sudo apt-get install elinks -y
 #--------------------------------------------------------------------------------
 sudo apt-get update -y
