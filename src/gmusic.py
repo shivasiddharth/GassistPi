@@ -8,8 +8,8 @@ import subprocess
 song_ids=[]
 track_ids=[]
 api = Mobileclient()
-logged_in = api.login('ushivasiddharth@gmail.com', 'uxgmuojgbgmyolze', Mobileclient.FROM_MAC_ADDRESS)
-
+#If you are using two-step authentication, use app specific password. For guidelines, go through README
+logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
 
 
 ##-------Start of functions defined for Google Music-------------------
