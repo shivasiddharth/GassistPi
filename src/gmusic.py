@@ -15,6 +15,7 @@ logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobilecli
 ##-------Start of functions defined for Google Music-------------------
 
 def loadsonglist():
+    song_ids=[]
     if os.path.isfile("/home/pi/songs.json"):
         with open('/home/pi/songs.json','r') as input_file:
             songs_list= json.load(input_file)
@@ -47,6 +48,7 @@ def loadartist(artistname):
     return song_ids, songsnum
 
 def loadalbum(albumname):
+    song_ids=[]
     album=str(albumname)
     if os.path.isfile("/home/pi/songs.json"):
         with open('/home/pi/songs.json','r') as input_file:
@@ -65,6 +67,7 @@ def loadalbum(albumname):
     return song_ids, songsnum
 
 def loadplaylist(playlistnum):
+    track_ids=[]
     if os.path.isfile("/home/pi/playlist.json"):
         with open('/home/pi/playlist.json','r') as input_file:
             playlistcontents= json.load(input_file)
