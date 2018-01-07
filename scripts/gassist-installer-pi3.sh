@@ -38,7 +38,8 @@ cd /home/pi/
 #--------------GassistPi Deps----------------------------------------------------
 sudo apt-get install libxml2-dev libxslt-dev python-dev
 sudo apt-get install mpv -y
-mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/
+mkdir /home/pi/.config/mpv/scripts/
+mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
 sudo apt-get install mplayer -y
 sudo apt-get install vlc -y
 sudo apt-get install elinks -y
