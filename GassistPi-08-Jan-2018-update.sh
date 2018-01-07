@@ -33,8 +33,7 @@ cd /home/pi/
 #----------------------#New Dependencies------------------
 sudo apt-get install libxml2-dev libxslt-dev python-dev -y
 sudo apt-get install mpv -y
-mkdir /home/pi/.config/mpv/
-mkdir /home/pi/.config/mpv/scripts/
+mkdir -p /home/pi/.config/mpv/scripts/
 mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
 sudo apt-get install mplayer -y
 #---------------------------------------------------------
