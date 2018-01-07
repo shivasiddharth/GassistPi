@@ -17,7 +17,7 @@ import aftership
 import feedparser
 import json
 import requests
-import urllib2
+import urllib3
 
 #YouTube API Constants
 DEVELOPER_KEY = 'PASTE YOUR YOUTUBE API KEY HERE'
@@ -918,7 +918,7 @@ def fetchautoplaylist(url,numvideos):
     autoplay_urls=[]
     autoplay_urls.append(videourl)
     for i in range(0,autonum):
-        response = urllib2.urlopen(videourl)
+        response = urllib3.urlopen(videourl)
         webContent = response.read()
         idx=webContent.find("Up next")
         getid=webContent[idx:]

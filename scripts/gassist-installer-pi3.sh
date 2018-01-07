@@ -60,6 +60,8 @@ pip install aftership
 pip install feedparser
 pip install kodi-json
 pip install gmusicapi
+pip install requests
+pip install urllib3
 pip install --upgrade google-api-python-client
 #--------------------------------------------------------------------------------
 python -m pip install --upgrade google-assistant-library
