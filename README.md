@@ -262,10 +262,10 @@ The music streaming from Google Music uses [Gmusicapi](https://unofficial-google
 
 Enter your Google userid and password in the actions.py file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
 
-##Getting app specific password:
+### Getting app specific password:
 Refer to this page on google help - https://support.google.com/accounts/answer/185833?hl=en
 
-##What you can do:
+### What you can do:
 Play all your songs in loop using the syntax: **"Hey Google, Play my songs from Google Music"**
 
 Play songs added to the user created playlist (does not include: most played playlist, thumsup playlist, etc) using the syntax: **"Hey Google, Play songs from the first playlist in Google Music"**
@@ -275,7 +275,7 @@ Play songs by a particular artist using the syntax: **"Hey Google, Play songs by
 
 Play songs from particular album using the syntax: **"Hey Google, Play songs from album YOUR_ALBUM_NAME from Google Music"**
 
-##What you cannot do at the moment: (some features may be added later):
+### What you cannot do at the moment: (some features may be added later):
 Change tracks
 Shuffle tracks
 Repeat tracks
