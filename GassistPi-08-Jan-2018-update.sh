@@ -30,12 +30,12 @@ sudo systemctl stop gassistpi-push-button.service
 sudo mv /home/pi/GassistPi /home/pi/GassistPi.bak-$(date +%F)
 git clone https://github.com/shivasiddharth/GassistPi
 cd /home/pi/
-----------------------#New Dependencies------------------
+#----------------------#New Dependencies------------------
 sudo apt-get install libxml2-dev libxslt-dev python-dev
 sudo apt-get install mpv -y
 mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/
 sudo apt-get install mplayer -y
----------------------------------------------------------
+#---------------------------------------------------------
 sudo apt-get install vlc -y
 sudo apt-get install elinks -y
 sudo apt-get update -y
