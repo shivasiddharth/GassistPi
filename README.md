@@ -2,7 +2,7 @@
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
 *******************************************************************************************************************************
-### If you like the work and if you think that I helped you reduce time to develop, maybe you can get me a coffee :) [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VCTPKT99EFA7G)  
+### If you like the work and if you think that I helped you reduce time to develop, maybe you can get me a coffee :) [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)  
 
 *******************************************************************************************************************************
 ## GassistPi modified for the updated SDK  
