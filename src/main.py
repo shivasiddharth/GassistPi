@@ -238,8 +238,7 @@ def main():
                     if 'album'.lower() in str(usrcmd).lower():
                         if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
                             os.system("rm /home/pi/.gmusicalbumplayer.json")
-                        else:
-                            continue    
+                           
                         req=str(usrcmd).lower()
                         idx=(req).find('album')
                         album=req[idx:]
@@ -253,8 +252,9 @@ def main():
                             
                         album=album.strip()
                         print(album)
+                        albumstr=('"'+album+'"')
                         f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
-                        f.write('play_album('+album+')')
+                        f.write('play_album('+albumstr+')')
                         f.close()
                         say("Looking for songs from the album")
                         play_album(album)
@@ -262,8 +262,7 @@ def main():
                     if 'artist'.lower() in str(usrcmd).lower():
                         if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
                             os.system("rm /home/pi/.gmusicartistplayer.json")
-                        else:
-                            continue 
+                        
                         req=str(usrcmd).lower()
                         idx=(req).find('artist')
                         artist=req[idx:]
@@ -277,8 +276,9 @@ def main():
                         
                         artist=artist.strip()
                         print(artist)
+                        artiststr=('"'+artist+'"')
                         f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
-                        f.write('play_artist("'+artist+'")')
+                        f.write('play_artist('+artiststr+')')
                         f.close()
                         say("Looking for songs rendered by the artist")
                         play_artist(artist)
@@ -312,7 +312,7 @@ def main():
                         album=album.strip()
                         print(album)
                         f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
-                        f.write('play_album("'+album+'")')
+                        f.write('play_album("'+ album +'")')
                         f.close()
                         say("Looking for songs from the album")
                         play_album(album)
@@ -331,7 +331,7 @@ def main():
                         artist=artist.strip()
                         print(artist)
                         f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
-                        f.write('play_artist("'+artist+'")')
+                        f.write('play_artist("'+ artist +'")')
                         f.close()
                         say("Looking for songs rendered by the artist")
                         play_artist(artist)
