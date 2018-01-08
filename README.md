@@ -5,12 +5,12 @@
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)  
 
 *******************************************************************************************************************************
-## GassistPi modified for the updated SDK  
-**Custom wakewords/snowboy has been removed/disabled due to audio related errors. For Pi Zero users instead of snowboy, a pushbutton trigger based assistant running on gRPC API has been added with all the custom features operable.**  
+## GassistPi updated with Google Play Music streaming and YouTube autoplay feature  
 
-**Process of setting up audio has not changed, however the process of seting up Google Assistant has change slightly, so please go through the given intructions.**  
+### Existing GassistPi users on the latest SDK can update their Pi using the given script to add the new feature. Due to Pi Zero's processing limitations, the feature has been added only for Pi 3 and Pi 2 users. Pi Zero users, need not update.
+https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-2018-update.sh  
 
-**Please Note: When using custom actions with pushbutton.py, the keywords should be said last**  
+### New users, continue as instructed below in the README doc.
 *******************************************************************************************************************************
 
 # Features:  
