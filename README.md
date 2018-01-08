@@ -2,6 +2,11 @@
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
 *******************************************************************************************************************************
+### If you like the work and helped you reduce time to develop, maybe you can get me a coffee :)  
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9E9UQ8UXAFCTA)  
+
+*******************************************************************************************************************************
 ## GassistPi modified for the updated SDK  
 **Custom wakewords/snowboy has been removed/disabled due to audio related errors. For Pi Zero users instead of snowboy, a pushbutton trigger based assistant running on gRPC API has been added with all the custom features operable.**  
 
