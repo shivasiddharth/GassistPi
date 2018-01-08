@@ -30,6 +30,7 @@ def loadsonglist():
     return song_ids, songsnum
 
 def loadartist(artistname):
+    song_ids=[]
     artist=str(artistname)
     if os.path.isfile("/home/pi/songs.json"):
         with open('/home/pi/songs.json','r') as input_file:
