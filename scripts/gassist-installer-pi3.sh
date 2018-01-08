@@ -37,6 +37,7 @@ echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
 #--------------GassistPi Deps----------------------------------------------------
 sudo apt-get install libxml2-dev libxslt-dev python-dev -y
+pip install gmusicapi
 sudo apt-get install mpv -y
 mkdir -p /home/pi/.config/mpv/scripts/
 mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
