@@ -251,7 +251,9 @@ The updated music streaming features autoplaying of YouTube suggestions. This ma
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 
-Default keyword for playing music from YouTube is **Stream**. For example, **Stream I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
+Default keyword for playing music from **YouTube without autoplay** is **Stream**. For example, **Stream I got you** command will fetch Bebe Rexha's I Got You from YouTube.  
+
+Default keyword for playing music from **YouTube with autoplay** is **Autoplay and Stream**. For example, **Autoplay and Stream I got you** command will play the requested I Got You and after the end of the track will autoplay susequent tracks. The number of autoplay tracks has been limited to a maximum of 10. this can be changed the under the YouTube_Autoplay function in the actions.py script.   
 
 **Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
 
