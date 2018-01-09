@@ -36,6 +36,11 @@ modelid=$projid-$(date +%Y%m%d%H%M%S )
 echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
 #--------------GassistPi Deps----------------------------------------------------
+sudo apt-get install libxml2-dev libxslt-dev python-dev -y
+sudo apt-get install mpv -y
+mkdir -p /home/pi/.config/mpv/scripts/
+mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
+sudo apt-get install mplayer -y
 sudo pip3 install mps-youtube youtube-dl
 sudo apt-get install vlc -y
 mpsyt set player vlc, set playerargs ,exit
@@ -56,6 +61,9 @@ pip install pyaudio
 pip install aftership
 pip install feedparser
 pip install kodi-json
+pip install gmusicapi
+pip install requests
+pip install urllib3
 pip install --upgrade google-api-python-client
 #--------------------------------------------------------------------------------
 python -m pip install --upgrade google-assistant-library

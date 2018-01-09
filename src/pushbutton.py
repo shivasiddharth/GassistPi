@@ -33,7 +33,7 @@ import google.auth.transport.requests
 import google.oauth2.credentials
 from kodijson import Kodi, PLAYER_VIDEO
 from actions import Action
-from actions import YouTube
+from actions import YouTube_No_Autoplay
 from actions import stop
 from actions import radio
 from actions import ESP
@@ -180,7 +180,7 @@ class SampleAssistant(object):
                 led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
                 print('Full Speech Result '+str(resp.speech_results))
-            if resp.speech_results:                      
+            if resp.speech_results:
                 logging.info('Transcript of user request: "%s".',
                              ' '.join(r.transcript
                                       for r in resp.speech_results))
@@ -203,7 +203,7 @@ class SampleAssistant(object):
                     track=track.replace('[transcript: "','',1)
                     track=track.strip()
                     print(track)
-                    YouTube(track)
+                    YouTube_No_Autoplay(track)
                     return continue_conversation
                 if 'stop'.lower() in str(usrcmd).lower():
                     stop()
@@ -224,7 +224,7 @@ class SampleAssistant(object):
                     kodiactions(str(usrcmd).lower())
                     return continue_conversation
                 else:
-                    continue 
+                    continue
                 GPIO.output(5,GPIO.LOW)
                 GPIO.output(6,GPIO.HIGH)
                 led.ChangeDutyCycle(50)
@@ -266,7 +266,7 @@ class SampleAssistant(object):
         #Uncomment the following, after starting Kodi
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})                
+               #kodi.Application.SetVolume({"volume": vollevel})
         self.conversation_stream.stop_playback()
         return continue_conversation
 
@@ -524,13 +524,13 @@ def main(api_endpoint, credentials, project_id,
                 if button_state==True:
                     continue
                 else:
-                    pass                
+                    pass
             continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
             wait_for_user_trigger = not continue_conversation
-                         
-                   
+
+
             # If we only want one conversation, break.
             if once and (not continue_conversation):
                 break

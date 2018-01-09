@@ -15,6 +15,8 @@ import subprocess
 import aftership
 import feedparser
 import json
+import urllib.request
+
 
 #YouTube API Constants
 DEVELOPER_KEY = 'PASTE YOUR YOUTUBE API KEY HERE'
@@ -68,6 +70,7 @@ led=GPIO.PWM(25,1)
 led.start(0)
 
 playshell = None
+
 
 #Parcel Tracking declarations
 #If you want to use parcel tracking, register for a free account at: https://www.aftership.com
@@ -128,7 +131,7 @@ def SetAngle(angle):
     GPIO.output(27, False)
 
 #Play Youtube Music
-def YouTube(phrase):
+def YouTube_No_Autoplay(phrase):
     idx=phrase.find('stream')
     track=phrase[idx:]
     track=track.replace("'}", "",1)
@@ -142,9 +145,12 @@ def YouTube(phrase):
     say("Playing " + track)
     playshell.stdin.write(bytes('/' + track + '\n1\n','utf-8'))
     playshell.stdin.flush()
+    
 
 def stop():
+    pkill = subprocess.Popen(["/usr/bin/pkill","mpsyt"],stdin=subprocess.PIPE)
     pkill = subprocess.Popen(["/usr/bin/pkill","vlc"],stdin=subprocess.PIPE)
+    pkill = subprocess.Popen(["/usr/bin/pkill","mpv"],stdin=subprocess.PIPE)
 
 #Parcel Tracking
 def track():
@@ -205,15 +211,6 @@ def feed(phrase):
             continue
 
 
-##-------Start of functions defined for Kodi Actions--------------
-#Function to get Kodi Volume and Mute status
-def mutevolstatus():
-    status= kodi.Application.GetProperties({"properties": ("volume","muted")})
-    mutestatus=(status["result"]["muted"])
-    volstatus=(status["result"]["volume"])
-    return mutestatus, volstatus
-
-
 #Function to search YouTube and get videoid
 def youtube_search(query):
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
@@ -270,6 +267,21 @@ def youtube_search(query):
       urlid=videoids[0]
       YouTubeURL=("https://www.youtube.com/watch?v="+videoids[0])
 
+  return YouTubeURL,urlid
+
+
+##-------Start of functions defined for Kodi Actions--------------
+#Function to get Kodi Volume and Mute status
+def mutevolstatus():
+    status= kodi.Application.GetProperties({"properties": ("volume","muted")})
+    mutestatus=(status["result"]["muted"])
+    volstatus=(status["result"]["volume"])
+    return mutestatus, volstatus
+
+
+def kodi_youtube(query):
+    fullurl,urlid=youtube_search(query)
+
  #If you want to see the URL, uncomment the following line
  #print(YouTubeURL)
 
@@ -277,8 +289,8 @@ def youtube_search(query):
  #os.system("vlc "+YouTubeURL)
  #say("Playing YouTube video")
 
-  kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
-  say("Playing YouTube video on Kodi")
+    kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
+    say("Playing YouTube video on Kodi")
 
 
 #Function to fetch tracks from an album
@@ -559,7 +571,7 @@ def kodiactions(phrase):
             track=track.strip()
         print(track)
         say("Fetching YouTube links for, "+track)
-        youtube_search(track)
+        kodi_youtube(track)
     elif 'what'.lower() in str(phrase).lower() and 'playing'.lower() in str(phrase).lower():
         whatisplaying()
     elif 'play'.lower() in str(phrase).lower() and 'album'.lower() in str(phrase).lower():
@@ -573,7 +585,7 @@ def kodiactions(phrase):
         artist = artist.replace('on kodi','',1)
         artist = artist.strip()
         say("Searching for renditions")
-        kodiartist(artist)        
+        kodiartist(artist)
     elif 'play'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         singleplaykodi(phrase)
     elif 'shuffle'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower() or 'music'.lower() in str(phrase).lower()):
@@ -681,7 +693,66 @@ def kodiactions(phrase):
         elif 'player'.lower() in str(phrase).lower():
             kodi.Input.ShowOSD
 
-##--------End of functions defined for Kodi Actions--------------------            
+##--------End of functions defined for Kodi Actions--------------------
+
+
+
+#----------Getting urls for YouTube autoplay-----------------------------------
+def fetchautoplaylist(url,numvideos):
+    videourl=url
+    autonum=numvideos
+    autoplay_urls=[]
+    autoplay_urls.append(videourl)
+    for i in range(0,autonum):        
+        response=urllib.request.urlopen(videourl)
+        webContent = response.read()
+        webContent = webContent.decode('utf-8')
+        idx=webContent.find("Up next")
+        getid=webContent[idx:]
+        idx=getid.find('<a href="/watch?v=')
+        getid=getid[idx:]
+        getid=getid.replace('<a href="/watch?v=',"",1)
+        getid=getid.strip()
+        idx=getid.find('"')
+        videoid=getid[:idx]
+        videourl=('https://www.youtube.com/watch?v='+videoid)
+        if not videourl in autoplay_urls:
+            i=i+1
+            autoplay_urls.append(videourl)
+        else:
+            i=i-1
+            continue
+##    print(autoplay_urls)
+    return autoplay_urls
+
+#Play Youtube Music
+def YouTube_Autoplay(phrase):
+    idx=phrase.find('stream')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('stream','',1)
+    track=track.strip()
+    say("Getting links")
+    fullurl,urlid=youtube_search(track)
+    autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
+    print(autourls)
+    say("Adding autoplay links to the playlist")
+    for i in range(0,len(autourls)):
+        os.system('mpsyt url '+autourls[i]+', add 1 mylist, exit')
+    
+    print("Playing: " + track)
+    say("Playing " + track)
+    global playshell
+    if (playshell == None):
+        playshell = subprocess.Popen(["/usr/local/bin/mpsyt","play mylist"],stdin=subprocess.PIPE ,stdout=subprocess.PIPE)
+    else:
+        print("Error")
+
+    
+                   
+
+    
+
 
 #GPIO Device Control
 def Action(phrase):
