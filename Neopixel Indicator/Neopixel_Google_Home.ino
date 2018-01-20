@@ -39,8 +39,8 @@ int brightDirection = -15;
 unsigned long startTime;
 
 void setup() {
-  pinMode(BUTTON_PIN1, INPUT);
-  pinMode(BUTTON_PIN2, INPUT);
+  pinMode(BUTTON_PIN1, INPUT_PULLUP);
+  pinMode(BUTTON_PIN2, INPUT_PULLUP);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   startTime = millis();
@@ -153,7 +153,7 @@ void adjustStarts() {
 
 int incrementStart(int startValue) {
   startValue = startValue + 1;
-  if ( startValue == 12 )//Change it according to the number of pixels in your neopixel
+  if ( startValue == numPixels  )//Change it according to the number of pixels in your neopixel
     startValue = 0;
 
   return startValue;
