@@ -27,7 +27,7 @@ YOUTUBE_API_VERSION = 'v3'
 #kodi = Kodi("http://localhost:8080/jsonrpc")
 
 #Login with custom credentials
-# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")m
+# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
 musicdirectory="/home/osmc/Music/"
 videodirectory="/home/osmc/Movies/"
