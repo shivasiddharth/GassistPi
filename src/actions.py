@@ -27,7 +27,7 @@ YOUTUBE_API_VERSION = 'v3'
 #kodi = Kodi("http://localhost:8080/jsonrpc")
 
 #Login with custom credentials
-# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
+# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")m
 kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
 musicdirectory="/home/osmc/Music/"
 videodirectory="/home/osmc/Movies/"
@@ -761,7 +761,7 @@ def Action(phrase):
         time.sleep(10)
         os.system("sudo shutdown -h now")
         #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if 'motor' in phrase:
+    if 'servo' in phrase:
         for s in re.findall(r'\b\d+\b', phrase):
             SetAngle(int(s))
     if 'zero' in phrase:
