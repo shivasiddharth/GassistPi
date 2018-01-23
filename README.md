@@ -44,8 +44,9 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-
 *************************************************
 1. Open the terminal and execute the following  
 
+```
 git clone https://github.com/shivasiddharth/GassistPi    
-
+```
 
 *************************************************  
 ## **INSTALL AUDIO CONFIG FILES**
