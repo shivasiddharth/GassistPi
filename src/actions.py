@@ -6,6 +6,7 @@
 from kodijson import Kodi, PLAYER_VIDEO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from gmusicapi import Mobileclient
 import os
 import os.path
 import RPi.GPIO as GPIO
@@ -16,6 +17,15 @@ import aftership
 import feedparser
 import json
 import urllib.request
+
+
+
+#Google Music Declarations
+song_ids=[]
+track_ids=[]
+api = Mobileclient()
+#If you are using two-step authentication, use app specific password. For guidelines, go through README
+logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
 
 
 #YouTube API Constants
@@ -103,7 +113,7 @@ def radio(phrase):
         if name.lower() in phrase:
             station=stnlink[num]
             say("Tuning into " + name)
-            p = subprocess.Popen(["/usr/bin/vlc",station],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+            os.system('mpv --really-quiet '+station+' &')
 
 #ESP6266 Devcies control
 def ESP(phrase):
@@ -145,11 +155,10 @@ def YouTube_No_Autoplay(phrase):
     say("Playing " + track)
     playshell.stdin.write(bytes('/' + track + '\n1\n','utf-8'))
     playshell.stdin.flush()
-    
+
 
 def stop():
     pkill = subprocess.Popen(["/usr/bin/pkill","mpsyt"],stdin=subprocess.PIPE)
-    pkill = subprocess.Popen(["/usr/bin/pkill","vlc"],stdin=subprocess.PIPE)
     pkill = subprocess.Popen(["/usr/bin/pkill","mpv"],stdin=subprocess.PIPE)
 
 #Parcel Tracking
@@ -285,8 +294,8 @@ def kodi_youtube(query):
  #If you want to see the URL, uncomment the following line
  #print(YouTubeURL)
 
- #Instead of sending it to Kodi, if you want to locally play in VLC, uncomment the following two lines and comment the next two lines
- #os.system("vlc "+YouTubeURL)
+ #Instead of sending it to Kodi, if you want to play locally, uncomment the following two lines and comment the next two lines
+ #os.system("mpv "+YouTubeURL)
  #say("Playing YouTube video")
 
     kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
@@ -703,7 +712,7 @@ def fetchautoplaylist(url,numvideos):
     autonum=numvideos
     autoplay_urls=[]
     autoplay_urls.append(videourl)
-    for i in range(0,autonum):        
+    for i in range(0,autonum):
         response=urllib.request.urlopen(videourl)
         webContent = response.read()
         webContent = webContent.decode('utf-8')
@@ -739,7 +748,7 @@ def YouTube_Autoplay(phrase):
     say("Adding autoplay links to the playlist")
     for i in range(0,len(autourls)):
         os.system('mpsyt url '+autourls[i]+', add 1 mylist, exit')
-    
+
     print("Playing: " + track)
     say("Playing " + track)
     global playshell
@@ -748,10 +757,246 @@ def YouTube_Autoplay(phrase):
     else:
         print("Error")
 
-    
-                   
 
-    
+##-------Start of functions defined for Google Music-------------------
+
+def loadsonglist():
+    song_ids=[]
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
+            songs_list= json.load(input_file)
+##            print(songs_list)
+    else:
+        songs_list= api.get_all_songs()
+        with open('/home/pi/songs.json', 'w') as output_file:
+            json.dump(songs_list, output_file)
+    for i in range(0,len(songs_list)):
+        song_ids.append(songs_list[i]['id'])
+    songsnum=len(songs_list)
+    return song_ids, songsnum
+
+def loadartist(artistname):
+    song_ids=[]
+    artist=str(artistname)
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
+            songs_list= json.load(input_file)
+##            print(songs_list)
+    else:
+        songs_list= api.get_all_songs()
+        with open('/home/pi/songs.json', 'w') as output_file:
+            json.dump(songs_list, output_file)
+    for i in range(0,len(songs_list)):
+        if artist.lower() in (songs_list[i]['albumArtist']).lower():
+            song_ids.append(songs_list[i]['id'])
+        else:
+            print("Artist not found")
+    songsnum=len(song_ids)
+    return song_ids, songsnum
+
+def loadalbum(albumname):
+    song_ids=[]
+    album=str(albumname)
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
+            songs_list= json.load(input_file)
+##            print(songs_list)
+    else:
+        songs_list= api.get_all_songs()
+        with open('/home/pi/songs.json', 'w') as output_file:
+            json.dump(songs_list, output_file)
+    for i in range(0,len(songs_list)):
+        if album.lower() in (songs_list[i]['album']).lower():
+            song_ids.append(songs_list[i]['id'])
+        else:
+            print("Album not found")
+    songsnum=len(song_ids)
+    return song_ids, songsnum
+
+def loadplaylist(playlistnum):
+    track_ids=[]
+    if os.path.isfile("/home/pi/playlist.json"):
+        with open('/home/pi/playlist.json','r') as input_file:
+            playlistcontents= json.load(input_file)
+    else:
+        playlistcontents=api.get_all_user_playlist_contents()
+        with open('/home/pi/playlist.json', 'w') as output_file:
+            json.dump(playlistcontents, output_file)
+##        print(playlistcontents[0]['tracks'])
+
+    for k in range(0,len(playlistcontents[playlistnum]['tracks'])):
+        track_ids.append(playlistcontents[playlistnum]['tracks'][k]['trackId'])
+##        print(track_ids)
+    tracksnum=len(playlistcontents[playlistnum]['tracks'])
+    return track_ids, tracksnum
+
+def refreshlists():
+    playlistcontents=api.get_all_user_playlist_contents()
+    songs_list= api.get_all_songs()
+    with open('/home/pi/songs.json', 'w') as output_file:
+        json.dump(songs_list, output_file)
+    with open('/home/pi/playlist.json', 'w') as output_file:
+        json.dump(playlist_list, output_file)
+
+def play_playlist(playlistnum):
+
+    if os.path.isfile("/home/pi/.gmusicplaylistplayer.json"):
+        with open('/home/pi/.gmusicplaylistplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadplaylist(playlistnum)
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('mpv --really-quiet '+streamurl+' &')
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('"mpv --really-quiet "+streamurl+" &"')
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+
+def play_songs():
+
+    if os.path.isfile("/home/pi/.gmusicsongsplayer.json"):
+        with open('/home/pi/.gmusicsongsplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadsonglist()
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('mpv --really-quiet '+streamurl+' &')
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('mpv --really-quiet '+streamurl+' &')
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+
+def play_album(albumname):
+    if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
+        with open('/home/pi/.gmusicalbumplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadalbum(albumname)
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('mpv --really-quiet '+streamurl+' &')
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('mpv --really-quiet '+streamurl+' &')
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+
+
+def play_artist(artistname):
+    if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
+        with open('/home/pi/.gmusicartistplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    tracks,numtracks=loadartist(artistname)
+
+    if currenttrackid<numtracks:
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('mpv --really-quiet '+streamurl+' &')
+    elif currenttrackid>numtracks and loopstatus=='on':
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
+            json.dump(playerinfo,output_file)
+        streamurl=api.get_stream_url(tracks[currenttrackid])
+        streamurl=("'"+streamurl+"'")
+        print(streamurl)
+        os.system('mpv --really-quiet '+streamurl+' &')
+    elif currenttrackid>numtracks and loopstatus=='off':
+        print("Error")
+#----------End of functions defined for Google Music---------------------------
 
 
 #GPIO Device Control

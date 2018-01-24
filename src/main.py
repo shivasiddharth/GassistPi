@@ -38,10 +38,10 @@ from actions import track
 from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
-from gmusic import play_playlist
-from gmusic import play_songs
-from gmusic import play_album
-from gmusic import play_artist
+from actions import play_playlist
+from actions import play_songs
+from actions import play_album
+from actions import play_artist
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -221,7 +221,7 @@ def main():
                 os.system('pkill mpv')
                 if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
                     os.system('rm /home/pi/GassistPi/src/trackchange.py')
-                    os.system('echo "from gmusic import play_playlist\nfrom gmusic import play_songs\nfrom gmusic import play_album\nfrom gmusic import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
                     if 'all the songs'.lower() in str(usrcmd).lower():
                         os.system('echo "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
                         say("Playing all your songs")
@@ -283,7 +283,7 @@ def main():
                         say("Looking for songs rendered by the artist")
                         play_artist(artist)
                 else:
-                    os.system('echo "from gmusic import play_playlist\nfrom gmusic import play_songs\nfrom gmusic import play_album\nfrom gmusic import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
                     if 'all the songs'.lower() in str(usrcmd).lower():
                         os.system('echo "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
                         say("Playing all your songs")

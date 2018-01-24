@@ -1,0 +1,17 @@
+libxml2-dev
+libxslt-dev
+python-dev
+mpv
+mplayer
+mps-youtube
+youtube-dl
+vlc
+elinks
+portaudio19-dev
+libffi-dev
+libssl-dev
+libttspico0
+libttspico-utils
+libttspico-data -y
+python3-dev
+python3-venv
