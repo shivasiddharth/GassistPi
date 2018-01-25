@@ -257,7 +257,9 @@ def main():
                             else:
                                 mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
                                 output=mpvgetvol.communicate()[0]
-                                oldvollevel = re.findall(r"[-+]?\d*\.\d+|\d+", str(output))                                                              
+                                for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                                    oldvollevel=int(oldvollevel)
+                                                                       
                             if 'increase'.lower() in str(usrcmd).lower():
                                 if any(char.isdigit() for char in str(usrcmd)):
                                     for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
