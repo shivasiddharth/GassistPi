@@ -23,6 +23,7 @@ import json
 import subprocess
 import re
 import psutil
+import logging
 import google.auth.transport.requests
 import google.oauth2.credentials
 from google.assistant.library import Assistant
@@ -48,6 +49,12 @@ from actions import refreshlists
 
 
 
+logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logger=logging.getLogger(__name__)
+
+
+
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
 
@@ -68,7 +75,18 @@ GPIO.output(6, GPIO.LOW)
 led=GPIO.PWM(25,1)
 led.start(0)
 
+mpvactive=False
 
+
+def ismpvplaying():
+    for pid in psutil.pids():
+        p=psutil.Process(pid)
+        if 'mpv'in p.name():
+            mpvactive=True
+            break
+        else:
+            mpvactive=False
+    return mpvactive
 
 def process_device_actions(event, device_id):
     if 'inputs' in event.args:
@@ -103,18 +121,18 @@ def process_event(event, device_id):
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
         print()
-        for pid in psutil.pids():
-            p=psutil.Process(pid)
-            if 'mpv'in p.name():
-                if os.path.isfile("/home/pi/.mediavolume.json"):
-                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
-                else:
-                    mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                    output=mpvgetvol.communicate()[0]
-                    for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                        with open('/home/pi/.mediavolume.json', 'w') as vol:
-                            json.dump(currntvol, vol)
-                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+        if ismpvplaying():
+            if os.path.isfile("/home/pi/.mediavolume.json"):
+                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+            else:
+                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
+                output=mpvgetvol.communicate()[0]
+                for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                        json.dump(currntvol, vol)
+                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+
+
 
         print(event)
 
@@ -138,10 +156,10 @@ def process_event(event, device_id):
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
                #kodi.Application.SetVolume({"volume": vollevel})
-
-        if os.path.isfile("/home/pi/.mediavolume.json"):
-            with open('/home/pi/.mediavolume.json', 'r') as vol:
-                oldvollevel = json.load(vol)
+        if ismpvplaying():
+            if os.path.isfile("/home/pi/.mediavolume.json"):
+                with open('/home/pi/.mediavolume.json', 'r') as vol:
+                    oldvollevel = json.load(vol)
                 print(oldvollevel)
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
 
@@ -241,65 +259,72 @@ def main():
             if 'on kodi'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kodiactions(str(usrcmd).lower())
-            if 'media volume'.lower() in str(usrcmd).lower():
+            if 'pause media'.lower() in str(usrcmd).lower() or 'resume media'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
-                for pid in psutil.pids():
-                    p=psutil.Process(pid)
-                    if 'mpv'in p.name():
-                        if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
-                            for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
-                        elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                            if os.path.isfile("/home/pi/.mediavolume.json"):
-                                with open('/home/pi/.mediavolume.json', 'r') as vol:
-                                    oldvollevel = json.load(vol)
-                                    for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
-                                        oldvollevel=int(oldvollevel)
-                            else:
-                                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                                output=mpvgetvol.communicate()[0]
-                                for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                if ismpvplaying():
+                    if 'pause media'.lower() in str(usrcmd).lower():
+                        playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", True]})+"' | socat - /tmp/mpvsocket")
+                    elif 'resume media'.lower() in str(usrcmd).lower():
+                        playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", False]})+"' | socat - /tmp/mpvsocket")
+                else:
+                    say("Sorry nothing is playing right now")
+            if 'media volume'.lower() in str(usrcmd).lower():
+                if ismpvplaying():
+                    if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
+                        for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
+                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                json.dump(settingvollevel, vol)
+                            mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                    elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                        if os.path.isfile("/home/pi/.mediavolume.json"):
+                            with open('/home/pi/.mediavolume.json', 'r') as vol:
+                                oldvollevel = json.load(vol)
+                                for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
                                     oldvollevel=int(oldvollevel)
-
-                            if 'increase'.lower() in str(usrcmd).lower():
-                                if any(char.isdigit() for char in str(usrcmd)):
-                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
-                                        changevollevel=int(changevollevel)
-                                else:
-                                    changevollevel=10
-                                newvollevel= oldvollevel+ changevollevel
-                                print(newvollevel)
-                                if newvollevel>100:
-                                    settingvollevel==100
-                                elif newvollevel<0:
-                                    settingvollevel==0
-                                else:
-                                    settingvollevel=newvollevel
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
-                            if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                                if any(char.isdigit() for char in str(usrcmd)):
-                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
-                                        changevollevel=int(changevollevel)
-                                else:
-                                    changevollevel=10
-                                newvollevel= oldvollevel - changevollevel
-                                print(newvollevel)
-                                if newvollevel>100:
-                                    settingvollevel==100
-                                elif newvollevel<0:
-                                    settingvollevel==0
-                                else:
-                                    settingvollevel=newvollevel
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                         else:
-                            say("Sorry I could not help you")
+                            mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
+                            output=mpvgetvol.communicate()[0]
+                            for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                                oldvollevel=int(oldvollevel)
 
+                        if 'increase'.lower() in str(usrcmd).lower():
+                            if any(char.isdigit() for char in str(usrcmd)):
+                                for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                    changevollevel=int(changevollevel)
+                            else:
+                                changevollevel=10
+                            newvollevel= oldvollevel+ changevollevel
+                            print(newvollevel)
+                            if newvollevel>100:
+                                settingvollevel==100
+                            elif newvollevel<0:
+                                settingvollevel==0
+                            else:
+                                settingvollevel=newvollevel
+                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                json.dump(settingvollevel, vol)
+                            mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                        if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                            if any(char.isdigit() for char in str(usrcmd)):
+                                for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                    changevollevel=int(changevollevel)
+                            else:
+                                changevollevel=10
+                            newvollevel= oldvollevel - changevollevel
+                            print(newvollevel)
+                            if newvollevel>100:
+                                settingvollevel==100
+                            elif newvollevel<0:
+                                settingvollevel==0
+                            else:
+                                settingvollevel=newvollevel
+                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                json.dump(settingvollevel, vol)
+                            mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                    else:
+                        say("Sorry I could not help you")
+                else:
+                    say("Sorry nothing is playing right now")
 
             if 'refresh'.lower() in str(usrcmd).lower() and 'music'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
@@ -436,4 +461,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as error:
+        logger.exception(error)
