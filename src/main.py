@@ -46,7 +46,8 @@ from actions import play_songs
 from actions import play_album
 from actions import play_artist
 from actions import refreshlists
-
+from actions import chromecast_play_video
+from actions import chromecast_control
 
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
@@ -259,6 +260,12 @@ def main():
             if 'on kodi'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kodiactions(str(usrcmd).lower())
+            if 'chromecast'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                if 'play'.lower() in str(usrcmd).lower():
+                    chromecast_play_video(str(usrcmd).lower())
+                else:
+                    chromecast_control(usrcmd)            
             if 'pause media'.lower() in str(usrcmd).lower() or 'resume media'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 if ismpvplaying():

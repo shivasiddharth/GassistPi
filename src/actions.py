@@ -19,7 +19,14 @@ import aftership
 import feedparser
 import json
 import urllib.request
+import pafy
+import pychromecast
 
+
+
+# Chromecast declarations
+TV = pychromecast.Chromecast("192.168.1.13") #Change ip to match the ip-address of your Chromecast
+mc = TV.media_controller
 
 
 #Google Music Declarations
@@ -103,19 +110,19 @@ quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 ttsfilename="/tmp/say.mp3"
 translator = Translator()
 language='en'
-## Other language options
-##'af' : 'Afrikaans'  ##'sq' : 'Albanian'  ##'ar' : 'Arabic'  ##'hy' : 'Armenian'
-##'bn' : 'Bengali'  ##'ca' : 'Catalan'  ##'zh' : 'Chinese'  ##'zh-cn' : 'Chinese (Mandarin/China)'
-##'zh-tw' : 'Chinese (Mandarin/Taiwan)'  ##'hr' : 'Croatian'  ##'cs' : 'Czech'  ##'da' : 'Danish'
-##'nl' : 'Dutch'  ##'en' : 'English'  ##'eo' : 'Esperanto'  ##'fi' : 'Finnish'
-##'fr' : 'French'  ##'de' : 'German'  ##'el' : 'Greek'  ##'hi' : 'Hindi'
-##'hu' : 'Hungarian'  ##'is' : 'Icelandic'  ##'id' : 'Indonesian'  ##'it' : 'Italian'
-##'ja' : 'Japanese'  ##'km' : 'Khmer (Cambodian)'  ##'ko' : 'Korean'  ##'la' : 'Latin'
-##'lv' : 'Latvian'  ##'mk' : 'Macedonian'  ##'no' : 'Norwegian'  ##'pl' : 'Polish'
-##'pt' : 'Portuguese'  ##'ro' : 'Romanian'  ##'ru' : 'Russian'  ##'sr' : 'Serbian'
-##'si' : 'Sinhala'  ##'sk' : 'Slovak'  ##'es' : 'Spanish'  ##'sw' : 'Swahili'
-##'sv' : 'Swedish'  ##'ta' : 'Tamil'  ##'th' : 'Thai'  ##'tr' : 'Turkish'
-##'uk' : 'Ukrainian'  ##'vi' : 'Vietnamese'  ##'cy' : 'Welsh'
+## Other language options:
+##'af'    : 'Afrikaans'         'sq' : 'Albanian'           'ar' : 'Arabic'      'hy'    : 'Armenian'
+##'bn'    : 'Bengali'           'ca' : 'Catalan'            'zh' : 'Chinese'     'zh-cn' : 'Chinese (China)'
+##'zh-tw' : 'Chinese (Taiwan)'  'hr' : 'Croatian'           'cs' : 'Czech'       'da'    : 'Danish'
+##'nl'    : 'Dutch'             'en' : 'English'            'eo' : 'Esperanto'   'fi'    : 'Finnish'
+##'fr'    : 'French'            'de' : 'German'             'el' : 'Greek'       'hi'    : 'Hindi'
+##'hu'    : 'Hungarian'         'is' : 'Icelandic'          'id' : 'Indonesian'  'it'    : 'Italian'
+##'ja'    : 'Japanese'          'km' : 'Khmer (Cambodian)'  'ko' : 'Korean'      'la'    : 'Latin'
+##'lv'    : 'Latvian'           'mk' : 'Macedonian'         'no' : 'Norwegian'   'pl'    : 'Polish'
+##'pt'    : 'Portuguese'        'ro' : 'Romanian'           'ru' : 'Russian'     'sr'    : 'Serbian'
+##'si'    : 'Sinhala'           'sk' : 'Slovak'             'es' : 'Spanish'     'sw'    : 'Swahili'
+##'sv'    : 'Swedish'           'ta' : 'Tamil'              'th' : 'Thai'        'tr'    : 'Turkish'
+##'uk'    : 'Ukrainian'         'vi' : 'Vietnamese'         'cy' : 'Welsh'
 
 
 
@@ -302,6 +309,15 @@ def youtube_search(query):
       YouTubeURL=("https://www.youtube.com/watch?v="+videoids[0])
 
   return YouTubeURL,urlid
+
+
+#Function to get streaming links for YouTube URLs
+def youtube_stream_link(videourl):
+    url=videourl
+    video = pafy.new(url)
+    best = video.getbest()
+    streaminglink=best.url
+    return streaminglink
 
 
 ##-------Start of functions defined for Kodi Actions--------------
@@ -885,24 +901,28 @@ def play_playlist(playlistnum):
 
     tracks,numtracks=loadplaylist(playlistnum)
 
-    if currenttrackid<numtracks:
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('mpv --really-quiet '+streamurl+' &')
-    elif currenttrackid>numtracks and loopstatus=='on':
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
-            json.dump(playerinfo,output_file)
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('"mpv --really-quiet "+streamurl+" &"')
-    elif currenttrackid>numtracks and loopstatus=='off':
-        print("Error")
+    if not tracks==[]:
+        if currenttrackid<numtracks:
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='on':
+            currenttrackid=0
+            nexttrackid=1
+            loopstatus='on'
+            playerinfo=[nexttrackid,loopstatus]
+            with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
+                json.dump(playerinfo,output_file)
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('"mpv --really-quiet "+streamurl+" &"')
+        elif currenttrackid>numtracks and loopstatus=='off':
+            print("Error")
+    else:
+        say("No matching results found")
+
 
 def play_songs():
 
@@ -925,24 +945,28 @@ def play_songs():
 
     tracks,numtracks=loadsonglist()
 
-    if currenttrackid<numtracks:
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('mpv --really-quiet '+streamurl+' &')
-    elif currenttrackid>numtracks and loopstatus=='on':
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
-            json.dump(playerinfo,output_file)
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('mpv --really-quiet '+streamurl+' &')
-    elif currenttrackid>numtracks and loopstatus=='off':
-        print("Error")
+    if not tracks==[]:
+        if currenttrackid<numtracks:
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='on':
+            currenttrackid=0
+            nexttrackid=1
+            loopstatus='on'
+            playerinfo=[nexttrackid,loopstatus]
+            with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
+                json.dump(playerinfo,output_file)
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='off':
+            print("Error")
+    else:
+        say("No matching results found")
+
 
 def play_album(albumname):
     if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
@@ -964,24 +988,28 @@ def play_album(albumname):
 
     tracks,numtracks=loadalbum(albumname)
 
-    if currenttrackid<numtracks:
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('mpv --really-quiet '+streamurl+' &')
-    elif currenttrackid>numtracks and loopstatus=='on':
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
-            json.dump(playerinfo,output_file)
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('mpv --really-quiet '+streamurl+' &')
-    elif currenttrackid>numtracks and loopstatus=='off':
-        print("Error")
+    if not tracks==[]:
+        if currenttrackid<numtracks:
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='on':
+            currenttrackid=0
+            nexttrackid=1
+            loopstatus='on'
+            playerinfo=[nexttrackid,loopstatus]
+            with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
+                json.dump(playerinfo,output_file)
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='off':
+            print("Error")
+    else:
+        say("No matching results found")
+
 
 
 def play_artist(artistname):
@@ -1004,25 +1032,79 @@ def play_artist(artistname):
 
     tracks,numtracks=loadartist(artistname)
 
-    if currenttrackid<numtracks:
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('mpv --really-quiet '+streamurl+' &')
-    elif currenttrackid>numtracks and loopstatus=='on':
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
-            json.dump(playerinfo,output_file)
-        streamurl=api.get_stream_url(tracks[currenttrackid])
-        streamurl=("'"+streamurl+"'")
-        print(streamurl)
-        os.system('mpv --really-quiet '+streamurl+' &')
-    elif currenttrackid>numtracks and loopstatus=='off':
-        print("Error")
+    if not tracks==[]:
+        if currenttrackid<numtracks:
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='on':
+            currenttrackid=0
+            nexttrackid=1
+            loopstatus='on'
+            playerinfo=[nexttrackid,loopstatus]
+            with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
+                json.dump(playerinfo,output_file)
+            streamurl=api.get_stream_url(tracks[currenttrackid])
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='off':
+            print("Error")
+    else:
+        say("No matching results found")
+
+
 #----------End of functions defined for Google Music---------------------------
+
+
+
+#--------------Start of Chromecast functions-----------------------------------
+
+def chromecast_play_video(phrase):
+    idx=phrase.find('play')
+    query=phrase[idx:]
+    query=query.replace("'}", "",1)
+    query=query.replace('play','',1)
+    query=query.replace('on chromecast','',1)
+    query=query.strip()
+    youtubelinks=youtube_search(query)
+    youtubeurl=youtubelinks[0]
+    stream=youtube_stream_link(youtubeurl)
+    TV.wait()
+    time.sleep(1)
+    mc.play_media(stream,'video/mp4')
+
+def chromecast_control(action):
+    if 'pause'.lower() in str(action).lower():
+        TV.wait()
+        time.sleep(1)
+        mc.pause()
+    if 'resume'.lower() in str(action).lower():
+        TV.wait()
+        time.sleep(1)
+        mc.play()
+    if 'end'.lower() in str(action).lower():
+        TV.wait()
+        time.sleep(1)
+        mc.stop()
+    if 'volume'.lower() in str(action).lower():
+        if 'set'.lower() in str(action).lower() or 'change'.lower() in str(action).lower():
+            for vol in re.findall(r'\b\d+\b', action):
+                newvol= int(vol)/10
+            TV.wait()
+            time.sleep(1)
+            TV.set_volume(newvol)
+        if 'up'.lower() in str(action).lower():
+            TV.wait()
+            time.sleep(1)
+            TV.volume_up(0.2)
+        if 'down'.lower() in str(action).lower():
+            TV.wait()
+            time.sleep(1)
+            TV.volume_down(0.2)
+
+#-------------------End of Chromecast Functions---------------------------------
 
 
 #GPIO Device Control
