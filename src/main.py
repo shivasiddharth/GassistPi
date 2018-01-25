@@ -44,6 +44,9 @@ from actions import play_playlist
 from actions import play_songs
 from actions import play_album
 from actions import play_artist
+from actions import refreshlists
+
+
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -259,7 +262,7 @@ def main():
                                 output=mpvgetvol.communicate()[0]
                                 for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                     oldvollevel=int(oldvollevel)
-                                                                       
+
                             if 'increase'.lower() in str(usrcmd).lower():
                                 if any(char.isdigit() for char in str(usrcmd)):
                                     for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
@@ -297,6 +300,10 @@ def main():
                         else:
                             say("Sorry I could not help you")
 
+
+            if 'refresh'.lower() in str(usrcmd).lower() and 'music'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                refreshlists()
             if 'google music'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 os.system('pkill mpv')

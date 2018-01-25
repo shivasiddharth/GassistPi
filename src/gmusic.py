@@ -91,6 +91,7 @@ def refreshlists():
         json.dump(songs_list, output_file)
     with open('/home/pi/playlist.json', 'w') as output_file:
         json.dump(playlist_list, output_file)
+    
 
 def play_playlist(playlistnum):
 
