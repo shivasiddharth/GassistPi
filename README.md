@@ -28,8 +28,8 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration**.  
 **14.  Streaming music from Google Play Music (It is computationally intensive so actions added only for Pi3 and Pi2).**  
-**15.  Casting of YouTube Videos to Chromecast and chromecast media control by voice.  
-**16.  Voice control of Radio/YouTube Streams/Google Music volume levels.       
+**15.  Casting of YouTube Videos to Chromecast and chromecast media control by voice.**  
+**16.  Voice control of Radio/YouTube Streams/Google Music volume levels.**         
 
 
 *******************************************************************************************************************************  
