@@ -242,13 +242,15 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
 ************************************************
-## **CASTING YouTube VDIEOS TO Chromecast  
+## **CASTING YouTube VDIEOS TO Chromecast**    
 ************************************************
-Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word. Example: ** Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts the MasterChef YouTube Video.
-**Note: YouTube casting to Chromecast using third party services has been blocked, so I have taken a roundabout approach and as a result, you may not find the usual YouTube interface on Chromecast.**  
+Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word. 
+Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts the MasterChef YouTube Video.  
+
+**Note: YouTube casting to Chromecast using third party scripts has been blocked, so I have taken a roundabout approach and as a result, you may not find the usual YouTube interface on Chromecast.**  
 
 ************************************************
-## **CCONTROLLING Chromecast by VOICE**    
+## **CONTROLLING Chromecast by VOICE**    
 ************************************************   
 Following are the default commands for controlling Chromecast with **Chromecast** as the trigger word.    
 Pausing:  
@@ -276,7 +278,8 @@ Hey Google, Pause Media  (Entire phrase **Pause Media** is the trigger)
 Resuming:  
 Hey Google, Resume Media  (Entire phrase **Resume Media** is the trigger)
 
-Volume Control (**Media Volume** is the trigger)  
+Volume Control (**Media Volume** is the trigger)
+
 Increase/Decrease Volume:  
 Hey Google, Increase/(Decrease or Reduce) Media Volume by ( a number between 0 and 100)   
 If you do not specify a number, by default the volume will be increased or decreased by 10 units.  
