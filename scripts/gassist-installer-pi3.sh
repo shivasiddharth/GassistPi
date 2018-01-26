@@ -37,7 +37,7 @@ echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
 sudo apt-get update -y
 
-sed 's/#.*//' /home/pi/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install
+sed 's/#.*//' /home/pi/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
 if [ ! -d /home/pi/.config/mpv/scripts/ ]; then
   mkdir -p /home/pi/.config/mpv/scripts/
 fi
