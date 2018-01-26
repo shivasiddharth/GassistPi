@@ -25,6 +25,7 @@ import pychromecast
 
 
 # Chromecast declarations
+# Do not rename/change "TV" its a variable
 TV = pychromecast.Chromecast("192.168.1.13") #Change ip to match the ip-address of your Chromecast
 mc = TV.media_controller
 
