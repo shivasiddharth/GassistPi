@@ -265,7 +265,7 @@ def main():
                 if 'play'.lower() in str(usrcmd).lower():
                     chromecast_play_video(str(usrcmd).lower())
                 else:
-                    chromecast_control(usrcmd)            
+                    chromecast_control(usrcmd)
             if 'pause media'.lower() in str(usrcmd).lower() or 'resume media'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 if ismpvplaying():
@@ -278,9 +278,20 @@ def main():
             if 'media volume'.lower() in str(usrcmd).lower():
                 if ismpvplaying():
                     if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
-                        for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
+                        if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
+                            settingvollevel=100
                             with open('/home/pi/.mediavolume.json', 'w') as vol:
                                 json.dump(settingvollevel, vol)
+                            mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                        elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
+                            settingvollevel=0
+                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                json.dump(settingvollevel, vol)
+                            mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                        else:
+                            for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
+                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    json.dump(settingvollevel, vol)
                             mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                     elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                         if os.path.isfile("/home/pi/.mediavolume.json"):

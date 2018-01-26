@@ -5,15 +5,15 @@
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)  
 
 *******************************************************************************************************************************
-## GassistPi updated with Google Play Music streaming and YouTube autoplay feature  
+## GassistPi updated with Chromecast-ing Feature and Media Volume Control Features    
 
-### Existing GassistPi users on the latest SDK can update their Pi using the given script to add the new feature. Due to Pi Zero's processing limitations, the feature has been added only for Pi 3 and Pi 2 users. Pi Zero users, need not update.
-https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-2018-update.sh  
+### Existing GassistPi users on the latest SDK can update their GassistPi Project using:   
+https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-Script.sh
 
 ### New users, continue as instructed below in the README doc.
 *******************************************************************************************************************************
 
-# Features:  
+# Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
 **1.   Headless auto start on boot.**    
 **2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
@@ -27,7 +27,9 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-
 **11.  Parcel tracking using Aftership API.**  
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration**.  
-**14.  Streaming music from Google Play Music (It is computationally intensive so actions added only for Pi3 and Pi2).**    
+**14.  Streaming music from Google Play Music (It is computationally intensive so actions added only for Pi3 and Pi2).**  
+**15.  Casting of YouTube Videos to Chromecast and chromecast media control by voice.  
+**16.  Voice control of Radio/YouTube Streams/Google Music volume levels.       
 
 
 *******************************************************************************************************************************  
@@ -36,7 +38,7 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-
 
 
 *******************************************************************************************************************************  
-**CLI or Raspbian Lite does not support all features and Custom wakeword does not work with Google's AIY image. So please use the Standard Raspbian Desktop image- Link https://www.raspberrypi.org/downloads/raspbian/**  
+**CLI or Raspbian Lite or Google's AIY image does not support all features. So please use the Standard Raspbian Desktop image- Link https://www.raspberrypi.org/downloads/raspbian/**  
 *******************************************************************************************************************************
 
 *************************************************
@@ -237,6 +239,53 @@ Add the NodeMCU's IP address in the actions.py file.
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=ae0iwJ62uaM
 " target="_blank"><img src="http://img.youtube.com/vi/ae0iwJ62uaM/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
+
+
+************************************************
+## **CASTING YouTube VDIEOS TO Chromecast  
+************************************************
+Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word. Example: ** Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts the MasterChef YouTube Video.
+**Note: YouTube casting to Chromecast using third party services has been blocked, so I have taken a roundabout approach and as a result, you may not find the usual YouTube interface on Chromecast.**  
+
+************************************************
+## **CCONTROLLING Chromecast by VOICE**    
+************************************************   
+Following are the default commands for controlling Chromecast with **Chromecast** as the trigger word.    
+Pausing:  
+Hey Google, Pause Chromecast  
+
+Resuming:  
+Hey Google, Resume Chromecast  
+
+Stopping:
+Hey Google, End Chromecast  
+
+Change volume up/down:  
+Hey Google, Chromecast Volume Up/Down  
+
+Set Volume:  
+Hey Google, Set/Change Chromecast volume to (1 to 10)
+
+************************************************
+## **CCONTROLLING MEDIA by VOICE**    
+************************************************
+You can change volume and pause or resume the radio/YouTube Stream/Google Music by voice.  
+Pausing:  
+Hey Google, Pause Media  (Entire phrase **Pause Media** is the trigger)
+
+Resuming:  
+Hey Google, Resume Media  (Entire phrase **Resume Media** is the trigger)
+
+Volume Control (**Media Volume** is the trigger)  
+Increase/Decrease Volume:  
+Hey Google, Increase/(Decrease or Reduce) Media Volume by ( a number between 0 and 100)   
+If you do not specify a number, by default the volume will be increased or decreased by 10 units.  
+
+Set Volume:  
+Hey Google, Set/change Media Volume to ( a number between 0 and 100)   
+
+Set volume to Maximum/Minimum:  
+Hey Google, Set/change Media Volume to maximum/minimum
 
 
 ************************************************

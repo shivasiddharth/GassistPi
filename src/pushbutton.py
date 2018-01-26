@@ -28,6 +28,8 @@ import subprocess
 import click
 import grpc
 import time
+import psutil
+import logging
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
@@ -41,6 +43,9 @@ from actions import track
 from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
+from actions import chromecast_play_video
+from actions import chromecast_control
+
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -58,6 +63,10 @@ except SystemError:
     import assistant_helpers
     import audio_helpers
     import device_helpers
+
+logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logger=logging.getLogger(__name__)
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -102,6 +111,15 @@ class SampleAssistant(object):
       deadline_sec: gRPC deadline in seconds for Google Assistant API call.
       device_handler: callback for device actions.
     """
+    def ismpvplaying(self):
+        for pid in psutil.pids():
+            p=psutil.Process(pid)
+            if 'mpv'in p.name():
+                mpvactive=True
+                break
+            else:
+                mpvactive=False
+        return mpvactive
 
     def __init__(self, language_code, device_model_id, device_id,
                  conversation_stream,
@@ -161,6 +179,17 @@ class SampleAssistant(object):
         #kodi.Application.SetVolume({"volume": 0})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
+        if ismpvplaying():
+            if os.path.isfile("/home/pi/.mediavolume.json"):
+                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+            else:
+                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
+                output=mpvgetvol.communicate()[0]
+                for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                        json.dump(currntvol, vol)
+                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+
         logging.info('Recording audio request.')
 
         def iter_assist_requests():
@@ -186,6 +215,91 @@ class SampleAssistant(object):
                                       for r in resp.speech_results))
                 usrcmd=resp.speech_results
                 print(str(usrcmd))
+                if 'chromecast'.lower() in str(usrcmd).lower():
+                    if 'play'.lower() in str(usrcmd).lower():
+                        chromecast_play_video(str(usrcmd).lower())
+                    else:
+                        chromecast_control(usrcmd)
+                    return continue_conversation
+                if 'pause media'.lower() in str(usrcmd).lower() or 'resume media'.lower() in str(usrcmd).lower():
+                    assistant.stop_conversation()
+                    if ismpvplaying():
+                        if 'pause media'.lower() in str(usrcmd).lower():
+                            playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", True]})+"' | socat - /tmp/mpvsocket")
+                        elif 'resume media'.lower() in str(usrcmd).lower():
+                            playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", False]})+"' | socat - /tmp/mpvsocket")
+                    else:
+                        say("Sorry nothing is playing right now")
+                    return continue_conversation
+                if 'media volume'.lower() in str(usrcmd).lower():
+                    if ismpvplaying():
+                        if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
+                            if 'hundred'.lower() in str(usrcmd).lower() or 'maximum'.lower() in str(usrcmd).lower():
+                                settingvollevel=100
+                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    json.dump(settingvollevel, vol)
+                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                            elif 'zero'.lower() in str(usrcmd).lower() or 'minimum'.lower() in str(usrcmd).lower():
+                                settingvollevel=0
+                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    json.dump(settingvollevel, vol)
+                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                            else:
+                                for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
+                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                        json.dump(settingvollevel, vol)
+                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                        elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                            if os.path.isfile("/home/pi/.mediavolume.json"):
+                                with open('/home/pi/.mediavolume.json', 'r') as vol:
+                                    oldvollevel = json.load(vol)
+                                    for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
+                                        oldvollevel=int(oldvollevel)
+                            else:
+                                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
+                                output=mpvgetvol.communicate()[0]
+                                for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                                    oldvollevel=int(oldvollevel)
+
+                            if 'increase'.lower() in str(usrcmd).lower():
+                                if any(char.isdigit() for char in str(usrcmd)):
+                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                        changevollevel=int(changevollevel)
+                                else:
+                                    changevollevel=10
+                                newvollevel= oldvollevel+ changevollevel
+                                print(newvollevel)
+                                if newvollevel>100:
+                                    settingvollevel==100
+                                elif newvollevel<0:
+                                    settingvollevel==0
+                                else:
+                                    settingvollevel=newvollevel
+                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    json.dump(settingvollevel, vol)
+                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                            if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                                if any(char.isdigit() for char in str(usrcmd)):
+                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                        changevollevel=int(changevollevel)
+                                else:
+                                    changevollevel=10
+                                newvollevel= oldvollevel - changevollevel
+                                print(newvollevel)
+                                if newvollevel>100:
+                                    settingvollevel==100
+                                elif newvollevel<0:
+                                    settingvollevel==0
+                                else:
+                                    settingvollevel=newvollevel
+                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    json.dump(settingvollevel, vol)
+                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                        else:
+                            say("Sorry I could not help you")
+                    else:
+                        say("Sorry nothing is playing right now")
+                    return continue_conversation
                 if 'trigger' in str(usrcmd).lower():
                     Action(str(usrcmd).lower())
                     return continue_conversation
@@ -267,6 +381,12 @@ class SampleAssistant(object):
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
                #kodi.Application.SetVolume({"volume": vollevel})
+        if ismpvplaying():
+            if os.path.isfile("/home/pi/.mediavolume.json"):
+                with open('/home/pi/.mediavolume.json', 'r') as vol:
+                    oldvollevel = json.load(vol)
+                print(oldvollevel)
+                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
         self.conversation_stream.stop_playback()
         return continue_conversation
 
@@ -395,6 +515,7 @@ def main(api_endpoint, credentials, project_id,
 
         $ python -m googlesamples.assistant -i <input file> -o <output file>
     """
+    subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
 
@@ -537,4 +658,7 @@ def main(api_endpoint, credentials, project_id,
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as error:
+        logger.exception(error)
