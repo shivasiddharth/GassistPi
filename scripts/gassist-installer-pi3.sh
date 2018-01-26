@@ -51,9 +51,8 @@ fi
 mpsyt set player mpv, set playerargs ,exit
 
 python3 -m venv env
-env/bin/python -m pip install --upgrade pip setuptools
+env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
-pip install wheel
 
 pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
 
