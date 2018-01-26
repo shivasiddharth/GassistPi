@@ -44,6 +44,10 @@ fi
 if [ -f /home/pi/GassistPi/src/end.lua ]; then
   mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
 fi
+if [ -f /home/pi/GassistPi/src/mpv.conf ]; then
+  mv /home/pi/GassistPi/src/mpv.conf /home/pi/.config/mpv/mpv.conf
+fi
+
 mpsyt set player mpv, set playerargs ,exit
 
 python3 -m venv env
