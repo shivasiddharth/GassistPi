@@ -252,6 +252,8 @@ Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts 
 ************************************************
 ## **CONTROLLING Chromecast by VOICE**    
 ************************************************   
+First, add the IP-Address of your Chromecast in the actions.py script, in the indicated location.  
+
 Following are the default commands for controlling Chromecast with **Chromecast** as the trigger word.    
 Pausing:  
 Hey Google, Pause Chromecast  
