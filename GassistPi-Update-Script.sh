@@ -25,7 +25,7 @@ then
     exec sudo -u $RUN_AS $0
 fi
 
-sudo apt-get update
+sudo apt-get update -y
 
 if ps ax | grep -v grep | grep gassistpi-ok-google > /dev/null
 then
