@@ -57,7 +57,7 @@ var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names
 gpio = (12,13,24)#GPIOS for 'var'. Add other GPIOs that you want
 
 #Number of station names and station links should be the same
-stnname=('Radio One', 'Radio 2', 'Radio 3', 'Radio 5')#Add more stations if you want
+stnname=('Radio 1', 'Radio 2', 'Radio 3', 'Radio 5')#Add more stations if you want
 stnlink=('http://www.radiofeeds.co.uk/bbcradio2.pls', 'http://www.radiofeeds.co.uk/bbc6music.pls', 'http://c5icy.prod.playlists.ihrhls.com/1469_icy', 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3')
 
 #IP Address of ESP
@@ -151,9 +151,11 @@ def say(words):
 def radio(phrase):
     for num, name in enumerate(stnname):
         if name.lower() in phrase:
-            station=stnlink[num]
-            say("Tuning into " + name)
-            os.system('mpv --really-quiet '+station+' &')
+            startingvol=mpvvolmgr()
+            station=stnlink[num]            
+            print (station)
+            say("Tuning into " + name)            
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+station+' &')
 
 #ESP6266 Devcies control
 def ESP(phrase):
@@ -181,8 +183,7 @@ def SetAngle(angle):
     GPIO.output(27, False)
 
 
-def stop():
-    pkill = subprocess.Popen(["/usr/bin/pkill","mpsyt"],stdin=subprocess.PIPE)
+def stop():    
     pkill = subprocess.Popen(["/usr/bin/pkill","mpv"],stdin=subprocess.PIPE)
 
 #Parcel Tracking
@@ -845,8 +846,8 @@ def loadplaylist(playlistnum):
     return track_ids, tracksnum
 
 def refreshlists():
-    playlistcontents=api.get_all_user_playlist_contents()
-    songs_list= api.get_all_songs()
+    playlist_list=api.get_all_user_playlist_contents()
+    songs_list=api.get_all_songs()
     with open('/home/pi/songs.json', 'w') as output_file:
         json.dump(songs_list, output_file)
     with open('/home/pi/playlist.json', 'w') as output_file:
@@ -880,7 +881,7 @@ def play_playlist(playlistnum):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -891,7 +892,7 @@ def play_playlist(playlistnum):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -925,7 +926,7 @@ def play_songs():
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -936,7 +937,7 @@ def play_songs():
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -969,7 +970,7 @@ def play_album(albumname):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -980,7 +981,7 @@ def play_album(albumname):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -1014,7 +1015,7 @@ def play_artist(artistname):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -1025,7 +1026,7 @@ def play_artist(artistname):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -1038,7 +1039,7 @@ def play_artist(artistname):
 #-----------------Start of Functions for YouTube Streaming---------------------
 def youtubeplayer():
 
-    if os.path.isfile("/home/pi/.ýoutubeplayer.json"):
+    if os.path.isfile("/home/pi/.youtubeplayer.json"):
         with open('/home/pi/.youtubeplayer.json','r') as input_file:
             playerinfo= json.load(input_file)
         currenttrackid=playerinfo[0]
@@ -1058,8 +1059,11 @@ def youtubeplayer():
     if os.path.isfile("/home/pi/youtubeurllist.json"):
         with open('/home/pi/youtubeurllist.json','r') as input_file:
             tracks= json.load(input_file)
+            numtracks=len(tracks)
+            print(tracks)
     else:
         tracks=""
+        numtracks=0
 
     startingvol=mpvvolmgr()
 
@@ -1069,7 +1073,7 @@ def youtubeplayer():
             streamurl=audiostream
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -1081,13 +1085,14 @@ def youtubeplayer():
             streamurl=audiostream
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
 
 def YouTube_Autoplay(phrase):
+    urllist=[]
     idx=phrase.find('stream')
     track=phrase[idx:]
     track=track.replace("'}", "",1)
@@ -1097,15 +1102,18 @@ def YouTube_Autoplay(phrase):
     fullurl,urlid=youtube_search(track)
     autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
     print(autourls)
+    for i in range(0,len(autourls)):
+        urllist.append(autourls[i])
     say("Adding autoplay links to the playlist")
     with open('/home/pi/youtubeurllist.json', 'w') as output_file:
         json.dump(autourls, output_file)
-    if os.path.isfile("/home/pi/.ýoutubeplayer.json"):
-        os.remove('/home/pi/.ýoutubeplayer.json')
+    if os.path.isfile("/home/pi/.youtubeplayer.json"):
+        os.remove('/home/pi/.youtubeplayer.json')
     youtubeplayer()
 
 
 def YouTube_No_Autoplay(phrase):
+    urllist=[]
     idx=phrase.find('stream')
     track=phrase[idx:]
     track=track.replace("'}", "",1)
@@ -1113,11 +1121,12 @@ def YouTube_No_Autoplay(phrase):
     track=track.strip()
     say("Getting youtube link")
     fullurl,urlid=youtube_search(track)
-    print(fullurl)
+    urllist.append(fullurl)
+    print(urllist)
     with open('/home/pi/youtubeurllist.json', 'w') as output_file:
-        json.dump(fullurl, output_file)
-    if os.path.isfile("/home/pi/.ýoutubeplayer.json"):
-        os.remove('/home/pi/.ýoutubeplayer.json')
+        json.dump(urllist, output_file)
+    if os.path.isfile("/home/pi/.youtubeplayer.json"):
+        os.remove('/home/pi/.youtubeplayer.json')
     youtubeplayer()
 
 #-----------------End of Functions for YouTube Streaming---------------------

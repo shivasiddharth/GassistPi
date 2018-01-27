@@ -30,11 +30,12 @@ import grpc
 import time
 import psutil
 import logging
+import re
+from actions import say
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
 from kodijson import Kodi, PLAYER_VIDEO
-from actions import say
 from actions import Action
 from actions import YouTube_No_Autoplay
 from actions import YouTube_Autoplay
@@ -259,7 +260,7 @@ class SampleAssistant(object):
                     if 'stop'.lower() in str(usrcmd).lower():
                         stop()
                         return continue_conversation
-                    if 'tune into'.lower() in str(usrcmd).lower():
+                    if 'radio'.lower() in str(usrcmd).lower():
                         radio(str(usrcmd).lower())
                         return continue_conversation
                     if 'wireless'.lower() in str(usrcmd).lower():
