@@ -238,11 +238,23 @@ def main():
                 Action(str(usrcmd).lower())
             if 'stream'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
-                if 'autoplay'.lower() in str(usrcmd).lower():
-                    os.system("mpsyt rmp mylist,exit")
-                    YouTube_Autoplay(str(usrcmd).lower())
+                os.system('pkill mpv')
+                if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
+                    os.system('rm /home/pi/GassistPi/src/trackchange.py')
+                    os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    if 'autoplay'.lower() in str(usrcmd).lower():
+                        YouTube_Autoplay(str(usrcmd).lower())
+                    else:
+                        YouTube_No_Autoplay(str(usrcmd).lower())
                 else:
-                    YouTube_No_Autoplay(str(usrcmd).lower())
+                    os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                    if 'autoplay'.lower() in str(usrcmd).lower():
+                        YouTube_Autoplay(str(usrcmd).lower())
+                    else:
+                        YouTube_No_Autoplay(str(usrcmd).lower())
+                
             if 'stop'.lower() in str(usrcmd).lower():
                 stop()
             if 'tune into'.lower() in str(usrcmd).lower():

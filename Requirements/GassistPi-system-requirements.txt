@@ -11,3 +11,4 @@ libssl-dev
 python3-dev
 python3-venv
 socat
+mpg123

@@ -30,12 +30,14 @@ import grpc
 import time
 import psutil
 import logging
+import say
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
 from kodijson import Kodi, PLAYER_VIDEO
 from actions import Action
 from actions import YouTube_No_Autoplay
+from actions import YouTube_Autoplay
 from actions import stop
 from actions import radio
 from actions import ESP
@@ -43,6 +45,11 @@ from actions import track
 from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
+from actions import play_playlist
+from actions import play_songs
+from actions import play_album
+from actions import play_artist
+from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
 
@@ -97,6 +104,16 @@ DIALOG_FOLLOW_ON = embedded_assistant_pb2.DialogStateOut.DIALOG_FOLLOW_ON
 CLOSE_MICROPHONE = embedded_assistant_pb2.DialogStateOut.CLOSE_MICROPHONE
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
+def ismpvplaying():
+    for pid in psutil.pids():
+        p=psutil.Process(pid)
+        if 'mpv'in p.name():
+            mpvactive=True
+            break
+        else:
+            mpvactive=False
+    return mpvactive
+
 
 class SampleAssistant(object):
     """Sample Assistant that supports conversations and device actions.
@@ -111,15 +128,6 @@ class SampleAssistant(object):
       deadline_sec: gRPC deadline in seconds for Google Assistant API call.
       device_handler: callback for device actions.
     """
-    def ismpvplaying(self):
-        for pid in psutil.pids():
-            p=psutil.Process(pid)
-            if 'mpv'in p.name():
-                mpvactive=True
-                break
-            else:
-                mpvactive=False
-        return mpvactive
 
     def __init__(self, language_code, device_model_id, device_id,
                  conversation_stream,
@@ -208,135 +216,281 @@ class SampleAssistant(object):
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
-                print('Full Speech Result '+str(resp.speech_results))
+
             if resp.speech_results:
                 logging.info('Transcript of user request: "%s".',
                              ' '.join(r.transcript
                                       for r in resp.speech_results))
-                usrcmd=resp.speech_results
-                print(str(usrcmd))
-                if 'chromecast'.lower() in str(usrcmd).lower():
-                    if 'play'.lower() in str(usrcmd).lower():
-                        chromecast_play_video(str(usrcmd).lower())
-                    else:
-                        chromecast_control(usrcmd)
-                    return continue_conversation
-                if 'pause media'.lower() in str(usrcmd).lower() or 'resume media'.lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    if ismpvplaying():
-                        if 'pause media'.lower() in str(usrcmd).lower():
-                            playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", True]})+"' | socat - /tmp/mpvsocket")
-                        elif 'resume media'.lower() in str(usrcmd).lower():
-                            playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", False]})+"' | socat - /tmp/mpvsocket")
-                    else:
-                        say("Sorry nothing is playing right now")
-                    return continue_conversation
-                if 'media volume'.lower() in str(usrcmd).lower():
-                    if ismpvplaying():
-                        if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
-                            if 'hundred'.lower() in str(usrcmd).lower() or 'maximum'.lower() in str(usrcmd).lower():
-                                settingvollevel=100
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
-                            elif 'zero'.lower() in str(usrcmd).lower() or 'minimum'.lower() in str(usrcmd).lower():
-                                settingvollevel=0
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+
+                for r in resp.speech_results:
+                    usercommand=str(r)
+
+                if "stability: 1.0" in usercommand.lower():
+                    usrcmd=str(usercommand).lower()
+                    idx=usrcmd.find('stability')
+                    usrcmd=usrcmd[:idx]
+                    usrcmd=usrcmd.replace("stability","",1)
+                    usrcmd=usrcmd.strip()
+                    usrcmd=usrcmd.replace('transcript: "','',1)
+                    usrcmd=usrcmd.replace('"','',1)
+                    usrcmd=usrcmd.strip()
+                    print(str(usrcmd))
+                    if 'trigger'.lower() in str(usrcmd).lower():
+                        Action(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'stream'.lower() in str(usrcmd).lower():
+                        os.system('pkill mpv')
+                        if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
+                            os.system('rm /home/pi/GassistPi/src/trackchange.py')
+                            os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            if 'autoplay'.lower() in str(usrcmd).lower():
+                                YouTube_Autoplay(str(usrcmd).lower())
                             else:
-                                for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
+                                YouTube_No_Autoplay(str(usrcmd).lower())
+                        else:
+                            os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            if 'autoplay'.lower() in str(usrcmd).lower():
+                                YouTube_Autoplay(str(usrcmd).lower())
+                            else:
+                                YouTube_No_Autoplay(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'stop'.lower() in str(usrcmd).lower():
+                        stop()
+                        return continue_conversation
+                    if 'tune into'.lower() in str(usrcmd).lower():
+                        radio(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'wireless'.lower() in str(usrcmd).lower():
+                        ESP(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'parcel'.lower() in str(usrcmd).lower():
+                        track()
+                        return continue_conversation
+                    if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+                        feed(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'on kodi'.lower() in str(usrcmd).lower():
+                        kodiactions(str(usrcmd).lower())
+                        return continue_conversation
+                    if 'chromecast'.lower() in str(usrcmd).lower():
+                        if 'play'.lower() in str(usrcmd).lower():
+                            chromecast_play_video(str(usrcmd).lower())
+                        else:
+                            chromecast_control(usrcmd)
+                        return continue_conversation
+                    if 'pause media'.lower() in str(usrcmd).lower() or 'resume media'.lower() in str(usrcmd).lower():
+                        if ismpvplaying():
+                            if 'pause media'.lower() in str(usrcmd).lower():
+                                playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", True]})+"' | socat - /tmp/mpvsocket")
+                            elif 'resume media'.lower() in str(usrcmd).lower():
+                                playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", False]})+"' | socat - /tmp/mpvsocket")
+                        else:
+                            say("Sorry nothing is playing right now")
+                        return continue_conversation
+                    if 'media volume'.lower() in str(usrcmd).lower():
+                        if ismpvplaying():
+                            if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
+                                if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
+                                    settingvollevel=100
                                     with open('/home/pi/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
-                        elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                            if os.path.isfile("/home/pi/.mediavolume.json"):
-                                with open('/home/pi/.mediavolume.json', 'r') as vol:
-                                    oldvollevel = json.load(vol)
-                                    for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
+                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                                elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
+                                    settingvollevel=0
+                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                        json.dump(settingvollevel, vol)
+                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                                else:
+                                    for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
+                                        with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                            json.dump(settingvollevel, vol)
+                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                            elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                                if os.path.isfile("/home/pi/.mediavolume.json"):
+                                    with open('/home/pi/.mediavolume.json', 'r') as vol:
+                                        oldvollevel = json.load(vol)
+                                        for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
+                                            oldvollevel=int(oldvollevel)
+                                else:
+                                    mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
+                                    output=mpvgetvol.communicate()[0]
+                                    for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                         oldvollevel=int(oldvollevel)
-                            else:
-                                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                                output=mpvgetvol.communicate()[0]
-                                for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                                    oldvollevel=int(oldvollevel)
 
-                            if 'increase'.lower() in str(usrcmd).lower():
-                                if any(char.isdigit() for char in str(usrcmd)):
-                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
-                                        changevollevel=int(changevollevel)
-                                else:
-                                    changevollevel=10
-                                newvollevel= oldvollevel+ changevollevel
-                                print(newvollevel)
-                                if newvollevel>100:
-                                    settingvollevel==100
-                                elif newvollevel<0:
-                                    settingvollevel==0
-                                else:
-                                    settingvollevel=newvollevel
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
-                            if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                                if any(char.isdigit() for char in str(usrcmd)):
-                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
-                                        changevollevel=int(changevollevel)
-                                else:
-                                    changevollevel=10
-                                newvollevel= oldvollevel - changevollevel
-                                print(newvollevel)
-                                if newvollevel>100:
-                                    settingvollevel==100
-                                elif newvollevel<0:
-                                    settingvollevel==0
-                                else:
-                                    settingvollevel=newvollevel
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                                if 'increase'.lower() in str(usrcmd).lower():
+                                    if any(char.isdigit() for char in str(usrcmd)):
+                                        for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                            changevollevel=int(changevollevel)
+                                    else:
+                                        changevollevel=10
+                                    newvollevel= oldvollevel+ changevollevel
+                                    print(newvollevel)
+                                    if newvollevel>100:
+                                        settingvollevel==100
+                                    elif newvollevel<0:
+                                        settingvollevel==0
+                                    else:
+                                        settingvollevel=newvollevel
+                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                        json.dump(settingvollevel, vol)
+                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                                if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                                    if any(char.isdigit() for char in str(usrcmd)):
+                                        for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                            changevollevel=int(changevollevel)
+                                    else:
+                                        changevollevel=10
+                                    newvollevel= oldvollevel - changevollevel
+                                    print(newvollevel)
+                                    if newvollevel>100:
+                                        settingvollevel==100
+                                    elif newvollevel<0:
+                                        settingvollevel==0
+                                    else:
+                                        settingvollevel=newvollevel
+                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                        json.dump(settingvollevel, vol)
+                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                            else:
+                                say("Sorry I could not help you")
                         else:
-                            say("Sorry I could not help you")
-                    else:
-                        say("Sorry nothing is playing right now")
-                    return continue_conversation
-                if 'trigger' in str(usrcmd).lower():
-                    Action(str(usrcmd).lower())
-                    return continue_conversation
-                if 'stream'.lower() in str(usrcmd).lower():
-                    track=str(usrcmd).lower()
-                    idx=track.find('stability')
-                    track=track[:idx]
-                    track=track.replace("stability","",1)
-                    track=track.strip()
-                    idx=track.find('stream')
-                    track=track[:idx]
-                    track=track.replace("stream","",1)
-                    track=track.replace("","",1)
-                    track=("stream " + track)
-                    track=track.replace('[transcript: "','',1)
-                    track=track.strip()
-                    print(track)
-                    YouTube_No_Autoplay(track)
-                    return continue_conversation
-                if 'stop'.lower() in str(usrcmd).lower():
-                    stop()
-                    return continue_conversation
-                if 'tune into'.lower() in str(usrcmd).lower():
-                    radio(str(usrcmd).lower())
-                    return continue_conversation
-                if 'wireless'.lower() in str(usrcmd).lower():
-                    ESP(str(usrcmd).lower())
-                    return continue_conversation
-                if 'parcel'.lower() in str(usrcmd).lower():
-                    track()
-                    return continue_conversation
-                if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
-                    feed(str(usrcmd).lower())
-                    return continue_conversation
-                if 'on kodi'.lower() in str(usrcmd).lower():
-                    kodiactions(str(usrcmd).lower())
-                    return continue_conversation
+                            say("Sorry nothing is playing right now")
+                        return continue_conversation
+
+                    if 'refresh'.lower() in str(usrcmd).lower() and 'music'.lower() in str(usrcmd).lower():
+                        refreshlists()
+                        return continue_conversation
+                    if 'google music'.lower() in str(usrcmd).lower():
+                        os.system('pkill mpv')
+                        if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
+                            os.system('rm /home/pi/GassistPi/src/trackchange.py')
+                            os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            if 'all the songs'.lower() in str(usrcmd).lower():
+                                os.system('echo "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                                say("Playing all your songs")
+                                play_songs()
+
+                            if 'playlist'.lower() in str(usrcmd).lower():
+                                if 'first'.lower() in str(usrcmd).lower() or 'one'.lower() in str(usrcmd).lower()  or '1'.lower() in str(usrcmd).lower():
+                                    os.system('echo "play_playlist(0)\n" >> /home/pi/GassistPi/src/trackchange.py')
+                                    say("Playing songs from your playlist")
+                                    play_playlist(0)
+                                else:
+                                    say("Sorry I am unable to help")
+
+                            if 'album'.lower() in str(usrcmd).lower():
+                                if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
+                                    os.system("rm /home/pi/.gmusicalbumplayer.json")
+
+                                req=str(usrcmd).lower()
+                                idx=(req).find('album')
+                                album=req[idx:]
+                                album=album.replace("'}", "",1)
+                                album = album.replace('album','',1)
+                                if 'from'.lower() in req:
+                                    album = album.replace('from','',1)
+                                    album = album.replace('google music','',1)
+                                else:
+                                    album = album.replace('google music','',1)
+
+                                album=album.strip()
+                                print(album)
+                                albumstr=('"'+album+'"')
+                                f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+                                f.write('play_album('+albumstr+')')
+                                f.close()
+                                say("Looking for songs from the album")
+                                play_album(album)
+
+                            if 'artist'.lower() in str(usrcmd).lower():
+                                if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
+                                    os.system("rm /home/pi/.gmusicartistplayer.json")
+
+                                req=str(usrcmd).lower()
+                                idx=(req).find('artist')
+                                artist=req[idx:]
+                                artist=artist.replace("'}", "",1)
+                                artist = artist.replace('artist','',1)
+                                if 'from'.lower() in req:
+                                    artist = artist.replace('from','',1)
+                                    artist = artist.replace('google music','',1)
+                                else:
+                                    artist = artist.replace('google music','',1)
+
+                                artist=artist.strip()
+                                print(artist)
+                                artiststr=('"'+artist+'"')
+                                f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+                                f.write('play_artist('+artiststr+')')
+                                f.close()
+                                say("Looking for songs rendered by the artist")
+                                play_artist(artist)
+                        else:
+                            os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                            if 'all the songs'.lower() in str(usrcmd).lower():
+                                os.system('echo "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                                say("Playing all your songs")
+                                play_songs()
+
+                            if 'playlist'.lower() in str(usrcmd).lower():
+                                if 'first'.lower() in str(usrcmd).lower() or 'one'.lower() in str(usrcmd).lower()  or '1'.lower() in str(usrcmd).lower():
+                                    os.system('echo "play_playlist(0)\n" >> /home/pi/GassistPi/src/trackchange.py')
+                                    say("Playing songs from your playlist")
+                                    play_playlist(0)
+                                else:
+                                    say("Sorry I am unable to help")
+
+                            if 'album'.lower() in str(usrcmd).lower():
+                                if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
+                                    os.system("rm /home/pi/.gmusicalbumplayer.json")
+
+                                req=str(usrcmd).lower()
+                                idx=(req).find('album')
+                                album=req[idx:]
+                                album=album.replace("'}", "",1)
+                                album = album.replace('album','',1)
+                                if 'from'.lower() in req:
+                                    album = album.replace('from','',1)
+                                    album = album.replace('google music','',1)
+                                else:
+                                    album = album.replace('google music','',1)
+
+                                album=album.strip()
+                                print(album)
+                                albumstr=('"'+album+'"')
+                                f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+                                f.write('play_album('+albumstr+')')
+                                f.close()
+                                say("Looking for songs from the album")
+                                play_album(album)
+
+                            if 'artist'.lower() in str(usrcmd).lower():
+                                if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
+                                    os.system("rm /home/pi/.gmusicartistplayer.json")
+
+                                req=str(usrcmd).lower()
+                                idx=(req).find('artist')
+                                artist=req[idx:]
+                                artist=artist.replace("'}", "",1)
+                                artist = artist.replace('artist','',1)
+                                if 'from'.lower() in req:
+                                    artist = artist.replace('from','',1)
+                                    artist = artist.replace('google music','',1)
+                                else:
+                                    artist = artist.replace('google music','',1)
+
+                                artist=artist.strip()
+                                print(artist)
+                                artiststr=('"'+artist+'"')
+                                f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+                                f.write('play_artist('+artiststr+')')
+                                f.close()
+                                say("Looking for songs rendered by the artist")
+                                play_artist(artist)
+                        return continue_conversation
+
                 else:
                     continue
                 GPIO.output(5,GPIO.LOW)
@@ -610,7 +764,8 @@ def main(api_endpoint, credentials, project_id,
             device_id = str(uuid.uuid1())
             payload = {
                 'id': device_id,
-                'model_id': device_model_id
+                'model_id': device_model_id,
+                'client_type': 'SDK_SERVICE'
             }
             session = google.auth.transport.requests.AuthorizedSession(
                 credentials

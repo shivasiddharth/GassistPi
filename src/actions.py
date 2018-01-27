@@ -24,11 +24,6 @@ import pychromecast
 
 
 
-# Chromecast declarations
-# Do not rename/change "TV" its a variable
-TV = pychromecast.Chromecast("192.168.1.13") #Change ip to match the ip-address of your Chromecast
-mc = TV.media_controller
-
 
 #Google Music Declarations
 song_ids=[]
@@ -127,6 +122,18 @@ language='en'
 
 
 
+#Function to manage mpv start volume
+def mpvvolmgr():
+    if os.path.isfile("/home/pi/.mediavolume.json"):
+        with open('/home/pi/.mediavolume.json', 'r') as vol:
+            oldvollevel = json.load(vol)
+        print(oldvollevel)
+        startvol=oldvollevel
+    else:
+        startvol=50
+    return startvol
+
+
 #Text to speech converter with translation
 def say(words):
     words= translator.translate(words, dest=language)
@@ -172,22 +179,6 @@ def SetAngle(angle):
     time.sleep(1)
     pwm.ChangeDutyCycle(0)
     GPIO.output(27, False)
-
-#Play Youtube Music
-def YouTube_No_Autoplay(phrase):
-    idx=phrase.find('stream')
-    track=phrase[idx:]
-    track=track.replace("'}", "",1)
-    track = track.replace('stream','',1)
-    track=track.strip()
-    global playshell
-    if (playshell == None):
-        playshell = subprocess.Popen(["/usr/local/bin/mpsyt",""],stdin=subprocess.PIPE ,stdout=subprocess.PIPE)
-
-    print("Playing: " + track)
-    say("Playing " + track)
-    playshell.stdin.write(bytes('/' + track + '\n1\n','utf-8'))
-    playshell.stdin.flush()
 
 
 def stop():
@@ -316,9 +307,11 @@ def youtube_search(query):
 def youtube_stream_link(videourl):
     url=videourl
     video = pafy.new(url)
-    best = video.getbest()
-    streaminglink=best.url
-    return streaminglink
+    bestvideo = video.getbest()
+    bestaudio = video.getbestaudio()
+    audiostreaminglink=bestaudio.url
+    videostreaminglink=bestvideo.url
+    return audiostreaminglink,videostreaminglink
 
 
 ##-------Start of functions defined for Kodi Actions--------------
@@ -776,28 +769,7 @@ def fetchautoplaylist(url,numvideos):
 ##    print(autoplay_urls)
     return autoplay_urls
 
-#Play Youtube Music
-def YouTube_Autoplay(phrase):
-    idx=phrase.find('stream')
-    track=phrase[idx:]
-    track=track.replace("'}", "",1)
-    track = track.replace('stream','',1)
-    track=track.strip()
-    say("Getting links")
-    fullurl,urlid=youtube_search(track)
-    autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
-    print(autourls)
-    say("Adding autoplay links to the playlist")
-    for i in range(0,len(autourls)):
-        os.system('mpsyt url '+autourls[i]+', add 1 mylist, exit')
 
-    print("Playing: " + track)
-    say("Playing " + track)
-    global playshell
-    if (playshell == None):
-        playshell = subprocess.Popen(["/usr/local/bin/mpsyt","play mylist"],stdin=subprocess.PIPE ,stdout=subprocess.PIPE)
-    else:
-        print("Error")
 
 
 ##-------Start of functions defined for Google Music-------------------
@@ -901,13 +873,14 @@ def play_playlist(playlistnum):
             json.dump(playerinfo, output_file)
 
     tracks,numtracks=loadplaylist(playlistnum)
+    startingvol=mpvvolmgr()
 
     if not tracks==[]:
         if currenttrackid<numtracks:
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -918,7 +891,7 @@ def play_playlist(playlistnum):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('"mpv --really-quiet "+streamurl+" &"')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -945,13 +918,14 @@ def play_songs():
             json.dump(playerinfo, output_file)
 
     tracks,numtracks=loadsonglist()
+    startingvol=mpvvolmgr()
 
     if not tracks==[]:
         if currenttrackid<numtracks:
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -962,7 +936,7 @@ def play_songs():
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -988,13 +962,14 @@ def play_album(albumname):
             json.dump(playerinfo, output_file)
 
     tracks,numtracks=loadalbum(albumname)
+    startingvol=mpvvolmgr()
 
     if not tracks==[]:
         if currenttrackid<numtracks:
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -1005,7 +980,7 @@ def play_album(albumname):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -1032,13 +1007,14 @@ def play_artist(artistname):
             json.dump(playerinfo, output_file)
 
     tracks,numtracks=loadartist(artistname)
+    startingvol=mpvvolmgr()
 
     if not tracks==[]:
         if currenttrackid<numtracks:
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
@@ -1049,7 +1025,7 @@ def play_artist(artistname):
             streamurl=api.get_stream_url(tracks[currenttrackid])
             streamurl=("'"+streamurl+"'")
             print(streamurl)
-            os.system('mpv --really-quiet '+streamurl+' &')
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
         elif currenttrackid>numtracks and loopstatus=='off':
             print("Error")
     else:
@@ -1059,10 +1035,102 @@ def play_artist(artistname):
 #----------End of functions defined for Google Music---------------------------
 
 
+#-----------------Start of Functions for YouTube Streaming---------------------
+def youtubeplayer():
+
+    if os.path.isfile("/home/pi/.ýoutubeplayer.json"):
+        with open('/home/pi/.youtubeplayer.json','r') as input_file:
+            playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[1]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.youtubeplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+    else:
+        currenttrackid=0
+        nexttrackid=1
+        loopstatus='on'
+        playerinfo=[nexttrackid,loopstatus]
+        with open('/home/pi/.youtubeplayer.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+
+    if os.path.isfile("/home/pi/youtubeurllist.json"):
+        with open('/home/pi/youtubeurllist.json','r') as input_file:
+            tracks= json.load(input_file)
+    else:
+        tracks=""
+
+    startingvol=mpvvolmgr()
+
+    if not tracks==[]:
+        if currenttrackid<numtracks:
+            audiostream,videostream=youtube_stream_link(tracks[currenttrackid])
+            streamurl=audiostream
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='on':
+            currenttrackid=0
+            nexttrackid=1
+            loopstatus='on'
+            playerinfo=[nexttrackid,loopstatus]
+            with open('/home/pi/.youtubeplayer.json', 'w') as output_file:
+                json.dump(playerinfo,output_file)
+            audiostream,videostream=youtube_stream_link(tracks[currenttrackid])
+            streamurl=audiostream
+            streamurl=("'"+streamurl+"'")
+            print(streamurl)
+            os.system('mpv --really-quiet --volume='+int(startingvol)+' '+streamurl+' &')
+        elif currenttrackid>numtracks and loopstatus=='off':
+            print("Error")
+    else:
+        say("No matching results found")
+
+def YouTube_Autoplay(phrase):
+    idx=phrase.find('stream')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('stream','',1)
+    track=track.strip()
+    say("Getting autoplay links")
+    fullurl,urlid=youtube_search(track)
+    autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
+    print(autourls)
+    say("Adding autoplay links to the playlist")
+    with open('/home/pi/youtubeurllist.json', 'w') as output_file:
+        json.dump(autourls, output_file)
+    if os.path.isfile("/home/pi/.ýoutubeplayer.json"):
+        os.remove('/home/pi/.ýoutubeplayer.json')
+    youtubeplayer()
+
+
+def YouTube_No_Autoplay(phrase):
+    idx=phrase.find('stream')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('stream','',1)
+    track=track.strip()
+    say("Getting youtube link")
+    fullurl,urlid=youtube_search(track)
+    print(fullurl)
+    with open('/home/pi/youtubeurllist.json', 'w') as output_file:
+        json.dump(fullurl, output_file)
+    if os.path.isfile("/home/pi/.ýoutubeplayer.json"):
+        os.remove('/home/pi/.ýoutubeplayer.json')
+    youtubeplayer()
+
+#-----------------End of Functions for YouTube Streaming---------------------
+
+
 
 #--------------Start of Chromecast functions-----------------------------------
 
 def chromecast_play_video(phrase):
+    # Chromecast declarations
+    # Do not rename/change "TV" its a variable
+    TV = pychromecast.Chromecast("192.168.1.13") #Change ip to match the ip-address of your Chromecast
+    mc = TV.media_controller
     idx=phrase.find('play')
     query=phrase[idx:]
     query=query.replace("'}", "",1)
@@ -1071,12 +1139,17 @@ def chromecast_play_video(phrase):
     query=query.strip()
     youtubelinks=youtube_search(query)
     youtubeurl=youtubelinks[0]
-    stream=youtube_stream_link(youtubeurl)
+    streams=youtube_stream_link(youtubeurl)
+    videostream=streams[1]
     TV.wait()
     time.sleep(1)
-    mc.play_media(stream,'video/mp4')
+    mc.play_media(videostream,'video/mp4')
 
 def chromecast_control(action):
+    # Chromecast declarations
+    # Do not rename/change "TV" its a variable
+    TV = pychromecast.Chromecast("192.168.1.13") #Change ip to match the ip-address of your Chromecast
+    mc = TV.media_controller
     if 'pause'.lower() in str(action).lower():
         TV.wait()
         time.sleep(1)
