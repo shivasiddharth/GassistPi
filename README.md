@@ -29,7 +29,7 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **13.  Control of Kodi or Kodi Integration.**    
 **14.  Streaming music from Google Play Music.**  
 **15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
-**16.  Voice control of Radio/Google Music volume levels.**         
+**16.  Voice control of Radio/YouTube/Google Music volume levels.**         
 
 
 *******************************************************************************************************************************  
@@ -271,14 +271,14 @@ Hey Google, Chromecast Volume Up/Down
 ************************************************
 ## **CCONTROLLING MEDIA by VOICE**    
 ************************************************
-You can change volume and pause or resume the Radio/Google Music by voice.  
+You can change volume and pause or resume the Radio/YouTube/Google Music by voice.  
 Pausing:  
-Hey Google, Pause Music  (Entire phrase **Pause Media** is the trigger)
+Hey Google, Pause Music  (Entire phrase **Pause Music** is the trigger)
 
 Resuming:  
-Hey Google, Resume Music  (Entire phrase **Resume Media** is the trigger)
+Hey Google, Resume Music  (Entire phrase **Resume Music** is the trigger)
 
-Volume Control (**Media Volume** is the trigger)
+Volume Control (**Music Volume** is the trigger)
 
 Increase/Decrease Volume:  
 Hey Google, Increase/(Decrease or Reduce) Music Volume by ( a number between 0 and 100)   
