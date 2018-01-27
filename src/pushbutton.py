@@ -281,16 +281,16 @@ class SampleAssistant(object):
                         else:
                             chromecast_control(usrcmd)
                         return continue_conversation
-                    if 'pause media'.lower() in str(usrcmd).lower() or 'resume media'.lower() in str(usrcmd).lower():
+                    if 'pause music'.lower() in str(usrcmd).lower() or 'resume music'.lower() in str(usrcmd).lower():
                         if ismpvplaying():
-                            if 'pause media'.lower() in str(usrcmd).lower():
+                            if 'pause music'.lower() in str(usrcmd).lower():
                                 playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", True]})+"' | socat - /tmp/mpvsocket")
-                            elif 'resume media'.lower() in str(usrcmd).lower():
+                            elif 'resume music'.lower() in str(usrcmd).lower():
                                 playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", False]})+"' | socat - /tmp/mpvsocket")
                         else:
                             say("Sorry nothing is playing right now")
                         return continue_conversation
-                    if 'media volume'.lower() in str(usrcmd).lower():
+                    if 'music volume'.lower() in str(usrcmd).lower():
                         if ismpvplaying():
                             if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                                 if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
