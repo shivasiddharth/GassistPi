@@ -28,8 +28,8 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration**.  
 **14.  Streaming music from Google Play Music (It is computationally intensive so actions added only for Pi3 and Pi2).**  
-**15.  Casting of YouTube Videos to Chromecast and chromecast media control by voice.**  
-**16.  Voice control of Radio/YouTube Streams/Google Music volume levels.**         
+**15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
+**16.  Voice control of Radio/Google Music volume levels.**         
 
 
 *******************************************************************************************************************************  
@@ -244,7 +244,7 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 ************************************************
 ## **CASTING YouTube VDIEOS TO Chromecast**    
 ************************************************
-Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word. 
+Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word.
 Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts the MasterChef YouTube Video.  
 
 **Note: YouTube casting to Chromecast using third party scripts has been blocked, so I have taken a roundabout approach and as a result, you may not find the usual YouTube interface on Chromecast.**  
@@ -267,13 +267,11 @@ Hey Google, End Chromecast
 Change volume up/down:  
 Hey Google, Chromecast Volume Up/Down  
 
-Set Volume:  
-Hey Google, Set/Change Chromecast volume to (1 to 10)
 
 ************************************************
 ## **CCONTROLLING MEDIA by VOICE**    
 ************************************************
-You can change volume and pause or resume the radio/YouTube Stream/Google Music by voice.  
+You can change volume and pause or resume the Radio/Google Music by voice.  
 Pausing:  
 Hey Google, Pause Media  (Entire phrase **Pause Media** is the trigger)
 

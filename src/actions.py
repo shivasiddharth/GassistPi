@@ -1090,12 +1090,6 @@ def chromecast_control(action):
         time.sleep(1)
         mc.stop()
     if 'volume'.lower() in str(action).lower():
-        if 'set'.lower() in str(action).lower() or 'change'.lower() in str(action).lower():
-            for vol in re.findall(r'\b\d+\b', action):
-                newvol= int(vol)/10
-            TV.wait()
-            time.sleep(1)
-            TV.set_volume(newvol)
         if 'up'.lower() in str(action).lower():
             TV.wait()
             time.sleep(1)

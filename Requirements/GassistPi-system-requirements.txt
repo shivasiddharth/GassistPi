@@ -3,8 +3,6 @@ libxslt-dev
 python-dev
 mpv
 mplayer
-mps-youtube
-youtube-dl
 vlc
 elinks
 portaudio19-dev
