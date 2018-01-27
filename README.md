@@ -5,7 +5,7 @@
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)  
 
 *******************************************************************************************************************************
-## 28th-Jan-2018: Update GassistPi updated with Chromecast-ing Feature and Media Volume Control Features    
+## 28th-Jan-2018 Update: GassistPi updated with Chromecast-ing Feature and Media Volume Control Features    
 
 ### Existing GassistPi users on the latest SDK can update their GassistPi Project using:   
 https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-Script.sh
