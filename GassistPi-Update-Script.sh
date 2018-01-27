@@ -71,6 +71,7 @@ if [ -f /home/pi/GassistPi/src/mpv.conf ]; then
   mv /home/pi/GassistPi/src/mpv.conf /home/pi/.config/mpv/mpv.conf
 fi
 
+sudo pip3 install mps-youtube youtube-dl
 mpsyt set player mpv, set playerargs ,exit
 
 python3 -m venv env
