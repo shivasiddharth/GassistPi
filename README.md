@@ -226,19 +226,27 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
 ************************************************
-## **VOICE CONTROL of NodeMCU**
+## **VOICE CONTROL of ESP8266 or SOnOff wireless switch**
 ************************************************
-Download the Arduino IDE code for Nodemcu from here: https://github.com/shivasiddharth/iotwemos/blob/master/Google-Home-NodeMCU.ino  
+Download the ESPEasy firmware from here: https://www.letscontrolit.com/wiki/index.php/ESPEasy
 
-Add the wifi credentials, make the desired changes and upload the Arduino code onto the NodeMCU and get the IP address from the serial monitor.  
+Follow the tutorials and instructions on the site to flash your ESP/SOnOff devices with the downloaded firmware, during this process make sure you record the IP address each of your ESP/SOnOff devices is using.
 
-Add the NodeMCU's IP address in the actions.py file.  
+Add the ESP/SOnOff IP addresses in the actions.py file. 
 
-**FOR GUIDELINES ON MODIFYING THE ARDUINO CODE AND ACTIONS.PY FILE, FOLLOW THE FOLLOWING YOUTUBE VIDEO.**    
+Add the unique Name or Description of your appliances to be controlled into the main.py file and action.py (e.g. lamp, dishwasher, coffee machine etc.)
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=ae0iwJ62uaM
-" target="_blank"><img src="http://img.youtube.com/vi/ae0iwJ62uaM/0.jpg"
-alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
+In action.py define the switch type(normal Switch or Momentary switch) controlling each device.
+
+After flashing the ESP/SOnOFF and performing the initial set-up there is no need to modify the arduino firmware code or add any special rules as the default firmware configuration will work just fine.
+
+The following YouTube link shows how to easily flash a SOnOff wireless switch with the ESPEasy firmware needed for this code to work:
+https://www.youtube.com/watch?v=fN_QKOWvG1s&t=830s
+
+This next link is a tutorial on how to flash a basic ESP8266:
+https://www.letscontrolit.com/wiki/index.php/Basics:_Connecting_and_flashing_the_ESP8266
+
+Example: If your first device is a "Lamp", To switch your device On/Off then just say "Lamp on", or "Turn the lamp on", or even "Switch on the nice red lamp by the setee" if you want, no special trigger commands necessary.
 
 
 ************************************************

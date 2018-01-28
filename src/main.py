@@ -36,7 +36,10 @@ from actions import YouTube_No_Autoplay
 from actions import YouTube_Autoplay
 from actions import stop
 from actions import radio
-from actions import ESP
+from actions import device1
+from actions import device2
+from actions import device3
+from actions import device4
 from actions import track
 from actions import feed
 from actions import kodiactions
@@ -78,7 +81,6 @@ led.start(0)
 
 mpvactive=False
 
-
 def ismpvplaying():
     for pid in psutil.pids():
         p=psutil.Process(pid)
@@ -88,6 +90,13 @@ def ismpvplaying():
         else:
             mpvactive=False
     return mpvactive
+
+
+# Define appliances controlled by ESPs or SOnOff switches
+appliance1='lamp' #for example, if device 1 is a lamp
+appliance2='dishwasher'
+appliance3='washing machine'
+appliance4='car charger'
 
 def process_device_actions(event, device_id):
     if 'inputs' in event.args:
@@ -260,9 +269,18 @@ def main():
             if 'radio'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 radio(str(usrcmd).lower())
-            if 'wireless'.lower() in str(usrcmd).lower():
+            if appliance1.lower() in str(usrcmd).lower(): 
                 assistant.stop_conversation()
-                ESP(str(usrcmd).lower())
+                device1(str(usrcmd).lower())  
+            if appliance2.lower() in str(usrcmd).lower(): 
+                assistant.stop_conversation()
+                device2(str(usrcmd).lower())
+            if appliance3.lower() in str(usrcmd).lower(): 
+                assistant.stop_conversation()
+                device3(str(usrcmd).lower())
+            if appliance4.lower() in str(usrcmd).lower(): 
+                assistant.stop_conversation()
+                device4(str(usrcmd).lower()) 
             if 'parcel'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 track()

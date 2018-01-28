@@ -14,6 +14,7 @@ import os.path
 import RPi.GPIO as GPIO
 import time
 import re
+import requests
 import subprocess
 import aftership
 import feedparser
@@ -60,12 +61,32 @@ gpio = (12,13,24)#GPIOS for 'var'. Add other GPIOs that you want
 stnname=('Radio 1', 'Radio 2', 'Radio 3', 'Radio 5')#Add more stations if you want
 stnlink=('http://www.radiofeeds.co.uk/bbcradio2.pls', 'http://www.radiofeeds.co.uk/bbc6music.pls', 'http://c5icy.prod.playlists.ihrhls.com/1469_icy', 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3')
 
-#IP Address of ESP
-ip='xxxxxxxxxxxx'
+#IP Address of ESP/SOnOFFs
+#replace xxx in the following IPs with your specific details for each ESP/SonOff
+ESP1_ip='http://192.168.1.95'
+ESP2_ip='http://192.168.1.98'
+ESP3_ip='http://192.168.1.xxx'
+ESP4_ip='http://192.168.1.xxx'
 
-#Declaration of ESP names
-devname=('Device 1', 'Device 2', 'Device 3')
-devid=('/Device1', '/Device2', '/Device3')
+# ESP Device names
+Device_1="Lamp" #ip 95
+Device_2="Dishwasher" #ip 98
+Device_3="Device 3"
+Device_4="Device 4"
+
+# ESP Device types
+Switch = 0 #this is a standard On/Off type of switch
+Momentary = 1 #this is a momentary contact Push type of switch
+Device_1_Type = Switch
+Device_2_Type = Momentary
+Device_3_Type = Switch
+Device_4_Type = Switch
+
+#ESP/SOnOff commands
+ESP_Switch_cmd='/control?cmd=gpio,12,'
+ESP_Momentary_cmd='/control?cmd=event,PulseOn'
+on = '1' #turn ESP GPIO output ON
+off = '0' #turn ESP GPIO output OFF
 
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
@@ -157,20 +178,123 @@ def radio(phrase):
             say("Tuning into " + name)            
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+station+' &')
 
-#ESP6266 Devcies control
-def ESP(phrase):
-    for num, name in enumerate(devname):
-        if name.lower() in phrase:
-            dev=devid[num]
-            if 'on' in phrase:
-                ctrl='=ON'
-                say("Turning On " + name)
-            elif 'off' in phrase:
-                ctrl='=OFF'
-                say("Turning Off " + name)
-            subprocess.Popen(["elinks", ip + dev + ctrl],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
-            time.sleep(2)
-            subprocess.Popen(["/usr/bin/pkill","elinks"],stdin=subprocess.PIPE)
+############# Start of Device Control Section #################
+
+#ESP/SOnOff control for Devices 1 to 4 (one ESP per device), 
+#works for ESP8266 with ESPEasy firmware
+def device1(phrase):
+    global event
+    if 'on' in phrase or 'home' in phrase:
+        event=on
+        send_ESP1_command()
+    elif 'off' in phrase:
+        if Device_1_Type == Momentary:
+            say("sorry, OFF is not a valid command for this device type")
+        else:
+            event=off
+            send_ESP1_command()
+    else:
+        say("sorry, I didnt get that")
+        
+def send_ESP1_command():
+    if Device_1_Type == Momentary:
+        try:
+            r = requests.head(ESP1_ip + ESP_Momentary_cmd)
+            print("\n***", Device_1, "Switched On***\n")
+        except:
+            say("unable to connect to device")
+    elif Device_1_Type == Switch:
+        try:
+            r = requests.head(ESP1_ip + ESP_Switch_cmd + event)
+            print("\n***", Device_1, "Status is", event,"***\n")
+        except:
+            say("unable to connect to device")
+
+def device2(phrase):
+    global event
+    if 'on' in phrase or 'home' in phrase:
+        event=on
+        send_ESP2_command()
+    elif 'off' in phrase:
+        if Device_2_Type == Momentary:
+            say("sorry, OFF is not a valid command for this device type")
+        else:
+            event=off
+            send_ESP2_command()
+    else:
+        say("sorry, I didnt get that")
+        
+def send_ESP2_command():
+    if Device_2_Type == Momentary:
+        try:
+            r = requests.head(ESP2_ip + ESP_Momentary_cmd)
+            print("\n***", Device_2, "Switched On***\n")
+        except:
+            say("unable to connect to device")
+    elif Device_2_Type == Switch:
+        try:
+            r = requests.head(ESP2_ip + ESP_Switch_cmd + event)
+            print("\n***", Device_2, "Status is", event,"***\n")
+        except:
+            say("unable to connect to device")
+
+def device3(phrase):
+    global event
+    if 'on' in phrase or 'home' in phrase:
+        event=on
+        send_ESP3_command()
+    elif 'off' in phrase:
+        if Device_3_Type == Momentary:
+            say("sorry, OFF is not a valid command for this device type")
+        else:
+            event=off
+            send_ESP3_command()
+    else:
+        say("sorry, I didnt get that")
+        
+def send_ESP3_command():
+    if Device_3_Type == Momentary:
+        try:
+            r = requests.head(ESP3_ip + ESP_Momentary_cmd)
+            print("\n***", Device_3, "Switched On***\n")
+        except:
+            say("unable to connect to device")
+    elif Device_3_Type == Switch:
+        try:
+            r = requests.head(ESP3_ip + ESP_Switch_cmd + event)
+            print("\n***", Device_3, "Status is", event,"***\n")
+        except:
+            say("unable to connect to device")
+
+def device4(phrase):
+    global event
+    if 'on' in phrase or 'home' in phrase:
+        event=on
+        send_ESP4_command()
+    elif 'off' in phrase:
+        if Device_4_Type == Momentary:
+            say("sorry, OFF is not a valid command for this device type")
+        else:
+            event=off
+            send_ESP4_command()
+    else:
+        say("sorry, I didnt get that")
+        
+def send_ESP4_command():
+    if Device_4_Type == Momentary:
+        try:
+            r = requests.head(ESP4_ip + ESP_Momentary_cmd)
+            print("\n***", Device_4, "Switched On***\n")
+        except:
+            say("unable to connect to device")
+    elif Device_4_Type == Switch:
+        try:
+            r = requests.head(ESP4_ip + ESP_Switch_cmd + event)
+            print("\n***", Device_4, "Status is", event,"***\n")
+        except:
+            say("unable to connect to device")
+
+############# End of Device Control Section #################
 
 #Stepper Motor control
 def SetAngle(angle):
