@@ -29,48 +29,37 @@ read -r -p "Enter the your full credential file name including .json extension: 
 echo ""
 read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
-read -r -p "Enter a product name for your device: " prodname
+read -r -p "Enter a product name for your device (product name should not have space in between): " prodname
 echo ""
 
 modelid=$projid-$(date +%Y%m%d%H%M%S )
 echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
-#--------------GassistPi Deps----------------------------------------------------
-sudo apt-get install libxml2-dev libxslt-dev python-dev -y
-sudo apt-get install mpv -y
-mkdir -p /home/pi/.config/mpv/scripts/
-mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
-sudo apt-get install mplayer -y
-sudo pip3 install mps-youtube youtube-dl
-sudo apt-get install vlc -y
-mpsyt set player vlc, set playerargs ,exit
-sudo apt-get install elinks -y
-#--------------------------------------------------------------------------------
 sudo apt-get update -y
-sudo apt-get install python3-dev python3-venv -y
-#--------------GassistPi Deps----------------------------------------------------
-sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
-sudo apt-get install libttspico0 libttspico-utils libttspico-data -y
-#--------------------------------------------------------------------------------
+
+sed 's/#.*//' /home/pi/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
+if [ ! -d /home/pi/.config/mpv/scripts/ ]; then
+  mkdir -p /home/pi/.config/mpv/scripts/
+fi
+if [ -f /home/pi/GassistPi/src/end.lua ]; then
+  mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
+fi
+if [ -f /home/pi/GassistPi/src/mpv.conf ]; then
+  mv /home/pi/GassistPi/src/mpv.conf /home/pi/.config/mpv/mpv.conf
+fi
+
+
 python3 -m venv env
-env/bin/python -m pip install --upgrade pip setuptools
+env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
-pip install wheel
-pip install RPi.GPIO
-#--------------GassistPi Deps----------------------------------------------------
-pip install pyaudio
-pip install aftership
-pip install feedparser
-pip install kodi-json
-pip install gmusicapi
-pip install requests
-pip install urllib3
-pip install --upgrade google-api-python-client
-#--------------------------------------------------------------------------------
-python -m pip install --upgrade google-assistant-library
-python -m pip install --upgrade google-assistant-sdk
-python -m pip install --upgrade google-assistant-sdk[samples]
-python -m pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
+
+pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
+
+pip install google-assistant-library==0.1.0
+pip install google-assistant-grpc==0.1.0
+pip install google-assistant-sdk==0.4.2
+pip install google-assistant-sdk[samples]==0.4.2
+pip install google-auth==1.3.0	google-auth-httplib2==0.0.3 google-auth-oauthlib==0.2.0
 google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
           --product-name $prodname --type LIGHT --model $modelid

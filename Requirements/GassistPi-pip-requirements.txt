@@ -1,0 +1,15 @@
+RPi.GPIO>=0.6.3
+pyaudio>=0.2.11
+aftership>=0.2
+feedparser>=5.2.0
+kodi-json>=1.0.0
+gmusicapi>=11.0.0
+requests>=2.18.4
+googletrans>=2.2.0
+gTTS>=1.2.2
+youtube_dl>=2018.1.27
+PyChromecast>=1.0.3
+pafy>=0.5.3.1
+psutil>=5.4.3
+urllib3>=1.22
+google-api-python-client>=1.6.5
