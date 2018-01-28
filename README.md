@@ -5,15 +5,15 @@
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)  
 
 *******************************************************************************************************************************
-## GassistPi updated with Google Play Music streaming and YouTube autoplay feature  
+## 28th-Jan-2018 Update: GassistPi updated with Chromecast-ing Feature and Media Volume Control Features    
 
-### Existing GassistPi users on the latest SDK can update their Pi using the given script to add the new feature. Due to Pi Zero's processing limitations, the feature has been added only for Pi 3 and Pi 2 users. Pi Zero users, need not update.
-https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-2018-update.sh  
+### Existing GassistPi users on the latest SDK can update their GassistPi Project using:   
+https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-Script.sh
 
 ### New users, continue as instructed below in the README doc.
 *******************************************************************************************************************************
 
-# Features:  
+# Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
 **1.   Headless auto start on boot.**    
 **2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
@@ -26,8 +26,10 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-
 **10.  Pushbutton service to stop Music or Radio playback.**   
 **11.  Parcel tracking using Aftership API.**  
 **12.  RSS Feed streaming.**  
-**13.  Control of Kodi or Kodi Integration**.  
-**14.  Streaming music from Google Play Music (It is computationally intensive so actions added only for Pi3 and Pi2).**    
+**13.  Control of Kodi or Kodi Integration.**    
+**14.  Streaming music from Google Play Music.**  
+**15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
+**16.  Voice control of Radio/YouTube/Google Music volume levels.**         
 
 
 *******************************************************************************************************************************  
@@ -36,7 +38,7 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-09-Jan-
 
 
 *******************************************************************************************************************************  
-**CLI or Raspbian Lite does not support all features and Custom wakeword does not work with Google's AIY image. So please use the Standard Raspbian Desktop image- Link https://www.raspberrypi.org/downloads/raspbian/**  
+**CLI or Raspbian Lite or Google's AIY image does not support all features. So please use the Standard Raspbian Desktop image- Link https://www.raspberrypi.org/downloads/raspbian/**  
 *******************************************************************************************************************************
 
 *************************************************
@@ -240,6 +242,56 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
 ************************************************
+## **CASTING YouTube VDIEOS TO Chromecast**    
+************************************************
+Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word.
+Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts the MasterChef YouTube Video.  
+
+**Note: YouTube casting to Chromecast using third party scripts has been blocked, so I have taken a roundabout approach and as a result, you may not find the usual YouTube interface on Chromecast.**  
+
+************************************************
+## **CONTROLLING Chromecast by VOICE**    
+************************************************   
+First, add the IP-Address of your Chromecast in the actions.py script, in the indicated location.  
+
+Following are the default commands for controlling Chromecast with **Chromecast** as the trigger word.    
+Pausing:  
+Hey Google, Pause Chromecast  
+
+Resuming:  
+Hey Google, Resume Chromecast  
+
+Stopping:
+Hey Google, End Chromecast  
+
+Change volume up/down:  
+Hey Google, Chromecast Volume Up/Down  
+
+
+************************************************
+## **CCONTROLLING MEDIA by VOICE**    
+************************************************
+You can change volume and pause or resume the Radio/YouTube/Google Music by voice.  
+Pausing:  
+Hey Google, Pause Music  (Entire phrase **Pause Music** is the trigger)
+
+Resuming:  
+Hey Google, Resume Music  (Entire phrase **Resume Music** is the trigger)
+
+Volume Control (**Music Volume** is the trigger)
+
+Increase/Decrease Volume:  
+Hey Google, Increase/(Decrease or Reduce) Music Volume by ( a number between 0 and 100)   
+If you do not specify a number, by default the volume will be increased or decreased by 10 units.  
+
+Set Volume:  
+Hey Google, Set/change Music Volume to ( a number between 0 and 100)   
+
+Set volume to Maximum/Minimum:  
+Hey Google, Set/change Music Volume to maximum/minimum
+
+
+************************************************
 ## **MUSIC STREAMING from YOUTUBE**  
 ************************************************
 The updated music streaming features autoplaying of YouTube suggestions. This makes use of the YouTube Data API v3.
@@ -266,7 +318,7 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 ************************************************
 The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
 
-Enter your Google userid and password in the gmusic.py file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
+Enter your Google userid and password in the actions.py file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
 
 ### Getting app specific password:
 Refer to this page on google help - https://support.google.com/accounts/answer/185833?hl=en
