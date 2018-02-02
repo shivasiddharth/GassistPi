@@ -492,8 +492,8 @@ class SampleAssistant(object):
                                 play_artist(artist)
                         return continue_conversation
 
-                else:
-                    continue
+                    else:
+                        continue
                 GPIO.output(5,GPIO.LOW)
                 GPIO.output(6,GPIO.HIGH)
                 led.ChangeDutyCycle(50)
