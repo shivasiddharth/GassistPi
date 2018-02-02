@@ -4,7 +4,6 @@ python-dev
 mpv
 mplayer
 vlc
-elinks
 portaudio19-dev
 libffi-dev
 libssl-dev
