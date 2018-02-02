@@ -9,6 +9,7 @@ from googleapiclient.errors import HttpError
 from gmusicapi import Mobileclient
 from googletrans import Translator
 from gtts import gTTS
+import requests
 import os
 import os.path
 import RPi.GPIO as GPIO
@@ -168,9 +169,8 @@ def ESP(phrase):
             elif 'off' in phrase:
                 ctrl='=OFF'
                 say("Turning Off " + name)
-            subprocess.Popen(["elinks", ip + dev + ctrl],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
-            time.sleep(2)
-            subprocess.Popen(["/usr/bin/pkill","elinks"],stdin=subprocess.PIPE)
+            r = requests.head(ip + dev + ctrl)
+            
 
 #Stepper Motor control
 def SetAngle(angle):
