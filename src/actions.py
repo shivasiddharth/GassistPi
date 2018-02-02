@@ -122,6 +122,21 @@ language='en'
 ##'uk'    : 'Ukrainian'         'vi' : 'Vietnamese'         'cy' : 'Welsh'
 
 
+# Initialize colour list variables
+clrlist=[]
+clrrgblist=[]
+clrhexlist=[]
+with open('/home/pi/GassistPi/src/crayola.json', 'r') as col:
+     colours= json.load(col)   
+for i in range(0,len(colours)):
+    clrname=colours[i]["name"]
+    clrname=clrname.replace(" ","",1)
+    clrname=clrname.strip()
+    clrname=clrname.lower()
+    clrlist.append(clrname)
+    clrrgblist.append(colours[i]["rgb"])
+    clrhexlist.append(colours[i]["hex"])
+
 
 #Function to manage mpv start volume
 def mpvvolmgr():
@@ -153,9 +168,9 @@ def radio(phrase):
     for num, name in enumerate(stnname):
         if name.lower() in phrase:
             startingvol=mpvvolmgr()
-            station=stnlink[num]            
+            station=stnlink[num]
             print (station)
-            say("Tuning into " + name)            
+            say("Tuning into " + name)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+station+' &')
 
 #ESP6266 Devcies control
@@ -170,7 +185,7 @@ def ESP(phrase):
                 ctrl='=OFF'
                 say("Turning Off " + name)
             r = requests.head(ip + dev + ctrl)
-            
+
 
 #Stepper Motor control
 def SetAngle(angle):
@@ -183,7 +198,7 @@ def SetAngle(angle):
     GPIO.output(27, False)
 
 
-def stop():    
+def stop():
     pkill = subprocess.Popen(["/usr/bin/pkill","mpv"],stdin=subprocess.PIPE)
 
 #Parcel Tracking
