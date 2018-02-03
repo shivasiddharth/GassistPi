@@ -188,17 +188,6 @@ class SampleAssistant(object):
         #kodi.Application.SetVolume({"volume": 0})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
-        if ismpvplaying():
-            if os.path.isfile("/home/pi/.mediavolume.json"):
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
-            else:
-                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                output=mpvgetvol.communicate()[0]
-                for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                    with open('/home/pi/.mediavolume.json', 'w') as vol:
-                        json.dump(currntvol, vol)
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
-
         logging.info('Recording audio request.')
 
         def iter_assist_requests():
@@ -532,12 +521,6 @@ class SampleAssistant(object):
         GPIO.output(6,GPIO.LOW)
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
-        if ismpvplaying():
-            if os.path.isfile("/home/pi/.mediavolume.json"):
-                with open('/home/pi/.mediavolume.json', 'r') as vol:
-                    oldvollevel = json.load(vol)
-                print(oldvollevel)
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
         
         #Uncomment the following, after starting Kodi
         #with open('/home/pi/.volume.json', 'r') as f:
