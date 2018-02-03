@@ -532,16 +532,17 @@ class SampleAssistant(object):
         GPIO.output(6,GPIO.LOW)
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
-        #Uncomment the following, after starting Kodi
-        #with open('/home/pi/.volume.json', 'r') as f:
-               #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})
         if ismpvplaying():
             if os.path.isfile("/home/pi/.mediavolume.json"):
                 with open('/home/pi/.mediavolume.json', 'r') as vol:
                     oldvollevel = json.load(vol)
                 print(oldvollevel)
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
+        
+        #Uncomment the following, after starting Kodi
+        #with open('/home/pi/.volume.json', 'r') as f:
+               #vollevel = json.load(f)
+               #kodi.Application.SetVolume({"volume": vollevel})
         self.conversation_stream.stop_playback()
         return continue_conversation
 
