@@ -38,7 +38,7 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 
 
 *******************************************************************************************************************************  
-**CLI or Raspbian Lite does not come with the necessary prerequisite packages and Google's AIY image has the environment in a different directory. So please use the Standard Raspbian Desktop image- Link https://www.raspberrypi.org/downloads/raspbian/**  
+**CLI or Raspbian Lite does not come with the necessary prerequisite packages and Google's AIY image has the environment in a different directory. So please use the Standard Raspbian Desktop image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
 
 *************************************************
