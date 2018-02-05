@@ -26,7 +26,18 @@ fi
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 repo_path="$PWD"
 
+if [ -f /home/pi/gassistant.info ]
+then
+    . /home/pi/gassistant.info
+fi
+
+
 for service in systemd/*.service; do
-  sed "s:/home/pi/GassistPi:${repo_path}:g" "$service" \
-    > "/lib/systemd/system/$(basename "$service")"
+	sed "s:/home/pi/GassistPi:${repo_path}:g;s:saved-project-id:${projid}:g;s:saved-model-id:${modelid}:g" "$service" \
+	 > "/lib/systemd/system/$(basename "$service")"
 done
+
+
+
+
+

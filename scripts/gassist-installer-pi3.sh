@@ -24,16 +24,66 @@ then
     exec sudo -u $RUN_AS $0
 fi
 clear
+if [ -f /home/pi/gassistant.info ]
+then
+    . /home/pi/gassistant.info
+fi
+
+if [ -n $credname ]
+then
+    credmsg="Enter your full credential file name including .json extension(press enter for $credname): "
+else
+    credmsg="Enter your full credential file name including .json extension: "
+fi
+
+if [ -n $projid ]
+then
+    projidmsg="Enter your Google Cloud Console Project-Id(press enter for $projid): "
+else
+    projidmsg="Enter your Google Cloud Console Project-Id: "
+fi
+
+if [ -n $prodname ]
+then
+    prodmsg="Enter a product name for your device (product name should not have space in between)\n(press enter for $prodname): "
+else
+    prodmsg="Enter a product name for your device (product name should not have space in between): "
+fi
+
+
+
 echo ""
-read -r -p "Enter the your full credential file name including .json extension: " credname
+echo -e $credmsg
+read -r tmp
+
+if [[ $tmp != "" ]]
+then 
+	credname=$tmp
+fi
 echo ""
-read -r -p "Enter the your Google Cloud Console Project-Id: " projid
+echo -e $projidmsg
+read -r tmp
+if [[ $tmp != "" ]]
+then 
+	projid=$tmp
+fi
 echo ""
-read -r -p "Enter a product name for your device (product name should not have space in between): " prodname
+echo -e $prodmsg
+read -r tmp
+if [[ $tmp != "" ]]
+then 
+	prodname=$tmp
+fi
 echo ""
 
+
 modelid=$projid-$(date +%Y%m%d%H%M%S )
-echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
+echo "" > /home/pi/gassistant.info
+echo "credname='$credname'" >> /home/pi/gassistant.info
+echo "projid='$projid'" >> /home/pi/gassistant.info
+echo "prodname='$prodname'" >> /home/pi/gassistant.info
+echo "modelid='$modelid'" >> /home/pi/gassistant.info
+
 cd /home/pi/
 sudo apt-get update -y
 
