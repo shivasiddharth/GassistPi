@@ -12,10 +12,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 set -o errexit
 
 scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+info_file="/home/pi/gassistant-credentials.info"
+
+#check raspberrypi model
+if [[ $(cat /sys/firmware/devicetree/base/model|grep "Raspberry Pi 3") ]]; then
+	pimodel="pi3"
+else
+	pimodel="pi0"
+fi
+
 
 # make sure we're running as the owner of the checkout directory
 RUN_AS="$(ls -ld "$scripts_dir" | awk 'NR==1 {print $3}')"
@@ -25,16 +33,66 @@ then
     exec sudo -u $RUN_AS $0
 fi
 clear
+if [ -f $info_file ]
+then
+    . $info_file
+fi
+
+if [ -n $credname ]
+then
+    credmsg="Enter your full credential file name including .json extension(If your credentials file name is $credname then press enter): "
+else
+    credmsg="Enter your full credential file name including .json extension: "
+fi
+
+if [ -n $projid ]
+then
+    projidmsg="Enter your Google Cloud Console Project-Id(If your Project-Id is $projid then press enter): "
+else
+    projidmsg="Enter your Google Cloud Console Project-Id: "
+fi
+
+if [ -n $prodname ]
+then
+    prodmsg="Enter a product name for your device (product name should not have space in between)\n(If your Product name is $prodname then press enter): "
+else
+    prodmsg="Enter a product name for your device (product name should not have space in between): "
+fi
+
+
+
 echo ""
-read -r -p "Enter the your full credential file name including .json extension: " credname
+echo -e $credmsg
+read -r tmp
+
+if [[ $tmp != "" ]]
+then 
+	credname=$tmp
+fi
 echo ""
-read -r -p "Enter the your Google Cloud Console Project-Id: " projid
+echo -e $projidmsg
+read -r tmp
+if [[ $tmp != "" ]]
+then 
+	projid=$tmp
+fi
 echo ""
-read -r -p "Enter a product name for your device (product name should not have space in between): " prodname
+echo -e $prodmsg
+read -r tmp
+if [[ $tmp != "" ]]
+then 
+	prodname=$tmp
+fi
 echo ""
 
+
 modelid=$projid-$(date +%Y%m%d%H%M%S )
-echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
+echo "" > $info_file
+echo "credname='$credname'" >> $info_file
+echo "projid='$projid'" >> $info_file
+echo "prodname='$prodname'" >> $info_file
+echo "modelid='$modelid'" >> $info_file
+
 cd /home/pi/
 sudo apt-get update -y
 
@@ -56,6 +114,10 @@ source env/bin/activate
 
 pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
 
+if [[ $pimodel = "pi3" ]];then
+	pip install google-assistant-library==0.1.0
+fi
+
 pip install google-assistant-grpc==0.1.0
 pip install google-assistant-sdk==0.4.2
 pip install google-assistant-sdk[samples]==0.4.2
@@ -64,4 +126,11 @@ google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.goo
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
           --product-name $prodname --type LIGHT --model $modelid
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
-googlesamples-assistant-pushtotalk --project-id $projid --device-model-id $modelid
+
+if [[ $pimodel = "pi3" ]];then
+	googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
+else
+	googlesamples-assistant-pushtotalk --project-id $projid --device-model-id $modelid
+fi
+
+
