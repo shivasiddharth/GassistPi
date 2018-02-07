@@ -122,20 +122,6 @@ language='en'
 ##'uk'    : 'Ukrainian'         'vi' : 'Vietnamese'         'cy' : 'Welsh'
 
 
-# Initialize colour list variables
-clrlist=[]
-clrrgblist=[]
-clrhexlist=[]
-with open('/home/pi/GassistPi/src/crayola.json', 'r') as col:
-     colours= json.load(col)   
-for i in range(0,len(colours)):
-    clrname=colours[i]["name"]
-    clrname=clrname.replace(" ","",1)
-    clrname=clrname.strip()
-    clrname=clrname.lower()
-    clrlist.append(clrname)
-    clrrgblist.append(colours[i]["rgb"])
-    clrhexlist.append(colours[i]["hex"])
 
 
 #Function to manage mpv start volume
@@ -184,7 +170,7 @@ def ESP(phrase):
             elif 'off' in phrase:
                 ctrl='=OFF'
                 say("Turning Off " + name)
-            r = requests.head(ip + dev + ctrl)
+            rq = requests.head(ip + dev + ctrl)
 
 
 #Stepper Motor control
@@ -1046,6 +1032,69 @@ def play_artist(artistname):
             print("Error")
     else:
         say("No matching results found")
+
+def gmusicselect(phrase):
+    os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+    if 'all the songs'.lower() in phrase:
+        os.system('echo "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
+        say("Playing all your songs")
+        play_songs()
+
+    if 'playlist'.lower() in phrase:
+        if 'first'.lower() in phrase or 'one'.lower() in phrase  or '1'.lower() in phrase:
+            os.system('echo "play_playlist(0)\n" >> /home/pi/GassistPi/src/trackchange.py')
+            say("Playing songs from your playlist")
+            play_playlist(0)
+        else:
+            say("Sorry I am unable to help")
+
+    if 'album'.lower() in phrase:
+        if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
+            os.system("rm /home/pi/.gmusicalbumplayer.json")
+
+        req=phrase
+        idx=(req).find('album')
+        album=req[idx:]
+        album=album.replace("'}", "",1)
+        album = album.replace('album','',1)
+        if 'from'.lower() in req:
+            album = album.replace('from','',1)
+            album = album.replace('google music','',1)
+        else:
+            album = album.replace('google music','',1)
+
+        album=album.strip()
+        print(album)
+        albumstr=('"'+album+'"')
+        f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+        f.write('play_album('+albumstr+')')
+        f.close()
+        say("Looking for songs from the album")
+        play_album(album)
+
+    if 'artist'.lower() in phrase:
+        if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
+            os.system("rm /home/pi/.gmusicartistplayer.json")
+
+        req=phrase
+        idx=(req).find('artist')
+        artist=req[idx:]
+        artist=artist.replace("'}", "",1)
+        artist = artist.replace('artist','',1)
+        if 'from'.lower() in req:
+            artist = artist.replace('from','',1)
+            artist = artist.replace('google music','',1)
+        else:
+            artist = artist.replace('google music','',1)
+
+        artist=artist.strip()
+        print(artist)
+        artiststr=('"'+artist+'"')
+        f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+        f.write('play_artist('+artiststr+')')
+        f.close()
+        say("Looking for songs rendered by the artist")
+        play_artist(artist)
 
 
 #----------End of functions defined for Google Music---------------------------
