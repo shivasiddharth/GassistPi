@@ -18,12 +18,11 @@ scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
 info_file="/home/pi/gassistant-credentials.info"
 
 #check raspberrypi model
-if [[ $(cat /sys/firmware/devicetree/base/model|grep "Raspberry Pi 3") ]]; then
-	pimodel="pi3"
+if [[ $(uname -m|grep "armv7") ]]; then
+	devmodel="armv7"
 else
-	pimodel="pi0"
+	devmodel="armv6"
 fi
-
 
 # make sure we're running as the owner of the checkout directory
 RUN_AS="$(ls -ld "$scripts_dir" | awk 'NR==1 {print $3}')"
@@ -114,7 +113,7 @@ source env/bin/activate
 
 pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
 
-if [[ $pimodel = "pi3" ]];then
+if [[ $devmodel = "armv7" ]];then
 	pip install google-assistant-library==0.1.0
 fi
 
@@ -127,7 +126,7 @@ googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation"
           --product-name $prodname --type LIGHT --model $modelid
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 
-if [[ $pimodel = "pi3" ]];then
+if [[ $devmodel = "armv7" ]];then
 	googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
 else
 	googlesamples-assistant-pushtotalk --project-id $projid --device-model-id $modelid
