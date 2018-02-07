@@ -100,8 +100,8 @@ mpvactive=False
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
-tasmota-devicelist=['Desk Lamp','Table Lamp']
-tasmota-deviceip=['192.168.1.35','192.168.1.36']
+tasmota_devicelist=['Desk Lamp','Table Lamp']
+tasmota_deviceip=['192.168.1.35','192.168.1.36']
 
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
@@ -120,15 +120,22 @@ def ismpvplaying():
         else:
             mpvactive=False
     return mpvactive
+    
 
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
     if 'on' in phrase:
-        rq=requests.head(devip+str(/cm?cmnd=Power%20on))
-        say("Tunring on "+devname)
+        try:
+            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20on")
+            say("Tunring on "+devname)
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
     elif 'off' in phrase:
-        rq=requests.head(devip+str(/cm?cmnd=Power%20off))
-        say("Tunring off "+devname)
+        try:
+            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20off")
+            say("Tunring off "+devname)
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
 
 
 class SampleAssistant(object):
@@ -251,9 +258,9 @@ class SampleAssistant(object):
                     usrcmd=usrcmd.replace('"','',1)
                     usrcmd=usrcmd.strip()
                     print(str(usrcmd))
-                    for num, name in enumerate(tasmota-devicelist):
+                    for num, name in enumerate(tasmota_devicelist):
                         if name.lower() in str(usrcmd).lower():
-                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota-deviceip[num])
+                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                             return continue_conversation
                             break
                     if 'trigger'.lower() in str(usrcmd).lower():
