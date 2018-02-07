@@ -883,7 +883,7 @@ def play_playlist(playlistnum):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -894,7 +894,7 @@ def play_playlist(playlistnum):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
@@ -928,7 +928,7 @@ def play_songs():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -939,7 +939,7 @@ def play_songs():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
@@ -972,7 +972,7 @@ def play_album(albumname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -983,7 +983,7 @@ def play_album(albumname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
@@ -1017,7 +1017,7 @@ def play_artist(artistname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -1028,7 +1028,7 @@ def play_artist(artistname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
@@ -1138,7 +1138,7 @@ def youtubeplayer():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -1150,7 +1150,7 @@ def youtubeplayer():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
