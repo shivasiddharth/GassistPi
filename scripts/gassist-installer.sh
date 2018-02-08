@@ -15,9 +15,9 @@
 set -o errexit
 
 scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
-info_file="/home/pi/gassistant-credentials.info"
+GIT_DIR="$( dirname $(cd "$(dirname "$0")" ; pwd -P) )"
 
-#check raspberrypi model
+#check device architecture
 if [[ $(uname -m|grep "armv7") ]]; then
 	devmodel="armv7"
 else
@@ -31,6 +31,8 @@ then
     echo "This script must run as $RUN_AS, trying to change user..."
     exec sudo -u $RUN_AS $0
 fi
+info_file="/home/${USER}/gassistant-credentials.info"
+
 clear
 if [ -f $info_file ]
 then
@@ -92,18 +94,20 @@ echo "projid='$projid'" >> $info_file
 echo "prodname='$prodname'" >> $info_file
 echo "modelid='$modelid'" >> $info_file
 
-cd /home/pi/
+cd /home/${USER}
+
+
 sudo apt-get update -y
 
-sed 's/#.*//' /home/pi/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
-if [ ! -d /home/pi/.config/mpv/scripts/ ]; then
-  mkdir -p /home/pi/.config/mpv/scripts/
+sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
+if [ ! -d /home/${USER}/.config/mpv/scripts/ ]; then
+  mkdir -p /home/${USER}/.config/mpv/scripts/
 fi
-if [ -f /home/pi/GassistPi/src/end.lua ]; then
-  mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
+if [ -f ${GIT_DIR}/src/end.lua ]; then
+  cp ${GIT_DIR}/src/end.lua /home/${USER}/.config/mpv/scripts/end.lua
 fi
-if [ -f /home/pi/GassistPi/src/mpv.conf ]; then
-  mv /home/pi/GassistPi/src/mpv.conf /home/pi/.config/mpv/mpv.conf
+if [ -f ${GIT_DIR}/src/mpv.conf ]; then
+  cp ${GIT_DIR}/src/mpv.conf /home/${USER}/.config/mpv/mpv.conf
 fi
 
 
@@ -111,7 +115,7 @@ python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
 
-pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
+pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
 if [[ $devmodel = "armv7" ]];then
 	pip install google-assistant-library==0.1.0
@@ -121,7 +125,7 @@ pip install google-assistant-grpc==0.1.0
 pip install google-assistant-sdk==0.4.2
 pip install google-assistant-sdk[samples]==0.4.2
 pip install google-auth==1.3.0	google-auth-httplib2==0.0.3 google-auth-oauthlib==0.2.0
-google-oauthlib-tool --client-secrets /home/pi/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
+google-oauthlib-tool --client-secrets /home/${USER}/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
           --product-name $prodname --type LIGHT --model $modelid
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
