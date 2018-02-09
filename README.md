@@ -253,8 +253,8 @@ Download the Tasmota firmware from this [link](https://mega.nz/#!Dwx0lDYL!CK_QYo
 
 Follow the instructions in this video to upload the firmware properly.  
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=ioONHaUOtFM
-" target="_blank"><img src="http://img.youtube.com/vi/ioONHaUOtFM/0.jpg"
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=MzcAS-K_TRU
+" target="_blank"><img src="http://img.youtube.com/vi/MzcAS-K_TRU/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
 
 Pi3 and Pi2 users, assign the device names and device ip addresses in the main.py script and pushbutton.py script respectively, in the marked locations.  
