@@ -9,6 +9,7 @@ from googleapiclient.errors import HttpError
 from gmusicapi import Mobileclient
 from googletrans import Translator
 from gtts import gTTS
+import requests
 import os
 import os.path
 import RPi.GPIO as GPIO
@@ -122,6 +123,7 @@ language='en'
 
 
 
+
 #Function to manage mpv start volume
 def mpvvolmgr():
     if os.path.isfile("/home/pi/.mediavolume.json"):
@@ -152,9 +154,9 @@ def radio(phrase):
     for num, name in enumerate(stnname):
         if name.lower() in phrase:
             startingvol=mpvvolmgr()
-            station=stnlink[num]            
+            station=stnlink[num]
             print (station)
-            say("Tuning into " + name)            
+            say("Tuning into " + name)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+station+' &')
 
 #ESP6266 Devcies control
@@ -168,9 +170,8 @@ def ESP(phrase):
             elif 'off' in phrase:
                 ctrl='=OFF'
                 say("Turning Off " + name)
-            subprocess.Popen(["elinks", ip + dev + ctrl],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
-            time.sleep(2)
-            subprocess.Popen(["/usr/bin/pkill","elinks"],stdin=subprocess.PIPE)
+            rq = requests.head(ip + dev + ctrl)
+
 
 #Stepper Motor control
 def SetAngle(angle):
@@ -183,7 +184,7 @@ def SetAngle(angle):
     GPIO.output(27, False)
 
 
-def stop():    
+def stop():
     pkill = subprocess.Popen(["/usr/bin/pkill","mpv"],stdin=subprocess.PIPE)
 
 #Parcel Tracking
@@ -882,7 +883,7 @@ def play_playlist(playlistnum):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -893,7 +894,7 @@ def play_playlist(playlistnum):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
@@ -927,7 +928,7 @@ def play_songs():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -938,7 +939,7 @@ def play_songs():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
@@ -971,7 +972,7 @@ def play_album(albumname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -982,7 +983,7 @@ def play_album(albumname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
@@ -1016,7 +1017,7 @@ def play_artist(artistname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -1027,10 +1028,73 @@ def play_artist(artistname):
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")
+
+def gmusicselect(phrase):
+    os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+    if 'all the songs'.lower() in phrase:
+        os.system('echo "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
+        say("Playing all your songs")
+        play_songs()
+
+    if 'playlist'.lower() in phrase:
+        if 'first'.lower() in phrase or 'one'.lower() in phrase  or '1'.lower() in phrase:
+            os.system('echo "play_playlist(0)\n" >> /home/pi/GassistPi/src/trackchange.py')
+            say("Playing songs from your playlist")
+            play_playlist(0)
+        else:
+            say("Sorry I am unable to help")
+
+    if 'album'.lower() in phrase:
+        if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
+            os.system("rm /home/pi/.gmusicalbumplayer.json")
+
+        req=phrase
+        idx=(req).find('album')
+        album=req[idx:]
+        album=album.replace("'}", "",1)
+        album = album.replace('album','',1)
+        if 'from'.lower() in req:
+            album = album.replace('from','',1)
+            album = album.replace('google music','',1)
+        else:
+            album = album.replace('google music','',1)
+
+        album=album.strip()
+        print(album)
+        albumstr=('"'+album+'"')
+        f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+        f.write('play_album('+albumstr+')')
+        f.close()
+        say("Looking for songs from the album")
+        play_album(album)
+
+    if 'artist'.lower() in phrase:
+        if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
+            os.system("rm /home/pi/.gmusicartistplayer.json")
+
+        req=phrase
+        idx=(req).find('artist')
+        artist=req[idx:]
+        artist=artist.replace("'}", "",1)
+        artist = artist.replace('artist','',1)
+        if 'from'.lower() in req:
+            artist = artist.replace('from','',1)
+            artist = artist.replace('google music','',1)
+        else:
+            artist = artist.replace('google music','',1)
+
+        artist=artist.strip()
+        print(artist)
+        artiststr=('"'+artist+'"')
+        f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
+        f.write('play_artist('+artiststr+')')
+        f.close()
+        say("Looking for songs rendered by the artist")
+        play_artist(artist)
 
 
 #----------End of functions defined for Google Music---------------------------
@@ -1074,7 +1138,7 @@ def youtubeplayer():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='on':
+        elif currenttrackid>=numtracks and loopstatus=='on':
             currenttrackid=0
             nexttrackid=1
             loopstatus='on'
@@ -1086,7 +1150,7 @@ def youtubeplayer():
             streamurl=("'"+streamurl+"'")
             print(streamurl)
             os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>numtracks and loopstatus=='off':
+        elif currenttrackid>=numtracks and loopstatus=='off':
             print("Error")
     else:
         say("No matching results found")

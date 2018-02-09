@@ -2,10 +2,10 @@
 
 # GassistPi -- Google Assistant for all Raspberry Pi Boards  
 *******************************************************************************************************************************
-### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)  
+### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
 *******************************************************************************************************************************
-## 28th-Jan-2018 Update: GassistPi updated with Chromecast-ing Feature and Media Volume Control Features    
+## 08th-Feb-2018 Update: Now Control Sonoff-Tasmota devices by voice      
 
 ### Existing GassistPi users on the latest SDK can update their GassistPi Project using:   
 https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-Script.sh
@@ -30,7 +30,7 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **14.  Streaming music from Google Play Music.**  
 **15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
 **16.  Voice control of Radio/YouTube/Google Music volume levels.**         
-
+**17.  Control Sonoff Tasmota Devices/Emulated Wemo**  
 
 *******************************************************************************************************************************  
 **The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  
@@ -229,17 +229,39 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 ************************************************
 ### **VOICE CONTROL of NodeMCU**
 ************************************************
+There are two ways to control NodeMCU:  
+1. Control of NodeMCU running a webserver.  
+2. Control of NodeMCU running Sonoff-Tasmota Firmware.  
+
+### **Controlling NodeMCU running webserver**   
 Download the Arduino IDE code for Nodemcu from here: https://github.com/shivasiddharth/iotwemos/blob/master/Google-Home-NodeMCU.ino  
 
 Add the wifi credentials, make the desired changes and upload the Arduino code onto the NodeMCU and get the IP address from the serial monitor.  
 
 Add the NodeMCU's IP address in the actions.py file.  
 
+**Syntax: "Hey Google, Trigger Turn _Devicename_ On/Off"**    
+
 **FOR GUIDELINES ON MODIFYING THE ARDUINO CODE AND ACTIONS.PY FILE, FOLLOW THE FOLLOWING YOUTUBE VIDEO.**    
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=ae0iwJ62uaM
 " target="_blank"><img src="http://img.youtube.com/vi/ae0iwJ62uaM/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
+
+### **Controlling NodeMCU running Sonoff-Tasmota firmware**  
+Download the Tasmota firmware from this [link](https://mega.nz/#!Dwx0lDYL!CK_QYoR9GvBhqdEmVs98ac45TjTjPIQyeaezYT4jfE0)
+
+Follow the instructions in this video to upload the firmware properly.  
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ioONHaUOtFM
+" target="_blank"><img src="http://img.youtube.com/vi/ioONHaUOtFM/0.jpg"
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
+
+Pi3 and Pi2 users, assign the device names and device ip addresses in the main.py script and pushbutton.py script respectively, in the marked locations.  
+
+**Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
+
+Advantage of using Sonoff-Tasmota over webserver is that, with Sonoff-Tasmota you can emulate a Wemo switch and control the NodeMCU using Amazon Alexa (Echo Devices) in addition to the GassistPi.    
 
 
 ************************************************

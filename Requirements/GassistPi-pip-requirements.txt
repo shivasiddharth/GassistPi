@@ -13,3 +13,4 @@ pafy>=0.5.3.1
 psutil>=5.4.3
 urllib3>=1.22
 google-api-python-client>=1.6.5
+requests>=2.18.4
