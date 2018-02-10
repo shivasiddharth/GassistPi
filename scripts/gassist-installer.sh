@@ -15,7 +15,8 @@
 set -o errexit
 
 scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
-GIT_DIR="$( dirname $(cd "$(dirname "$0")" ; pwd -P) )"
+GIT_DIR="$(realpath $(dirname ${BASH_SOURCE[0]})/..)"
+
 
 #check device architecture
 if [[ $(uname -m|grep "armv7") ]]; then
@@ -31,29 +32,29 @@ then
     echo "This script must run as $RUN_AS, trying to change user..."
     exec sudo -u $RUN_AS $0
 fi
-info_file="/home/${USER}/gassistant-credentials.info"
+INFO_FILE="/home/${USER}/gassistant-credentials.info"
 
 clear
-if [ -f $info_file ]
+if [ -f $INFO_FILE ]
 then
-    . $info_file
+    . $INFO_FILE
 fi
 
-if [ -n $credname ]
+if [[ $credname != "" ]]
 then
     credmsg="Enter your full credential file name including .json extension(If your credentials file name is $credname then press enter): "
 else
     credmsg="Enter your full credential file name including .json extension: "
 fi
 
-if [ -n $projid ]
+if [[ $projid != "" ]]
 then
     projidmsg="Enter your Google Cloud Console Project-Id(If your Project-Id is $projid then press enter): "
 else
     projidmsg="Enter your Google Cloud Console Project-Id: "
 fi
 
-if [ -n $prodname ]
+if [[ $prodname != "" ]]
 then
     prodmsg="Enter a product name for your device (product name should not have space in between)\n(If your Product name is $prodname then press enter): "
 else
@@ -88,11 +89,11 @@ echo ""
 
 
 modelid=$projid-$(date +%Y%m%d%H%M%S )
-echo "" > $info_file
-echo "credname='$credname'" >> $info_file
-echo "projid='$projid'" >> $info_file
-echo "prodname='$prodname'" >> $info_file
-echo "modelid='$modelid'" >> $info_file
+echo "" > $INFO_FILE
+echo "credname='$credname'" >> $INFO_FILE
+echo "projid='$projid'" >> $INFO_FILE
+echo "prodname='$prodname'" >> $INFO_FILE
+echo "modelid='$modelid'" >> $INFO_FILE
 
 cd /home/${USER}
 
