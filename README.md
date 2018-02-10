@@ -153,7 +153,7 @@ speaker-test -t wav
 
 6. Copy the authorization code from browser onto the terminal and press enter    
 
-7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Volume Up" command.
+7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
 
 8. After verifying the working of assistant, close and exit the terminal    
 
