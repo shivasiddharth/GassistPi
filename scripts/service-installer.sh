@@ -23,10 +23,31 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+#Get the checkout directory
+GIT_DIR="$(realpath $(dirname ${BASH_SOURCE[0]})/..)"
+#Get the owner of the checkout directory
+GIT_OWNER="$(ls -ld "$GIT_DIR" | awk 'NR==1 {print $3}')"
+INFO_FILE="/home/${GIT_OWNER}/gassistant-credentials.info"
+
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 repo_path="$PWD"
 
+
+
+if [ -f $INFO_FILE ]
+then
+    . $INFO_FILE
+else
+echo "couldn't find $INFO_FILE, please re-run the gassist-installer"
+fi
+
+
 for service in systemd/*.service; do
-  sed "s:/home/pi/GassistPi:${repo_path}:g" "$service" \
-    > "/lib/systemd/system/$(basename "$service")"
+	sed "s:/home/pi/GassistPi:${repo_path}:g;s:saved-project-id:${projid}:g;s:saved-model-id:${modelid}:g" "$service" \
+	 > "/lib/systemd/system/$(basename "$service")"
 done
+
+
+
+
+

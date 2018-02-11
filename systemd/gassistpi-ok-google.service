@@ -6,7 +6,7 @@ After=network-online.target
 [Service]
 Environment=VIRTUAL_ENV=/home/pi/env
 Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py --project_id 'project-id'  --device_model_id 'saved-model-id'
+ExecStart=/home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py --project_id 'saved-project-id'  --device_model_id 'saved-model-id'
 
 WorkingDirectory=/home/pi/
 StandardOutput=inherit
