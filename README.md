@@ -386,7 +386,7 @@ Repeat tracks
 ************************************************
 ### **RADIO STREAMING**  
 ************************************************
-Default keyword for streaming radio is **tune into**. For example, **tune into Radio 2** command will open the corresponding radio stream listed in the actions.py file.    
+Default keyword for streaming radio is **radio**. For example, **play Radio 2** or **play Radio One** command will open the corresponding radio stream listed in the actions.py file.    
 
 Radio streaming has been enabled for both OK-Google and Custom hotwords/wakewords.
 
