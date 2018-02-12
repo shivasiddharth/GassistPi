@@ -158,8 +158,20 @@ def process_event(event, device_id):
         print(event)
         
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
-       GPIO.output(5,GPIO.LOW)
-       GPIO.output(6,GPIO.LOW)
+      GPIO.output(5,GPIO.LOW)
+      GPIO.output(6,GPIO.LOW)
+      led.ChangeDutyCycle(0)
+        #Uncomment the following after starting the Kodi
+        #with open('/home/pi/.volume.json', 'r') as f:
+               #vollevel = json.load(f)
+               #kodi.Application.SetVolume({"volume": vollevel})
+      if ismpvplaying():
+          if os.path.isfile("/home/pi/.mediavolume.json"):
+              with open('/home/pi/.mediavolume.json', 'r') as vol:
+                  oldvollevel = json.load(vol)
+              print(oldvollevel)
+              mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
+
       
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
        GPIO.output(5,GPIO.LOW)
