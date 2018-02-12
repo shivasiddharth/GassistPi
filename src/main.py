@@ -156,7 +156,11 @@ def process_event(event, device_id):
 
 
         print(event)
-
+        
+    if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
+       GPIO.output(5,GPIO.LOW)
+       GPIO.output(6,GPIO.LOW)
+      
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
        GPIO.output(5,GPIO.LOW)
        GPIO.output(6,GPIO.HIGH)
