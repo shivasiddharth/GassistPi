@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from gmusicapi import Mobileclient
 from googletrans import Translator
+from pushbullet import Pushbullet
 from gtts import gTTS
 import requests
 import os
@@ -1374,7 +1375,28 @@ def kickstarter_tracker(phrase):
         say(campaigninfo)  
         
 #------------------------------End of Kickstarter Search functions---------------------------------------
+
+
+#----------------------------------Start of Push Message function-----------------------------------------
+def pushmessage(title,body):
+    push = pb.push_note(title,body)
+#----------------------------------End of Push Message Function-------------------------------------------
+
+
+#----------------------------------Start of Receipe Function----------------------------------------------
+def getreceipe(item):
+    appid='1fb394fd'
+    appkey='d537f12d0aa34c4485292209b36dd0b8'
+    receipeurl = 'https://api.edamam.com/search?q=cinnamon%20rolls&app_id='+appid+'&app_key='+appkey+'&health=vegan'
+    receipedetails = urllib.request.urlopen(receipeurl)
+    recepiedetails=receipedetails.read()
+    receipedetails = receipedetails.decode('utf-8')
+    receipedetails=json.loads(receipedetails)
+    receipe_ingedients=receipedetails['hits'][0]['recipe']['ingredientLines']
+    print(receipe_ingredients)
+    pushmessage('Ingredients',str(receipe_ingredients))
     
+#---------------------------------End of Receipe Function------------------------------------------------
     
 #GPIO Device Control
 def Action(phrase):
