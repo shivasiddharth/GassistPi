@@ -1385,8 +1385,8 @@ def pushmessage(title,body):
 
 #----------------------------------Start of Receipe Function----------------------------------------------
 def getreceipe(item):
-    appid='1fb394fd'
-    appkey='d537f12d0aa34c4485292209b36dd0b8'
+    appid='ENTER-YOUR-APPID-HERE'
+    appkey='ENTER-YOUR-APP-KEY-HERE'
     receipeurl = 'https://api.edamam.com/search?q=cinnamon%20rolls&app_id='+appid+'&app_key='+appkey+'&health=vegan'
     receipedetails = urllib.request.urlopen(receipeurl)
     recepiedetails=receipedetails.read()
