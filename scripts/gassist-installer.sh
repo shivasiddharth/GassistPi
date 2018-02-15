@@ -42,21 +42,21 @@ fi
 
 if [[ $credname != "" ]]
 then
-    credmsg="Enter your full credential file name including .json extension(If your credentials file name is $credname then press enter): "
+    credmsg="If your credentials file name is $credname then press enter. Else, enter your full credential file name including .json extension: "
 else
     credmsg="Enter your full credential file name including .json extension: "
 fi
 
 if [[ $projid != "" ]]
 then
-    projidmsg="Enter your Google Cloud Console Project-Id(If your Project-Id is $projid then press enter): "
+    projidmsg="If your Project-Id is $projid then press enter. Else, enter your Google Cloud Console Project-Id: "
 else
     projidmsg="Enter your Google Cloud Console Project-Id: "
 fi
 
 if [[ $prodname != "" ]]
 then
-    prodmsg="Enter a product name for your device (product name should not have space in between)\n(If your Product name is $prodname then press enter): "
+    prodmsg="If your Product name is $prodname then press enter. Else, enter a product name for your device (product name should not have space in between): "
 else
     prodmsg="Enter a product name for your device (product name should not have space in between): "
 fi
