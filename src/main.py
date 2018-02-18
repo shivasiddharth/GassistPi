@@ -188,6 +188,7 @@ def process_event(event, device_id):
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         GPIO.output(5,GPIO.LOW)
+        GPIO.output(6,GPIO.LOW)
         led.ChangeDutyCycle(0)
         #Uncomment the following after starting the Kodi
         #with open('/home/pi/.volume.json', 'r') as f:
