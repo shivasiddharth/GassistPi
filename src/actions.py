@@ -1384,17 +1384,28 @@ def pushmessage(title,body):
 
 
 #----------------------------------Start of Receipe Function----------------------------------------------
-def getreceipe(item):
+def getreceipe(item,diet):
     appid='ENTER-YOUR-APPID-HERE'
     appkey='ENTER-YOUR-APP-KEY-HERE'
-    receipeurl = 'https://api.edamam.com/search?q=cinnamon%20rolls&app_id='+appid+'&app_key='+appkey+'&health=vegan'
+    receipeurl = 'https://api.edamam.com/search?q='+item+'&app_id='+appid+'&app_key='+appkey+'&health='+diet
     receipedetails = urllib.request.urlopen(receipeurl)
     recepiedetails=receipedetails.read()
     receipedetails = receipedetails.decode('utf-8')
     receipedetails=json.loads(receipedetails)
-    receipe_ingedients=receipedetails['hits'][0]['recipe']['ingredientLines']
+    receipe_ingredients=receipedetails['hits'][0]['recipe']['ingredientLines']
+    receipe_url=receipedetails['hits'][0]['recipe']['url']
+    receipe_name=receipedetails['hits'][0]['recipe']['label']
+    receipe_ingredients=receipe_ingredients.replace('[','',1)
+    receipe_ingredients=receipe_ingredients.replace(']','',1)
+    receipe_ingredients=receipe_ingredients.replace('"','',1)
+    receipe_ingredients=receipe_ingredients.strip()
+    print(receipe_name)
+    print("")
+    print(receipe_url)
+    print("")
     print(receipe_ingredients)
-    pushmessage('Ingredients',str(receipe_ingredients))
+    compiled_receipe_info="\nReceipe Source URL:\n"+receipe_url+"\nReceipe Ingredients:\n"+receipe_ingredients
+    pushmessage(str(receipe_name),str(compiled_receipe_info))
     
 #---------------------------------End of Receipe Function------------------------------------------------
     
