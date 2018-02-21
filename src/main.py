@@ -46,7 +46,8 @@ from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
-
+from actions import kickstarter_tracker
+from actions import getreceipe
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
@@ -274,6 +275,12 @@ def main():
                     assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                     break
+            if 'ingredients'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                getreceipe(str(usrcmd).lower())
+            if 'kickstarter'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                kickstarter_tracker(str(usrcmd).lower())
             if 'trigger'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())

@@ -1280,8 +1280,8 @@ def kickstarter_get_data(page_source,parameter):
 def get_campaign_title(campaign):
     campaigntitle=campaign
     campaigntitleidx1=campaigntitle.find('<title>')
-    campaigntitleidx2=webContent.find('&mdash;')    
-    campaigntitle=webContent[campaigntitleidx1:campaigntitleidx2]    
+    campaigntitleidx2=campaigntitle.find('&mdash;')    
+    campaigntitle=campaigntitle[campaigntitleidx1:campaigntitleidx2]    
     campaigntitle=campaigntitle.replace('<title>',"",1)
     campaigntitle=campaigntitle.replace('&mdash;',"",1)                                   
     campaigntitle=campaigntitle.strip()    
