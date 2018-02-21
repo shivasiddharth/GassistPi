@@ -1,0 +1,17 @@
+[Unit]
+Description=Emulated Philips Hue Hub
+Wants=network-online.target
+After=network-online.target
+
+
+[Service]
+Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/usr/bin/python3 -u /home/pi/GassistPi/src/diyHue/HueEmulator3.py
+WorkingDirectory=/home/pi/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
