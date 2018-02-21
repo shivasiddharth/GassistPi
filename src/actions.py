@@ -1379,6 +1379,7 @@ def kickstarter_tracker(phrase):
 
 #----------------------------------Start of Push Message function-----------------------------------------
 def pushmessage(title,body):
+    pb = Pushbullet('ENTER-YOUR-PUSHBULLET-KEY-HERE')
     push = pb.push_note(title,body)
 #----------------------------------End of Push Message Function-------------------------------------------
 
