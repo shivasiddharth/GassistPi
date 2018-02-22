@@ -4,6 +4,7 @@
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
+### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
 ## 08th-Feb-2018 Update: Now Control Sonoff-Tasmota devices by voice      
 
@@ -32,6 +33,8 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **16.  Voice control of Radio/YouTube/Google Music volume levels.**         
 **17.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
 **18.  Track Kickstarter campaigns.**  
+**19.  Emulated Hue HUB Service and Voice Control of Added Devices.**  
+
 
 *******************************************************************************************************************************  
 **The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  
