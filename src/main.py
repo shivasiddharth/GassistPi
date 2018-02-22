@@ -226,7 +226,7 @@ def register_device(project_id, credentials, device_model_id, device_id):
     r = session.get(device_url)
     print(device_url, r.status_code)
     if r.status_code == 404:
-        print('Registering....', end='', flush=True)
+        print('Registering....')
         r = session.post(base_url, data=json.dumps({
             'id': device_id,
             'model_id': device_model_id,
