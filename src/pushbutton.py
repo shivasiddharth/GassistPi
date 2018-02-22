@@ -32,6 +32,7 @@ import psutil
 import logging
 import re
 import requests
+import pathlib2 as pathlib
 from actions import say
 import google.auth.transport.grpc
 import google.auth.transport.requests
@@ -684,7 +685,7 @@ def main(api_endpoint, credentials, project_id,
                 logging.error('Failed to register device: %s', r.text)
                 sys.exit(-1)
             logging.info('Device registered: %s', device_id)
-            os.makedirs(os.path.dirname(device_config), exist_ok=True)
+            pathlib.Path(os.path.dirname(device_config)).mkdir(exist_ok=True)
             with open(device_config, 'w') as f:
                 json.dump(payload, f)
 
