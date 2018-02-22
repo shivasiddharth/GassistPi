@@ -31,8 +31,10 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **14.  Streaming music from Google Play Music.**  
 **15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
 **16.  Voice control of Radio/YouTube/Google Music volume levels.**         
-**17.  Control Sonoff Tasmota Devices/Emulated Wemo**  
-**18.  Emulated Hue HUB Service and Voice Control of Added Devices**  
+**17.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
+**18.  Track Kickstarter campaigns.**  
+**19.  Emulated Hue HUB Service and Voice Control of Added Devices.**  
+
 
 *******************************************************************************************************************************  
 **The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  

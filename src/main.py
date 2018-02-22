@@ -46,7 +46,8 @@ from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
-
+from actions import kickstarter_tracker
+from actions import getreceipe
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
@@ -118,7 +119,7 @@ def process_device_actions(event, device_id):
                         if device['id'] == device_id:
                             if 'execution' in c:
                                 for e in c['execution']:
-                                    if e['params']:
+                                    if 'params' in e:
                                         yield e['command'], e['params']
                                     else:
                                         yield e['command'], None
@@ -231,7 +232,7 @@ def register_device(project_id, credentials, device_model_id, device_id):
     r = session.get(device_url)
     print(device_url, r.status_code)
     if r.status_code == 404:
-        print('Registering....', end='', flush=True)
+        print('Registering....')
         r = session.post(base_url, data=json.dumps({
             'id': device_id,
             'model_id': device_model_id,
@@ -256,10 +257,19 @@ def main():
     parser.add_argument('--device_model_id', type=str,
                         metavar='DEVICE_MODEL_ID', required=True,
                         help='The device model ID registered with Google.')
-    parser.add_argument('--project_id', type=str,
-                        metavar='PROJECT_ID', required=False,
-                        help='The project ID used to register device '
-                        + 'instances.')
+    parser.add_argument(
+        '--project_id',
+        type=str,
+        metavar='PROJECT_ID',
+        required=False,
+        help='The project ID used to register device instances.')
+    parser.add_argument(
+        '-v',
+        '--version',
+        action='version',
+        version='%(prog)s ' +
+        Assistant.__version_str__())
+    
     args = parser.parse_args()
     with open(args.credentials, 'r') as f:
         credentials = google.oauth2.credentials.Credentials(token=None,
@@ -280,6 +290,12 @@ def main():
                     assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                     break
+            if 'ingredients'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                getreceipe(str(usrcmd).lower())
+            if 'kickstarter'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                kickstarter_tracker(str(usrcmd).lower())
             if 'trigger'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
