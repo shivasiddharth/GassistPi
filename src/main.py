@@ -293,7 +293,7 @@ def main():
                 try:
                     if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
-                        hue_control(str(usrcmd).lower(),str(i))
+                        hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
                         break
                 except Keyerror:
                     say('Unable to help, please check your config file')

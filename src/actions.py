@@ -88,6 +88,23 @@ led.start(0)
 
 playshell = None
 
+#Initialize colour list
+clrlist=[]
+clrlistfullname=[]
+clrrgblist=[]
+clrhexlist=[]
+with open('/home/pi/GassistPi/src/colours.json', 'r') as col:
+     colours = json.load(col)
+for i in range(0,len(colours)):
+    clrname=colours[i]["name"]
+    clrnameshort=clrname.replace(" ","",1)
+    clrnameshort=clrnameshort.strip()
+    clrnameshort=clrnameshort.lower()
+    clrlist.append(clrnameshort)
+    clrlistfullname.append(clrname)
+    clrrgblist.append(colours[i]["rgb"])
+    clrhexlist.append(colours[i]["hex"])
+
 
 #Parcel Tracking declarations
 #If you want to use parcel tracking, register for a free account at: https://www.aftership.com
@@ -144,6 +161,35 @@ def mpvvolmgr():
     else:
         startvol=50
     return startvol
+
+
+#Function to get HEX and RGB values for requested colour
+def getcolours(phrase):
+    usrclridx=idx=phrase.find("to")
+    usrclr=query=phrase[usrclridx:]
+    usrclr=usrclr.replace("to","",1)
+    usrclr=usrclr.replace(" ","",1)
+    usrclr=usrclr.strip()
+    usrclr=usrclr.lower()
+    for colournum, colourname in enumerate(clrlist):
+        if usrclr in colourname:
+            red,green,blue=clrrgblist[colournum]
+            hexcode=clrhexlist[colournum]
+            colourname=clrlistfullname[colournum]
+    return red, green, blue, hexcode, colourname
+
+
+#Function to convert FBG to XY for Hue Lights
+def convert_rgb_xy(red,green,blue):
+    red = pow((red + 0.055) / (1.0 + 0.055), 2.4) if red > 0.04045 else red / 12.92
+    green = pow((green + 0.055) / (1.0 + 0.055), 2.4) if green > 0.04045 else green / 12.92
+    blue = pow((blue + 0.055) / (1.0 + 0.055), 2.4) if blue > 0.04045 else blue / 12.92
+    X = red * 0.664511 + green * 0.154324 + blue * 0.162028
+    Y = red * 0.283881 + green * 0.668433 + blue * 0.047685
+    Z = red * 0.000088 + green * 0.072310 + blue * 0.986039
+    x = X / (X + Y + Z)
+    y = Y / (X + Y + Z)
+    return x,y
 
 
 #Text to speech converter with translation
@@ -1280,18 +1326,18 @@ def kickstarter_get_data(page_source,parameter):
 def get_campaign_title(campaign):
     campaigntitle=campaign
     campaigntitleidx1=campaigntitle.find('<title>')
-    campaigntitleidx2=campaigntitle.find('&mdash;')    
-    campaigntitle=campaigntitle[campaigntitleidx1:campaigntitleidx2]    
+    campaigntitleidx2=campaigntitle.find('&mdash;')
+    campaigntitle=campaigntitle[campaigntitleidx1:campaigntitleidx2]
     campaigntitle=campaigntitle.replace('<title>',"",1)
-    campaigntitle=campaigntitle.replace('&mdash;',"",1)                                   
-    campaigntitle=campaigntitle.strip()    
+    campaigntitle=campaigntitle.replace('&mdash;',"",1)
+    campaigntitle=campaigntitle.strip()
     return campaigntitle
 
 def get_pledges_offered(campaign):
     pledgesoffered=campaign
     pledgenum=0
     for num in re.finditer('pledge__reward-description pledge__reward-description--expanded',pledgesoffered):
-        pledgenum=pledgenum+1    
+        pledgenum=pledgenum+1
     return pledgenum
 
 def get_funding_period(campaign):
@@ -1299,7 +1345,7 @@ def get_funding_period(campaign):
     periodidx=period.find('Funding period')
     period=period[periodidx:]
     periodidx=period.find('</p>')
-    period=period[:periodidx]    
+    period=period[:periodidx]
     startperiodidx1=period.find('class="invisible-if-js js-adjust-time">')
     startperiodidx2=period.find('</time>')
     startperiod=period[startperiodidx1:startperiodidx2]
@@ -1329,17 +1375,17 @@ def kickstarter_tracker(phrase):
     campaign_name=campaign_name.strip()
     campaign_source=campaign_page_parser(campaign_name)
     campaign_title=get_campaign_title(campaign_source)
-    campaign_num_rewards=get_pledges_offered(campaign_source)    
+    campaign_num_rewards=get_pledges_offered(campaign_source)
     successidx=campaign_source.find('to help bring this project to life.')
     if str(successidx)==str(-1):
         backers=kickstarter_get_data(campaign_source,'data-backers-count="')
         totalpledged=kickstarter_get_data(campaign_source,'data-pledged="')
         totaltimerem=kickstarter_get_data(campaign_source,'data-hours-remaining="')
         totaldur=kickstarter_get_data(campaign_source,'data-duration="')
-        endtime=kickstarter_get_data(campaign_source,'data-end_time="')    
-        goal=kickstarter_get_data(campaign_source,'data-goal="')       
+        endtime=kickstarter_get_data(campaign_source,'data-end_time="')
+        goal=kickstarter_get_data(campaign_source,'data-goal="')
         percentraised=kickstarter_get_data(campaign_source,'data-percent-raised="')
-        percentraised=round(float(percentraised),2)        
+        percentraised=round(float(percentraised),2)
         if int(totaltimerem)>0:
             #print(campaign_title+" is an ongoing campaign with "+str(totaltimerem)+" hours of fundraising still left." )
             say(campaign_title+" is an ongoing campaign with "+str(totaltimerem)+" hours of fundraising still left." )
@@ -1367,13 +1413,13 @@ def kickstarter_tracker(phrase):
         campaigninfo=campaigninfo.replace('<b>',"",1)
         campaigninfo=campaigninfo.replace('</b>',"",1)
         campaigninfo=campaigninfo.replace('<span class="money">',"",1)
-        campaigninfo=campaigninfo.replace('</span>',"",1)    
-        campaigninfo=campaigninfo.strip()               
+        campaigninfo=campaigninfo.replace('</span>',"",1)
+        campaigninfo=campaigninfo.strip()
         #print(campaign_title+" was a "+str(numdays)+" campaign launched on "+str(start_day))
-        #print(campaigninfo)  
+        #print(campaigninfo)
         say(campaign_title+" was a "+str(numdays)+" campaign launched on "+str(start_day))
-        say(campaigninfo)  
-        
+        say(campaigninfo)
+
 #------------------------------End of Kickstarter Search functions---------------------------------------
 
 
@@ -1385,10 +1431,10 @@ def pushmessage(title,body):
 
 
 #----------------------------------Start of Receipe Function----------------------------------------------
-def getreceipe(item,diet):
+def getreceipe(item):
     appid='ENTER-YOUR-APPID-HERE'
     appkey='ENTER-YOUR-APP-KEY-HERE'
-    receipeurl = 'https://api.edamam.com/search?q='+item+'&app_id='+appid+'&app_key='+appkey+'&health='+diet
+    receipeurl = 'https://api.edamam.com/search?q='+item+'&app_id='+appid+'&app_key='+appkey
     receipedetails = urllib.request.urlopen(receipeurl)
     recepiedetails=receipedetails.read()
     receipedetails = receipedetails.decode('utf-8')
@@ -1407,9 +1453,45 @@ def getreceipe(item,diet):
     print(receipe_ingredients)
     compiled_receipe_info="\nReceipe Source URL:\n"+receipe_url+"\nReceipe Ingredients:\n"+receipe_ingredients
     pushmessage(str(receipe_name),str(compiled_receipe_info))
-    
+
 #---------------------------------End of Receipe Function------------------------------------------------
-    
+
+
+#--------------------------------Start of Hue Control Functions------------------------------------------
+
+def hue_control(phrase,lightindex,lightaddress):
+    with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
+         hueconfig = json.load(config)
+    currentxval=hueconfig['lights'][lightindex]['state']['xy'][0]
+    currentyval=hueconfig['lights'][lightindex]['state']['xy'][1]
+    currentbri=hueconfig['lights'][lightindex]['state']['bri']
+    currentct=hueconfig['lights'][lightindex]['state']['ct']
+    huelightname=str(hueconfig['lights'][lightindex]['name'])
+    if 'on' in phrase:
+        try:
+            huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=true")
+            say("Turning on "+huelightname)
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
+    if 'off' in phrase:
+        try:
+            huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=false")
+            say("Turning off "+huelightname)
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
+    if ('change' in phrase or 'set' in phrase) and 'çolour' in phrase:
+        rcolour,gcolour,bcolour,hexcolour,colour=getcolours(phrase)
+        xval,yval=convert_rgb_xy(rcolour,gcolour,bcolour)
+        try:
+            huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&x="+xval+"&y="+yval+"&on=true")
+            say("Setting "+huelightname+" to "+colour)
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
+
+#------------------------------End of Hue Control Functions---------------------------------------------
+
+
+
 #GPIO Device Control
 def Action(phrase):
     if 'shut down' in phrase:
