@@ -176,7 +176,7 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
+4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **To stop music playback using a pushbutton connected to GPIO 23 enable stopbutton.service**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
