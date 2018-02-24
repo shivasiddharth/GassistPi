@@ -48,6 +48,8 @@ from actions import chromecast_play_video
 from actions import chromecast_control
 from actions import kickstarter_tracker
 from actions import getreceipe
+from actions import hue_control
+
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
@@ -93,7 +95,7 @@ def ismpvplaying():
         else:
             mpvactive=False
     return mpvactive
-    
+
 
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
@@ -157,7 +159,7 @@ def process_event(event, device_id):
 
 
         print(event)
-        
+
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
       GPIO.output(5,GPIO.LOW)
       GPIO.output(6,GPIO.LOW)
@@ -173,7 +175,7 @@ def process_event(event, device_id):
               print(oldvollevel)
               mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
 
-      
+
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
        GPIO.output(5,GPIO.LOW)
        GPIO.output(6,GPIO.HIGH)
@@ -183,11 +185,11 @@ def process_event(event, device_id):
        GPIO.output(6,GPIO.LOW)
        GPIO.output(5,GPIO.HIGH)
        led.ChangeDutyCycle(100)
-        
+
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
        GPIO.output (5, GPIO.LOW)
        GPIO.output (6, GPIO.LOW)
-       led.ChangeDutyCycle (0)   
+       led.ChangeDutyCycle (0)
 
     print(event)
 
@@ -269,7 +271,7 @@ def main():
         action='version',
         version='%(prog)s ' +
         Assistant.__version_str__())
-    
+
     args = parser.parse_args()
     with open(args.credentials, 'r') as f:
         credentials = google.oauth2.credentials.Credentials(token=None,
@@ -287,23 +289,30 @@ def main():
             usrcmd=event.args
             with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
                  hueconfig = json.load(config)
-            try:
-               for i in range(1,len(hueconfig['lights'])+1):
-                  if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
-                     assistant.stop_conversation()
-                     print('light listed')
-                     break
-            except Keyerror:
-               say('Unable to help, please check your config file') 
+            for i in range(1,len(hueconfig['lights'])+1):
+                try:
+                    if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        hue_control(str(usrcmd).lower(),str(i))
+                        break
+                except Keyerror:
+                    say('Unable to help, please check your config file')
+
             for num, name in enumerate(tasmota_devicelist):
                 if name.lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                     break
-            
+
             if 'ingredients'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
-                getreceipe(str(usrcmd).lower())
+                ingrequest=str(usrcmd).lower()
+                ingredientsidx=ingrequest.find('for')
+                ingrequest=ingrequest[ingredientsidx:]
+                ingrequest=ingrequest.replace('for',"",1)
+                ingrequest=ingrequest.strip()
+                ingrequest=ingrequest.replace(' ',"%20",1)
+                getreceipe(ingrequest)
             if 'kickstarter'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kickstarter_tracker(str(usrcmd).lower())
@@ -315,16 +324,16 @@ def main():
                 os.system('pkill mpv')
                 if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
                     os.system('rm /home/pi/GassistPi/src/trackchange.py')
-                    os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
-                    os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
                     if 'autoplay'.lower() in str(usrcmd).lower():
+                        os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                        os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
                 else:
-                    os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
-                    os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
                     if 'autoplay'.lower() in str(usrcmd).lower():
+                        os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+                        os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
