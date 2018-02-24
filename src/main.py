@@ -79,7 +79,7 @@ mpvactive=False
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
-tasmota_devicelist=['Desk Lamp','Table Lamp']
+tasmota_devicelist=['Desk Light','Table Light']
 tasmota_deviceip=['192.168.1.35','192.168.1.36']
 
 
@@ -285,11 +285,22 @@ def main():
         for event in events:
             process_event(event, assistant.device_id)
             usrcmd=event.args
+            with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
+                 hueconfig = json.load(config)
+            try:
+               for i in range(1,len(hueconfig['lights'])+1):
+                  if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                     assistant.stop_conversation()
+                     print('light listed')
+                     break
+            except Keyerror:
+               say('Unable to help, please check your config file') 
             for num, name in enumerate(tasmota_devicelist):
                 if name.lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                     break
+            
             if 'ingredients'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 getreceipe(str(usrcmd).lower())
