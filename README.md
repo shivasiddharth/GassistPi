@@ -6,12 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 08th-Feb-2018 Update: Now Control Sonoff-Tasmota devices by voice      
-
-### Existing GassistPi users on the latest SDK can update their GassistPi Project using:   
-https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-Script.sh
-
-### New users, continue as instructed below in the README doc.
+## 26th-Feb-2018 Update: Features 18,19,20   
+**Google has updated the SDK to 0.4.3. so to update, start fresh.**    
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -32,13 +28,9 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
 **16.  Voice control of Radio/YouTube/Google Music volume levels.**         
 **17.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
-**18.  Track Kickstarter campaigns.**  
-**19.  Emulated Hue HUB Service and Voice Control of Added Devices.**  
-
-
-*******************************************************************************************************************************  
-**The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  
-*******************************************************************************************************************************
+**18.  Track [Kickstarter](https://www.kickstarter.com) campaigns.**  
+**19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
+**20.  Search recipes and get push message of ingredients and link to recipe.**  
 
 
 *******************************************************************************************************************************  
@@ -179,7 +171,7 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
+4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **To stop music playback using a pushbutton connected to GPIO 23 enable stopbutton.service**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
@@ -217,8 +209,51 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
+************************************************
+### **TRACKING KICKSTARTER CAMPAIGNS**  
+************************************************
+A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has been used. This requires an API to be added to your existing project.  
+### Adding Google Custom Search Engine API and Generating API Key
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. Move your mouse pointer over "API and services" and choose "credentials".
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the actions.py script at the indicated location.  
+6. "From the API and services" option, select library and in the search bar type **search**, select "Custom Search API" and click on "ENABLE".
+7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
+
+**Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
+
+**Syntax: Hey Google, (What is the status of) or (Track) __Your Desired Campaign Name__ Kickstarter campaign**  
+
+
+************************************************
+### **EMULATED PHILIPS HUE SEVICE AND CONTROL**  
+************************************************
+Credits for the [Emulated Hue](https://github.com/mariusmotea/diyHue) to [Marius Motea](https://github.com/mariusmotea).  
+
+To set the emuated Hue to autostart on boot as a service, open a terminal and run the following:  
+```
+sudo systemctl enable diyHue.service  
+
+```
+To start the service immediately, in the pi terminal run the following:  
+```
+sudo systemctl start diyHue.service  
+
+```
+Depending upon your device, download the Philips Hue App for either of the platforms from the following links.  
+
+<a href="https://itunes.apple.com/ie/app/philips-hue/id1055281310?mt=8
+" target="_blank"><img src="https://imgur.com/KTC2a6D"
+alt="Detailed Youtube Video" width="80" height="30" border="1" /></a>
+
+<a href="https://play.google.com/store/apps/details?id=com.philips.lighting.hue2&hl=en
+" target="_blank"><img src="https://imgur.com/dvqggai"
+alt="Detailed Youtube Video" width="80" height="30" border="1" /></a>
+
 *******************************************************************
-### **INDICATORS for GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
+### **INDICATORS FOR GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
 *******************************************************************
 Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
@@ -229,7 +264,7 @@ Connect a pushbutton between GPIO23 and Ground. Using this pushbutton, now you c
 
 
 ************************************************
-### **VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
+### **VOICE CONTROL OF GPIOs, SERVO and Pi SHUTDOWN**
 ************************************************
 The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi.
 
@@ -250,7 +285,7 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
 ************************************************
-### **VOICE CONTROL of NodeMCU**
+### **VOICE CONTROL OF NodeMCU**
 ************************************************
 There are two ways to control NodeMCU:  
 1. Control of NodeMCU running a webserver.  
@@ -288,7 +323,7 @@ Advantage of using Sonoff-Tasmota over webserver is that, with Sonoff-Tasmota yo
 
 
 ************************************************
-### **CASTING YouTube VDIEOS TO Chromecast**    
+### **CASTING YouTube VIDEOS TO Chromecast**    
 ************************************************
 Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word.
 Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts the MasterChef YouTube Video.  
@@ -296,7 +331,7 @@ Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts 
 **Note: YouTube casting to Chromecast using third party scripts has been blocked, so I have taken a roundabout approach and as a result, you may not find the usual YouTube interface on Chromecast.**  
 
 ************************************************
-### **CONTROLLING Chromecast by VOICE**    
+### **CONTROLLING Chromecast BY VOICE**    
 ************************************************   
 First, add the IP-Address of your Chromecast in the actions.py script, in the indicated location.  
 
@@ -315,7 +350,7 @@ Hey Google, Chromecast Volume Up/Down
 
 
 ************************************************
-### **CCONTROLLING MEDIA by VOICE**    
+### **CCONTROLLING MEDIA BY VOICE**    
 ************************************************
 You can change volume and pause or resume the Radio/YouTube/Google Music by voice.  
 Pausing:  
@@ -338,7 +373,7 @@ Hey Google, Set/change Music Volume to maximum/minimum
 
 
 ************************************************
-### **MUSIC STREAMING from YOUTUBE**  
+### **MUSIC STREAMING FROM YOUTUBE**  
 ************************************************
 The updated music streaming features autoplaying of YouTube suggestions. This makes use of the YouTube Data API v3.
 ### Adding YouTube API and Generating API Key
@@ -350,6 +385,7 @@ The updated music streaming features autoplaying of YouTube suggestions. This ma
 6. "From the API and services" option, select library and in the search bar type youtube, select "YouTube Data API v3" API and click on "ENABLE".
 7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
 
+**Note: The same API key can be used for Kickstarter Tracking, but Custom Search API must be added to the project in the cloud console.**  
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 
@@ -360,7 +396,7 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 **Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
 
 ************************************************
-### **MUSIC STREAMING from Google Music**  
+### **MUSIC STREAMING FROM Google Music**  
 ************************************************
 The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
 
@@ -404,7 +440,7 @@ http://worldradiomap.com/map/
 **Due to the Pi Zero's limitations, users are advised to not use the Radio streaming feature. Radio streaming will send the CPU usage of Pi Zero into next galaxy.**  
 
 ***********************************************  
-### **FOR PARCEL TRACKING**  
+### **PARCEL TRACKING**  
 ***********************************************  
 The default keyword for tracking parcel is **parcel**. For example, you can say **where is my parcel** or **track my parcel**.  
 
@@ -416,7 +452,7 @@ The generated API number should be added to the actions.py script at the indicat
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 ************************************************  
-### **FOR RSS FEEDS**  
+### **RSS FEEDS STREAMING**  
 ************************************************  
 Default keywords for playing RSS feeds is **feed** or **news** or **quote**. Example usage, **top tech news** will play the top technology news, **top world news** will play top news related to different countires, **top sports news** will play the top sports related news and **quote of the day** will give some quotes.
 
@@ -468,7 +504,7 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | Hey Google, Play Previous on kodi| Plays the previous track|
 | Hey Google, Scroll a bit forward on kodi| Fast forwards a movie/music by a small amount|
 | Hey Google, Scroll forward on kodi| Fast forwards a movie/track by a large margin |
-| Hey Google, Scroll a biy backward on kodi| | Rewinds a movie/track by a small amount|
+| Hey Google, Scroll a bit backward on kodi| Rewinds a movie/track by a small amount|
 | Hey Google, Scroll backward on kodi| Rewinds a movie/track by a large margin|
 | Hey Google, Set volume _Vol level number between 0 and 100_ on kodi | Sets the volume to the mentioned number |
 | Hey Google, Get volume on kodi| Tells you the current volume level by voice |
@@ -490,7 +526,7 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 
 
 ************************************************  
-### **FOR NEOPIXEL INDICATOR**
+### **GOOGLE HOME LIKE NEOPIXEL INDICATOR**
 ************************************************  
 1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
