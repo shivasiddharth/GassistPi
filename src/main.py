@@ -99,18 +99,15 @@ def ismpvplaying():
 
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
-    if 'on' in phrase:
-        try:
+    try:
+        if 'on' in phrase:                
             rq=requests.head("http://"+devip+"/cm?cmnd=Power%20on")
-            say("Tunring on "+devname)
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
-    elif 'off' in phrase:
-        try:
+            say("Tunring on "+devname)        
+        elif 'off' in phrase:
             rq=requests.head("http://"+devip+"/cm?cmnd=Power%20off")
             say("Tunring off "+devname)
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
+    except requests.exceptions.ConnectionError:
+        say("Device not online")
 
 def process_device_actions(event, device_id):
     if 'inputs' in event.args:

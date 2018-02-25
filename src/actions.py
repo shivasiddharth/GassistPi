@@ -163,34 +163,6 @@ def mpvvolmgr():
     return startvol
 
 
-#Function to get HEX and RGB values for requested colour
-def getcolours(phrase):
-    usrclridx=idx=phrase.find("to")
-    usrclr=query=phrase[usrclridx:]
-    usrclr=usrclr.replace("to","",1)
-    usrclr=usrclr.replace(" ","",1)
-    usrclr=usrclr.strip()
-    usrclr=usrclr.lower()
-    for colournum, colourname in enumerate(clrlist):
-        if usrclr in colourname:
-            red,green,blue=clrrgblist[colournum]
-            hexcode=clrhexlist[colournum]
-            colourname=clrlistfullname[colournum]
-    return red, green, blue, hexcode, colourname
-
-
-#Function to convert FBG to XY for Hue Lights
-def convert_rgb_xy(red,green,blue):
-    red = pow((red + 0.055) / (1.0 + 0.055), 2.4) if red > 0.04045 else red / 12.92
-    green = pow((green + 0.055) / (1.0 + 0.055), 2.4) if green > 0.04045 else green / 12.92
-    blue = pow((blue + 0.055) / (1.0 + 0.055), 2.4) if blue > 0.04045 else blue / 12.92
-    X = red * 0.664511 + green * 0.154324 + blue * 0.162028
-    Y = red * 0.283881 + green * 0.668433 + blue * 0.047685
-    Z = red * 0.000088 + green * 0.072310 + blue * 0.986039
-    x = X / (X + Y + Z)
-    y = Y / (X + Y + Z)
-    return x,y
-
 
 #Text to speech converter with translation
 def say(words):
@@ -203,6 +175,46 @@ def say(words):
     tts.save(ttsfilename)
     os.system("mpg123 "+ttsfilename)
     os.remove(ttsfilename)
+    
+
+#Function to get HEX and RGB values for requested colour
+def getcolours(phrase):
+    usrclridx=idx=phrase.find("to")
+    usrclr=query=phrase[usrclridx:]
+    usrclr=usrclr.replace("to","",1) 
+    usrclr=usrclr.replace("'}","",1)
+    usrclr=usrclr.strip()
+    usrclr=usrclr.replace(" ","",1)
+    usrclr=usrclr.lower()
+    print(usrclr)
+    try:
+        for colournum, colourname in enumerate(clrlist):
+            if usrclr in colourname:            
+               RGB=clrrgblist[colournum]
+               red,blue,green=re.findall('\d+', RGB)
+               hexcode=clrhexlist[colournum]
+               cname=clrlistfullname[colournum]
+               print(cname)
+               break
+        return red,blue,green,hexcode,cname
+    except UnboundLocalError:
+        say("Sorry unable to find a matching colour")
+
+
+#Function to convert FBG to XY for Hue Lights
+def convert_rgb_xy(red,green,blue):
+    try:
+        red = pow((red + 0.055) / (1.0 + 0.055), 2.4) if red > 0.04045 else red / 12.92
+        green = pow((green + 0.055) / (1.0 + 0.055), 2.4) if green > 0.04045 else green / 12.92
+        blue = pow((blue + 0.055) / (1.0 + 0.055), 2.4) if blue > 0.04045 else blue / 12.92
+        X = red * 0.664511 + green * 0.154324 + blue * 0.162028
+        Y = red * 0.283881 + green * 0.668433 + blue * 0.047685
+        Z = red * 0.000088 + green * 0.072310 + blue * 0.986039
+        x = X / (X + Y + Z)
+        y = Y / (X + Y + Z)
+        return x,y
+    except UnboundLocalError:
+        say("No RGB values given")
 
 
 #Radio Station Streaming
@@ -1467,25 +1479,25 @@ def hue_control(phrase,lightindex,lightaddress):
     currentbri=hueconfig['lights'][lightindex]['state']['bri']
     currentct=hueconfig['lights'][lightindex]['state']['ct']
     huelightname=str(hueconfig['lights'][lightindex]['name'])
-    if 'on' in phrase:
-        try:
+    try:
+        if 'on' in phrase:
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=true")
-            say("Turning on "+huelightname)
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
-    if 'off' in phrase:
-        try:
+            say("Turning on "+huelightname)        
+        if 'off' in phrase:
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=false")
-            say("Turning off "+huelightname)
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
-    if ('change' in phrase or 'set' in phrase) and 'çolour' in phrase:
-        rcolour,gcolour,bcolour,hexcolour,colour=getcolours(phrase)
-        xval,yval=convert_rgb_xy(rcolour,gcolour,bcolour)
-        try:
-            huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&x="+xval+"&y="+yval+"&on=true")
+            say("Turning off "+huelightname)        
+        if 'change' in phrase or 'set' in phrase and 'çolor' in phrase:
+            rcolour,gcolour,bcolour,hexcolour,colour=getcolours(phrase)
+            print(str([rcolour,gcolour,bcolour,hexcolour,colour]))
+            xval,yval=convert_rgb_xy(int(rcolour),int(gcolour),int(bcolour))
+            print(str([xval,yval]))        
+            huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
+            print("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
             say("Setting "+huelightname+" to "+colour)
-        except requests.exceptions.ConnectionError:
+    except (requests.exceptions.ConnectionError,TypeError) as errors:
+        if str(errors)=="'NoneType' object is not iterable":
+            print("Type Error")
+        else:
             say("Device not online")
 
 #------------------------------End of Hue Control Functions---------------------------------------------
