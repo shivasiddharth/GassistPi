@@ -245,12 +245,12 @@ sudo systemctl start diyHue.service
 Depending upon your device, download the Philips Hue App for either of the platforms from the following links.  
 
 <a href="https://itunes.apple.com/ie/app/philips-hue/id1055281310?mt=8
-" target="_blank"><img src="https://imgur.com/KTC2a6D"
-alt="Detailed Youtube Video" width="80" height="30" border="1" /></a>
+" target="_blank"><img src="https://drive.google.com/file/d/1k6IjneSQ0P6wRaHt8rjfNBiC7Y3iVGlV/view?usp=sharing"
+alt="Apple App Store Philips Hue App" width="80" height="30" border="1" /></a>
 
 <a href="https://play.google.com/store/apps/details?id=com.philips.lighting.hue2&hl=en
-" target="_blank"><img src="https://imgur.com/dvqggai"
-alt="Detailed Youtube Video" width="80" height="30" border="1" /></a>
+" target="_blank"><img src="https://drive.google.com/file/d/1Qh6tdhcxZTRPOvkL1lptdbvdTiHRM7Vq/view?usp=sharing"
+alt="Google Play Philips Hue App" width="80" height="30" border="1" /></a>
 
 *******************************************************************
 ### **INDICATORS FOR GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
