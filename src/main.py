@@ -47,7 +47,7 @@ from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
 from actions import kickstarter_tracker
-from actions import getreceipe
+from actions import getrecipe
 from actions import hue_control
 
 
@@ -307,9 +307,10 @@ def main():
                 ingredientsidx=ingrequest.find('for')
                 ingrequest=ingrequest[ingredientsidx:]
                 ingrequest=ingrequest.replace('for',"",1)
+                ingrequest=ingrequest.replace("'}","",1)                
                 ingrequest=ingrequest.strip()
-                ingrequest=ingrequest.replace(' ',"%20",1)
-                getreceipe(ingrequest)
+                ingrequest=ingrequest.replace(" ","%20",1)
+                getrecipe(ingrequest)
             if 'kickstarter'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kickstarter_tracker(str(usrcmd).lower())

@@ -1442,31 +1442,32 @@ def pushmessage(title,body):
 #----------------------------------End of Push Message Function-------------------------------------------
 
 
-#----------------------------------Start of Receipe Function----------------------------------------------
-def getreceipe(item):
     appid='ENTER-YOUR-APPID-HERE'
     appkey='ENTER-YOUR-APP-KEY-HERE'
-    receipeurl = 'https://api.edamam.com/search?q='+item+'&app_id='+appid+'&app_key='+appkey
-    receipedetails = urllib.request.urlopen(receipeurl)
-    recepiedetails=receipedetails.read()
-    receipedetails = receipedetails.decode('utf-8')
-    receipedetails=json.loads(receipedetails)
-    receipe_ingredients=receipedetails['hits'][0]['recipe']['ingredientLines']
-    receipe_url=receipedetails['hits'][0]['recipe']['url']
-    receipe_name=receipedetails['hits'][0]['recipe']['label']
-    receipe_ingredients=receipe_ingredients.replace('[','',1)
-    receipe_ingredients=receipe_ingredients.replace(']','',1)
-    receipe_ingredients=receipe_ingredients.replace('"','',1)
-    receipe_ingredients=receipe_ingredients.strip()
-    print(receipe_name)
+#----------------------------------Start of recipe Function----------------------------------------------
+def getrecipe(item):
+    recipeurl = 'https://api.edamam.com/search?q='+item+'&app_id='+appid+'&app_key='+appkey
+    print(recipeurl)
+    recipedetails = urllib.request.urlopen(recipeurl)
+    recipedetails=recipedetails.read()
+    recipedetails = recipedetails.decode('utf-8')
+    recipedetails=json.loads(recipedetails)
+    recipe_ingredients=str(recipedetails['hits'][0]['recipe']['ingredientLines'])
+    recipe_url=recipedetails['hits'][0]['recipe']['url']
+    recipe_name=recipedetails['hits'][0]['recipe']['label']    
+    recipe_ingredients=recipe_ingredients.replace('[','',1)
+    recipe_ingredients=recipe_ingredients.replace(']','',1)
+    recipe_ingredients=recipe_ingredients.replace('"','',1)
+    recipe_ingredients=recipe_ingredients.strip()
+    print(recipe_name)
     print("")
-    print(receipe_url)
+    print(recipe_url)
     print("")
-    print(receipe_ingredients)
-    compiled_receipe_info="\nReceipe Source URL:\n"+receipe_url+"\nReceipe Ingredients:\n"+receipe_ingredients
-    pushmessage(str(receipe_name),str(compiled_receipe_info))
+    print(recipe_ingredients)
+    compiled_recipe_info="\nRecipe Source URL:\n"+recipe_url+"\n\nRecipe Ingredients:\n"+recipe_ingredients
+    pushmessage(str(recipe_name),str(compiled_recipe_info))
 
-#---------------------------------End of Receipe Function------------------------------------------------
+#---------------------------------End of recipe Function------------------------------------------------
 
 
 #--------------------------------Start of Hue Control Functions------------------------------------------
