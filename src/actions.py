@@ -1442,10 +1442,10 @@ def pushmessage(title,body):
 #----------------------------------End of Push Message Function-------------------------------------------
 
 
-    appid='ENTER-YOUR-APPID-HERE'
-    appkey='ENTER-YOUR-APP-KEY-HERE'
 #----------------------------------Start of recipe Function----------------------------------------------
 def getrecipe(item):
+    appid='ENTER-YOUR-APPID-HERE'
+    appkey='ENTER-YOUR-APP-KEY-HERE'
     recipeurl = 'https://api.edamam.com/search?q='+item+'&app_id='+appid+'&app_key='+appkey
     print(recipeurl)
     recipedetails = urllib.request.urlopen(recipeurl)
