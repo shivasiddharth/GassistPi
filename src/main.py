@@ -29,6 +29,7 @@ import subprocess
 import re
 import psutil
 import logging
+import imp
 import google.auth.transport.requests
 import google.oauth2.credentials
 from google.assistant.library import Assistant
@@ -62,7 +63,7 @@ logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
 
-
+INFO_FILE = os.path.expanduser('~/gassistant-credentials.info')
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -213,24 +214,9 @@ def register_device(project_id, credentials, device_model_id, device_id):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('--credentials', type=existing_file,
-                        metavar='OAUTH2_CREDENTIALS_FILE',
-                        default=os.path.join(
-                            os.path.expanduser('~/.config'),
-                            'google-oauthlib-tool',
-                            'credentials.json'
-                        ),
-                        help='Path to store and read OAuth2 credentials')
-    parser.add_argument('--device_model_id', type=str,
-                        metavar='DEVICE_MODEL_ID', required=True,
-                        help='The device model ID registered with Google.')
-    parser.add_argument('--project_id', type=str,
-                        metavar='PROJECT_ID', required=False,
-                        help='The project ID used to register device '
-                        + 'instances.')
-    args = parser.parse_args()
+    args = imp.load_source('args',INFO_FILE)
+    if not hasattr(args,'credentials'):
+    	args.credentials = os.path.join(os.path.expanduser('~/.config'),'google-oauthlib-tool','credentials.json')
     with open(args.credentials, 'r') as f:
         credentials = google.oauth2.credentials.Credentials(token=None,
                                                             **json.load(f))
