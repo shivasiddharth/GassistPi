@@ -98,9 +98,14 @@ echo "modelid='$modelid'" >> $INFO_FILE
 cd /home/${USER}
 
 
-sudo apt-get update -y
 
-sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
+if hash apt-get >/dev/null 2>&1;then
+  sudo apt-get update -y
+  sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
+elif hash pacman >/dev/null 2>&1;then
+#  sudo pacman -Sy
+  sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements-archlinux.txt | xargs sudo pacman -S --noconfirm --needed
+fi
 if [ ! -d /home/${USER}/.config/mpv/scripts/ ]; then
   mkdir -p /home/${USER}/.config/mpv/scripts/
 fi
