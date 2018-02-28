@@ -15,12 +15,12 @@
 # limitations under the License.
 
 from kodijson import Kodi, PLAYER_VIDEO
-#test if we are running in raspberrypi
+# test if we are running in raspberrypi
 try:
     import RPi.GPIO as GPIO
 except Exception as e:
     if str(e) == 'This module can only be run on a Raspberry Pi!':
-    	GPIO=None
+        GPIO = None
 import argparse
 import os.path
 import os
@@ -55,68 +55,70 @@ from actions import chromecast_control
 from actions import play_audio_file
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
-resources = {'fb':'{}/sample-audio-files/Fb.wav'.format(ROOT_PATH),'startup':'{}/sample-audio-files/Startup.wav'.format(ROOT_PATH)}
+resources = {'fb': '{}/sample-audio-files/Fb.wav'.format(
+    ROOT_PATH), 'startup': '{}/sample-audio-files/Startup.wav'.format(ROOT_PATH)}
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 INFO_FILE = os.path.expanduser('~/gassistant-credentials.info')
 
-#Login with default kodi/kodi credentials
-#kodi = Kodi("http://localhost:8080/jsonrpc")
+# Login with default kodi/kodi credentials
+# kodi = Kodi("http://localhost:8080/jsonrpc")
 
-#Login with custom credentials
+# Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
 
 if GPIO != None:
-	GPIO.setmode(GPIO.BCM)
-	GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
 
-	#Indicator Pins
-	GPIO.setup(25, GPIO.OUT)
-	GPIO.setup(5, GPIO.OUT)
-	GPIO.setup(6, GPIO.OUT)
-	GPIO.output(5, GPIO.LOW)
-	GPIO.output(6, GPIO.LOW)
-	led=GPIO.PWM(25,1)
-	led.start(0)
+    # Indicator Pins
+    GPIO.setup(25, GPIO.OUT)
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.setup(6, GPIO.OUT)
+    GPIO.output(5, GPIO.LOW)
+    GPIO.output(6, GPIO.LOW)
+    led = GPIO.PWM(25, 1)
+    led.start(0)
 
-mpvactive=False
+mpvactive = False
 
-#Sonoff-Tasmota Declarations
-#Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
-tasmota_devicelist=['Desk Lamp','Table Lamp']
-tasmota_deviceip=['192.168.1.35','192.168.1.36']
+# Sonoff-Tasmota Declarations
+# Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
+tasmota_devicelist = ['Desk Lamp', 'Table Lamp']
+tasmota_deviceip = ['192.168.1.35', '192.168.1.36']
 
 
-#Function to check if mpv is playing
+# Function to check if mpv is playing
 def ismpvplaying():
     for pid in psutil.pids():
-        p=psutil.Process(pid)
+        p = psutil.Process(pid)
         if 'mpv'in p.name():
-            mpvactive=True
+            mpvactive = True
             break
         else:
-            mpvactive=False
+            mpvactive = False
     return mpvactive
-    
 
-#Function to control Sonoff Tasmota Devices
-def tasmota_control(phrase,devname,devip):
+
+# Function to control Sonoff Tasmota Devices
+def tasmota_control(phrase, devname, devip):
     if 'on' in phrase:
         try:
-            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20on")
-            say("Tunring on "+devname)
+            rq = requests.head("http://" + devip + "/cm?cmnd=Power%20on")
+            say("Tunring on " + devname)
         except requests.exceptions.ConnectionError:
             say("Device not online")
     elif 'off' in phrase:
         try:
-            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20off")
-            say("Tunring off "+devname)
+            rq = requests.head("http://" + devip + "/cm?cmnd=Power%20off")
+            say("Tunring off " + devname)
         except requests.exceptions.ConnectionError:
             say("Device not online")
+
 
 def process_device_actions(event, device_id):
     if 'inputs' in event.args:
@@ -142,78 +144,79 @@ def process_event(event, device_id):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         play_audio_file(resources['fb'])
-        #Uncomment the following after starting the Kodi
-        #status=mutevolstatus()
-        #vollevel=status[1]
-        #with open(os.path.expanduser('~/.volume.json'), 'w') as f:
-               #json.dump(vollevel, f)
-        #kodi.Application.SetVolume({"volume": 0})
+        # Uncomment the following after starting the Kodi
+        # status=mutevolstatus()
+        # vollevel=status[1]
+        # with open(os.path.expanduser('~/.volume.json'), 'w') as f:
+               # json.dump(vollevel, f)
+        # kodi.Application.SetVolume({"volume": 0})
         if GPIO != None:
-        	GPIO.output(5,GPIO.HIGH)
-        	led.ChangeDutyCycle(100)
+            GPIO.output(5, GPIO.HIGH)
+            led.ChangeDutyCycle(100)
         print()
         if ismpvplaying():
             if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+                mpvsetvol = os.system("echo '" + json.dumps(
+                    {"command": ["set_property", "volume", "10"]}) + "' | socat - /tmp/mpvsocket")
             else:
-                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                output=mpvgetvol.communicate()[0]
+                mpvgetvol = subprocess.Popen(
+                    [("echo '" + json.dumps({"command": ["get_property", "volume"]}) + "' | socat - /tmp/mpvsocket")], shell=True, stdout=subprocess.PIPE)
+                output = mpvgetvol.communicate()[0]
                 for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                     with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                         json.dump(currntvol, vol)
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
-
-
+                mpvsetvol = os.system("echo '" + json.dumps(
+                    {"command": ["set_property", "volume", "10"]}) + "' | socat - /tmp/mpvsocket")
 
         print(event)
-        
+
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
-    	if GPIO != None:
-		    GPIO.output(5,GPIO.LOW)
-			GPIO.output(6,GPIO.LOW)
-			led.ChangeDutyCycle(0)
-        #Uncomment the following after starting the Kodi
-        #with open('/home/pi/.volume.json', 'r') as f:
-               #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})
-      if ismpvplaying():
-          if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
+        if GPIO != None:
+            GPIO.output(5, GPIO.LOW)
+            GPIO.output(6, GPIO.LOW)
+            led.ChangeDutyCycle(0)
+        # Uncomment the following after starting the Kodi
+        # with open('/home/pi/.volume.json', 'r') as f:
+               # vollevel = json.load(f)
+               # kodi.Application.SetVolume({"volume": vollevel})
+        if ismpvplaying():
+            if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
               with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
                   oldvollevel = json.load(vol)
               print(oldvollevel)
-              mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
+              mpvsetvol = os.system("echo '" + json.dumps({"command": [
+                                    "set_property", "volume", str(oldvollevel)]}) + "' | socat - /tmp/mpvsocket")
 
-      
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-    	if GPIO != None:
-    		GPIO.output(5,GPIO.LOW)
-    		GPIO.output(6,GPIO.HIGH)
-    		led.ChangeDutyCycle(50)
+        if GPIO != None:
+            GPIO.output(5, GPIO.LOW)
+            GPIO.output(6, GPIO.HIGH)
+            led.ChangeDutyCycle(50)
 
     if event.type == EventType.ON_RESPONDING_FINISHED:
-    	if GPIO != None:
-    		GPIO.output(6,GPIO.LOW)
-    		GPIO.output(5,GPIO.HIGH)
-    		led.ChangeDutyCycle(100)
-        
+        if GPIO != None:
+            GPIO.output(6, GPIO.LOW)
+            GPIO.output(5, GPIO.HIGH)
+            led.ChangeDutyCycle(100)
+
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-    	if GPIO != None:
-		    GPIO.output (5, GPIO.LOW)
-			GPIO.output (6, GPIO.LOW)
-			led.ChangeDutyCycle (0)   
+        if GPIO != None:
+            GPIO.output(5, GPIO.LOW)
+            GPIO.output(6, GPIO.LOW)
+            led.ChangeDutyCycle(0)
 
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         if GPIO != None:
-        	GPIO.output(5,GPIO.LOW)
+            GPIO.output(5, GPIO.LOW)
             GPIO.output(6,GPIO.LOW)
-        	led.ChangeDutyCycle(0)
-        #Uncomment the following after starting the Kodi
-        #with open(os.path.expanduser('~/.volume.json'), 'r') as f:
-               #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})
+            led.ChangeDutyCycle(0)
+        # Uncomment the following after starting the Kodi
+        # with open(os.path.expanduser('~/.volume.json'), 'r') as f:
+               # vollevel = json.load(f)
+               # kodi.Application.SetVolume({"volume": vollevel})
         if ismpvplaying():
             if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
                 with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
@@ -260,7 +263,7 @@ def register_device(project_id, credentials, device_model_id, device_id):
 def main():
     args = imp.load_source('args',INFO_FILE)
     if not hasattr(args,'credentials'):
-    	args.credentials = os.path.join(os.path.expanduser('~/.config'),'google-oauthlib-tool','credentials.json')
+        args.credentials = os.path.join(os.path.expanduser('~/.config'),'google-oauthlib-tool','credentials.json')
 
 
 

@@ -89,23 +89,6 @@ ip='xxxxxxxxxxxx'
 devname=('Device 1', 'Device 2', 'Device 3')
 devid=('/Device1', '/Device2', '/Device3')
 
-for pin in gpio:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, 0)
-
-#Servo pin declaration
-GPIO.setup(27, GPIO.OUT)
-pwm=GPIO.PWM(27, 50)
-pwm.start(0)
-
-#Stopbutton
-GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-
-#Led Indicator
-GPIO.setup(25, GPIO.OUT)
-led=GPIO.PWM(25,1)
-led.start(0)
-
 playshell = None
 
 
