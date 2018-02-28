@@ -45,12 +45,10 @@ from actions import radio
 from actions import ESP
 from actions import track
 from actions import feed
+import requests
 from actions import kodiactions
 from actions import mutevolstatus
-from actions import play_playlist
-from actions import play_songs
-from actions import play_album
-from actions import play_artist
+from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
@@ -87,7 +85,13 @@ if GPIO != None:
 
 mpvactive=False
 
+#Sonoff-Tasmota Declarations
+#Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
+tasmota_devicelist=['Desk Lamp','Table Lamp']
+tasmota_deviceip=['192.168.1.35','192.168.1.36']
 
+
+#Function to check if mpv is playing
 def ismpvplaying():
     for pid in psutil.pids():
         p=psutil.Process(pid)
@@ -97,6 +101,22 @@ def ismpvplaying():
         else:
             mpvactive=False
     return mpvactive
+    
+
+#Function to control Sonoff Tasmota Devices
+def tasmota_control(phrase,devname,devip):
+    if 'on' in phrase:
+        try:
+            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20on")
+            say("Tunring on "+devname)
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
+    elif 'off' in phrase:
+        try:
+            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20off")
+            say("Tunring off "+devname)
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
 
 def process_device_actions(event, device_id):
     if 'inputs' in event.args:
@@ -231,6 +251,11 @@ def main():
         for event in events:
             process_event(event, assistant.device_id)
             usrcmd=event.args
+            for num, name in enumerate(tasmota_devicelist):
+                if name.lower() in str(usrcmd).lower():
+                    assistant.stop_conversation()
+                    tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                    break
             if 'trigger'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
@@ -252,7 +277,7 @@ def main():
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
-                
+
             if 'stop'.lower() in str(usrcmd).lower():
                 stop()
             if 'radio'.lower() in str(usrcmd).lower():
@@ -485,8 +510,6 @@ def main():
                         f.close()
                         say("Looking for songs rendered by the artist")
                         play_artist(artist)
-
-
 
 if __name__ == '__main__':
     try:

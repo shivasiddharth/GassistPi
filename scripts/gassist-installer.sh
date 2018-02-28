@@ -42,21 +42,23 @@ fi
 
 if [[ $credname != "" ]]
 then
-    credmsg="Enter your full credential file name including .json extension(If your credentials file name is $credname then press enter): "
+
+   credmsg="If your credentials file name is $credname then press enter. Else, enter your full credential file name including .json extension: "
 else
     credmsg="Enter your full credential file name including .json extension: "
 fi
 
 if [[ $project_id != "" ]]
 then
-    projidmsg="Enter your Google Cloud Console Project-Id(If your Project-Id is $project_id then press enter): "
+    projidmsg="If your Project-Id is $projid then press enter. Else, enter your Google Cloud Console Project-Id: "
+
 else
     projidmsg="Enter your Google Cloud Console Project-Id: "
 fi
 
 if [[ $prodname != "" ]]
 then
-    prodmsg="Enter a product name for your device (product name should not have space in between)\n(If your Product name is $prodname then press enter): "
+    prodmsg="If your Product name is $prodname then press enter. Else, enter a product name for your device (product name should not have space in between): "
 else
     prodmsg="Enter a product name for your device (product name should not have space in between): "
 fi
@@ -95,6 +97,7 @@ echo "project_id='$project_id'" >> $INFO_FILE
 echo "prodname='$prodname'" >> $INFO_FILE
 echo "device_model_id='$device_model_id'" >> $INFO_FILE
 
+
 cd /home/${USER}
 
 
@@ -106,6 +109,7 @@ elif hash pacman >/dev/null 2>&1;then
 #  sudo pacman -Sy
   sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements-archlinux.txt | xargs sudo pacman -S --noconfirm --needed
 fi
+
 if [ ! -d /home/${USER}/.config/mpv/scripts/ ]; then
   mkdir -p /home/${USER}/.config/mpv/scripts/
 fi
@@ -134,6 +138,7 @@ pip install google-auth==1.3.0	google-auth-httplib2==0.0.3 google-auth-oauthlib=
 google-oauthlib-tool --client-secrets /home/${USER}/$credname --scope https://www.googleapis.com/auth/assistant-sdk-prototype --save --headless
 googlesamples-assistant-devicetool register-model --manufacturer "Pi Foundation" \
           --product-name $prodname --type LIGHT --model $device_model_id
+          
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 
 if [[ $devmodel = "armv7" ]];then

@@ -8,6 +8,7 @@ Environment=VIRTUAL_ENV=/home/pi/env
 Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ExecStart=/home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py
 
+
 WorkingDirectory=/home/pi/
 StandardOutput=inherit
 StandardError=inherit
