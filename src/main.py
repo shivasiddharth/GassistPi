@@ -166,7 +166,24 @@ def process_event(event, device_id):
 
 
         print(event)
+        
+    if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
+    	if GPIO != None:
+		    GPIO.output(5,GPIO.LOW)
+			GPIO.output(6,GPIO.LOW)
+			led.ChangeDutyCycle(0)
+        #Uncomment the following after starting the Kodi
+        #with open('/home/pi/.volume.json', 'r') as f:
+               #vollevel = json.load(f)
+               #kodi.Application.SetVolume({"volume": vollevel})
+      if ismpvplaying():
+          if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
+              with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
+                  oldvollevel = json.load(vol)
+              print(oldvollevel)
+              mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
 
+      
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
     	if GPIO != None:
     		GPIO.output(5,GPIO.LOW)
@@ -178,6 +195,12 @@ def process_event(event, device_id):
     		GPIO.output(6,GPIO.LOW)
     		GPIO.output(5,GPIO.HIGH)
     		led.ChangeDutyCycle(100)
+        
+    if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
+    	if GPIO != None:
+		    GPIO.output (5, GPIO.LOW)
+			GPIO.output (6, GPIO.LOW)
+			led.ChangeDutyCycle (0)   
 
     print(event)
 
@@ -185,6 +208,7 @@ def process_event(event, device_id):
             event.args and not event.args['with_follow_on_turn']):
         if GPIO != None:
         	GPIO.output(5,GPIO.LOW)
+            GPIO.output(6,GPIO.LOW)
         	led.ChangeDutyCycle(0)
         #Uncomment the following after starting the Kodi
         #with open(os.path.expanduser('~/.volume.json'), 'r') as f:
@@ -237,6 +261,9 @@ def main():
     args = imp.load_source('args',INFO_FILE)
     if not hasattr(args,'credentials'):
     	args.credentials = os.path.join(os.path.expanduser('~/.config'),'google-oauthlib-tool','credentials.json')
+
+
+
     with open(args.credentials, 'r') as f:
         credentials = google.oauth2.credentials.Credentials(token=None,
                                                             **json.load(f))
@@ -387,129 +414,11 @@ def main():
                 os.system('pkill mpv')
                 if os.path.isfile("{}/src/trackchange.py".format(ROOT_PATH)):
                     os.system('rm {}/src/trackchange.py'.format(ROOT_PATH))
-                    os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                    if 'all the songs'.lower() in str(usrcmd).lower():
-                        os.system('echo "play_songs()\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                        say("Playing all your songs")
-                        play_songs()
 
-                    if 'playlist'.lower() in str(usrcmd).lower():
-                        if 'first'.lower() in str(usrcmd).lower() or 'one'.lower() in str(usrcmd).lower()  or '1'.lower() in str(usrcmd).lower():
-                            os.system('echo "play_playlist(0)\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                            say("Playing songs from your playlist")
-                            play_playlist(0)
-                        else:
-                            say("Sorry I am unable to help")
-
-                    if 'album'.lower() in str(usrcmd).lower():
-                        if os.path.isfile(os.path.expanduser("~/.gmusicalbumplayer.json")):
-                            os.system("rm {}".format(os.path.expanduser('~/.gmusicalbumplayer.json')))
-
-                        req=str(usrcmd).lower()
-                        idx=(req).find('album')
-                        album=req[idx:]
-                        album=album.replace("'}", "",1)
-                        album = album.replace('album','',1)
-                        if 'from'.lower() in req:
-                            album = album.replace('from','',1)
-                            album = album.replace('google music','',1)
-                        else:
-                            album = album.replace('google music','',1)
-
-                        album=album.strip()
-                        print(album)
-                        albumstr=('"'+album+'"')
-                        f = open('{}/src/trackchange.py'.format(ROOT_PATH), 'a+')
-                        f.write('play_album('+albumstr+')')
-                        f.close()
-                        say("Looking for songs from the album")
-                        play_album(album)
-
-                    if 'artist'.lower() in str(usrcmd).lower():
-                        if os.path.isfile(os.path.expanduser("~/.gmusicartistplayer.json")):
-                            os.system("rm {}".format(os.path.expanduser('~/.gmusicartistplayer.json')))
-
-                        req=str(usrcmd).lower()
-                        idx=(req).find('artist')
-                        artist=req[idx:]
-                        artist=artist.replace("'}", "",1)
-                        artist = artist.replace('artist','',1)
-                        if 'from'.lower() in req:
-                            artist = artist.replace('from','',1)
-                            artist = artist.replace('google music','',1)
-                        else:
-                            artist = artist.replace('google music','',1)
-
-                        artist=artist.strip()
-                        print(artist)
-                        artiststr=('"'+artist+'"')
-                        f = open('{}/src/trackchange.py'.format(ROOT_PATH), 'a+')
-                        f.write('play_artist('+artiststr+')')
-                        f.close()
-                        say("Looking for songs rendered by the artist")
-                        play_artist(artist)
+                    gmusicselect(str(usrcmd).lower())
                 else:
-                    os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                    if 'all the songs'.lower() in str(usrcmd).lower():
-                        os.system('echo "play_songs()\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                        say("Playing all your songs")
-                        play_songs()
-
-                    if 'playlist'.lower() in str(usrcmd).lower():
-                        if 'first'.lower() in str(usrcmd).lower() or 'one'.lower() in str(usrcmd).lower()  or '1'.lower() in str(usrcmd).lower():
-                            os.system('echo "play_playlist(0)\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                            say("Playing songs from your playlist")
-                            play_playlist(0)
-                        else:
-                            say("Sorry I am unable to help")
-
-                    if 'album'.lower() in str(usrcmd).lower():
-                        if os.path.isfile(os.path.expanduser("~/.gmusicalbumplayer.json")):
-                            os.system("rm {}".format(os.path.expanduser('~/.gmusicalbumplayer.json')))
-
-                        req=str(usrcmd).lower()
-                        idx=(req).find('album')
-                        album=req[idx:]
-                        album=album.replace("'}", "",1)
-                        album = album.replace('album','',1)
-                        if 'from'.lower() in req:
-                            album = album.replace('from','',1)
-                            album = album.replace('google music','',1)
-                        else:
-                            album = album.replace('google music','',1)
-
-                        album=album.strip()
-                        print(album)
-                        albumstr=('"'+album+'"')
-                        f = open('{}/src/trackchange.py'.format(ROOT_PATH), 'a+')
-                        f.write('play_album('+albumstr+')')
-                        f.close()
-                        say("Looking for songs from the album")
-                        play_album(album)
-
-                    if 'artist'.lower() in str(usrcmd).lower():
-                        if os.path.isfile(os.path.expanduser("~/.gmusicartistplayer.json")):
-                            os.system("rm {}".format(os.path.expanduser('~/.gmusicartistplayer.json')))
-
-                        req=str(usrcmd).lower()
-                        idx=(req).find('artist')
-                        artist=req[idx:]
-                        artist=artist.replace("'}", "",1)
-                        artist = artist.replace('artist','',1)
-                        if 'from'.lower() in req:
-                            artist = artist.replace('from','',1)
-                            artist = artist.replace('google music','',1)
-                        else:
-                            artist = artist.replace('google music','',1)
-
-                        artist=artist.strip()
-                        print(artist)
-                        artiststr=('"'+artist+'"')
-                        f = open('{}/src/trackchange.py'.format(ROOT_PATH), 'a+')
-                        f.write('play_artist('+artiststr+')')
-                        f.close()
-                        say("Looking for songs rendered by the artist")
-                        play_artist(artist)
+  
+                    gmusicselect(str(usrcmd).lower())
 
 if __name__ == '__main__':
     try:
