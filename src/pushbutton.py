@@ -22,7 +22,11 @@ import os
 import os.path
 import sys
 import uuid
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'This module can only be run on a Raspberry Pi!':
+        GPIO=None
 import argparse
 import subprocess
 import click
@@ -32,6 +36,7 @@ import psutil
 import logging
 import re
 import requests
+import pyxhook
 from actions import say
 import google.auth.transport.grpc
 import google.auth.transport.requests
@@ -84,21 +89,21 @@ logger=logging.getLogger(__name__)
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
+if GPIO != None:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+    #Trigger Pin
+    GPIO.setup(22, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
-#Trigger Pin
-GPIO.setup(22, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-
-#Indicator Pins
-GPIO.setup(25, GPIO.OUT)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(6, GPIO.OUT)
-GPIO.output(5, GPIO.LOW)
-GPIO.output(6, GPIO.LOW)
-led=GPIO.PWM(25,1)
-led.start(0)
+    #Indicator Pins
+    GPIO.setup(25, GPIO.OUT)
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.setup(6, GPIO.OUT)
+    GPIO.output(5, GPIO.LOW)
+    GPIO.output(6, GPIO.LOW)
+    led=GPIO.PWM(25,1)
+    led.start(0)
 
 mpvactive=False
 
@@ -106,6 +111,11 @@ mpvactive=False
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
 tasmota_devicelist=['Desk Lamp','Table Lamp']
 tasmota_deviceip=['192.168.1.35','192.168.1.36']
+
+triggerkey=201
+''' Ascii value of the trigger key, to get the Ascii value of any key run the getkeystroke.py and press the key you want
+    and then change triggerkey 
+'''
 
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
@@ -140,6 +150,29 @@ def tasmota_control(phrase,devname,devip):
             say("Tunring off "+devname)
         except requests.exceptions.ConnectionError:
             say("Device not online")
+
+def get_key_stroke():
+    global triggerkey
+    global triggered
+    triggered=False
+
+    def kbevent(event):
+        # print key info
+        #print(event.Ascii)
+        # If the ascii value matches spacebar, terminate the while loop
+        global triggered
+        if event.Ascii == triggerkey:
+            triggered = True
+            hookman.cancel()
+    hookman = pyxhook.HookManager()
+    hookman.KeyDown = kbevent
+    hookman.HookKeyboard()
+    hookman.start()
+    time.sleep(0.3)
+    hookman.cancel()
+    return triggered
+
+
 
 
 class SampleAssistant(object):
@@ -212,8 +245,9 @@ class SampleAssistant(object):
         #with open(os.path.expanduser('~/.volume.json'), 'w') as f:
                #json.dump(vollevel, f)
         #kodi.Application.SetVolume({"volume": 0})
-        GPIO.output(5,GPIO.HIGH)
-        led.ChangeDutyCycle(100)
+        if GPIO != None:
+            GPIO.output(5,GPIO.HIGH)
+            led.ChangeDutyCycle(100)
         if ismpvplaying():
             if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
@@ -240,8 +274,9 @@ class SampleAssistant(object):
             assistant_helpers.log_assist_response_without_audio(resp)
             if resp.event_type == END_OF_UTTERANCE:
                 logging.info('End of audio request detected')
-                GPIO.output(5,GPIO.LOW)
-                led.ChangeDutyCycle(0)
+                if GPIO != None:
+                    GPIO.output(5,GPIO.LOW)
+                    led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
 
             if resp.speech_results:
@@ -407,9 +442,10 @@ class SampleAssistant(object):
 
                     else:
                         continue
-                GPIO.output(5,GPIO.LOW)
-                GPIO.output(6,GPIO.HIGH)
-                led.ChangeDutyCycle(50)
+                if GPIO != None:
+                    GPIO.output(5,GPIO.LOW)
+                    GPIO.output(6,GPIO.HIGH)
+                    led.ChangeDutyCycle(50)
                 logging.info('Playing assistant response.')
             if len(resp.audio_out.audio_data) > 0:
                 self.conversation_stream.write(resp.audio_out.audio_data)
@@ -423,14 +459,16 @@ class SampleAssistant(object):
                 self.conversation_stream.volume_percentage = volume_percentage
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
-                GPIO.output(6,GPIO.LOW)
-                GPIO.output(5,GPIO.HIGH)
-                led.ChangeDutyCycle(100)
+                if GPIO != None:
+                    GPIO.output(6,GPIO.LOW)
+                    GPIO.output(5,GPIO.HIGH)
+                    led.ChangeDutyCycle(100)
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
-                GPIO.output(6,GPIO.LOW)
-                GPIO.output(5,GPIO.LOW)
-                led.ChangeDutyCycle(0)
+                if GPIO != None:
+                    GPIO.output(6,GPIO.LOW)
+                    GPIO.output(5,GPIO.LOW)
+                    led.ChangeDutyCycle(0)
                 if ismpvplaying():
                     if os.path.isfile("/home/pi/.mediavolume.json"):
                         with open('/home/pi/.mediavolume.json', 'r') as vol:
@@ -456,9 +494,10 @@ class SampleAssistant(object):
             concurrent.futures.wait(device_actions_futures)
 
         logging.info('Finished playing assistant response.')
-        GPIO.output(6,GPIO.LOW)
-        GPIO.output(5,GPIO.LOW)
-        led.ChangeDutyCycle(0)
+        if GPIO != None:
+            GPIO.output(6,GPIO.LOW)
+            GPIO.output(5,GPIO.LOW)
+            led.ChangeDutyCycle(0)
         #Uncomment the following, after starting Kodi
         #with open(os.path.expanduser('~/.volume.json'), 'r') as f:
                #vollevel = json.load(f)
@@ -724,10 +763,16 @@ def main(api_endpoint, credentials, project_id,
         wait_for_user_trigger = not once
         while True:
             if wait_for_user_trigger:
-                button_state=GPIO.input(22)
-                if button_state==True:
+
+                if GPIO != None:
+                    button_state=GPIO.input(22)
+                else:
+                    #use keyboard as a trigger
+                    button_state=get_key_stroke()
+                if button_state==False:
                     continue
                 else:
+                    #button_state=False
                     pass
             continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
