@@ -87,9 +87,11 @@ if GPIO != None:
 mpvactive = False
 
 # Sonoff-Tasmota Declarations
-# Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
-tasmota_devicelist = ['Desk Lamp', 'Table Lamp']
-tasmota_deviceip = ['192.168.1.35', '192.168.1.36']
+tasmota_devicelist=[
+    {'friendly-name': 'test', 'ip': '192.168.88.233'}, #this is a device with only one relay so there is no need to assign id
+    {'friendly-name': 'tv box', 'id': 'POWER1','ip': '192.168.88.234'},#this is a device with multiple relays so each relay should have the same ip and an id (Power1,Power2 ...etc)
+    {'friendly-name': 'tv', 'id': 'POWER2','ip':'192.168.88.234'}
+    ]
 
 
 # Function to check if mpv is playing
@@ -105,17 +107,25 @@ def ismpvplaying():
 
 
 # Function to control Sonoff Tasmota Devices
-def tasmota_control(phrase, devname, devip):
-    if 'on' in phrase:
+def tasmota_control(phrase, device):
+    if 'id' not in device:
+        device['id'] = 'Power1'
+    if 'on' in phrase['text']:
         try:
-            rq = requests.head("http://" + devip + "/cm?cmnd=Power%20on")
-            say("Tunring on " + devname)
+            rq = requests.head("http://{}/cm?cmnd={}%20on".format(device['ip'],device['id']))
+            say("Tunring on {}".format(device['friendly-name']))
         except requests.exceptions.ConnectionError:
             say("Device not online")
-    elif 'off' in phrase:
+    elif 'off' in phrase['text']:
         try:
-            rq = requests.head("http://" + devip + "/cm?cmnd=Power%20off")
-            say("Tunring off " + devname)
+            rq = requests.head("http://{}/cm?cmnd={}%20off".format(device['ip'],device['id']))
+            say("Tunring off {}".format(device['friendly-name']))
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
+    else:
+        try:
+            rq = requests.head("http://{}/cm?cmnd={}%20toggle".format(device['ip'],device['id']))
+            say("toggling {}".format(device['friendly-name']))
         except requests.exceptions.ConnectionError:
             say("Device not online")
 
@@ -281,12 +291,12 @@ def main():
         for event in events:
             process_event(event, assistant.device_id)
             usrcmd=event.args
-            for num, name in enumerate(tasmota_devicelist):
-                if name.lower() in str(usrcmd).lower():
+            for item in tasmota_devicelist:
+                if item['friendly-name'].lower()  in str(usrcmd).lower():
                     assistant.stop_conversation()
-                    tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                    tasmota_control(usrcmd, item)
                     break
-            if 'trigger'.lower() in str(usrcmd).lower():
+            if 'trigger'.lower() in str(usrcmd).lower() and GPIO != None:
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
             if 'stream'.lower() in str(usrcmd).lower():
