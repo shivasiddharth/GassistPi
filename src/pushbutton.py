@@ -22,16 +22,20 @@ import os
 import os.path
 import sys
 import uuid
-import RPi.GPIO as GPIO
-import argparse
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'This module can only be run on a Raspberry Pi!':
+        GPIO=None
 import subprocess
-import click
 import grpc
 import time
 import psutil
 import logging
 import re
 import requests
+import pyxhook
+import imp
 from actions import say
 import google.auth.transport.grpc
 import google.auth.transport.requests
@@ -78,27 +82,29 @@ logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
 
+INFO_FILE = os.path.expanduser('~/gassistant-credentials.info')
+
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
 
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
+if GPIO != None:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+    #Trigger Pin
+    GPIO.setup(22, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
-#Trigger Pin
-GPIO.setup(22, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-
-#Indicator Pins
-GPIO.setup(25, GPIO.OUT)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(6, GPIO.OUT)
-GPIO.output(5, GPIO.LOW)
-GPIO.output(6, GPIO.LOW)
-led=GPIO.PWM(25,1)
-led.start(0)
+    #Indicator Pins
+    GPIO.setup(25, GPIO.OUT)
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.setup(6, GPIO.OUT)
+    GPIO.output(5, GPIO.LOW)
+    GPIO.output(6, GPIO.LOW)
+    led=GPIO.PWM(25,1)
+    led.start(0)
 
 mpvactive=False
 
@@ -107,12 +113,14 @@ mpvactive=False
 tasmota_devicelist=['Desk Lamp','Table Lamp']
 tasmota_deviceip=['192.168.1.35','192.168.1.36']
 
+triggerkey=201
+''' Ascii value of the trigger key, to get the Ascii value of any key run the getkeystroke.py and press the key you want
+    and then change triggerkey 
+'''
 
-ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.AssistResponse.END_OF_UTTERANCE
 DIALOG_FOLLOW_ON = embedded_assistant_pb2.DialogStateOut.DIALOG_FOLLOW_ON
 CLOSE_MICROPHONE = embedded_assistant_pb2.DialogStateOut.CLOSE_MICROPHONE
-DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
 #Function to check if mpv is playing
 def ismpvplaying():
@@ -140,6 +148,29 @@ def tasmota_control(phrase,devname,devip):
             say("Tunring off "+devname)
         except requests.exceptions.ConnectionError:
             say("Device not online")
+
+def get_key_stroke():
+    global triggerkey
+    global triggered
+    triggered=False
+
+    def kbevent(event):
+        # print key info
+        #print(event.Ascii)
+        # If the ascii value matches spacebar, terminate the while loop
+        global triggered
+        if event.Ascii == triggerkey:
+            triggered = True
+            hookman.cancel()
+    hookman = pyxhook.HookManager()
+    hookman.KeyDown = kbevent
+    hookman.HookKeyboard()
+    hookman.start()
+    time.sleep(0.3)
+    hookman.cancel()
+    return triggered
+
+
 
 
 class SampleAssistant(object):
@@ -212,8 +243,9 @@ class SampleAssistant(object):
         #with open(os.path.expanduser('~/.volume.json'), 'w') as f:
                #json.dump(vollevel, f)
         #kodi.Application.SetVolume({"volume": 0})
-        GPIO.output(5,GPIO.HIGH)
-        led.ChangeDutyCycle(100)
+        if GPIO != None:
+            GPIO.output(5,GPIO.HIGH)
+            led.ChangeDutyCycle(100)
         if ismpvplaying():
             if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
@@ -240,8 +272,9 @@ class SampleAssistant(object):
             assistant_helpers.log_assist_response_without_audio(resp)
             if resp.event_type == END_OF_UTTERANCE:
                 logging.info('End of audio request detected')
-                GPIO.output(5,GPIO.LOW)
-                led.ChangeDutyCycle(0)
+                if GPIO != None:
+                    GPIO.output(5,GPIO.LOW)
+                    led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
 
             if resp.speech_results:
@@ -407,9 +440,10 @@ class SampleAssistant(object):
 
                     else:
                         continue
-                GPIO.output(5,GPIO.LOW)
-                GPIO.output(6,GPIO.HIGH)
-                led.ChangeDutyCycle(50)
+                if GPIO != None:
+                    GPIO.output(5,GPIO.LOW)
+                    GPIO.output(6,GPIO.HIGH)
+                    led.ChangeDutyCycle(50)
                 logging.info('Playing assistant response.')
             if len(resp.audio_out.audio_data) > 0:
                 self.conversation_stream.write(resp.audio_out.audio_data)
@@ -423,23 +457,25 @@ class SampleAssistant(object):
                 self.conversation_stream.volume_percentage = volume_percentage
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
-                GPIO.output(6,GPIO.LOW)
-                GPIO.output(5,GPIO.HIGH)
-                led.ChangeDutyCycle(100)
+                if GPIO != None:
+                    GPIO.output(6,GPIO.LOW)
+                    GPIO.output(5,GPIO.HIGH)
+                    led.ChangeDutyCycle(100)
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
-                GPIO.output(6,GPIO.LOW)
-                GPIO.output(5,GPIO.LOW)
-                led.ChangeDutyCycle(0)
+                if GPIO != None:
+                    GPIO.output(6,GPIO.LOW)
+                    GPIO.output(5,GPIO.LOW)
+                    led.ChangeDutyCycle(0)
                 if ismpvplaying():
-                    if os.path.isfile("/home/pi/.mediavolume.json"):
-                        with open('/home/pi/.mediavolume.json', 'r') as vol:
+                    if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
+                        with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
                             oldvollevel = json.load(vol)
                             print(oldvollevel)
                         mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
 
                 #Uncomment the following, after starting Kodi
-                #with open('/home/pi/.volume.json', 'r') as f:
+                #with open(os.path.expanduser('~/.volume.json'), 'r') as f:
                     #vollevel = json.load(f)
                     #kodi.Application.SetVolume({"volume": vollevel})
                 continue_conversation = False
@@ -456,9 +492,10 @@ class SampleAssistant(object):
             concurrent.futures.wait(device_actions_futures)
 
         logging.info('Finished playing assistant response.')
-        GPIO.output(6,GPIO.LOW)
-        GPIO.output(5,GPIO.LOW)
-        led.ChangeDutyCycle(0)
+        if GPIO != None:
+            GPIO.output(6,GPIO.LOW)
+            GPIO.output(5,GPIO.LOW)
+            led.ChangeDutyCycle(0)
         #Uncomment the following, after starting Kodi
         #with open(os.path.expanduser('~/.volume.json'), 'r') as f:
                #vollevel = json.load(f)
@@ -506,97 +543,28 @@ class SampleAssistant(object):
             yield embedded_assistant_pb2.AssistRequest(audio_in=data)
 
 
-@click.command()
-@click.option('--api-endpoint', default=ASSISTANT_API_ENDPOINT,
-              metavar='<api endpoint>', show_default=True,
-              help='Address of Google Assistant API service.')
-@click.option('--credentials',
-              metavar='<credentials>', show_default=True,
-              default=os.path.join(click.get_app_dir('google-oauthlib-tool'),
-                                   'credentials.json'),
-              help='Path to read OAuth2 credentials.')
-@click.option('--project-id',
-              metavar='<project id>',
-              help=('Google Developer Project ID used for registration '
-                    'if --device-id is not specified'))
-@click.option('--device-model-id',
-              metavar='<device model id>',
-              help=(('Unique device model identifier, '
-                     'if not specifed, it is read from --device-config')))
-@click.option('--device-id',
-              metavar='<device id>',
-              help=(('Unique registered device instance identifier, '
-                     'if not specified, it is read from --device-config, '
-                     'if no device_config found: a new device is registered '
-                     'using a unique id and a new device config is saved')))
-@click.option('--device-config', show_default=True,
-              metavar='<device config>',
-              default=os.path.join(
-                  click.get_app_dir('googlesamples-assistant'),
-                  'device_config.json'),
-              help='Path to save and restore the device configuration')
-@click.option('--lang', show_default=True,
-              metavar='<language code>',
-              default='en-US',
-              help='Language code of the Assistant')
-@click.option('--verbose', '-v', is_flag=True, default=False,
-              help='Verbose logging.')
-@click.option('--input-audio-file', '-i',
-              metavar='<input file>',
-              help='Path to input audio file. '
-              'If missing, uses audio capture')
-@click.option('--output-audio-file', '-o',
-              metavar='<output file>',
-              help='Path to output audio file. '
-              'If missing, uses audio playback')
-@click.option('--audio-sample-rate',
-              default=audio_helpers.DEFAULT_AUDIO_SAMPLE_RATE,
-              metavar='<audio sample rate>', show_default=True,
-              help='Audio sample rate in hertz.')
-@click.option('--audio-sample-width',
-              default=audio_helpers.DEFAULT_AUDIO_SAMPLE_WIDTH,
-              metavar='<audio sample width>', show_default=True,
-              help='Audio sample width in bytes.')
-@click.option('--audio-iter-size',
-              default=audio_helpers.DEFAULT_AUDIO_ITER_SIZE,
-              metavar='<audio iter size>', show_default=True,
-              help='Size of each read during audio stream iteration in bytes.')
-@click.option('--audio-block-size',
-              default=audio_helpers.DEFAULT_AUDIO_DEVICE_BLOCK_SIZE,
-              metavar='<audio block size>', show_default=True,
-              help=('Block size in bytes for each audio device '
-                    'read and write operation.'))
-@click.option('--audio-flush-size',
-              default=audio_helpers.DEFAULT_AUDIO_DEVICE_FLUSH_SIZE,
-              metavar='<audio flush size>', show_default=True,
-              help=('Size of silence data in bytes written '
-                    'during flush operation'))
-@click.option('--grpc-deadline', default=DEFAULT_GRPC_DEADLINE,
-              metavar='<grpc deadline>', show_default=True,
-              help='gRPC deadline in seconds')
-@click.option('--once', default=False, is_flag=True,
-              help='Force termination after a single conversation.')
-def main(api_endpoint, credentials, project_id,
-         device_model_id, device_id, device_config, lang, verbose,
-         input_audio_file, output_audio_file,
-         audio_sample_rate, audio_sample_width,
-         audio_iter_size, audio_block_size, audio_flush_size,
-         grpc_deadline, once, *args, **kwargs):
-    """Samples for the Google Assistant API.
+def main():
+    args = imp.load_source('args',INFO_FILE)
+    if not hasattr(args,'credentials'):
+        args.credentials = os.path.join(os.path.expanduser('~/.config'),'google-oauthlib-tool','credentials.json')
+    if not hasattr(args,'device_config'):
+        args.device_config=os.path.join(os.path.expanduser('~/.config'),'googlesamples-assistant','device_config.json')
+    verbose=False
+    credentials=args.credentials
+    project_id=args.project_id
+    device_config = args.device_config
+    device_id=''
+    device_model_id=args.device_model_id
+    api_endpoint='embeddedassistant.googleapis.com'
+    audio_sample_rate=audio_helpers.DEFAULT_AUDIO_SAMPLE_RATE
+    audio_sample_width=audio_helpers.DEFAULT_AUDIO_SAMPLE_WIDTH
+    audio_block_size=audio_helpers.DEFAULT_AUDIO_DEVICE_BLOCK_SIZE
+    audio_flush_size=audio_helpers.DEFAULT_AUDIO_DEVICE_FLUSH_SIZE
+    audio_iter_size=audio_helpers.DEFAULT_AUDIO_ITER_SIZE
+    grpc_deadline=60 * 3 + 5
+    lang='en-US'
+    once=False
 
-    Examples:
-      Run the sample with microphone input and speaker output:
-
-        $ python -m googlesamples.assistant
-
-      Run the sample with file input and speaker output:
-
-        $ python -m googlesamples.assistant -i <input file>
-
-      Run the sample with file input and output:
-
-        $ python -m googlesamples.assistant -i <input file> -o <output file>
-    """
     play_audio_file(resources['startup'])
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
@@ -621,36 +589,24 @@ def main(api_endpoint, credentials, project_id,
 
     # Configure audio source and sink.
     audio_device = None
-    if input_audio_file:
-        audio_source = audio_helpers.WaveSource(
-            open(input_audio_file, 'rb'),
+
+    audio_source = audio_device = (
+        audio_device or audio_helpers.SoundDeviceStream(
             sample_rate=audio_sample_rate,
-            sample_width=audio_sample_width
+            sample_width=audio_sample_width,
+            block_size=audio_block_size,
+            flush_size=audio_flush_size
         )
-    else:
-        audio_source = audio_device = (
-            audio_device or audio_helpers.SoundDeviceStream(
-                sample_rate=audio_sample_rate,
-                sample_width=audio_sample_width,
-                block_size=audio_block_size,
-                flush_size=audio_flush_size
-            )
-        )
-    if output_audio_file:
-        audio_sink = audio_helpers.WaveSink(
-            open(output_audio_file, 'wb'),
+    )
+
+    audio_sink = audio_device = (
+        audio_device or audio_helpers.SoundDeviceStream(
             sample_rate=audio_sample_rate,
-            sample_width=audio_sample_width
+            sample_width=audio_sample_width,
+            block_size=audio_block_size,
+            flush_size=audio_flush_size
         )
-    else:
-        audio_sink = audio_device = (
-            audio_device or audio_helpers.SoundDeviceStream(
-                sample_rate=audio_sample_rate,
-                sample_width=audio_sample_width,
-                block_size=audio_block_size,
-                flush_size=audio_flush_size
-            )
-        )
+    )
     # Create conversation stream with the given audio source and sink.
     conversation_stream = audio_helpers.ConversationStream(
         source=audio_source,
@@ -713,9 +669,6 @@ def main(api_endpoint, credentials, project_id,
                          device_handler) as assistant:
         # If file arguments are supplied:
         # exit after the first turn of the conversation.
-        if input_audio_file or output_audio_file:
-            assistant.assist()
-            return
 
         # If no file arguments supplied:
         # keep recording voice requests using the microphone
@@ -724,10 +677,16 @@ def main(api_endpoint, credentials, project_id,
         wait_for_user_trigger = not once
         while True:
             if wait_for_user_trigger:
-                button_state=GPIO.input(22)
-                if button_state==True:
+
+                if GPIO != None:
+                    button_state=GPIO.input(22)
+                else:
+                    #use keyboard as a trigger
+                    button_state=get_key_stroke()
+                if button_state==False:
                     continue
                 else:
+                    #button_state=False
                     pass
             continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
