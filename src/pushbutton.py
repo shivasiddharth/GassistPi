@@ -239,8 +239,8 @@ class SampleAssistant(object):
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
-
-            if resp.speech_results:
+                print('Full Speech Result '+str(resp.speech_results))
+            if resp.speech_results:                      
                 logging.info('Transcript of user request: "%s".',
                              ' '.join(r.transcript
                                       for r in resp.speech_results))
@@ -422,20 +422,6 @@ class SampleAssistant(object):
                 led.ChangeDutyCycle(100)
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
-                GPIO.output(6,GPIO.LOW)
-                GPIO.output(5,GPIO.LOW)
-                led.ChangeDutyCycle(0)
-                if ismpvplaying():
-                    if os.path.isfile("/home/pi/.mediavolume.json"):
-                        with open('/home/pi/.mediavolume.json', 'r') as vol:
-                            oldvollevel = json.load(vol)
-                            print(oldvollevel)
-                        mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
-
-                #Uncomment the following, after starting Kodi
-                #with open('/home/pi/.volume.json', 'r') as f:
-                    #vollevel = json.load(f)
-                    #kodi.Application.SetVolume({"volume": vollevel})
                 continue_conversation = False
             if resp.device_action.device_request_json:
                 device_request = json.loads(
@@ -450,6 +436,10 @@ class SampleAssistant(object):
             concurrent.futures.wait(device_actions_futures)
 
         logging.info('Finished playing assistant response.')
+        GPIO.output(6,GPIO.LOW)
+        GPIO.output(5,GPIO.LOW)
+        led.ChangeDutyCycle(0)
+                       
         self.conversation_stream.stop_playback()
         return continue_conversation
 
