@@ -265,6 +265,43 @@ Open the app, scan and add the emulated Hue lights.
 
 
 *******************************************************************
+### **PUSHING MESSAGES/INFO FROM ASSISTANT ON Pi TO ANDROID DEVICE**  
+*******************************************************************
+For pushing messages/info, the GassistPi uses pushbullet python package. To use this feature:  
+1. Download and install pushbullet app on your tablet/mobile device.  
+2. Visit www.pushbullet.com register for new account or sign in with your existing account.  
+3. Choose Settings-->Account and then choose "Create access token".  
+4. Copy this token and paste in the actions.py script under the pushmessage function.  
+
+
+*******************************************************************
+### **GETTING RECIPE DETAILS USING ASSISTANT**  
+*******************************************************************
+GassistPi uses [Edamam](www.edamam.com) for getting recipe details/info. To use this feature:  
+1. Click [here](https://developer.edamam.com/edamam-recipe-api) to visit the developers' porta for Edamam.  
+2. Signup as a developer/login with your existing account.  
+3. In the Menubar at the top, Click on Dashboard-->Applications-->Create a new applicatiuon-->Recipe Search API and then create a new application.  
+4. Copy the application id and application key and paste it in the actions.py script under the getrecipe function.  
+**(Note: While copying the application key, do not copy the "—")  
+
+Command Syntax:  
+"Hey Google, Get ingredients for __Required-Item__"  
+
+
+*******************************************************************
+### **CONTROLLING MAGIC MIRROR BY VOICE**  
+*******************************************************************
+You can control either Magic Mirror running on another Pi or Magic Mirror running on the same pi as GassistPi.  
+As a prerequisite, you should have the remote control module installed in the Pi running Magic Mirror.  
+Enter the Ip address of Pi running Magic Mirror in the main.py script against the variable **"mmmip"** declared.   
+
+Command Syntax:  
+**To show/hide weather module             :**  "Hey Google, Show/Hide Weather on Magic Mirror"  
+**To turn magic mirror display on/off     :**  "Hey Google, Turn Magic Mirror display on/off"  
+**To power off/reboot/restart Magic Mirror:**  "Hey Google, Power off/Reboot/Restart Magic Mirror"  
+
+
+*******************************************************************
 ### **INDICATORS FOR GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
 *******************************************************************
 Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
