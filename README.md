@@ -544,6 +544,8 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 ************************************************  
 ### **LIST OF AVAILABLE LIGHT COLOURS**  
 ************************************************
+|          |                 | COLOURS   | LIST        |             |                   |
+|----------|-----------------|-----------|-------------|-------------|-------------------|
 | 'Almond' | 'Antique Brass' | 'Apricot' |'Aquamarine' | 'Asparagus' |'Atomic Tangerine' |  
 | 'Banana Mania' | 'Beaver' | 'Bittersweet' | 'Black' |'Blizzard Blue' | 'Just Blue' |   
 | 'Blue Bell' | 'Blue Gray' | 'Blue Green' | 'Blue Violet' | 'Blush' | 'Brick Red' |  
