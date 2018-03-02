@@ -174,7 +174,7 @@ def ESP(phrase):
             elif 'off' in phrase:
                 ctrl='=OFF'
                 say("Turning Off " + name)
-            rq = requests.head(ip + dev + ctrl)
+            rq = requests.head("https://"+ip + dev + ctrl)
 
 
 #Stepper Motor control
