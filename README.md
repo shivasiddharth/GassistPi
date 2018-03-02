@@ -246,7 +246,8 @@ alt="Apple App Store Philips Hue App" width="200" height="80" border="1" /></a> 
 " target="_blank"><img src="https://drive.google.com/uc?id=1Qh6tdhcxZTRPOvkL1lptdbvdTiHRM7Vq"
 alt="Google Play Philips Hue App" width="200" height="80" border="1" /></a>
 
-Download sketches for your NodeMCU/Wemos/ESP Devices from here https://github.com/shivasiddharth/diyHue/tree/master/Lights  
+Download sketches for your NodeMCU/Wemos/ESP Devices from [here](https://github.com/shivasiddharth/diyHue/tree/master/Lights)
+
 After making suitable modifications and uploading the sketches to your device, open the device's webgui by entering the ip address in a browser. In that change the "Startup" value from "Last State" to "Off" as shown below.  
 
 <img src="https://drive.google.com/uc?id=1_5QSs7Bm9TeXgazmTdvwiL34yNXot4AV"
