@@ -257,7 +257,7 @@ width="300" height="600" border="1" />
 
 **Command Syntax:**  
 **To turn lights on/off :** "Hey Google, Turn __Hue-Light-Name__ On/Off"  
-**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc)  
+**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc- https://github.com/shivasiddharth/GassistPi/blob/develop-1/README.md#list-of-available-light-colours)  
 **To change brightness  :** "Hey Google, Change __Hue-Light-Name__ brightness to __Required-Brightness-Level__" 
 
 
