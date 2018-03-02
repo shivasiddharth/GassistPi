@@ -32,6 +32,7 @@ import psutil
 import logging
 import re
 import requests
+import pathlib2 as pathlib
 from actions import say
 import google.auth.transport.grpc
 import google.auth.transport.requests
@@ -51,7 +52,9 @@ from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
-
+from actions import kickstarter_tracker
+from actions import getrecipe
+from actions import hue_control
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -103,6 +106,8 @@ mpvactive=False
 tasmota_devicelist=['Desk Lamp','Table Lamp']
 tasmota_deviceip=['192.168.1.35','192.168.1.36']
 
+#Magic Mirror Remote Control Declarations
+mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
 
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.AssistResponse.END_OF_UTTERANCE
@@ -120,7 +125,7 @@ def ismpvplaying():
         else:
             mpvactive=False
     return mpvactive
-    
+
 
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
@@ -263,6 +268,53 @@ class SampleAssistant(object):
                             tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                             return continue_conversation
                             break
+                    with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
+                         hueconfig = json.load(config)
+                    for i in range(1,len(hueconfig['lights'])+1):
+                        try:
+                            if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                                assistant.stop_conversation()
+                                hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                                break
+                        except Keyerror:
+                            say('Unable to help, please check your config file')
+
+                    if 'magic mirror'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        try:
+                            mmmcommand=str(usrcmd).lower()
+                            if 'weather'.lower() in mmmcommand:
+                                if 'show'.lower() in mmmcommand:
+                                    mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_2_currentweather")
+                                    mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_3_currentweather")
+                                if 'hide'.lower() in mmmcommand:
+                                    mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_2_currentweather")
+                                    mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_3_currentweather")
+                            if 'power off'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=SHUTDOWN")
+                            if 'reboot'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=REBOOT")
+                            if 'restart'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=RESTART")
+                            if 'display on'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITORON")
+                            if 'display off'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
+                        except requests.exceptions.ConnectionError:
+                            say("Magic mirror not online")
+                    if 'ingredients'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        ingrequest=str(usrcmd).lower()
+                        ingredientsidx=ingrequest.find('for')
+                        ingrequest=ingrequest[ingredientsidx:]
+                        ingrequest=ingrequest.replace('for',"",1)
+                        ingrequest=ingrequest.replace("'}","",1)
+                        ingrequest=ingrequest.strip()
+                        ingrequest=ingrequest.replace(" ","%20",1)
+                        getrecipe(ingrequest)
+                    if 'kickstarter'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        kickstarter_tracker(str(usrcmd).lower())
                     if 'trigger'.lower() in str(usrcmd).lower():
                         Action(str(usrcmd).lower())
                         return continue_conversation
@@ -684,7 +736,7 @@ def main(api_endpoint, credentials, project_id,
                 logging.error('Failed to register device: %s', r.text)
                 sys.exit(-1)
             logging.info('Device registered: %s', device_id)
-            os.makedirs(os.path.dirname(device_config), exist_ok=True)
+            pathlib.Path(os.path.dirname(device_config)).mkdir(exist_ok=True)
             with open(device_config, 'w') as f:
                 json.dump(payload, f)
 
