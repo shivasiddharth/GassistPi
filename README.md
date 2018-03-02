@@ -6,7 +6,7 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 26th-Feb-2018 Update: Features 18,19,20   
+## 26th-Feb-2018 Update: Features 18,19,20,21     
 **Google has updated the SDK to 0.4.3. so to update, start fresh.**    
 *******************************************************************************************************************************
 
@@ -30,7 +30,8 @@
 **17.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
 **18.  Track [Kickstarter](https://www.kickstarter.com) campaigns.**  
 **19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
-**20.  Search recipes and get push message of ingredients and link to recipe.**  
+**20.  Search recipes and get push message of ingredients and link to recipe.** 
+**21.  Remote control of Magic Mirror.**  
 
 
 *******************************************************************************************************************************  
@@ -254,7 +255,10 @@ After making suitable modifications and uploading the sketches to your device, o
 width="300" height="600" border="1" /> | <img src="https://drive.google.com/uc?id=14mPEptFRBwwv1AmsH3qORCCez63uU1LM"
 width="300" height="600" border="1" />
 
-
+**Command Syntax:**  
+**To turn lights on/off :** "Hey Google, Turn __Hue-Light-Name__ On/Off"  
+**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc)  
+**To change brightness  :** "Hey Google, Change __Hue-Light-Name__ brightness to __Required-Brightness-Level__" 
 
 
 *******************************************************************
@@ -536,6 +540,34 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
 2. Follow the circuit diagram given.  
+
+************************************************  
+### **LIST OF AVAILABLE LIGHT COLOURS**  
+************************************************
+|'Almond'| 'Antique Brass'| 'Apricot'|'Aquamarine'| 'Asparagus'|'Atomic Tangerine'|
+|'Banana Mania'| 'Beaver'| 'Bittersweet'| 'Black'|'Blizzard Blue'| 'Just Blue'| 
+|'Blue Bell'| 'Blue Gray'| 'Blue Green'| 'Blue Violet'| 'Blush'| 'Brick Red'|
+|'Brown'| 'Burnt Orange'| 'Burnt Sienna'| 'Cadet Blue'| 'Canary'| 'Caribbean Green'|
+|'Carnation Pink'| 'Cerise'| 'Cerulean'| 'Chestnut'| 'Copper'| 'Cornflower'|
+|'Cotton Candy'| 'Dandelion'|'Denim'|'Desert Sand'| 'Eggplant'| 'Electric Lime'|
+|'Fern'|'Forest Green'| 'Fuchsia'| 'Fuzzy Wuzzy'| 'Gold'| 'Goldenrod'|
+|'Granny Smith Apple'|'Gray'| 'Just Green'| 'Green Blue'| 'Green Yellow'| 'Hot Magenta'|
+|'Inchworm'|'Indigo'| 'Jazzberry Jam'| 'Jungle Green'| 'Laser Lemon'| 'Lavender'|
+|'Lemon Yellow'| 'Macaroni and Cheese'| 'Magenta'| 'Magic Mint'| 'Mahogany'|'Maize'|
+|'Manatee'| 'Mango Tango'| 'Maroon'| 'Mauvelous'| 'Melon'| 'Midnight Blue'|
+|'Mountain Meadow'| 'Mulberry'| 'Navy Blue'| 'Neon Carrot'| 'Olive Green'| 'Orange'|
+|'Orange Red'| 'Orange Yellow'| 'Orchid', 'Outer Space'| 'Outrageous Orange'| 'Pacific Blue'|
+|'Peach'| 'Periwinkle'| 'Piggy Pink'| 'Pine Green'| 'Pink Flamingo'| 'Pink Sherbet'|
+|'Plum'| 'Purple Heart'| "Purple Mountain's Majesty"| 'Purple Pizzazz', 'Radical Red', 'Raw Sienna'|
+|'Raw Umber'|'Razzle Dazzle Rose'| 'Razzmatazz'| 'Just Red'| 'Red Orange'| 'Red Violet'|
+|"Robin's Egg Blue"| 'Royal Purple'| 'Salmon'| 'Scarlet'| "Screamin' Green"| 'Sea Green'|
+|'Sepia'| 'Shadow'|'Shamrock'| 'Shocking Pink'| 'Silver'| 'Sky Blue'|
+|'Spring Green'| 'Sunglow'| 'Sunset Orange', 'Tan', 'Teal Blue', 'Thistle'|
+|'Tickle Me Pink'| 'Timberwolf'| 'Tropical Rain Forest'| 'Tumbleweed'| 'Turquoise Blue'| 'Unmellow Yellow'|
+|'Violet (Purple)'|'Violet Blue'| 'Violet Red'| 'Vivid Tangerine'| 'Vivid Violet'| 'White'|
+|'Wild Blue Yonder'| 'Wild Strawberry'| 'Wild Watermelon'| 'Wisteria'| 'Yellow'| 'Yellow Green'|
+|'Yellow Orange'|
+
 
 ************************************************  
 ### **LIST OF GPIOs USED**  
