@@ -9,4 +9,3 @@ libffi
 openssl
 python3
 socat
-mpg123

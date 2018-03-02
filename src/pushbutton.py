@@ -56,7 +56,8 @@ from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
 from actions import play_audio_file
-
+from actions import tasmota_control
+from actions import tasmota_devicelist
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -108,13 +109,6 @@ if GPIO != None:
 
 mpvactive=False
 
-#Sonoff-Tasmota Declarations
-tasmota_devicelist=[
-    {'friendly-name': 'test', 'ip': '192.168.88.233'}, #this is a device with only one relay so there is no need to assign id
-    {'friendly-name': 'tv box', 'id': 'POWER1','ip': '192.168.88.234'},#this is a device with multiple relays so each relay should have the same ip and an id (Power1,Power2 ...etc)
-    {'friendly-name': 'tv', 'id': 'POWER2','ip':'192.168.88.234'}
-    ]
-
 triggerkey=201
 ''' Ascii value of the trigger key, to get the Ascii value of any key run the getkeystroke.py and press the key you want
     and then change triggerkey 
@@ -136,28 +130,7 @@ def ismpvplaying():
     return mpvactive
     
 
-#Function to control Sonoff Tasmota Devices
-def tasmota_control(phrase, device):
-    if 'id' not in device:
-        device['id'] = 'Power1'
-    if 'on' in phrase:
-        try:
-            rq = requests.head("http://{}/cm?cmnd={}%20on".format(device['ip'],device['id']))
-            say("Tunring on {}".format(device['friendly-name']))
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
-    elif 'off' in phrase:
-        try:
-            rq = requests.head("http://{}/cm?cmnd={}%20off".format(device['ip'],device['id']))
-            say("Tunring off {}".format(device['friendly-name']))
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
-    else:
-        try:
-            rq = requests.head("http://{}/cm?cmnd={}%20toggle".format(device['ip'],device['id']))
-            say("toggling {}".format(device['friendly-name']))
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
+
 
 def get_key_stroke():
     global triggerkey
@@ -304,9 +277,6 @@ class SampleAssistant(object):
                     usrcmd=usrcmd.replace('transcript: "','',1)
                     usrcmd=usrcmd.replace('"','',1)
                     usrcmd=usrcmd.strip()
-                    print('#'*20)
-                    print(str(usrcmd))
-                    print('#'*20)
                     for item in tasmota_devicelist:
                         if item['friendly-name'] in str(usrcmd).lower():
                             tasmota_control(str(usrcmd).lower(), item)

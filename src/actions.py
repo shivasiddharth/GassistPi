@@ -27,10 +27,15 @@ import json
 import urllib.request
 import pafy
 import pychromecast
-from pygame import mixer
+import pygame
 
 
-
+# Sonoff-Tasmota Declarations
+tasmota_devicelist=[
+    {'friendly-name': 'test', 'ip': '192.168.88.233'}, #this is a device with only one relay so there is no need to assign id
+    {'friendly-name': 'tv box', 'id': 'POWER1','ip': '192.168.88.234'},#this is a device with multiple relays so each relay should have the same ip and an id (Power1,Power2 ...etc)
+    {'friendly-name': 'tv', 'id': 'POWER2','ip':'192.168.88.234'}
+    ]
 
 #Google Music Declarations
 song_ids=[]
@@ -149,7 +154,7 @@ def say(words):
     print(words)
     tts = gTTS(text=words, lang=language)
     tts.save(ttsfilename)
-    os.system("mpg123 "+ttsfilename)
+    play_audio_file(ttsfilename)
     os.remove(ttsfilename)
 
 
@@ -1281,7 +1286,38 @@ def play_audio_file(fname):
 
     :param str fname: wave file name
     """
-    if mixer.get_init() != None:
-        mixer.quit()
-    mixer.init()
-    mixer.Sound(fname).play()
+
+    try:
+        if pygame.mixer.get_init() != None:
+            pygame.mixer.quit()
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.stop()
+    except:
+        pass
+    pygame.mixer.init()
+    pygame.mixer.music.load(fname)
+    pygame.mixer.music.play()
+
+
+#Function to control Sonoff Tasmota Devices
+def tasmota_control(phrase, device):
+    if 'id' not in device:
+        device['id'] = 'Power1'
+    if 'on' in phrase:
+        try:
+            rq = requests.head("http://{}/cm?cmnd={}%20on".format(device['ip'],device['id']))
+            say("{} turned off".format(device['friendly-name']))
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
+    elif 'off' in phrase:
+        try:
+            rq = requests.head("http://{}/cm?cmnd={}%20off".format(device['ip'],device['id']))
+            say("{} turned off".format(device['friendly-name']))
+        except requests.exceptions.ConnectionError:
+            say("Device not online")
+    else:
+        try:
+            rq = requests.head("http://{}/cm?cmnd={}%20toggle".format(device['ip'],device['id']))
+            say("{} is toggled".format(device['friendly-name']))
+        except requests.exceptions.ConnectionError:
+            say("Device not online")

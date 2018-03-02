@@ -53,6 +53,8 @@ from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
 from actions import play_audio_file
+from actions import tasmota_control
+from actions import tasmota_devicelist
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 resources = {'fb': '{}/sample-audio-files/Fb.wav'.format(
@@ -86,12 +88,7 @@ if GPIO != None:
 
 mpvactive = False
 
-# Sonoff-Tasmota Declarations
-tasmota_devicelist=[
-    {'friendly-name': 'test', 'ip': '192.168.88.233'}, #this is a device with only one relay so there is no need to assign id
-    {'friendly-name': 'tv box', 'id': 'POWER1','ip': '192.168.88.234'},#this is a device with multiple relays so each relay should have the same ip and an id (Power1,Power2 ...etc)
-    {'friendly-name': 'tv', 'id': 'POWER2','ip':'192.168.88.234'}
-    ]
+
 
 
 # Function to check if mpv is playing
@@ -105,29 +102,6 @@ def ismpvplaying():
             mpvactive = False
     return mpvactive
 
-
-# Function to control Sonoff Tasmota Devices
-def tasmota_control(phrase, device):
-    if 'id' not in device:
-        device['id'] = 'Power1'
-    if 'on' in phrase['text']:
-        try:
-            rq = requests.head("http://{}/cm?cmnd={}%20on".format(device['ip'],device['id']))
-            say("Tunring on {}".format(device['friendly-name']))
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
-    elif 'off' in phrase['text']:
-        try:
-            rq = requests.head("http://{}/cm?cmnd={}%20off".format(device['ip'],device['id']))
-            say("Tunring off {}".format(device['friendly-name']))
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
-    else:
-        try:
-            rq = requests.head("http://{}/cm?cmnd={}%20toggle".format(device['ip'],device['id']))
-            say("toggling {}".format(device['friendly-name']))
-        except requests.exceptions.ConnectionError:
-            say("Device not online")
 
 
 def process_device_actions(event, device_id):
@@ -294,7 +268,7 @@ def main():
             for item in tasmota_devicelist:
                 if item['friendly-name'].lower()  in str(usrcmd).lower():
                     assistant.stop_conversation()
-                    tasmota_control(usrcmd, item)
+                    tasmota_control(usrcmd['text'], item)
                     break
             if 'trigger'.lower() in str(usrcmd).lower() and GPIO != None:
                 assistant.stop_conversation()
