@@ -6,7 +6,7 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 26th-Feb-2018 Update: Features 18,19,20,21     
+## 2nd-Mar-2018 Update: Features 18,19,20,21     
 **Google has updated the SDK to 0.4.3. so to update, start fresh.**    
 *******************************************************************************************************************************
 
