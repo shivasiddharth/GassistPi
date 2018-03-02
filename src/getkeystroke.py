@@ -21,6 +21,7 @@ hookman.start()
 
 # Create a loop to keep the application running
 running = True
+print('Now press the button you want')
 while running:
     time.sleep(0.1)
 
