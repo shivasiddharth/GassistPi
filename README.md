@@ -30,7 +30,7 @@
 **17.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
 **18.  Track [Kickstarter](https://www.kickstarter.com) campaigns.**  
 **19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
-**20.  Search recipes and get push message of ingredients and link to recipe.** 
+**20.  Search recipes and get push message of ingredients and link to recipe.**    
 **21.  Remote control of Magic Mirror.**  
 
 
