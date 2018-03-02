@@ -255,10 +255,10 @@ After making suitable modifications and uploading the sketches to your device, o
 width="300" height="600" border="1" /> | <img src="https://drive.google.com/uc?id=14mPEptFRBwwv1AmsH3qORCCez63uU1LM"
 width="300" height="600" border="1" />
 
-**Command Syntax:**  
-**To turn lights on/off :** "Hey Google, Turn __Hue-Light-Name__ On/Off"  
-**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc- #list-of-available-light-colours)  
-**To change brightness  :** "Hey Google, Change __Hue-Light-Name__ brightness to __Required-Brightness-Level__" 
+**Command Syntax:**    
+**To turn lights on/off :** "Hey Google, Turn __Hue-Light-Name__ On/Off"    
+**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc)  
+**To change brightness  :** "Hey Google, Change __Hue-Light-Name__ brightness to __Required-Brightness-Level__"   
 
 
 *******************************************************************
