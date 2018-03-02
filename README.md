@@ -235,10 +235,6 @@ Credits for the [Emulated Hue](https://github.com/mariusmotea/diyHue) to [Marius
 To set the emuated Hue to autostart on boot as a service, open a terminal and run the following:  
 ```
 sudo systemctl enable diyHue.service  
-
-```
-To start the service immediately, in the pi terminal run the following:  
-```
 sudo systemctl start diyHue.service  
 
 ```
@@ -249,6 +245,16 @@ Depending upon your device, download the Philips Hue App for either of the platf
 alt="Apple App Store Philips Hue App" width="200" height="80" border="1" /></a>                  <a href="https://play.google.com/store/apps/details?id=com.philips.lighting.hue2&hl=en
 " target="_blank"><img src="https://drive.google.com/uc?id=1Qh6tdhcxZTRPOvkL1lptdbvdTiHRM7Vq"
 alt="Google Play Philips Hue App" width="200" height="80" border="1" /></a>
+
+Download sketches for your NodeMCU/Wemos/ESP Devices from here https://github.com/shivasiddharth/diyHue/tree/master/Lights  
+After making suitable modifications and uploading the sketches to your device, open the device's webgui by entering the ip address in a browser. In that change the "Startup" value from "Last State" to "Off" as shown below.  
+
+<img src="https://drive.google.com/uc?id=1_5QSs7Bm9TeXgazmTdvwiL34yNXot4AV"
+width="100" height="400" border="1" />                <img src="https://drive.google.com/uc?id=14mPEptFRBwwv1AmsH3qORCCez63uU1LM"
+width="100" height="400" border="1" />
+
+
+
 
 *******************************************************************
 ### **INDICATORS FOR GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  

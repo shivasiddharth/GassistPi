@@ -84,6 +84,9 @@ mpvactive=False
 tasmota_devicelist=['Desk Light','Table Light']
 tasmota_deviceip=['192.168.1.35','192.168.1.36']
 
+#Magic Mirror Remote Control Declarations
+mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
+
 
 #Function to check if mpv is playing
 def ismpvplaying():
@@ -100,9 +103,9 @@ def ismpvplaying():
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
     try:
-        if 'on' in phrase:                
+        if 'on' in phrase:
             rq=requests.head("http://"+devip+"/cm?cmnd=Power%20on")
-            say("Tunring on "+devname)        
+            say("Tunring on "+devname)
         elif 'off' in phrase:
             rq=requests.head("http://"+devip+"/cm?cmnd=Power%20off")
             say("Tunring off "+devname)
@@ -300,14 +303,36 @@ def main():
                     assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                     break
-
+            if 'magic mirror'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                try:
+                    mmmcommand=str(usrcmd).lower()
+                    if 'weather'.lower() in mmmcommand:
+                        if 'show'.lower() in mmmcommand:
+                            mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_2_currentweather")
+                            mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_3_currentweather")
+                        if 'hide'.lower() in mmmcommand:
+                            mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_2_currentweather")
+                            mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_3_currentweather")
+                    if 'power off'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=SHUTDOWN")
+                    if 'reboot'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=REBOOT")
+                    if 'restart'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=RESTART")
+                    if 'display on'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITORON")
+                    if 'display off'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
+                except requests.exceptions.ConnectionError:
+                    say("Magic mirror not online")
             if 'ingredients'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 ingrequest=str(usrcmd).lower()
                 ingredientsidx=ingrequest.find('for')
                 ingrequest=ingrequest[ingredientsidx:]
                 ingrequest=ingrequest.replace('for',"",1)
-                ingrequest=ingrequest.replace("'}","",1)                
+                ingrequest=ingrequest.replace("'}","",1)
                 ingrequest=ingrequest.strip()
                 ingrequest=ingrequest.replace(" ","%20",1)
                 getrecipe(ingrequest)

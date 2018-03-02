@@ -175,13 +175,13 @@ def say(words):
     tts.save(ttsfilename)
     os.system("mpg123 "+ttsfilename)
     os.remove(ttsfilename)
-    
+
 
 #Function to get HEX and RGB values for requested colour
 def getcolours(phrase):
     usrclridx=idx=phrase.find("to")
     usrclr=query=phrase[usrclridx:]
-    usrclr=usrclr.replace("to","",1) 
+    usrclr=usrclr.replace("to","",1)
     usrclr=usrclr.replace("'}","",1)
     usrclr=usrclr.strip()
     usrclr=usrclr.replace(" ","",1)
@@ -189,7 +189,7 @@ def getcolours(phrase):
     print(usrclr)
     try:
         for colournum, colourname in enumerate(clrlist):
-            if usrclr in colourname:            
+            if usrclr in colourname:
                RGB=clrrgblist[colournum]
                red,blue,green=re.findall('\d+', RGB)
                hexcode=clrhexlist[colournum]
@@ -1454,7 +1454,7 @@ def getrecipe(item):
     recipedetails=json.loads(recipedetails)
     recipe_ingredients=str(recipedetails['hits'][0]['recipe']['ingredientLines'])
     recipe_url=recipedetails['hits'][0]['recipe']['url']
-    recipe_name=recipedetails['hits'][0]['recipe']['label']    
+    recipe_name=recipedetails['hits'][0]['recipe']['label']
     recipe_ingredients=recipe_ingredients.replace('[','',1)
     recipe_ingredients=recipe_ingredients.replace(']','',1)
     recipe_ingredients=recipe_ingredients.replace('"','',1)
@@ -1483,18 +1483,28 @@ def hue_control(phrase,lightindex,lightaddress):
     try:
         if 'on' in phrase:
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=true")
-            say("Turning on "+huelightname)        
+            say("Turning on "+huelightname)
         if 'off' in phrase:
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=false")
-            say("Turning off "+huelightname)        
-        if 'change' in phrase or 'set' in phrase and 'çolor' in phrase:
+            say("Turning off "+huelightname)
+        if 'çolor' in phrase:
             rcolour,gcolour,bcolour,hexcolour,colour=getcolours(phrase)
             print(str([rcolour,gcolour,bcolour,hexcolour,colour]))
             xval,yval=convert_rgb_xy(int(rcolour),int(gcolour),int(bcolour))
-            print(str([xval,yval]))        
+            print(str([xval,yval]))
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
             print("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
             say("Setting "+huelightname+" to "+colour)
+        if 'brightness'.lower() in phrase:
+            if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
+                bright=100
+            elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
+                bright=100
+            else:
+                bright=re.findall('\d+', phrase)
+            brightval= (bright/100)*255
+            huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=true&bri="+str(brightval))
+            say("Changing "+huelightname+" brightness to "+bright+" percent")            
     except (requests.exceptions.ConnectionError,TypeError) as errors:
         if str(errors)=="'NoneType' object is not iterable":
             print("Type Error")
