@@ -544,29 +544,29 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 ************************************************  
 ### **LIST OF AVAILABLE LIGHT COLOURS**  
 ************************************************
-|'Almond'| 'Antique Brass'| 'Apricot'|'Aquamarine'| 'Asparagus'|'Atomic Tangerine'|
-|'Banana Mania'| 'Beaver'| 'Bittersweet'| 'Black'|'Blizzard Blue'| 'Just Blue'| 
-|'Blue Bell'| 'Blue Gray'| 'Blue Green'| 'Blue Violet'| 'Blush'| 'Brick Red'|
-|'Brown'| 'Burnt Orange'| 'Burnt Sienna'| 'Cadet Blue'| 'Canary'| 'Caribbean Green'|
-|'Carnation Pink'| 'Cerise'| 'Cerulean'| 'Chestnut'| 'Copper'| 'Cornflower'|
-|'Cotton Candy'| 'Dandelion'|'Denim'|'Desert Sand'| 'Eggplant'| 'Electric Lime'|
-|'Fern'|'Forest Green'| 'Fuchsia'| 'Fuzzy Wuzzy'| 'Gold'| 'Goldenrod'|
-|'Granny Smith Apple'|'Gray'| 'Just Green'| 'Green Blue'| 'Green Yellow'| 'Hot Magenta'|
-|'Inchworm'|'Indigo'| 'Jazzberry Jam'| 'Jungle Green'| 'Laser Lemon'| 'Lavender'|
-|'Lemon Yellow'| 'Macaroni and Cheese'| 'Magenta'| 'Magic Mint'| 'Mahogany'|'Maize'|
-|'Manatee'| 'Mango Tango'| 'Maroon'| 'Mauvelous'| 'Melon'| 'Midnight Blue'|
-|'Mountain Meadow'| 'Mulberry'| 'Navy Blue'| 'Neon Carrot'| 'Olive Green'| 'Orange'|
-|'Orange Red'| 'Orange Yellow'| 'Orchid', 'Outer Space'| 'Outrageous Orange'| 'Pacific Blue'|
-|'Peach'| 'Periwinkle'| 'Piggy Pink'| 'Pine Green'| 'Pink Flamingo'| 'Pink Sherbet'|
-|'Plum'| 'Purple Heart'| "Purple Mountain's Majesty"| 'Purple Pizzazz', 'Radical Red', 'Raw Sienna'|
-|'Raw Umber'|'Razzle Dazzle Rose'| 'Razzmatazz'| 'Just Red'| 'Red Orange'| 'Red Violet'|
-|"Robin's Egg Blue"| 'Royal Purple'| 'Salmon'| 'Scarlet'| "Screamin' Green"| 'Sea Green'|
-|'Sepia'| 'Shadow'|'Shamrock'| 'Shocking Pink'| 'Silver'| 'Sky Blue'|
-|'Spring Green'| 'Sunglow'| 'Sunset Orange', 'Tan', 'Teal Blue', 'Thistle'|
-|'Tickle Me Pink'| 'Timberwolf'| 'Tropical Rain Forest'| 'Tumbleweed'| 'Turquoise Blue'| 'Unmellow Yellow'|
-|'Violet (Purple)'|'Violet Blue'| 'Violet Red'| 'Vivid Tangerine'| 'Vivid Violet'| 'White'|
-|'Wild Blue Yonder'| 'Wild Strawberry'| 'Wild Watermelon'| 'Wisteria'| 'Yellow'| 'Yellow Green'|
-|'Yellow Orange'|
+| 'Almond' | 'Antique Brass' | 'Apricot' |'Aquamarine' | 'Asparagus' |'Atomic Tangerine' |
+| 'Banana Mania' | 'Beaver' | 'Bittersweet' | 'Black' |'Blizzard Blue' | 'Just Blue' | 
+| 'Blue Bell' | 'Blue Gray' | 'Blue Green' | 'Blue Violet' | 'Blush' | 'Brick Red' |
+| 'Brown' | 'Burnt Orange' | 'Burnt Sienna' | 'Cadet Blue' | 'Canary' | 'Caribbean Green' |
+| 'Carnation Pink' | 'Cerise' | 'Cerulean' | 'Chestnut' | 'Copper' | 'Cornflower' |
+| 'Cotton Candy' | 'Dandelion' |'Denim' |'Desert Sand' | 'Eggplant' | 'Electric Lime' |
+| 'Fern' |'Forest Green' | 'Fuchsia' | 'Fuzzy Wuzzy' | 'Gold' | 'Goldenrod' |
+| 'Granny Smith Apple' |'Gray' | 'Just Green' | 'Green Blue' | 'Green Yellow' | 'Hot Magenta' |
+| 'Inchworm' |'Indigo' | 'Jazzberry Jam' | 'Jungle Green' | 'Laser Lemon' | 'Lavender' |
+| 'Lemon Yellow' | 'Macaroni and Cheese' | 'Magenta' | 'Magic Mint' | 'Mahogany' |'Maize' |
+| 'Manatee' | 'Mango Tango' | 'Maroon' | 'Mauvelous' | 'Melon' | 'Midnight Blue' |
+| 'Mountain Meadow' | 'Mulberry' | 'Navy Blue' | 'Neon Carrot' | 'Olive Green' | 'Orange' |
+| 'Orange Red' | 'Orange Yellow' | 'Orchid' | 'Outer Space' | 'Outrageous Orange' | 'Pacific Blue'|
+| 'Peach'| 'Periwinkle'| 'Piggy Pink'| 'Pine Green' | 'Pink Flamingo' | 'Pink Sherbet'|
+| 'Plum' | 'Purple Heart' | "Purple Mountain's Majesty" | 'Purple Pizzazz' | 'Radical Red' | 'Raw Sienna' |
+| 'Raw Umber' |'Razzle Dazzle Rose' | 'Razzmatazz' | 'Just Red' | 'Red Orange' | 'Red Violet' |
+| 'Robin's Egg Blue' | 'Royal Purple' | 'Salmon' | 'Scarlet' | 'Screamin' Green' | 'Sea Green' |
+| 'Sepia' | 'Shadow' | 'Shamrock' | 'Shocking Pink' | 'Silver' | 'Sky Blue' |
+| 'Spring Green' | 'Sunglow' | 'Sunset Orange' | 'Tan' | 'Teal Blue' | 'Thistle' |
+| 'Tickle Me Pink' | 'Timberwolf' | 'Tropical Rain Forest' | 'Tumbleweed' | 'Turquoise Blue' | 'Unmellow Yellow' |
+| 'Violet (Purple)' | 'Violet Blue' | 'Violet Red' | 'Vivid Tangerine' | 'Vivid Violet' | 'White' |
+| 'Wild Blue Yonder' | 'Wild Strawberry' | 'Wild Watermelon' | 'Wisteria' | 'Yellow' | 'Yellow Green' |
+| 'Yellow Orange' |
 
 
 ************************************************  
