@@ -43,7 +43,7 @@ fi
 
 
 for service in systemd/*.service; do
-	sed "s:/home/pi/GassistPi:${repo_path}:g;s:saved-project-id:${project_id}:g;s:saved-model-id:${device_model_id}:g;s:pi:${GIT_OWNER}:g" "$service" \
+	sed "s:/home/__USER__/GassistPi:${repo_path}:g;s:__USER__:${GIT_OWNER}:g" "$service" \
 	 > "/lib/systemd/system/$(basename "$service")"
 done
 
