@@ -35,6 +35,7 @@ import logging
 import re
 import requests
 import pyxhook
+import pathlib2 as pathlib
 import imp
 from actions import say
 import google.auth.transport.grpc
@@ -55,6 +56,9 @@ from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
+from actions import kickstarter_tracker
+from actions import getrecipe
+from actions import hue_control
 from actions import play_audio_file
 from actions import tasmota_control
 from actions import tasmota_devicelist
@@ -112,6 +116,8 @@ mpvactive=False
 triggerkey=201
 ''' Ascii value of the trigger key, to get the Ascii value of any key run the getkeystroke.py and press the key you want
     and then change triggerkey 
+#Magic Mirror Remote Control Declarations
+mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
 '''
 
 END_OF_UTTERANCE = embedded_assistant_pb2.AssistResponse.END_OF_UTTERANCE
@@ -128,7 +134,7 @@ def ismpvplaying():
         else:
             mpvactive=False
     return mpvactive
-    
+
 
 
 
@@ -259,7 +265,7 @@ class SampleAssistant(object):
                     GPIO.output(5,GPIO.LOW)
                     led.ChangeDutyCycle(0)
                 self.conversation_stream.stop_recording()
-
+                print('Full Speech Result '+str(resp.speech_results))
             if resp.speech_results:
                 logging.info('Transcript of user request: "%s".',
                              ' '.join(r.transcript
@@ -282,6 +288,53 @@ class SampleAssistant(object):
                             tasmota_control(str(usrcmd).lower(), item)
                             return continue_conversation
                             break
+                    with open('{}/src/diyHue/config.json'.format(ROOT_PATH), 'r') as config:
+                         hueconfig = json.load(config)
+                    for i in range(1,len(hueconfig['lights'])+1):
+                        try:
+                            if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                                assistant.stop_conversation()
+                                hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                                break
+                        except Keyerror:
+                            say('Unable to help, please check your config file')
+
+                    if 'magic mirror'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        try:
+                            mmmcommand=str(usrcmd).lower()
+                            if 'weather'.lower() in mmmcommand:
+                                if 'show'.lower() in mmmcommand:
+                                    mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_2_currentweather")
+                                    mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_3_currentweather")
+                                if 'hide'.lower() in mmmcommand:
+                                    mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_2_currentweather")
+                                    mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_3_currentweather")
+                            if 'power off'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=SHUTDOWN")
+                            if 'reboot'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=REBOOT")
+                            if 'restart'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=RESTART")
+                            if 'display on'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITORON")
+                            if 'display off'.lower() in mmmcommand:
+                                mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
+                        except requests.exceptions.ConnectionError:
+                            say("Magic mirror not online")
+                    if 'ingredients'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        ingrequest=str(usrcmd).lower()
+                        ingredientsidx=ingrequest.find('for')
+                        ingrequest=ingrequest[ingredientsidx:]
+                        ingrequest=ingrequest.replace('for',"",1)
+                        ingrequest=ingrequest.replace("'}","",1)
+                        ingrequest=ingrequest.strip()
+                        ingrequest=ingrequest.replace(" ","%20",1)
+                        getrecipe(ingrequest)
+                    if 'kickstarter'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        kickstarter_tracker(str(usrcmd).lower())
                     if 'trigger'.lower() in str(usrcmd).lower():
                         Action(str(usrcmd).lower())
                         return continue_conversation
@@ -445,21 +498,7 @@ class SampleAssistant(object):
                     led.ChangeDutyCycle(100)
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
-                if GPIO != None:
-                    GPIO.output(6,GPIO.LOW)
-                    GPIO.output(5,GPIO.LOW)
-                    led.ChangeDutyCycle(0)
-                if ismpvplaying():
-                    if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
-                        with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
-                            oldvollevel = json.load(vol)
-                            print(oldvollevel)
-                        mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
 
-                #Uncomment the following, after starting Kodi
-                #with open(os.path.expanduser('~/.volume.json'), 'r') as f:
-                    #vollevel = json.load(f)
-                    #kodi.Application.SetVolume({"volume": vollevel})
                 continue_conversation = False
             if resp.device_action.device_request_json:
                 device_request = json.loads(
@@ -474,20 +513,6 @@ class SampleAssistant(object):
             concurrent.futures.wait(device_actions_futures)
 
         logging.info('Finished playing assistant response.')
-        if GPIO != None:
-            GPIO.output(6,GPIO.LOW)
-            GPIO.output(5,GPIO.LOW)
-            led.ChangeDutyCycle(0)
-        #Uncomment the following, after starting Kodi
-        #with open(os.path.expanduser('~/.volume.json'), 'r') as f:
-               #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})
-        if ismpvplaying():
-            if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
-                with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
-                    oldvollevel = json.load(vol)
-                print(oldvollevel)
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
         self.conversation_stream.stop_playback()
         return continue_conversation
 
@@ -641,7 +666,7 @@ def main():
                 logging.error('Failed to register device: %s', r.text)
                 sys.exit(-1)
             logging.info('Device registered: %s', device_id)
-            os.makedirs(os.path.dirname(device_config), exist_ok=True)
+            pathlib.Path(os.path.dirname(device_config)).mkdir(exist_ok=True)
             with open(device_config, 'w') as f:
                 json.dump(payload, f)
 

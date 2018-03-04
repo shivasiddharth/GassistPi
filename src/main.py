@@ -52,24 +52,26 @@ from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
+from actions import kickstarter_tracker
+from actions import getrecipe
+from actions import hue_control
 from actions import play_audio_file
 from actions import tasmota_control
 from actions import tasmota_devicelist
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
-resources = {'fb': '{}/sample-audio-files/Fb.wav'.format(
-    ROOT_PATH), 'startup': '{}/sample-audio-files/Startup.wav'.format(ROOT_PATH)}
+resources = {'fb': '{}/sample-audio-files/Fb.wav'.format(ROOT_PATH), 'startup': '{}/sample-audio-files/Startup.wav'.format(ROOT_PATH)}
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger = logging.getLogger(__name__)
+logger=logging.getLogger(__name__)
 
 INFO_FILE = os.path.expanduser('~/gassistant-credentials.info')
 
-# Login with default kodi/kodi credentials
-# kodi = Kodi("http://localhost:8080/jsonrpc")
+#Login with default kodi/kodi credentials
+#kodi = Kodi("http://localhost:8080/jsonrpc")
 
-# Login with custom credentials
+#Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
 
@@ -90,16 +92,19 @@ mpvactive = False
 
 
 
+#Magic Mirror Remote Control Declarations
+mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
 
-# Function to check if mpv is playing
+
+#Function to check if mpv is playing
 def ismpvplaying():
     for pid in psutil.pids():
-        p = psutil.Process(pid)
+        p=psutil.Process(pid)
         if 'mpv'in p.name():
-            mpvactive = True
+            mpvactive=True
             break
         else:
-            mpvactive = False
+            mpvactive=False
     return mpvactive
 
 
@@ -113,7 +118,7 @@ def process_device_actions(event, device_id):
                         if device['id'] == device_id:
                             if 'execution' in c:
                                 for e in c['execution']:
-                                    if e['params']:
+                                    if 'params' in e:
                                         yield e['command'], e['params']
                                     else:
                                         yield e['command'], None
@@ -128,29 +133,28 @@ def process_event(event, device_id):
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         play_audio_file(resources['fb'])
-        # Uncomment the following after starting the Kodi
-        # status=mutevolstatus()
-        # vollevel=status[1]
-        # with open(os.path.expanduser('~/.volume.json'), 'w') as f:
-               # json.dump(vollevel, f)
-        # kodi.Application.SetVolume({"volume": 0})
+        #Uncomment the following after starting the Kodi
+        #status=mutevolstatus()
+        #vollevel=status[1]
+        #with open(os.path.expanduser('~/.volume.json'), 'w') as f:
+               #json.dump(vollevel, f)
+        #kodi.Application.SetVolume({"volume": 0})
         if GPIO != None:
             GPIO.output(5, GPIO.HIGH)
             led.ChangeDutyCycle(100)
         print()
         if ismpvplaying():
             if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
-                mpvsetvol = os.system("echo '" + json.dumps(
-                    {"command": ["set_property", "volume", "10"]}) + "' | socat - /tmp/mpvsocket")
+                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
             else:
-                mpvgetvol = subprocess.Popen(
-                    [("echo '" + json.dumps({"command": ["get_property", "volume"]}) + "' | socat - /tmp/mpvsocket")], shell=True, stdout=subprocess.PIPE)
-                output = mpvgetvol.communicate()[0]
+                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
+                output=mpvgetvol.communicate()[0]
                 for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                     with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                         json.dump(currntvol, vol)
-                mpvsetvol = os.system("echo '" + json.dumps(
-                    {"command": ["set_property", "volume", "10"]}) + "' | socat - /tmp/mpvsocket")
+                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+
+
 
         print(event)
 
@@ -168,8 +172,7 @@ def process_event(event, device_id):
               with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
                   oldvollevel = json.load(vol)
               print(oldvollevel)
-              mpvsetvol = os.system("echo '" + json.dumps({"command": [
-                                    "set_property", "volume", str(oldvollevel)]}) + "' | socat - /tmp/mpvsocket")
+              mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
         if GPIO != None:
@@ -233,7 +236,7 @@ def register_device(project_id, credentials, device_model_id, device_id):
     r = session.get(device_url)
     print(device_url, r.status_code)
     if r.status_code == 404:
-        print('Registering....', end='', flush=True)
+        print('Registering....')
         r = session.post(base_url, data=json.dumps({
             'id': device_id,
             'model_id': device_model_id,
@@ -250,7 +253,6 @@ def main():
         args.credentials = os.path.join(os.path.expanduser('~/.config'),'google-oauthlib-tool','credentials.json')
 
 
-
     with open(args.credentials, 'r') as f:
         credentials = google.oauth2.credentials.Credentials(token=None,
                                                             **json.load(f))
@@ -265,11 +267,58 @@ def main():
         for event in events:
             process_event(event, assistant.device_id)
             usrcmd=event.args
+            with open('{}/src/diyHue/config.json'.format(ROOT_PATH), 'r') as config:
+                 hueconfig = json.load(config)
+            for i in range(1,len(hueconfig['lights'])+1):
+                try:
+                    if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                        break
+                except Keyerror:
+                    say('Unable to help, please check your config file')
+
             for item in tasmota_devicelist:
                 if item['friendly-name'].lower()  in str(usrcmd).lower():
                     assistant.stop_conversation()
                     tasmota_control(usrcmd['text'], item)
                     break
+            if 'magic mirror'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                try:
+                    mmmcommand=str(usrcmd).lower()
+                    if 'weather'.lower() in mmmcommand:
+                        if 'show'.lower() in mmmcommand:
+                            mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_2_currentweather")
+                            mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_3_currentweather")
+                        if 'hide'.lower() in mmmcommand:
+                            mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_2_currentweather")
+                            mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_3_currentweather")
+                    if 'power off'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=SHUTDOWN")
+                    if 'reboot'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=REBOOT")
+                    if 'restart'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=RESTART")
+                    if 'display on'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITORON")
+                    if 'display off'.lower() in mmmcommand:
+                        mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
+                except requests.exceptions.ConnectionError:
+                    say("Magic mirror not online")
+            if 'ingredients'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                ingrequest=str(usrcmd).lower()
+                ingredientsidx=ingrequest.find('for')
+                ingrequest=ingrequest[ingredientsidx:]
+                ingrequest=ingrequest.replace('for',"",1)
+                ingrequest=ingrequest.replace("'}","",1)
+                ingrequest=ingrequest.strip()
+                ingrequest=ingrequest.replace(" ","%20",1)
+                getrecipe(ingrequest)
+            if 'kickstarter'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                kickstarter_tracker(str(usrcmd).lower())
             if 'trigger'.lower() in str(usrcmd).lower() and GPIO != None:
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
@@ -278,16 +327,14 @@ def main():
                 os.system('pkill mpv')
                 if os.path.isfile("{}/src/trackchange.py".format(ROOT_PATH)):
                     os.system('rm {}/src/trackchange.py'.format(ROOT_PATH))
-                    os.system('echo "from actions import youtubeplayer\n\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                    os.system('echo "youtubeplayer()\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
                     if 'autoplay'.lower() in str(usrcmd).lower():
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
                 else:
-                    os.system('echo "from actions import youtubeplayer\n\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
-                    os.system('echo "youtubeplayer()\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
                     if 'autoplay'.lower() in str(usrcmd).lower():
+                        os.system('echo "from actions import youtubeplayer\n\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
+                        os.system('echo "youtubeplayer()\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
@@ -401,10 +448,8 @@ def main():
                 os.system('pkill mpv')
                 if os.path.isfile("{}/src/trackchange.py".format(ROOT_PATH)):
                     os.system('rm {}/src/trackchange.py'.format(ROOT_PATH))
-
                     gmusicselect(str(usrcmd).lower())
                 else:
-  
                     gmusicselect(str(usrcmd).lower())
 
 if __name__ == '__main__':

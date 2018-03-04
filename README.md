@@ -6,12 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 08th-Feb-2018 Update: Now Control Sonoff-Tasmota devices by voice      
-
-### Existing GassistPi users on the latest SDK can update their GassistPi Project using:   
-https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-Script.sh
-
-### New users, continue as instructed below in the README doc.
+## 2nd-Mar-2018 Update: Features 18,19,20,21     
+**Google has updated the SDK to 0.4.3. so to update, start fresh.**    
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -31,13 +27,12 @@ https://github.com/shivasiddharth/GassistPi/blob/update-script/GassistPi-Update-
 **14.  Streaming music from Google Play Music.**  
 **15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
 **16.  Voice control of Radio/YouTube/Google Music volume levels.**         
-**17.  Control Sonoff Tasmota Devices/Emulated Wemo**  
-**18.  Now works in platforms other than raspberry pi (theoretically any linux device)**  
-
-*******************************************************************************************************************************  
-**The Project has adopted the new Google Assistant SDK features released on 20th Dec 2017. Old installations will not work. So kindly Reformat your SD Card and start fresh**  
-*******************************************************************************************************************************
-
+**17.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
+**18.  Track [Kickstarter](https://www.kickstarter.com) campaigns.**  
+**19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
+**20.  Search recipes and get push message of ingredients and link to recipe.**    
+**21.  Remote control of Magic Mirror.**  
+**12.  Now works in platforms other than raspberry pi (theoretically any linux device)**  
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -210,8 +205,99 @@ Open a terminal and execute the following:
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
+************************************************
+### **TRACKING KICKSTARTER CAMPAIGNS**  
+************************************************
+A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has been used. This requires an API to be added to your existing project.  
+### Adding Google Custom Search Engine API and Generating API Key
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. Move your mouse pointer over "API and services" and choose "credentials".
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the actions.py script at the indicated location.  
+6. "From the API and services" option, select library and in the search bar type **search**, select "Custom Search API" and click on "ENABLE".
+7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
+
+**Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
+
+**Syntax: Hey Google, (What is the status of) or (Track) __Your Desired Campaign Name__ Kickstarter campaign**  
+
+
+************************************************
+### **EMULATED PHILIPS HUE SEVICE AND CONTROL**  
+************************************************
+Credits for the [Emulated Hue](https://github.com/mariusmotea/diyHue) to [Marius Motea](https://github.com/mariusmotea).  
+
+To set the emuated Hue to autostart on boot as a service, open a terminal and run the following:  
+```
+sudo systemctl enable diyHue.service  
+sudo systemctl start diyHue.service  
+
+```
+
+Download sketches for your NodeMCU/Wemos/ESP Devices from [here](https://github.com/shivasiddharth/diyHue/tree/master/Lights)
+
+After making suitable modifications and uploading the sketches to your device, open the device's webgui by entering the ip address in a browser. In that change the "Startup" value from "Last State" to "Off" as shown below.  
+
+<img src="https://drive.google.com/uc?id=1_5QSs7Bm9TeXgazmTdvwiL34yNXot4AV"
+width="300" height="600" border="1" /> | <img src="https://drive.google.com/uc?id=14mPEptFRBwwv1AmsH3qORCCez63uU1LM"
+width="300" height="600" border="1" />
+
+Depending upon your device, download the Philips Hue App for either of the platforms from the following links.  
+
+<a href="https://itunes.apple.com/ie/app/philips-hue/id1055281310?mt=8
+" target="_blank"><img src="https://drive.google.com/uc?id=1k6IjneSQ0P6wRaHt8rjfNBiC7Y3iVGlV"
+alt="Apple App Store Philips Hue App" width="200" height="80" border="1" /></a>                  <a href="https://play.google.com/store/apps/details?id=com.philips.lighting.hue2&hl=en
+" target="_blank"><img src="https://drive.google.com/uc?id=1Qh6tdhcxZTRPOvkL1lptdbvdTiHRM7Vq"
+alt="Google Play Philips Hue App" width="200" height="80" border="1" /></a>
+
+Open the app, scan and add the emulated Hue lights.  
+
+**Command Syntax:**    
+**To turn lights on/off :** "Hey Google, Turn __Hue-Light-Name__ On/Off"    
+**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc)  
+**To change brightness  :** "Hey Google, Change __Hue-Light-Name__ brightness to __Required-Brightness-Level__"   
+
+
 *******************************************************************
-### **INDICATORS for GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
+### **PUSHING MESSAGES/INFO FROM ASSISTANT ON Pi TO ANDROID DEVICE**  
+*******************************************************************
+For pushing messages/info, the GassistPi uses pushbullet python package. To use this feature:  
+1. Download and install pushbullet app on your tablet/mobile device.  
+2. Visit www.pushbullet.com register for new account or sign in with your existing account.  
+3. Choose Settings-->Account and then choose "Create access token".  
+4. Copy this token and paste in the actions.py script under the pushmessage function.  
+
+
+*******************************************************************
+### **GETTING RECIPE DETAILS USING ASSISTANT**  
+*******************************************************************
+GassistPi uses [Edamam](www.edamam.com) for getting recipe details/info. To use this feature:  
+1. Click [here](https://developer.edamam.com/edamam-recipe-api) to visit the developers' porta for Edamam.  
+2. Signup as a developer/login with your existing account.  
+3. In the Menubar at the top, Click on Dashboard-->Applications-->Create a new applicatiuon-->Recipe Search API and then create a new application.  
+4. Copy the application id and application key and paste it in the actions.py script under the getrecipe function.  
+**(Note: While copying the application key, do not copy the "—")  
+
+Command Syntax:  
+"Hey Google, Get ingredients for __Required-Item__"  
+
+
+*******************************************************************
+### **CONTROLLING MAGIC MIRROR BY VOICE**  
+*******************************************************************
+You can control either Magic Mirror running on another Pi or Magic Mirror running on the same pi as GassistPi.  
+As a prerequisite, you should have the remote control module installed in the Pi running Magic Mirror.  
+Enter the Ip address of Pi running Magic Mirror in the main.py script against the variable **"mmmip"** declared.   
+
+Command Syntax:  
+**To show/hide weather module             :**  "Hey Google, Show/Hide Weather on Magic Mirror"  
+**To turn magic mirror display on/off     :**  "Hey Google, Turn Magic Mirror display on/off"  
+**To power off/reboot/restart Magic Mirror:**  "Hey Google, Power off/Reboot/Restart Magic Mirror"  
+
+
+*******************************************************************
+### **INDICATORS FOR GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
 *******************************************************************
 Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
@@ -222,7 +308,7 @@ Connect a pushbutton between GPIO23 and Ground. Using this pushbutton, now you c
 
 
 ************************************************
-### **VOICE CONTROL of GPIOs, SERVO and Pi SHUTDOWN**
+### **VOICE CONTROL OF GPIOs, SERVO and Pi SHUTDOWN**
 ************************************************
 The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi.
 
@@ -243,7 +329,7 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
 ************************************************
-### **VOICE CONTROL of NodeMCU**
+### **VOICE CONTROL OF NodeMCU**
 ************************************************
 There are two ways to control NodeMCU:  
 1. Control of NodeMCU running a webserver.  
@@ -281,7 +367,7 @@ Advantage of using Sonoff-Tasmota over webserver is that, with Sonoff-Tasmota yo
 
 
 ************************************************
-### **CASTING YouTube VDIEOS TO Chromecast**    
+### **CASTING YouTube VIDEOS TO Chromecast**    
 ************************************************
 Default command for casting YouTube videos is **Play *Desired Video* on Chromecast**, with **Chromecast** as the trigger word.
 Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts the MasterChef YouTube Video.  
@@ -289,7 +375,7 @@ Example: **Hey Google, Play MasterChef Season 1 Episode 1 on Chromecast** casts 
 **Note: YouTube casting to Chromecast using third party scripts has been blocked, so I have taken a roundabout approach and as a result, you may not find the usual YouTube interface on Chromecast.**  
 
 ************************************************
-### **CONTROLLING Chromecast by VOICE**    
+### **CONTROLLING Chromecast BY VOICE**    
 ************************************************   
 First, add the IP-Address of your Chromecast in the actions.py script, in the indicated location.  
 
@@ -308,7 +394,7 @@ Hey Google, Chromecast Volume Up/Down
 
 
 ************************************************
-### **CCONTROLLING MEDIA by VOICE**    
+### **CCONTROLLING MEDIA BY VOICE**    
 ************************************************
 You can change volume and pause or resume the Radio/YouTube/Google Music by voice.  
 Pausing:  
@@ -331,7 +417,7 @@ Hey Google, Set/change Music Volume to maximum/minimum
 
 
 ************************************************
-### **MUSIC STREAMING from YOUTUBE**  
+### **MUSIC STREAMING FROM YOUTUBE**  
 ************************************************
 The updated music streaming features autoplaying of YouTube suggestions. This makes use of the YouTube Data API v3.
 ### Adding YouTube API and Generating API Key
@@ -343,6 +429,7 @@ The updated music streaming features autoplaying of YouTube suggestions. This ma
 6. "From the API and services" option, select library and in the search bar type youtube, select "YouTube Data API v3" API and click on "ENABLE".
 7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
 
+**Note: The same API key can be used for Kickstarter Tracking, but Custom Search API must be added to the project in the cloud console.**  
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 
@@ -353,7 +440,7 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 **Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
 
 ************************************************
-### **MUSIC STREAMING from Google Music**  
+### **MUSIC STREAMING FROM Google Music**  
 ************************************************
 The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
 
@@ -397,7 +484,7 @@ http://worldradiomap.com/map/
 **Due to the Pi Zero's limitations, users are advised to not use the Radio streaming feature. Radio streaming will send the CPU usage of Pi Zero into next galaxy.**  
 
 ***********************************************  
-### **FOR PARCEL TRACKING**  
+### **PARCEL TRACKING**  
 ***********************************************  
 The default keyword for tracking parcel is **parcel**. For example, you can say **where is my parcel** or **track my parcel**.  
 
@@ -409,7 +496,7 @@ The generated API number should be added to the actions.py script at the indicat
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 ************************************************  
-### **FOR RSS FEEDS**  
+### **RSS FEEDS STREAMING**  
 ************************************************  
 Default keywords for playing RSS feeds is **feed** or **news** or **quote**. Example usage, **top tech news** will play the top technology news, **top world news** will play top news related to different countires, **top sports news** will play the top sports related news and **quote of the day** will give some quotes.
 
@@ -461,7 +548,7 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | Hey Google, Play Previous on kodi| Plays the previous track|
 | Hey Google, Scroll a bit forward on kodi| Fast forwards a movie/music by a small amount|
 | Hey Google, Scroll forward on kodi| Fast forwards a movie/track by a large margin |
-| Hey Google, Scroll a biy backward on kodi| | Rewinds a movie/track by a small amount|
+| Hey Google, Scroll a bit backward on kodi| Rewinds a movie/track by a small amount|
 | Hey Google, Scroll backward on kodi| Rewinds a movie/track by a large margin|
 | Hey Google, Set volume _Vol level number between 0 and 100_ on kodi | Sets the volume to the mentioned number |
 | Hey Google, Get volume on kodi| Tells you the current volume level by voice |
@@ -483,11 +570,41 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 
 
 ************************************************  
-### **FOR NEOPIXEL INDICATOR**
+### **GOOGLE HOME LIKE NEOPIXEL INDICATOR**
 ************************************************  
 1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
 2. Follow the circuit diagram given.  
+
+************************************************  
+### **LIST OF AVAILABLE LIGHT COLOURS**  
+************************************************
+|          |                 | COLOURS   | LIST        |             |                   |
+|----------|-----------------|-----------|-------------|-------------|-------------------|
+| 'Almond' | 'Antique Brass' | 'Apricot' |'Aquamarine' | 'Asparagus' |'Atomic Tangerine' |  
+| 'Banana Mania' | 'Beaver' | 'Bittersweet' | 'Black' |'Blizzard Blue' | 'Just Blue' |   
+| 'Blue Bell' | 'Blue Gray' | 'Blue Green' | 'Blue Violet' | 'Blush' | 'Brick Red' |  
+| 'Brown' | 'Burnt Orange' | 'Burnt Sienna' | 'Cadet Blue' | 'Canary' | 'Caribbean Green' |  
+| 'Carnation Pink' | 'Cerise' | 'Cerulean' | 'Chestnut' | 'Copper' | 'Cornflower' |  
+| 'Cotton Candy' | 'Dandelion' |'Denim' |'Desert Sand' | 'Eggplant' | 'Electric Lime' |  
+| 'Fern' |'Forest Green' | 'Fuchsia' | 'Fuzzy Wuzzy' | 'Gold' | 'Goldenrod' |  
+| 'Granny Smith Apple' |'Gray' | 'Just Green' | 'Green Blue' | 'Green Yellow' | 'Hot Magenta' |  
+| 'Inchworm' |'Indigo' | 'Jazzberry Jam' | 'Jungle Green' | 'Laser Lemon' | 'Lavender' |  
+| 'Lemon Yellow' | 'Macaroni and Cheese' | 'Magenta' | 'Magic Mint' | 'Mahogany' |'Maize' |  
+| 'Manatee' | 'Mango Tango' | 'Maroon' | 'Mauvelous' | 'Melon' | 'Midnight Blue' |  
+| 'Mountain Meadow' | 'Mulberry' | 'Navy Blue' | 'Neon Carrot' | 'Olive Green' | 'Orange' |  
+| 'Orange Red' | 'Orange Yellow' | 'Orchid' | 'Outer Space' | 'Outrageous Orange' | 'Pacific Blue'|  
+| 'Peach'| 'Periwinkle'| 'Piggy Pink'| 'Pine Green' | 'Pink Flamingo' | 'Pink Sherbet'|  
+| 'Plum' | 'Purple Heart' | "Purple Mountain's Majesty" | 'Purple Pizzazz' | 'Radical Red' | 'Raw Sienna' |  
+| 'Raw Umber' |'Razzle Dazzle Rose' | 'Razzmatazz' | 'Just Red' | 'Red Orange' | 'Red Violet' |  
+| 'Robin's Egg Blue' | 'Royal Purple' | 'Salmon' | 'Scarlet' | 'Screamin' Green' | 'Sea Green' |  
+| 'Sepia' | 'Shadow' | 'Shamrock' | 'Shocking Pink' | 'Silver' | 'Sky Blue' |  
+| 'Spring Green' | 'Sunglow' | 'Sunset Orange' | 'Tan' | 'Teal Blue' | 'Thistle' |  
+| 'Tickle Me Pink' | 'Timberwolf' | 'Tropical Rain Forest' | 'Tumbleweed' | 'Turquoise Blue' | 'Unmellow Yellow' |  
+| 'Violet (Purple)' | 'Violet Blue' | 'Violet Red' | 'Vivid Tangerine' | 'Vivid Violet' | 'White' |  
+| 'Wild Blue Yonder' | 'Wild Strawberry' | 'Wild Watermelon' | 'Wisteria' | 'Yellow' | 'Yellow Green' |  
+| 'Yellow Orange' |  
+
 
 ************************************************  
 ### **LIST OF GPIOs USED**  
