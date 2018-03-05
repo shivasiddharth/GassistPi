@@ -1,6 +1,6 @@
 
 
-# GassistPi -- Google Assistant for Linux platforms
+# GassistPi -- Google Assistant for all Raspberry Pi Boards  
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
@@ -32,7 +32,7 @@
 **19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
 **20.  Search recipes and get push message of ingredients and link to recipe.**    
 **21.  Remote control of Magic Mirror.**  
-**12.  Now works in platforms other than raspberry pi (theoretically any linux device)**  
+
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -129,27 +129,30 @@ speaker-test -t wav
 
 2. Place the .json file in/home/pi directory **DO NOT RENAME**  
 
-3. Use the one-line installer for installing Google Assistant     
-	3.1 Make the installer Executable  
+3. Use the one-line installer for installing Google Assistant    
+**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
+	4.1 Make the installers Executable  
 
 	```
-	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer.sh
-
-	```
-
-	3.2 Execute the installers **When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
-	```
-	sudo  /home/pi/GassistPi/scripts/gassist-installer.sh
+	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
+	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
 
 	```
 
-4. Copy the google assistant authentication link from terminal and authorize using your google account  
+	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
+	```
+	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
+	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
 
-5. Copy the authorization code from browser onto the terminal and press enter    
+	```
 
-6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
+5. Copy the google assistant authentication link from terminal and authorize using your google account  
 
-7. After verifying the working of assistant, close and exit the terminal    
+6. Copy the authorization code from browser onto the terminal and press enter    
+
+7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
+
+8. After verifying the working of assistant, close and exit the terminal    
 
 
 *************************************************  
@@ -169,7 +172,7 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service". Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service. If you are running on other platforms you can try and see which of the services works for you(try to start them manually first, see the "MANUALLY START THE ASSISTANT" section down below), On x86 computers both services were tested and working"**          
+4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **To stop music playback using a pushbutton connected to GPIO 23 enable stopbutton.service**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
@@ -177,7 +180,7 @@ sudo systemctl enable gassistpi-push-button.service
 sudo systemctl enable stopbutton.service  
 ```  
 
-5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
+5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
 **To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
@@ -194,14 +197,16 @@ At any point of time, if you wish to manually start the assistant:
 **Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
-/home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py
+/home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py --device_model_id 'replace this with the model id'
+
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
 Open a terminal and execute the following:
 ```
-/home/pi/env/bin/python -u /home/pi/GassistPi/src/pushbutton.py 
+/home/pi/env/bin/python -u /home/pi/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
 
 ```
+Insert your Project Id and Model Id in quotes in the mentioned places
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
@@ -359,7 +364,7 @@ Follow the instructions in this video to upload the firmware properly.
 " target="_blank"><img src="http://img.youtube.com/vi/MzcAS-K_TRU/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
 
-Assign the device names and device ip addresses in the actions.py script in using the stated tasmota_devicelist variable, if your tasmota controls multiple relays, you need to state the id of each relay
+Pi3 and Pi Zero users, assign the device names and device ip addresses in the main.py script and pushbutton.py script respectively, in the marked locations.  
 
 **Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
 
