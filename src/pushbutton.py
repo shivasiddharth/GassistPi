@@ -116,9 +116,9 @@ mpvactive=False
 triggerkey=201
 ''' Ascii value of the trigger key, to get the Ascii value of any key run the getkeystroke.py and press the key you want
     and then change triggerkey 
+'''
 #Magic Mirror Remote Control Declarations
 mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
-'''
 
 END_OF_UTTERANCE = embedded_assistant_pb2.AssistResponse.END_OF_UTTERANCE
 DIALOG_FOLLOW_ON = embedded_assistant_pb2.DialogStateOut.DIALOG_FOLLOW_ON
