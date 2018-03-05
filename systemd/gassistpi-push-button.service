@@ -4,19 +4,15 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-Environment=VIRTUAL_ENV=/home/__USER__/env
-Environment=PATH=/home/__USER__/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-# DISPLAY, HOME, XDG_RUNTIME_DIR are needed for pygame to work properly with pulseaudio
-Environment=DISPLAY=:0
-Environment=HOME=/home/__USER__
-Environment=XDG_RUNTIME_DIR=/run/user/1000
-ExecStart=/home/__USER__/env/bin/python -u /home/__USER__/GassistPi/src/pushbutton.py
+Environment=VIRTUAL_ENV=/home/pi/env
+Environment=PATH=/home/pi/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/pi/env/bin/python -u /home/pi/GassistPi/src/pushbutton.py --project-id 'project-id'  --device-model-id 'saved-model-id'
 
-WorkingDirectory=/home/__USER__/
+WorkingDirectory=/home/pi/
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-User=__USER__
+User=pi
 
 [Install]
 WantedBy=multi-user.target
