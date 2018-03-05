@@ -1,0 +1,11 @@
+libxml2
+libxslt
+mpv
+mplayer
+vlc
+elinks
+portaudio
+libffi
+openssl
+python3
+socat
