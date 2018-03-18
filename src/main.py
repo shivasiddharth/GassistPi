@@ -15,7 +15,11 @@
 # limitations under the License.
 
 from kodijson import Kodi, PLAYER_VIDEO
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'No module named 'RPi.GPIO'':
+        GPIO = None
 import argparse
 import os.path
 import os
