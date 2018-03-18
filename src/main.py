@@ -54,12 +54,14 @@ from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
 
+ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
+resources = {'fb': '{}/sample-audio-files/Fb.wav'.format(ROOT_PATH), 'startup': '{}/sample-audio-files/Startup.wav'.format(ROOT_PATH)}
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
 
-
+INFO_FILE = os.path.expanduser('~/gassistant-credentials.info')
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -68,18 +70,19 @@ logger=logging.getLogger(__name__)
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
 
+if GPIO != None:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+    # Indicator Pins
+    GPIO.setup(25, GPIO.OUT)
+    GPIO.setup(5, GPIO.OUT)
+    GPIO.setup(6, GPIO.OUT)
+    GPIO.output(5, GPIO.LOW)
+    GPIO.output(6, GPIO.LOW)
+    led = GPIO.PWM(25, 1)
+    led.start(0)
 
-#Indicator Pins
-GPIO.setup(25, GPIO.OUT)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(6, GPIO.OUT)
-GPIO.output(5, GPIO.LOW)
-GPIO.output(6, GPIO.LOW)
-led=GPIO.PWM(25,1)
-led.start(0)
 
 mpvactive=False
 
@@ -143,20 +146,21 @@ def process_event(event, device_id):
         #Uncomment the following after starting the Kodi
         #status=mutevolstatus()
         #vollevel=status[1]
-        #with open('/home/pi/.volume.json', 'w') as f:
+        #with open(os.path.expanduser('~/.volume.json'), 'w') as f:
                #json.dump(vollevel, f)
         #kodi.Application.SetVolume({"volume": 0})
-        GPIO.output(5,GPIO.HIGH)
-        led.ChangeDutyCycle(100)
+        if GPIO != None:
+            GPIO.output(5, GPIO.HIGH)
+            led.ChangeDutyCycle(100)
         print()
         if ismpvplaying():
-            if os.path.isfile("/home/pi/.mediavolume.json"):
+            if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
             else:
                 mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
                 output=mpvgetvol.communicate()[0]
                 for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                    with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                         json.dump(currntvol, vol)
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
 
@@ -165,50 +169,54 @@ def process_event(event, device_id):
         print(event)
 
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
-      GPIO.output(5,GPIO.LOW)
-      GPIO.output(6,GPIO.LOW)
-      led.ChangeDutyCycle(0)
-        #Uncomment the following after starting the Kodi
-        #with open('/home/pi/.volume.json', 'r') as f:
-               #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})
-      if ismpvplaying():
-          if os.path.isfile("/home/pi/.mediavolume.json"):
-              with open('/home/pi/.mediavolume.json', 'r') as vol:
+        if GPIO != None:
+            GPIO.output(5, GPIO.LOW)
+            GPIO.output(6, GPIO.LOW)
+            led.ChangeDutyCycle(0)
+        # Uncomment the following after starting the Kodi
+        # with open('/home/pi/.volume.json', 'r') as f:
+               # vollevel = json.load(f)
+               # kodi.Application.SetVolume({"volume": vollevel})
+        if ismpvplaying():
+            if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
+              with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
                   oldvollevel = json.load(vol)
               print(oldvollevel)
               mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
 
-
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-       GPIO.output(5,GPIO.LOW)
-       GPIO.output(6,GPIO.HIGH)
-       led.ChangeDutyCycle(50)
+        if GPIO != None:
+            GPIO.output(5, GPIO.LOW)
+            GPIO.output(6, GPIO.HIGH)
+            led.ChangeDutyCycle(50)
 
     if event.type == EventType.ON_RESPONDING_FINISHED:
-       GPIO.output(6,GPIO.LOW)
-       GPIO.output(5,GPIO.HIGH)
-       led.ChangeDutyCycle(100)
+        if GPIO != None:
+            GPIO.output(6, GPIO.LOW)
+            GPIO.output(5, GPIO.HIGH)
+            led.ChangeDutyCycle(100)
 
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-       GPIO.output (5, GPIO.LOW)
-       GPIO.output (6, GPIO.LOW)
-       led.ChangeDutyCycle (0)
+        if GPIO != None:
+            GPIO.output(5, GPIO.LOW)
+            GPIO.output(6, GPIO.LOW)
+            led.ChangeDutyCycle(0)
 
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
-        GPIO.output(5,GPIO.LOW)
-        GPIO.output(6,GPIO.LOW)
-        led.ChangeDutyCycle(0)
-        #Uncomment the following after starting the Kodi
-        #with open('/home/pi/.volume.json', 'r') as f:
-               #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})
+        if GPIO != None:
+            GPIO.output(5, GPIO.LOW)
+            GPIO.output(6,GPIO.LOW)
+            led.ChangeDutyCycle(0)
+        # Uncomment the following after starting the Kodi
+        # with open(os.path.expanduser('~/.volume.json'), 'r') as f:
+               # vollevel = json.load(f)
+               # kodi.Application.SetVolume({"volume": vollevel})
         if ismpvplaying():
-            if os.path.isfile("/home/pi/.mediavolume.json"):
-                with open('/home/pi/.mediavolume.json', 'r') as vol:
+            if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
+                with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
                     oldvollevel = json.load(vol)
                 print(oldvollevel)
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
@@ -291,7 +299,7 @@ def main():
         for event in events:
             process_event(event, assistant.device_id)
             usrcmd=event.args
-            with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
+            with open('{}/src/diyHue/config.json'.format(ROOT_PATH), 'r') as config:
                  hueconfig = json.load(config)
             for i in range(1,len(hueconfig['lights'])+1):
                 try:
@@ -343,24 +351,22 @@ def main():
             if 'kickstarter'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kickstarter_tracker(str(usrcmd).lower())
-            if 'trigger'.lower() in str(usrcmd).lower():
+            if 'trigger'.lower() in str(usrcmd).lower() and GPIO != None:
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
             if 'stream'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 os.system('pkill mpv')
-                if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
-                    os.system('rm /home/pi/GassistPi/src/trackchange.py')
+                if os.path.isfile("{}/src/trackchange.py".format(ROOT_PATH)):
+                    os.system('rm {}/src/trackchange.py'.format(ROOT_PATH))
                     if 'autoplay'.lower() in str(usrcmd).lower():
-                        os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
-                        os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
                 else:
                     if 'autoplay'.lower() in str(usrcmd).lower():
-                        os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
-                        os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
+                        os.system('echo "from actions import youtubeplayer\n\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
+                        os.system('echo "youtubeplayer()\n" >> {}/src/trackchange.py'.format(ROOT_PATH))
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
@@ -402,22 +408,22 @@ def main():
                     if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                         if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
                             settingvollevel=100
-                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                            with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                                 json.dump(settingvollevel, vol)
                             mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                         elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
                             settingvollevel=0
-                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                            with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                                 json.dump(settingvollevel, vol)
                             mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                         else:
                             for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                                     json.dump(settingvollevel, vol)
                             mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                     elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                        if os.path.isfile("/home/pi/.mediavolume.json"):
-                            with open('/home/pi/.mediavolume.json', 'r') as vol:
+                        if os.path.isfile(os.path.expanduser("~/.mediavolume.json")):
+                            with open(os.path.expanduser('~/.mediavolume.json'), 'r') as vol:
                                 oldvollevel = json.load(vol)
                                 for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
                                     oldvollevel=int(oldvollevel)
@@ -441,7 +447,7 @@ def main():
                                 settingvollevel==0
                             else:
                                 settingvollevel=newvollevel
-                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                            with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                                 json.dump(settingvollevel, vol)
                             mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                         if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
@@ -458,7 +464,7 @@ def main():
                                 settingvollevel==0
                             else:
                                 settingvollevel=newvollevel
-                            with open('/home/pi/.mediavolume.json', 'w') as vol:
+                            with open(os.path.expanduser('~/.mediavolume.json'), 'w') as vol:
                                 json.dump(settingvollevel, vol)
                             mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                     else:
@@ -472,8 +478,8 @@ def main():
             if 'google music'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 os.system('pkill mpv')
-                if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
-                    os.system('rm /home/pi/GassistPi/src/trackchange.py')
+                if os.path.isfile("{}/src/trackchange.py".format(ROOT_PATH)):
+                    os.system('rm {}/src/trackchange.py'.format(ROOT_PATH))
                     gmusicselect(str(usrcmd).lower())
                 else:
                     gmusicselect(str(usrcmd).lower())
