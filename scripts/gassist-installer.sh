@@ -50,7 +50,7 @@ fi
 
 if [[ $project_id != "" ]]
 then
-    projidmsg="If your Project-Id is $projid then press enter. Else, enter your Google Cloud Console Project-Id: "
+    projidmsg="If your Project-Id is $project_id then press enter. Else, enter your Google Cloud Console Project-Id: "
 
 else
     projidmsg="Enter your Google Cloud Console Project-Id: "
