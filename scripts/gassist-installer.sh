@@ -135,12 +135,12 @@ source env/bin/activate
 
 pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
-if [[ $devmodel = "armv7" ]];then
-	pip install google-assistant-library==0.1.0
-fi
-
 if [[ $board = "RPi" ]];then
 	pip install RPi.GPIO
+fi
+
+if [[ $devmodel = "armv7" ]];then
+	pip install google-assistant-library==0.1.0
 fi
 
 pip install google-assistant-grpc==0.1.0
