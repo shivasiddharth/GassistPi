@@ -18,12 +18,20 @@ scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
 GIT_DIR="$(realpath $(dirname ${BASH_SOURCE[0]})/..)"
 
 
-#check device architecture
+#Check device architecture
 if [[ $(uname -m|grep "armv7") ]]; then
 	devmodel="armv7"
 else
 	devmodel="armv6"
 fi
+
+#Check Board CPU Info
+if [[ $(cat /proc/cpuinfo|grep "BCM") ]]; then
+	board="RPi"
+else
+	board="others"
+fi
+
 
 # make sure we're running as the owner of the checkout directory
 RUN_AS="$(ls -ld "$scripts_dir" | awk 'NR==1 {print $3}')"
@@ -129,6 +137,10 @@ pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
 if [[ $devmodel = "armv7" ]];then
 	pip install google-assistant-library==0.1.0
+fi
+
+if [[ $board = "RPi" ]];then
+	pip install RPi.GPIO
 fi
 
 pip install google-assistant-grpc==0.1.0
