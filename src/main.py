@@ -157,9 +157,6 @@ def process_event(event, device_id):
                 mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
 
 
-
-        print(event)
-
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
       GPIO.output(5,GPIO.LOW)
       GPIO.output(6,GPIO.LOW)
