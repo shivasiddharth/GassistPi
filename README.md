@@ -180,7 +180,7 @@ sudo systemctl enable gassistpi-push-button.service
 sudo systemctl enable stopbutton.service  
 ```  
 
-5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-ggogle.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
+5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
 **To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
