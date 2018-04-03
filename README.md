@@ -126,9 +126,9 @@ speaker-test -t wav
 **********************************************************************   
 
 1. Download credentials--->.json file (
-waiting for updates, do not download the json file from here: https: //developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account.
+The project is currently on 0.4.3, an update behind the official SDK and hence, do not download the json file from here: https: //developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account.
 download your credentials.json from here:
-)https://console.developers.google.com/apis/credentials
+https://console.developers.google.com/apis/credentials )
 
 2. Place the .json file in/home/pi directory **DO NOT RENAME**  
 
