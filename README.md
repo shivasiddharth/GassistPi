@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 2nd-Mar-2018 Update: Features 18,19,20,21     
-**Google has updated the SDK to 0.4.3. so to update, start fresh.**    
+## 20-May-2018 Update:
+**Project Ported to SDK Version 0.5.0. so to update, start fresh.**    
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
