@@ -32,7 +32,7 @@
 **19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
 **20.  Search recipes and get push message of ingredients and link to recipe.**    
 **21.  Remote control of Magic Mirror.**  
-
+**22.  Sending voice messages from the phone to the raspberry.**
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -125,12 +125,14 @@ speaker-test -t wav
 ## **CONTINUE after SETTING UP AUDIO**
 **********************************************************************   
 
-1. Download credentials--->.json file (
-The project is currently on 0.4.3, an update behind the official SDK and hence, **do not** download the json file from                     https: //developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account.
-**Download your credentials.json from here:**  
-https://console.developers.google.com/apis/credentials )
+1. Register the device to get the file credentials.json
+(https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account)
 
-2. Place the .json file in/home/pi directory **DO NOT RENAME**  
+then continue with
+
+(https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device)
+
+2. Place the credentials.json file in/home/pi directory **DO NOT RENAME**  
 
 3. Use the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
@@ -613,7 +615,10 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | 'Wild Blue Yonder' | 'Wild Strawberry' | 'Wild Watermelon' | 'Wisteria' | 'Yellow' | 'Yellow Green' |  
 | 'Yellow Orange' |  
 
-
+************************************************  
+### **Sending voice messages from the phone to the raspberry**  
+************************************************
+1. https://support.google.com/googlehome/answer/7531913.
 ************************************************  
 ### **LIST OF GPIOs USED**  
 ************************************************  
