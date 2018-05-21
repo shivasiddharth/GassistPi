@@ -14,22 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import print_function
 from kodijson import Kodi, PLAYER_VIDEO
 import RPi.GPIO as GPIO
 import argparse
-import os.path
-import os
 import json
+import os.path
+import pathlib2 as pathlib
+import os
 import subprocess
 import re
 import psutil
 import logging
-import google.auth.transport.requests
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
-DEVICE_API_URL = 'https://embeddedassistant.googleapis.com/v1alpha2'
+from google.assistant.library.device_helpers import register_device
 from actions import say
 from actions import Action
 from actions import YouTube_No_Autoplay
@@ -50,6 +51,19 @@ from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
 
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+
+WARNING_NOT_REGISTERED = """
+    This device is not registered. This means you will not be able to use
+    Device Actions or see your device in Assistant Settings. In order to
+    register this device follow instructions at:
+
+    https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device
+"""
 
 logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
@@ -127,7 +141,7 @@ def process_device_actions(event, device_id):
                                         yield e['command'], None
 
 
-def process_event(event, device_id):
+def process_event(event):
     """Pretty prints events.
     Prints all events that occur with two spaces between each new
     conversation and a single space between turns of a conversation.
@@ -209,9 +223,8 @@ def process_event(event, device_id):
         print()
 
     if event.type == EventType.ON_DEVICE_ACTION:
-        for command, params in process_device_actions(event, device_id):
+        for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
-
 
 def register_device(project_id, credentials, device_model_id, device_id):
     """Register the device if needed.
@@ -245,6 +258,20 @@ def register_device(project_id, credentials, device_model_id, device_id):
 def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('--device-model-id', '--device_model_id', type=str,
+                        metavar='DEVICE_MODEL_ID', required=False,
+                        help='the device model ID registered with Google')
+    parser.add_argument('--project-id', '--project_id', type=str,
+                        metavar='PROJECT_ID', required=False,
+                        help='the project ID used to register this device')
+    parser.add_argument('--device-config', type=str,
+                        metavar='DEVICE_CONFIG_FILE',
+                        default=os.path.join(
+                            os.path.expanduser('~/.config'),
+                            'googlesamples-assistant',
+                            'device_config_library.json'
+                        ),
+                        help='path to store and read device configuration')
     parser.add_argument('--credentials', type=existing_file,
                         metavar='OAUTH2_CREDENTIALS_FILE',
                         default=os.path.join(
@@ -252,37 +279,59 @@ def main():
                             'google-oauthlib-tool',
                             'credentials.json'
                         ),
-                        help='Path to store and read OAuth2 credentials')
-    parser.add_argument('--device_model_id', type=str,
-                        metavar='DEVICE_MODEL_ID', required=True,
-                        help='The device model ID registered with Google.')
-    parser.add_argument(
-        '--project_id',
-        type=str,
-        metavar='PROJECT_ID',
-        required=False,
-        help='The project ID used to register device instances.')
-    parser.add_argument(
-        '-v',
-        '--version',
-        action='version',
-        version='%(prog)s ' +
-        Assistant.__version_str__())
+                        help='path to store and read OAuth2 credentials')
+    parser.add_argument('-v', '--version', action='version',
+                        version='%(prog)s ' + Assistant.__version_str__())
 
     args = parser.parse_args()
     with open(args.credentials, 'r') as f:
         credentials = google.oauth2.credentials.Credentials(token=None,
                                                             **json.load(f))
-    with Assistant(credentials, args.device_model_id) as assistant:
+
+    device_model_id = None
+    last_device_id = None
+    try:
+        with open(args.device_config) as f:
+            device_config = json.load(f)
+            device_model_id = device_config['model_id']
+            last_device_id = device_config.get('last_device_id', None)
+    except FileNotFoundError:
+        pass
+
+    if not args.device_model_id and not device_model_id:
+        raise Exception('Missing --device-model-id option')
+
+    # Re-register if "device_model_id" is given by the user and it differs
+    # from what we previously registered with.
+    should_register = (
+        args.device_model_id and args.device_model_id != device_model_id)
+
+    device_model_id = args.device_model_id or device_model_id
+    with Assistant(credentials, device_model_id) as assistant:
         subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         events = assistant.start()
-        print('device_model_id:', args.device_model_id + '\n' +
-              'device_id:', assistant.device_id + '\n')
-        if args.project_id:
-            register_device(args.project_id, credentials,
-                            args.device_model_id, assistant.device_id)
+
+        device_id = assistant.device_id
+        print('device_model_id:', device_model_id)
+        print('device_id:', device_id + '\n')
+
+        # Re-register if "device_id" is different from the last "device_id":
+        if should_register or (device_id != last_device_id):
+            if args.project_id:
+                register_device(args.project_id, credentials,
+                                device_model_id, device_id)
+                pathlib.Path(os.path.dirname(args.device_config)).mkdir(
+                    exist_ok=True)
+                with open(args.device_config, 'w') as f:
+                    json.dump({
+                        'last_device_id': device_id,
+                        'model_id': device_model_id,
+                    }, f)
+            else:
+                print(WARNING_NOT_REGISTERED)
+
         for event in events:
-            process_event(event, assistant.device_id)
+            process_event(event)
             usrcmd=event.args
             with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
                  hueconfig = json.load(config)
