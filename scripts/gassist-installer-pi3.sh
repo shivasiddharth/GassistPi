@@ -54,9 +54,10 @@ env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
 
 pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
-pip install --upgrade google-assistant-library
-pip install --upgrade google-assistant-sdk[samples]
-pip install --upgrade google-auth-oauthlib[tool]
+pip install google-assistant-library==1.0.0
+pip install google-assistant-grpc==0.2.0
+pip install google-assistant-sdk==0.5.0
+pip install google-assistant-sdk[samples]==0.5.0
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets /home/pi/credentials.json
