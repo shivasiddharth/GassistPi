@@ -6,7 +6,7 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 20-May-2018 Update:
+## 24-May-2018 Update:
 **Project Ported to SDK Version 0.5.0. so to update, start fresh.**    
 *******************************************************************************************************************************
 
