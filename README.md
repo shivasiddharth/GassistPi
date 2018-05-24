@@ -125,12 +125,7 @@ speaker-test -t wav
 ## **CONTINUE after SETTING UP AUDIO**
 **********************************************************************   
 
-1. Register the device to get the file credentials.json
-(https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account)
-
-then continue with
-
-(https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device)
+1. Follow the instructions [here](https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account) to Configure a Developer Project and Account Settings. Then follow this [guide](https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device) to register the device and obtain the credentials.json file.  
 
 2. Place the credentials.json file in/home/pi directory **DO NOT RENAME**  
 
