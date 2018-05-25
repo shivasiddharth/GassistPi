@@ -10,29 +10,32 @@ about: Issues to be Reported in this format
 ```
 
 
-### 1. Is the issue related to assistant installation ?
+### Did you go through or search the issues section to check if your issue was already discussed (either currently open issues or closed issues).
 Yes/No
 
-## If answer to question 1 is Yes, then paste the contents of the terminal below.
-
-```
-
-```
-
-## If answer to question 1 is No, then proceed further.
-### 2. Does the assistant service start normally?
+### 2. Is the issue related to assistant installation ?
 Yes/No
 
-### 3. Is the assistant service restarting automatically?
+## If answer to question 2 is Yes, then paste the contents of the terminal below.
+
+```
+
+```
+
+## If answer to question 2 is No, then proceed further.
+### 3. Does the assistant service start normally?
 Yes/No
 
-## If answer to question 3 is Yes, then paste the contents of the terminal below.
+### 4. Is the assistant service restarting automatically?
+Yes/No
+
+## If answer to question 4 is Yes, then paste the contents of the terminal below.
 
 ```
 
 ```
 
-## If answer to question 3 is No, then proceed further.
+## If answer to question 4 is No, then proceed further.
 ### Manually start the assistant. For guidelines to start the assistant manually refer [this](https://github.com/shivasiddharth/GassistPi#manually-start-the-assistant)
 
 ### Paste the command below, that crashed the assistant
