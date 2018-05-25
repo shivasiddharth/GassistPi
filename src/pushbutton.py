@@ -14,7 +14,6 @@
 
 """Sample that implements a gRPC client for the Google Assistant API."""
 
-
 import concurrent.futures
 import json
 import logging
@@ -22,18 +21,17 @@ import os
 import os.path
 import pathlib2 as pathlib
 import sys
+import time
 import uuid
 import RPi.GPIO as GPIO
 import argparse
 import subprocess
 import click
 import grpc
-import time
 import psutil
 import logging
 import re
 import requests
-import pathlib2 as pathlib
 from actions import say
 import google.auth.transport.grpc
 import google.auth.transport.requests
@@ -129,7 +127,7 @@ def ismpvplaying():
         else:
             mpvactive=False
     return mpvactive
-
+    
 
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
@@ -248,16 +246,12 @@ class SampleAssistant(object):
             assistant_helpers.log_assist_response_without_audio(resp)
             if resp.event_type == END_OF_UTTERANCE:
                 logging.info('End of audio request detected.')
-				logging.info('Stopping recording.')
-                GPIO.output(5,GPIO.LOW)
-                led.ChangeDutyCycle(0)
+                logging.info('Stopping recording.')
                 self.conversation_stream.stop_recording()
-
             if resp.speech_results:
                 logging.info('Transcript of user request: "%s".',
                              ' '.join(r.transcript
                                       for r in resp.speech_results))
-
                 for r in resp.speech_results:
                     usercommand=str(r)
 
@@ -463,9 +457,13 @@ class SampleAssistant(object):
                         continue
                 GPIO.output(5,GPIO.LOW)
                 GPIO.output(6,GPIO.HIGH)
-                led.ChangeDutyCycle(50)
-                logging.info('Playing assistant response.')
+                led.ChangeDutyCycle(50)                      
+                                      
             if len(resp.audio_out.audio_data) > 0:
+                if not self.conversation_stream.playing:
+                    self.conversation_stream.stop_recording()
+                    self.conversation_stream.start_playback()
+                    logging.info('Playing assistant response.')
                 self.conversation_stream.write(resp.audio_out.audio_data)
             if resp.dialog_state_out.conversation_state:
                 conversation_state = resp.dialog_state_out.conversation_state
@@ -491,11 +489,6 @@ class SampleAssistant(object):
                             oldvollevel = json.load(vol)
                             print(oldvollevel)
                         mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
-
-                #Uncomment the following, after starting Kodi
-                #with open('/home/pi/.volume.json', 'r') as f:
-                    #vollevel = json.load(f)
-                    #kodi.Application.SetVolume({"volume": vollevel})
                 continue_conversation = False
             if resp.device_action.device_request_json:
                 device_request = json.loads(
@@ -513,13 +506,16 @@ class SampleAssistant(object):
             concurrent.futures.wait(device_actions_futures)
 
         logging.info('Finished playing assistant response.')
+        GPIO.output(6,GPIO.LOW)
+        GPIO.output(5,GPIO.LOW)
+        led.ChangeDutyCycle(0)
+                       
         self.conversation_stream.stop_playback()
         return continue_conversation
 
     def gen_assist_requests(self):
         """Yields: AssistRequest messages to send to the API."""
 
-        
         config = embedded_assistant_pb2.AssistConfig(
             audio_in_config=embedded_assistant_pb2.AudioInConfig(
                 encoding='LINEAR16',
@@ -708,8 +704,6 @@ def main(api_endpoint, credentials, project_id,
         sample_width=audio_sample_width,
     )
 
-   
-
     if not device_id or not device_model_id:
         try:
             with open(device_config) as f:
@@ -799,7 +793,6 @@ def main(api_endpoint, credentials, project_id,
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
             wait_for_user_trigger = not continue_conversation
-
 
             # If we only want one conversation, break.
             if once and (not continue_conversation):
