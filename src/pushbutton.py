@@ -579,7 +579,7 @@ class SampleAssistant(object):
               help='Path to save and restore the device configuration')
 @click.option('--lang', show_default=True,
               metavar='<language code>',
-              default='us-US',
+              default='en-US',
               help='Language code of the Assistant')
 @click.option('--display', is_flag=True, default=False,
               help='Enable visual display of Assistant responses in HTML.')
