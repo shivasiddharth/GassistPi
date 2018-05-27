@@ -26,7 +26,7 @@ then
 fi
 clear
 echo ""
-read -r -p "Enter the your full credential file name including .json extension: " credname
+read -r -p "Enter the your full credential file name including the path and .json extension: " credname
 echo ""
 read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
