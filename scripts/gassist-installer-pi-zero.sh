@@ -61,6 +61,6 @@ pip install google-assistant-sdk==0.5.0
 pip install google-assistant-sdk[samples]==0.5.0
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
           --scope https://www.googleapis.com/auth/gcm \
-          --save --headless --client-secrets $credname
+          --save --headless --client-secrets /home/pi/credentials.json
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 googlesamples-assistant-pushtotalk --project-id $projid --device-model-id $modelid
