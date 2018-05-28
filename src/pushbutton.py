@@ -73,10 +73,10 @@ except (SystemError, ImportError):
     import audio_helpers
     import browser_helpers
     import device_helpers
-
-logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+#if you uncomment does not print anything and gets stuck after some requested command
+#logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
+#                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+#logger=logging.getLogger(__name__)
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -483,13 +483,14 @@ class SampleAssistant(object):
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
-                if ismpvplaying():
-                    if os.path.isfile("/home/pi/.mediavolume.json"):
-                        with open('/home/pi/.mediavolume.json', 'r') as vol:
-                            oldvollevel = json.load(vol)
-                            print(oldvollevel)
-                        mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
-                continue_conversation = False
+         #if it is uncomment, after some commands it goes in block
+		 #       if ismpvplaying():
+          #          if os.path.isfile("/home/pi/.mediavolume.json"):
+           #             with open('/home/pi/.mediavolume.json', 'r') as vol:
+            #                oldvollevel = json.load(vol)
+             #               print(oldvollevel)
+              #          mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
+               # continue_conversation = False
             if resp.device_action.device_request_json:
                 device_request = json.loads(
                     resp.device_action.device_request_json
@@ -800,7 +801,4 @@ def main(api_endpoint, credentials, project_id,
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as error:
-        logger.exception(error)
+    main()
