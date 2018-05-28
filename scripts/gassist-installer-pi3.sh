@@ -29,8 +29,6 @@ read -r -p "Enter the your full credential file name including the path and .jso
 echo ""
 read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
-read -r -p "Enter a product name for your device (product name should not have space in between): " prodname
-echo ""
 read -r -p "Enter the modelid that was generated in the actions console: " modelid
 echo ""
 echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
@@ -60,6 +58,6 @@ pip install google-assistant-sdk==0.5.0
 pip install google-assistant-sdk[samples]==0.5.0
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
           --scope https://www.googleapis.com/auth/gcm \
-          --save --headless --client-secrets /home/pi/credentials.json
+          --save --headless --client-secrets $credname
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
