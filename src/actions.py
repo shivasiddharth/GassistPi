@@ -175,9 +175,11 @@ def media_manager(tracks,type):
     check_delete("/home/pi/.trackqueue.json")
     with open('/home/pi/.trackqueue.json', 'w') as output_file:
         json.dump(tracks, output_file)
+    currenttrackid=0
     nexttrackid=currenttrackid+1
     loopstatus='on'
     musictype=type
+    numtracks=len(tracks)
     playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
     with open('/home/pi/.player.json', 'w') as output_file:
         json.dump(playerinfo, output_file)
@@ -991,20 +993,18 @@ def gmusicselect(phrase):
             googlemusic_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-    else:
-        say("Sorry I am unable to help")
+    
 
     if 'playlist'.lower() in phrase:
         if 'first'.lower() in phrase or 'one'.lower() in phrase  or '1'.lower() in phrase:
             say("Playing songs from your playlist")
-            tracks,numtracks=loadplaylist(playlistnum)
+            tracks,numtracks=loadplaylist(0)
             if not tracks==[]:
                 media_manager(tracks,'Google Music')
                 googlemusic_player(currenttrackid)
             else:
                 say("Unable to find songs matching your request")
-        else:
-            say("Sorry I am unable to help")
+        
 
     if 'album'.lower() in phrase:
         req=phrase
@@ -1020,7 +1020,7 @@ def gmusicselect(phrase):
         album=album.strip()
         print(album)
         say("Looking for songs from the album")
-        tracks,numtracks=loadalbum(albumname)
+        tracks,numtracks=loadalbum(album)
         if not tracks==[]:
             media_manager(tracks,'Google Music')
             googlemusic_player(currenttrackid)
@@ -1041,7 +1041,7 @@ def gmusicselect(phrase):
         artist=artist.strip()
         print(artist)
         say("Looking for songs rendered by the artist")
-        tracks,numtracks=loadartist(artistname)
+        tracks,numtracks=loadartist(artist)
         if not tracks==[]:
             media_manager(tracks,'Google Music')
             googlemusic_player(currenttrackid)
