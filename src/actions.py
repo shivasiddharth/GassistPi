@@ -26,7 +26,10 @@ import pafy
 import pychromecast
 
 
+# Creating VLC player Instance
 vlc = Instance()
+player = vlc.media_player_new()
+
 
 #API Key for YouTube and KS Search Engine
 google_cloud_api_key='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
@@ -186,7 +189,6 @@ def media_manager(tracks,type):
 
 
 def media_player(track):
-    player = vlc.media_player_new()
     media = vlc.media_new(track)
     player.set_media(media)
     player.play()
@@ -993,7 +995,7 @@ def gmusicselect(phrase):
             googlemusic_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-    
+
 
     if 'playlist'.lower() in phrase:
         if 'first'.lower() in phrase or 'one'.lower() in phrase  or '1'.lower() in phrase:
@@ -1004,7 +1006,7 @@ def gmusicselect(phrase):
                 googlemusic_player(currenttrackid)
             else:
                 say("Unable to find songs matching your request")
-        
+
 
     if 'album'.lower() in phrase:
         req=phrase

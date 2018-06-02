@@ -50,6 +50,7 @@ from actions import chromecast_control
 from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
+from actions import player
 
 try:
     FileNotFoundError
@@ -158,17 +159,10 @@ def process_event(event):
         #kodi.Application.SetVolume({"volume": 0})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
+        if player.is_playing():
+            player.pause()
         print()
-        if ismpvplaying():
-            if os.path.isfile("/home/pi/.mediavolume.json"):
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
-            else:
-                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                output=mpvgetvol.communicate()[0]
-                for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                    with open('/home/pi/.mediavolume.json', 'w') as vol:
-                        json.dump(currntvol, vol)
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+
 
 
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
@@ -179,12 +173,8 @@ def process_event(event):
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
                #kodi.Application.SetVolume({"volume": vollevel})
-      if ismpvplaying():
-          if os.path.isfile("/home/pi/.mediavolume.json"):
-              with open('/home/pi/.mediavolume.json', 'r') as vol:
-                  oldvollevel = json.load(vol)
-              print(oldvollevel)
-              mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
+      if player.get_state()==vlc.State.Paused:
+          player.play()
 
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
@@ -213,12 +203,8 @@ def process_event(event):
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
                #kodi.Application.SetVolume({"volume": vollevel})
-        if ismpvplaying():
-            if os.path.isfile("/home/pi/.mediavolume.json"):
-                with open('/home/pi/.mediavolume.json', 'r') as vol:
-                    oldvollevel = json.load(vol)
-                print(oldvollevel)
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
+        if player.get_state()==vlc.State.Paused:
+            player.play()
 
         print()
 
