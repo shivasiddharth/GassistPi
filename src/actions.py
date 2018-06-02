@@ -9,6 +9,7 @@ from googleapiclient.errors import HttpError
 from gmusicapi import Mobileclient
 from googletrans import Translator
 from pushbullet import Pushbullet
+from vlc import EventType, Instance
 from gtts import gTTS
 import requests
 import os
@@ -23,6 +24,9 @@ import json
 import urllib.request
 import pafy
 import pychromecast
+
+
+vlc = Instance()
 
 #API Key for YouTube and KS Search Engine
 google_cloud_api_key='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
@@ -138,6 +142,37 @@ language='en'
 ##'si'    : 'Sinhala'           'sk' : 'Slovak'             'es' : 'Spanish'     'sw'    : 'Swahili'
 ##'sv'    : 'Swedish'           'ta' : 'Tamil'              'th' : 'Thai'        'tr'    : 'Turkish'
 ##'uk'    : 'Ukrainian'         'vi' : 'Vietnamese'         'cy' : 'Welsh'
+
+
+
+
+
+def end_callback(event):
+    if os.path.isfile("/home/pi/.player.json"):
+        with open('/home/pi/.player.json','r') as input_file:
+              playerinfo= json.load(input_file)
+        currenttrackid=playerinfo[0]
+        loopstatus=playerinfo[2]
+        numtracks=playerinfo[1]
+        musictype=playerinfo[3]
+        nexttrackid=currenttrackid+1
+        playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
+        with open('/home/pi/.player.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+        if currenttrackid<numtracks:
+            if musictype=='Google Music':
+                playmusic(currenttrackid)               
+    
+    
+    
+
+def media_player(track):
+    player = vlc.media_player_new()
+    media = vlc.media_new(track)
+    player.set_media(media)
+    player.play()
+    event_manager = player.event_manager()
+    event_manager.event_attach(EventType.MediaPlayerEndReached, end_callback)
 
 
 #Function for google KS custom search engine
@@ -921,204 +956,45 @@ def refreshlists():
         json.dump(songs_list, output_file)
     with open('/home/pi/playlist.json', 'w') as output_file:
         json.dump(playlist_list, output_file)
-    say("Music list synchronised")
+    say("Music list synchronised")    
 
-def play_playlist(playlistnum):
-
-    if os.path.isfile("/home/pi/.gmusicplaylistplayer.json"):
-        with open('/home/pi/.gmusicplaylistplayer.json','r') as input_file:
-            playerinfo= json.load(input_file)
-        currenttrackid=playerinfo[0]
-        loopstatus=playerinfo[1]
-        nexttrackid=currenttrackid+1
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-    else:
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-
-    tracks,numtracks=loadplaylist(playlistnum)
-    startingvol=mpvvolmgr()
-
-    if not tracks==[]:
-        if currenttrackid<numtracks:
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='on':
-            currenttrackid=0
-            nexttrackid=1
-            loopstatus='on'
-            playerinfo=[nexttrackid,loopstatus]
-            with open('/home/pi/.gmusicplaylistplayer.json', 'w') as output_file:
-                json.dump(playerinfo,output_file)
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='off':
-            print("Error")
-    else:
-        say("No matching results found")
-
-
-def play_songs():
-
-    if os.path.isfile("/home/pi/.gmusicsongsplayer.json"):
-        with open('/home/pi/.gmusicsongsplayer.json','r') as input_file:
-            playerinfo= json.load(input_file)
-        currenttrackid=playerinfo[0]
-        loopstatus=playerinfo[1]
-        nexttrackid=currenttrackid+1
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-    else:
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-
-    tracks,numtracks=loadsonglist()
-    startingvol=mpvvolmgr()
-
-    if not tracks==[]:
-        if currenttrackid<numtracks:
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='on':
-            currenttrackid=0
-            nexttrackid=1
-            loopstatus='on'
-            playerinfo=[nexttrackid,loopstatus]
-            with open('/home/pi/.gmusicsongsplayer.json', 'w') as output_file:
-                json.dump(playerinfo,output_file)
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='off':
-            print("Error")
-    else:
-        say("No matching results found")
-
-
-def play_album(albumname):
-    if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
-        with open('/home/pi/.gmusicalbumplayer.json','r') as input_file:
-            playerinfo= json.load(input_file)
-        currenttrackid=playerinfo[0]
-        loopstatus=playerinfo[1]
-        nexttrackid=currenttrackid+1
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-    else:
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-
-    tracks,numtracks=loadalbum(albumname)
-    startingvol=mpvvolmgr()
-
-    if not tracks==[]:
-        if currenttrackid<numtracks:
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='on':
-            currenttrackid=0
-            nexttrackid=1
-            loopstatus='on'
-            playerinfo=[nexttrackid,loopstatus]
-            with open('/home/pi/.gmusicalbumplayer.json', 'w') as output_file:
-                json.dump(playerinfo,output_file)
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='off':
-            print("Error")
-    else:
-        say("No matching results found")
-
-
-
-def play_artist(artistname):
-    if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
-        with open('/home/pi/.gmusicartistplayer.json','r') as input_file:
-            playerinfo= json.load(input_file)
-        currenttrackid=playerinfo[0]
-        loopstatus=playerinfo[1]
-        nexttrackid=currenttrackid+1
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-    else:
-        currenttrackid=0
-        nexttrackid=1
-        loopstatus='on'
-        playerinfo=[nexttrackid,loopstatus]
-        with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-
-    tracks,numtracks=loadartist(artistname)
-    startingvol=mpvvolmgr()
-
-    if not tracks==[]:
-        if currenttrackid<numtracks:
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='on':
-            currenttrackid=0
-            nexttrackid=1
-            loopstatus='on'
-            playerinfo=[nexttrackid,loopstatus]
-            with open('/home/pi/.gmusicartistplayer.json', 'w') as output_file:
-                json.dump(playerinfo,output_file)
-            streamurl=api.get_stream_url(tracks[currenttrackid])
-            streamurl=("'"+streamurl+"'")
-            print(streamurl)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+streamurl+' &')
-        elif currenttrackid>=numtracks and loopstatus=='off':
-            print("Error")
-    else:
-        say("No matching results found")
+def playmusic(trackid):
+    with open('/home/pi/.trackqueue.json','r') as input_file:
+            tracks= json.load(input_file)
+    streamurl=api.get_stream_url(tracks[trackid])
+    media_player(streamurl)
+    
 
 def gmusicselect(phrase):
-    os.system('echo "from actions import play_playlist\nfrom actions import play_songs\nfrom actions import play_album\nfrom actions import play_artist\n\n" >> /home/pi/GassistPi/src/trackchange.py')
+    currenttrackid=0
     if 'all the songs'.lower() in phrase:
-        os.system('echo "play_songs()\n" >> /home/pi/GassistPi/src/trackchange.py')
+        if os.path.isfile("/home/pi/.player.json"):
+            os.system("rm /home/pi/.player.json")
         say("Playing all your songs")
-        play_songs()
+        tracks,numtracks=loadsonglist()        
+        with open('/home/pi/.trackqueue.json', 'w') as output_file:
+            json.dump(tracks, output_file)
+        nexttrackid=currenttrackid+1
+        loopstatus='on'
+        musictype='Google Music'
+        playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
+        with open('/home/pi/.player.json', 'w') as output_file:
+            json.dump(playerinfo, output_file)
+        playmusic(currenttrackid)
 
-    if 'playlist'.lower() in phrase:
+    if 'playlist'.lower() in phrase:        
         if 'first'.lower() in phrase or 'one'.lower() in phrase  or '1'.lower() in phrase:
-            os.system('echo "play_playlist(0)\n" >> /home/pi/GassistPi/src/trackchange.py')
+            if os.path.isfile("/home/pi/.player.json"):
+               os.system("rm /home/pi/.player.json")
             say("Playing songs from your playlist")
-            play_playlist(0)
+            tracks,numtracks=loadplaylist(playlistnum)
+            
         else:
             say("Sorry I am unable to help")
 
     if 'album'.lower() in phrase:
-        if os.path.isfile("/home/pi/.gmusicalbumplayer.json"):
-            os.system("rm /home/pi/.gmusicalbumplayer.json")
+        if os.path.isfile("/home/pi/.player.json"):
+            os.system("rm /home/pi/.player.json")
 
         req=phrase
         idx=(req).find('album')
@@ -1133,16 +1009,13 @@ def gmusicselect(phrase):
 
         album=album.strip()
         print(album)
-        albumstr=('"'+album+'"')
-        f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
-        f.write('play_album('+albumstr+')')
-        f.close()
         say("Looking for songs from the album")
+        tracks,numtracks=loadalbum(albumname)
         play_album(album)
 
     if 'artist'.lower() in phrase:
-        if os.path.isfile("/home/pi/.gmusicartistplayer.json"):
-            os.system("rm /home/pi/.gmusicartistplayer.json")
+        if os.path.isfile("/home/pi/.player.json"):
+            os.system("rm /home/pi/.player.json")
 
         req=phrase
         idx=(req).find('artist')
@@ -1156,12 +1029,9 @@ def gmusicselect(phrase):
             artist = artist.replace('google music','',1)
 
         artist=artist.strip()
-        print(artist)
-        artiststr=('"'+artist+'"')
-        f = open('/home/pi/GassistPi/src/trackchange.py', 'a+')
-        f.write('play_artist('+artiststr+')')
-        f.close()
+        print(artist)       
         say("Looking for songs rendered by the artist")
+        tracks,numtracks=loadartist(artistname)
         play_artist(artist)
 
 
