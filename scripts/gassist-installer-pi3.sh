@@ -36,15 +36,6 @@ cd /home/pi/
 sudo apt-get update -y
 
 sed 's/#.*//' /home/pi/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
-if [ ! -d /home/pi/.config/mpv/scripts/ ]; then
-  mkdir -p /home/pi/.config/mpv/scripts/
-fi
-if [ -f /home/pi/GassistPi/src/end.lua ]; then
-  mv /home/pi/GassistPi/src/end.lua /home/pi/.config/mpv/scripts/end.lua
-fi
-if [ -f /home/pi/GassistPi/src/mpv.conf ]; then
-  mv /home/pi/GassistPi/src/mpv.conf /home/pi/.config/mpv/mpv.conf
-fi
 
 
 python3 -m venv env

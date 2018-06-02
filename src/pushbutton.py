@@ -54,6 +54,7 @@ from actions import chromecast_control
 from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
+from actions import player
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -100,7 +101,6 @@ GPIO.output(6, GPIO.LOW)
 led=GPIO.PWM(25,1)
 led.start(0)
 
-mpvactive=False
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -110,6 +110,16 @@ tasmota_deviceip=['192.168.1.35','192.168.1.36']
 #Magic Mirror Remote Control Declarations
 mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
 
+# Check if VLC is paused
+def checkvlcpaused():
+    state=player.get_state()
+    if str(state)=="State.Paused":
+        currentstate=True
+    else:
+        currentstate=False
+    return currentstate
+
+
 ASSISTANT_API_ENDPOINT = 'embeddedassistant.googleapis.com'
 END_OF_UTTERANCE = embedded_assistant_pb2.AssistResponse.END_OF_UTTERANCE
 DIALOG_FOLLOW_ON = embedded_assistant_pb2.DialogStateOut.DIALOG_FOLLOW_ON
@@ -117,17 +127,7 @@ CLOSE_MICROPHONE = embedded_assistant_pb2.DialogStateOut.CLOSE_MICROPHONE
 PLAYING = embedded_assistant_pb2.ScreenOutConfig.PLAYING
 DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
-#Function to check if mpv is playing
-def ismpvplaying():
-    for pid in psutil.pids():
-        p=psutil.Process(pid)
-        if 'mpv'in p.name():
-            mpvactive=True
-            break
-        else:
-            mpvactive=False
-    return mpvactive
-    
+
 
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
@@ -220,16 +220,15 @@ class SampleAssistant(object):
         #kodi.Application.SetVolume({"volume": 0})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
-        if ismpvplaying():
+        if player.is_playing():
             if os.path.isfile("/home/pi/.mediavolume.json"):
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+                player.audio_set_volume(15)
             else:
-                mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                output=mpvgetvol.communicate()[0]
-                for currntvol in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                    with open('/home/pi/.mediavolume.json', 'w') as vol:
-                        json.dump(currntvol, vol)
-                mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume","10"]})+"' | socat - /tmp/mpvsocket")
+                currentvolume=player.audio_get_volume()
+                print(currentvolume)
+                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                   json.dump(currentvolume, vol)
+                player.audio_set_volume(15)
 
         logging.info('Recording audio request.')
 
@@ -265,11 +264,6 @@ class SampleAssistant(object):
                     usrcmd=usrcmd.replace('"','',1)
                     usrcmd=usrcmd.strip()
                     print(str(usrcmd))
-                    for num, name in enumerate(tasmota_devicelist):
-                        if name.lower() in str(usrcmd).lower():
-                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
-                            return continue_conversation
-                            break
                     with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
                          hueconfig = json.load(config)
                     for i in range(1,len(hueconfig['lights'])+1):
@@ -281,6 +275,11 @@ class SampleAssistant(object):
                         except Keyerror:
                             say('Unable to help, please check your config file')
 
+                    for num, name in enumerate(tasmota_devicelist):
+                        if name.lower() in str(usrcmd).lower():
+                            assistant.stop_conversation()
+                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                            break
                     if 'magic mirror'.lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
                         try:
@@ -318,77 +317,67 @@ class SampleAssistant(object):
                         assistant.stop_conversation()
                         kickstarter_tracker(str(usrcmd).lower())
                     if 'trigger'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
                         Action(str(usrcmd).lower())
-                        return continue_conversation
                     if 'stream'.lower() in str(usrcmd).lower():
-                        os.system('pkill mpv')
-                        if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
-                            os.system('rm /home/pi/GassistPi/src/trackchange.py')
-                            os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
-                            os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
-                            if 'autoplay'.lower() in str(usrcmd).lower():
-                                YouTube_Autoplay(str(usrcmd).lower())
-                            else:
-                                YouTube_No_Autoplay(str(usrcmd).lower())
+                        assistant.stop_conversation()
+                        player.stop()
+                        if 'autoplay'.lower() in str(usrcmd).lower():
+                            YouTube_Autoplay(str(usrcmd).lower())
                         else:
-                            os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/GassistPi/src/trackchange.py')
-                            os.system('echo "youtubeplayer()\n" >> /home/pi/GassistPi/src/trackchange.py')
-                            if 'autoplay'.lower() in str(usrcmd).lower():
-                                YouTube_Autoplay(str(usrcmd).lower())
-                            else:
-                                YouTube_No_Autoplay(str(usrcmd).lower())
-                        return continue_conversation
+                            YouTube_No_Autoplay(str(usrcmd).lower())
                     if 'stop'.lower() in str(usrcmd).lower():
                         stop()
-                        return continue_conversation
                     if 'radio'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
                         radio(str(usrcmd).lower())
-                        return continue_conversation
                     if 'wireless'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
                         ESP(str(usrcmd).lower())
-                        return continue_conversation
                     if 'parcel'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
                         track()
-                        return continue_conversation
                     if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
                         feed(str(usrcmd).lower())
-                        return continue_conversation
                     if 'on kodi'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
                         kodiactions(str(usrcmd).lower())
-                        return continue_conversation
-                    if 'chromecast'.lower() in str(usrcmd).lower():
-                        if 'play'.lower() in str(usrcmd).lower():
-                            chromecast_play_video(str(usrcmd).lower())
-                        else:
-                            chromecast_control(usrcmd)
-                        return continue_conversation
+                    # Google Assistant now comes built in with chromecast control, so custom function has been commented
+                    # if 'chromecast'.lower() in str(usrcmd).lower():
+                    #     assistant.stop_conversation()
+                    #     if 'play'.lower() in str(usrcmd).lower():
+                    #         chromecast_play_video(str(usrcmd).lower())
+                    #     else:
+                    #         chromecast_control(usrcmd)
                     if 'pause music'.lower() in str(usrcmd).lower() or 'resume music'.lower() in str(usrcmd).lower():
-                        if ismpvplaying():
+                        assistant.stop_conversation()
+                        if player.is_playing():
                             if 'pause music'.lower() in str(usrcmd).lower():
-                                playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", True]})+"' | socat - /tmp/mpvsocket")
-                            elif 'resume music'.lower() in str(usrcmd).lower():
-                                playstatus=os.system("echo '"+json.dumps({ "command": ["set_property", "pause", False]})+"' | socat - /tmp/mpvsocket")
-                        else:
+                                player.pause()
+                        if checkvlcpaused():
+                            if 'resume music'.lower() in str(usrcmd).lower():
+                                player.play()
+                        elif player.is_playing()==False and checkvlcpaused()==False:
                             say("Sorry nothing is playing right now")
-                        return continue_conversation
                     if 'music volume'.lower() in str(usrcmd).lower():
-                        if ismpvplaying():
+                        assistant.stop_conversation()
+                        if player.is_playing()==True or checkvlcpaused()==True:
                             if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                                 if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
                                     settingvollevel=100
                                     with open('/home/pi/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
-                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                                 elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
                                     settingvollevel=0
                                     with open('/home/pi/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
-                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
                                 else:
                                     for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
                                         with open('/home/pi/.mediavolume.json', 'w') as vol:
                                             json.dump(settingvollevel, vol)
-                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                                print('Setting volume to: '+str(settingvollevel))
+                                player.audio_set_volume(int(settingvollevel))
                             elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                 if os.path.isfile("/home/pi/.mediavolume.json"):
                                     with open('/home/pi/.mediavolume.json', 'r') as vol:
@@ -396,11 +385,9 @@ class SampleAssistant(object):
                                         for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
                                             oldvollevel=int(oldvollevel)
                                 else:
-                                    mpvgetvol=subprocess.Popen([("echo '"+json.dumps({ "command": ["get_property", "volume"]})+"' | socat - /tmp/mpvsocket")],shell=True, stdout=subprocess.PIPE)
-                                    output=mpvgetvol.communicate()[0]
+                                    oldvollevel=player.audio_get_volume
                                     for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                         oldvollevel=int(oldvollevel)
-
                                 if 'increase'.lower() in str(usrcmd).lower():
                                     if any(char.isdigit() for char in str(usrcmd)):
                                         for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
@@ -409,15 +396,16 @@ class SampleAssistant(object):
                                         changevollevel=10
                                     newvollevel= oldvollevel+ changevollevel
                                     print(newvollevel)
-                                    if newvollevel>100:
+                                    if int(newvollevel)>100:
                                         settingvollevel==100
-                                    elif newvollevel<0:
+                                    elif int(newvollevel)<0:
                                         settingvollevel==0
                                     else:
                                         settingvollevel=newvollevel
                                     with open('/home/pi/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
-                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                                    print('Setting volume to: '+str(settingvollevel))
+                                    player.audio_set_volume(int(settingvollevel))
                                 if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                     if any(char.isdigit() for char in str(usrcmd)):
                                         for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
@@ -426,26 +414,26 @@ class SampleAssistant(object):
                                         changevollevel=10
                                     newvollevel= oldvollevel - changevollevel
                                     print(newvollevel)
-                                    if newvollevel>100:
+                                    if int(newvollevel)>100:
                                         settingvollevel==100
-                                    elif newvollevel<0:
+                                    elif int(newvollevel)<0:
                                         settingvollevel==0
                                     else:
                                         settingvollevel=newvollevel
                                     with open('/home/pi/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
-                                    mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(settingvollevel)]})+"' | socat - /tmp/mpvsocket")
+                                    print('Setting volume to: '+str(settingvollevel))
+                                    player.audio_set_volume(int(settingvollevel))
                             else:
                                 say("Sorry I could not help you")
                         else:
                             say("Sorry nothing is playing right now")
-                        return continue_conversation
-
                     if 'refresh'.lower() in str(usrcmd).lower() and 'music'.lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
                         refreshlists()
-                        return continue_conversation
                     if 'google music'.lower() in str(usrcmd).lower():
-                        os.system('pkill mpv')
+                        assistant.stop_conversation()
+                        player.stop()
                         if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
                             os.system('rm /home/pi/GassistPi/src/trackchange.py')
                             gmusicselect(str(usrcmd).lower())
@@ -457,8 +445,8 @@ class SampleAssistant(object):
                         continue
                 GPIO.output(5,GPIO.LOW)
                 GPIO.output(6,GPIO.HIGH)
-                led.ChangeDutyCycle(50)                      
-                                      
+                led.ChangeDutyCycle(50)
+
             if len(resp.audio_out.audio_data) > 0:
                 if not self.conversation_stream.playing:
                     self.conversation_stream.stop_recording()
@@ -483,12 +471,14 @@ class SampleAssistant(object):
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
-                if ismpvplaying():
-                    if os.path.isfile("/home/pi/.mediavolume.json"):
-                        with open('/home/pi/.mediavolume.json', 'r') as vol:
-                            oldvollevel = json.load(vol)
-                            print(oldvollevel)
-                        mpvsetvol=os.system("echo '"+json.dumps({ "command": ["set_property", "volume",str(oldvollevel)]})+"' | socat - /tmp/mpvsocket")
+                #Uncomment the following after starting the Kodi
+                #with open('/home/pi/.volume.json', 'r') as f:
+                       #vollevel = json.load(f)
+                       #kodi.Application.SetVolume({"volume": vollevel})
+                if player.is_playing():
+                    with open('/home/pi/.mediavolume.json', 'r') as vol:
+                        oldvolume= json.load(vol)
+                    player.audio_set_volume(int(oldvolume))
                 continue_conversation = False
             if resp.device_action.device_request_json:
                 device_request = json.loads(
@@ -509,7 +499,14 @@ class SampleAssistant(object):
         GPIO.output(6,GPIO.LOW)
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
-                       
+        #Uncomment the following after starting the Kodi
+        #with open('/home/pi/.volume.json', 'r') as f:
+               #vollevel = json.load(f)
+               #kodi.Application.SetVolume({"volume": vollevel})
+        if player.is_playing():
+            with open('/home/pi/.mediavolume.json', 'r') as vol:
+                oldvolume= json.load(vol)
+            player.audio_set_volume(int(oldvolume))
         self.conversation_stream.stop_playback()
         return continue_conversation
 
