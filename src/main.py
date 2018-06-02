@@ -102,6 +102,7 @@ tasmota_deviceip=['192.168.1.35','192.168.1.36']
 #Magic Mirror Remote Control Declarations
 mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
 
+# CHeck if VLC is paused
 def checkvlcpaused():
     state=player.get_state()
     if str(state)=="State.Paused":
