@@ -309,7 +309,7 @@ def SetAngle(angle):
 
 
 def stop():
-    pkill = subprocess.Popen(["/usr/bin/pkill","mpv"],stdin=subprocess.PIPE)
+    player.stop()
 
 #Parcel Tracking
 def track():

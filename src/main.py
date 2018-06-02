@@ -92,7 +92,7 @@ GPIO.output(6, GPIO.LOW)
 led=GPIO.PWM(25,1)
 led.start(0)
 
-mpvactive=False
+
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -102,17 +102,14 @@ tasmota_deviceip=['192.168.1.35','192.168.1.36']
 #Magic Mirror Remote Control Declarations
 mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
 
+def checkvlcpaused():
+    state=player.get_state()
+    if str(state)=="State.Paused":
+        currentstate=True
+    else:
+        currentstate=False
+    return currentstate
 
-#Function to check if mpv is playing
-def ismpvplaying():
-    for pid in psutil.pids():
-        p=psutil.Process(pid)
-        if 'mpv'in p.name():
-            mpvactive=True
-            break
-        else:
-            mpvactive=False
-    return mpvactive
 
 
 #Function to control Sonoff Tasmota Devices
@@ -160,10 +157,14 @@ def process_event(event):
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
         if player.is_playing():
-            currentvolume=player.audio_get_volume
-            with open('/home/pi/.mediavolume.json', 'w') as vol:
-                json.dump(currentvolume, vol)
-            player.audio_set_volume(15)
+            if os.path.isfile("/home/pi/.mediavolume.json"):
+                player.audio_set_volume(15)
+            else:
+                currentvolume=player.audio_get_volume()
+                print(currentvolume)
+                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                   json.dump(currentvolume, vol)
+                player.audio_set_volume(15)
         print()
 
 
@@ -178,8 +179,8 @@ def process_event(event):
                #kodi.Application.SetVolume({"volume": vollevel})
       if player.is_playing():
           with open('/home/pi/.mediavolume.json', 'r') as vol:
-              oldvollevel = json.load(vol)
-          player.audio_set_volume(oldvollevel)
+              oldvolume = json.load(vol)
+          player.audio_set_volume(int(oldvolume))
 
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
@@ -210,8 +211,8 @@ def process_event(event):
                #kodi.Application.SetVolume({"volume": vollevel})
         if player.is_playing():
             with open('/home/pi/.mediavolume.json', 'r') as vol:
-                oldvollevel = json.load(vol)
-            player.audio_set_volume(oldvollevel)
+                oldvolume= json.load(vol)
+            player.audio_set_volume(int(oldvolume))
 
 
         print()
@@ -383,7 +384,8 @@ def main():
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
             if 'stream'.lower() in str(usrcmd).lower():
-                assistant.stop_conversation()                           
+                assistant.stop_conversation()
+                player.stop()
                 if 'autoplay'.lower() in str(usrcmd).lower():
                     YouTube_Autoplay(str(usrcmd).lower())
                 else:
@@ -417,12 +419,14 @@ def main():
                 if player.is_playing():
                     if 'pause music'.lower() in str(usrcmd).lower():
                         player.pause()
-                    elif 'resume music'.lower() in str(usrcmd).lower():
+                if checkvlcpaused():
+                    if 'resume music'.lower() in str(usrcmd).lower():
                         player.play()
-                else:
+                elif player.is_playing()==False and checkvlcpaused()==False:
                     say("Sorry nothing is playing right now")
             if 'music volume'.lower() in str(usrcmd).lower():
-                if player.is_playing():
+                assistant.stop_conversation()
+                if player.is_playing()==True or checkvlcpaused()==True:
                     if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                         if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
                             settingvollevel=100
@@ -436,8 +440,8 @@ def main():
                             for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
                                 with open('/home/pi/.mediavolume.json', 'w') as vol:
                                     json.dump(settingvollevel, vol)
-                        print('Setting volume to: '+settingvollevel)
-                        player.audio_set_volume(settingvollevel)
+                        print('Setting volume to: '+str(settingvollevel))
+                        player.audio_set_volume(int(settingvollevel))
                     elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                         if os.path.isfile("/home/pi/.mediavolume.json"):
                             with open('/home/pi/.mediavolume.json', 'r') as vol:
@@ -456,16 +460,16 @@ def main():
                                 changevollevel=10
                             newvollevel= oldvollevel+ changevollevel
                             print(newvollevel)
-                            if newvollevel>100:
+                            if int(newvollevel)>100:
                                 settingvollevel==100
-                            elif newvollevel<0:
+                            elif int(newvollevel)<0:
                                 settingvollevel==0
                             else:
                                 settingvollevel=newvollevel
                             with open('/home/pi/.mediavolume.json', 'w') as vol:
                                 json.dump(settingvollevel, vol)
-                            print('Setting volume to: '+settingvollevel)
-                            player.audio_set_volume(settingvollevel)
+                            print('Setting volume to: '+str(settingvollevel))
+                            player.audio_set_volume(int(settingvollevel))
                         if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                             if any(char.isdigit() for char in str(usrcmd)):
                                 for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
@@ -474,21 +478,20 @@ def main():
                                 changevollevel=10
                             newvollevel= oldvollevel - changevollevel
                             print(newvollevel)
-                            if newvollevel>100:
+                            if int(newvollevel)>100:
                                 settingvollevel==100
-                            elif newvollevel<0:
+                            elif int(newvollevel)<0:
                                 settingvollevel==0
                             else:
                                 settingvollevel=newvollevel
                             with open('/home/pi/.mediavolume.json', 'w') as vol:
                                 json.dump(settingvollevel, vol)
-                            print('Setting volume to: '+settingvollevel)
-                            player.audio_set_volume(settingvollevel)
+                            print('Setting volume to: '+str(settingvollevel))
+                            player.audio_set_volume(int(settingvollevel))
                     else:
                         say("Sorry I could not help you")
                 else:
                     say("Sorry nothing is playing right now")
-
 
 
 
@@ -497,7 +500,7 @@ def main():
                 refreshlists()
             if 'google music'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
-                os.system('pkill mpv')
+                player.stop()
                 if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
                     os.system('rm /home/pi/GassistPi/src/trackchange.py')
                     gmusicselect(str(usrcmd).lower())
