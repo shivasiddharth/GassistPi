@@ -494,20 +494,14 @@ def main():
                         say("Sorry I could not help you")
                 else:
                     say("Sorry nothing is playing right now")
-
-
-
             if 'refresh'.lower() in str(usrcmd).lower() and 'music'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 refreshlists()
             if 'google music'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 vlcplayer.stop_vlc()
-                if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
-                    os.system('rm /home/pi/GassistPi/src/trackchange.py')
-                    gmusicselect(str(usrcmd).lower())
-                else:
-                    gmusicselect(str(usrcmd).lower())
+                gmusicselect(str(usrcmd).lower())
+
 
 if __name__ == '__main__':
     try:

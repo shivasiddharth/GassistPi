@@ -54,7 +54,7 @@ from actions import chromecast_control
 from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
-from actions import player
+from actions import vlcplayer
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -112,7 +112,7 @@ mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
 
 # Check if VLC is paused
 def checkvlcpaused():
-    state=player.get_state()
+    state=vlcplayer.state()
     if str(state)=="State.Paused":
         currentstate=True
     else:
@@ -321,7 +321,7 @@ class SampleAssistant(object):
                         Action(str(usrcmd).lower())
                     if 'stream'.lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
-                        player.stop()
+                        vlcplayer.stop_vlc()
                         if 'autoplay'.lower() in str(usrcmd).lower():
                             YouTube_Autoplay(str(usrcmd).lower())
                         else:
@@ -352,17 +352,17 @@ class SampleAssistant(object):
                     #         chromecast_control(usrcmd)
                     if 'pause music'.lower() in str(usrcmd).lower() or 'resume music'.lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
-                        if player.is_playing():
+                        if vlcplayer.is_vlc_playing():
                             if 'pause music'.lower() in str(usrcmd).lower():
-                                player.pause()
+                                vlcplayer.pause_vlc()
                         if checkvlcpaused():
                             if 'resume music'.lower() in str(usrcmd).lower():
-                                player.play()
-                        elif player.is_playing()==False and checkvlcpaused()==False:
+                                vlcplayer.play_vlc()
+                        elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
                             say("Sorry nothing is playing right now")
                     if 'music volume'.lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
-                        if player.is_playing()==True or checkvlcpaused()==True:
+                        if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
                             if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                                 if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
                                     settingvollevel=100
@@ -377,7 +377,7 @@ class SampleAssistant(object):
                                         with open('/home/pi/.mediavolume.json', 'w') as vol:
                                             json.dump(settingvollevel, vol)
                                 print('Setting volume to: '+str(settingvollevel))
-                                player.audio_set_volume(int(settingvollevel))
+                                vlcplayer.set_vlc_volume(int(settingvollevel))
                             elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                 if os.path.isfile("/home/pi/.mediavolume.json"):
                                     with open('/home/pi/.mediavolume.json', 'r') as vol:
@@ -385,7 +385,7 @@ class SampleAssistant(object):
                                         for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
                                             oldvollevel=int(oldvollevel)
                                 else:
-                                    oldvollevel=player.audio_get_volume
+                                    oldvollevel=vlcplayer.get_vlc_volume
                                     for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                         oldvollevel=int(oldvollevel)
                                 if 'increase'.lower() in str(usrcmd).lower():
@@ -405,7 +405,7 @@ class SampleAssistant(object):
                                     with open('/home/pi/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
                                     print('Setting volume to: '+str(settingvollevel))
-                                    player.audio_set_volume(int(settingvollevel))
+                                    vlcplayer.set_vlc_volume(int(settingvollevel))
                                 if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                     if any(char.isdigit() for char in str(usrcmd)):
                                         for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
@@ -423,7 +423,7 @@ class SampleAssistant(object):
                                     with open('/home/pi/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
                                     print('Setting volume to: '+str(settingvollevel))
-                                    player.audio_set_volume(int(settingvollevel))
+                                    vlcplayer.set_vlc_volume(int(settingvollevel))
                             else:
                                 say("Sorry I could not help you")
                         else:
@@ -433,12 +433,8 @@ class SampleAssistant(object):
                         refreshlists()
                     if 'google music'.lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
-                        player.stop()
-                        if os.path.isfile("/home/pi/GassistPi/src/trackchange.py"):
-                            os.system('rm /home/pi/GassistPi/src/trackchange.py')
-                            gmusicselect(str(usrcmd).lower())
-                        else:
-                            gmusicselect(str(usrcmd).lower())
+                        vlcplayer.stop_vlc()
+                        gmusicselect(str(usrcmd).lower())
                         return continue_conversation
 
                     else:
