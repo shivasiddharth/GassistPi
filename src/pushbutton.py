@@ -75,9 +75,9 @@ except (SystemError, ImportError):
     import browser_helpers
     import device_helpers
 
-# logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
-#                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
-# logger=logging.getLogger(__name__)
+logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logger=logging.getLogger(__name__)
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -791,4 +791,7 @@ def main(api_endpoint, credentials, project_id,
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as error:
+        logger.exception(error)
