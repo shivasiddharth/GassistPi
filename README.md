@@ -6,8 +6,10 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 6-June-2018 Update:
-**Ported the music player from mpv to python-vlc - Garbled audio issues with AIY HAT has been resolved. For more info, please go through the commit.**    
+## 4-June-2018 Update:
+**Ported the music player from mpv to python-vlc - Garbled audio issues with AIY HAT has been resolved. For more info, please go through the commit.**
+**For Google Music, now the credentials have to be entered in the mediaplayer.py script.**  
+
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
