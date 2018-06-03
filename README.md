@@ -6,8 +6,10 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 6-June-2018 Update:
-**Ported the music player from mpv to python-vlc - Garbled audio issues with AIY HAT has been resolved. For more info, please go through the commit.**    
+## 4-June-2018 Update:
+**Ported the music player from mpv to python-vlc - Garbled audio issues with AIY HAT has been resolved. For more info, please go through the commit.**
+**For Google Music, now the credentials have to be entered in the mediaplayer.py script.**  
+
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -449,7 +451,7 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 ************************************************
 The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
 
-Enter your Google userid and password in the actions.py file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
+Enter your Google userid and password in the **mediaplayer.py** file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
 
 ### Getting app specific password:
 Refer to this page on google help - https://support.google.com/accounts/answer/185833?hl=en
