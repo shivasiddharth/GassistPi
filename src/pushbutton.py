@@ -324,11 +324,8 @@ class SampleAssistant(object):
                         if os.path.isfile("/home/pi/.trackqueue.json"):
                             os.system('rm /home/pi/.trackqueue.json')
                             os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/.trackqueue.json')
-                            os.system('echo "youtubeplayer()\n" >> /home/pi/.trackqueue.json')
                             if 'autoplay'.lower() in str(usrcmd).lower():
                                 YouTube_Autoplay(str(usrcmd).lower())
-                            else:
-                                YouTube_No_Autoplay(str(usrcmd).lower())
                         else:
                             os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/.trackqueue.json')
                             os.system('echo "youtubeplayer()\n" >> /home/pi/.trackqueue.json')
@@ -503,7 +500,7 @@ class SampleAssistant(object):
         GPIO.output(6,GPIO.LOW)
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
-       
+
 
     def gen_assist_requests(self):
         """Yields: AssistRequest messages to send to the API."""
