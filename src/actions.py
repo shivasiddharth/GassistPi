@@ -7,9 +7,9 @@ from kodijson import Kodi, PLAYER_VIDEO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
-from gmusicapi import Mobileclient
 from googletrans import Translator
 from pushbullet import Pushbullet
+from mediaplayer import api
 from gtts import gTTS
 import requests
 import mediaplayer
@@ -35,9 +35,7 @@ google_cloud_api_key='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
 #Google Music Declarations
 song_ids=[]
 track_ids=[]
-api = Mobileclient()
-#If you are using two-step authentication, use app specific password. For guidelines, go through README
-logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
+
 
 
 #YouTube API Constants
@@ -222,7 +220,7 @@ def radio(phrase):
             station=stnlink[num]
             print (station)
             say("Tuning into " + name)
-            media_manager(station,'Radio')
+            vlcplayer.media_manager(station,'Radio')
             vlcplayer.media_player(station)
 
 #ESP6266 Devcies control
@@ -324,7 +322,7 @@ def youtube_search(query):
     part='id,snippet'
   ).execute()
   #print(search_response)
-  
+
   videos = []
   channels = []
   playlists = []
@@ -368,7 +366,7 @@ def youtube_search(query):
       urlid=videoids[0]
       YouTubeURL=("https://www.youtube.com/watch?v="+videoids[0])
 
-  return YouTubeURL,urlid  
+  return YouTubeURL,urlid
 
 
 #Function to get streaming links for YouTube URLs
@@ -940,8 +938,8 @@ def gmusicselect(phrase):
             say("Playing songs from your playlist")
             tracks,numtracks=loadplaylist(0)
             if not tracks==[]:
-                media_manager(tracks,'Google Music')
-                googlemusic_player(currenttrackid)
+                vlcplayer.media_manager(tracks,'Google Music')
+                vlcplayer.googlemusic_player(currenttrackid)
             else:
                 say("Unable to find songs matching your request")
 
@@ -962,8 +960,8 @@ def gmusicselect(phrase):
         say("Looking for songs from the album")
         tracks,numtracks=loadalbum(album)
         if not tracks==[]:
-            media_manager(tracks,'Google Music')
-            googlemusic_player(currenttrackid)
+            vlcplayer.media_manager(tracks,'Google Music')
+            vlcplayer.googlemusic_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
 
@@ -983,8 +981,8 @@ def gmusicselect(phrase):
         say("Looking for songs rendered by the artist")
         tracks,numtracks=loadartist(artist)
         if not tracks==[]:
-            media_manager(tracks,'Google Music')
-            googlemusic_player(currenttrackid)
+            vlcplayer.media_manager(tracks,'Google Music')
+            vlcplayer.googlemusic_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
 
@@ -992,8 +990,8 @@ def gmusicselect(phrase):
 #----------End of functions defined for Google Music---------------------------
 
 
-#-----------------Start of Functions for YouTube Streaming---------------------       
-    
+#-----------------Start of Functions for YouTube Streaming---------------------
+
 def YouTube_Autoplay(phrase):
     urllist=[]
     currenttrackid=0
@@ -1011,7 +1009,7 @@ def YouTube_Autoplay(phrase):
     for i in range(0,len(autourls)):
         audiostream,videostream=youtube_stream_link(autourls[i])
         streamurl=audiostream
-        urllist.append(streamurl)    
+        urllist.append(streamurl)
     if not autourls==[]:
         vlcplayer.media_manager(urllist,'YouTube')
         vlcplayer.youtube_player(currenttrackid)
@@ -1032,7 +1030,7 @@ def YouTube_No_Autoplay(phrase):
     audiostream,videostream=youtube_stream_link(fullurl)
     streamurl=audiostream
     urllist.append(streamurl)
-    if not urllist==[]:             
+    if not urllist==[]:
         vlcplayer.media_manager(urllist,'YouTube')
         vlcplayer.youtube_player(currenttrackid)
     else:
