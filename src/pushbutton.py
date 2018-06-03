@@ -264,21 +264,22 @@ class SampleAssistant(object):
                     usrcmd=usrcmd.replace('"','',1)
                     usrcmd=usrcmd.strip()
                     print(str(usrcmd))
+                    for num, name in enumerate(tasmota_devicelist):
+                        if name.lower() in str(usrcmd).lower():
+                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                            return continue_conversation
+                            break
                     with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
                          hueconfig = json.load(config)
                     for i in range(1,len(hueconfig['lights'])+1):
                         try:
                             if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                                return continue_conversation
                                 hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
                                 break
                         except Keyerror:
                             say('Unable to help, please check your config file')
-                        return continue_conversation
-                    for num, name in enumerate(tasmota_devicelist):
-                        if name.lower() in str(usrcmd).lower():
-                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
-                            break
-                        return continue_conversation
+
                     if 'magic mirror'.lower() in str(usrcmd).lower():
                         try:
                             mmmcommand=str(usrcmd).lower()
@@ -320,10 +321,16 @@ class SampleAssistant(object):
                         return continue_conversation
                     if 'stream'.lower() in str(usrcmd).lower():
                         vlcplayer.stop_vlc()
-                        if 'autoplay'.lower() in str(usrcmd).lower():
-                            YouTube_Autoplay(str(usrcmd).lower())
+                        if os.path.isfile("/home/pi/.trackqueue.json"):
+                            os.system('rm /home/pi/.trackqueue.json')
+                            os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/.trackqueue.json')
+                            if 'autoplay'.lower() in str(usrcmd).lower():
+                                YouTube_Autoplay(str(usrcmd).lower())
                         else:
-                            YouTube_No_Autoplay(str(usrcmd).lower())
+                            os.system('echo "from actions import youtubeplayer\n\n" >> /home/pi/.trackqueue.json')
+                            os.system('echo "youtubeplayer()\n" >> /home/pi/.trackqueue.json')
+                            if 'autoplay'.lower() in str(usrcmd).lower():
+                                YouTube_Autoplay(str(usrcmd).lower())
                         return continue_conversation
                     if 'stop'.lower() in str(usrcmd).lower():
                         stop()
@@ -493,16 +500,7 @@ class SampleAssistant(object):
         GPIO.output(6,GPIO.LOW)
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
-        #Uncomment the following after starting the Kodi
-        #with open('/home/pi/.volume.json', 'r') as f:
-               #vollevel = json.load(f)
-               #kodi.Application.SetVolume({"volume": vollevel})
-        if vlcplayer.is_vlc_playing():
-            with open('/home/pi/.mediavolume.json', 'r') as vol:
-                oldvolume= json.load(vol)
-            vlcplayer.set_vlc_volume(int(oldvolume))
-        self.conversation_stream.stop_playback()
-        return continue_conversation
+
 
     def gen_assist_requests(self):
         """Yields: AssistRequest messages to send to the API."""
