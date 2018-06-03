@@ -220,7 +220,7 @@ class SampleAssistant(object):
         #kodi.Application.SetVolume({"volume": 0})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
-        if vlcplayer.is_playing():
+        if vlcplayer.is_vlc_playing():
             if os.path.isfile("/home/pi/.mediavolume.json"):
                 vlcplayer.set_vlc_volume(15)
             else:
@@ -469,7 +469,7 @@ class SampleAssistant(object):
                 #with open('/home/pi/.volume.json', 'r') as f:
                        #vollevel = json.load(f)
                        #kodi.Application.SetVolume({"volume": vollevel})
-                if vlcplayer.is_playing():
+                if vlcplayer.is_vlc_playing():
                     with open('/home/pi/.mediavolume.json', 'r') as vol:
                         oldvolume= json.load(vol)
                     vlcplayer.set_vlc_volume(int(oldvolume))
@@ -497,7 +497,7 @@ class SampleAssistant(object):
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
                #kodi.Application.SetVolume({"volume": vollevel})
-        if vlcplayer.is_playing():
+        if vlcplayer.is_vlc_playing():
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
             vlcplayer.set_vlc_volume(int(oldvolume))
@@ -791,4 +791,4 @@ def main(api_endpoint, credentials, project_id,
 
 
 if __name__ == '__main__':
-    main()    
+    main()
