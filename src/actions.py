@@ -9,9 +9,9 @@ from googleapiclient.errors import HttpError
 from gmusicapi import Mobileclient
 from googletrans import Translator
 from pushbullet import Pushbullet
-from vlc import EventType, Instance
 from gtts import gTTS
 import requests
+import mediaplayer
 import os
 import os.path
 import RPi.GPIO as GPIO
@@ -26,10 +26,7 @@ import pafy
 import pychromecast
 
 
-# Creating VLC player Instance
-vlc = Instance()
-player = vlc.media_player_new()
-
+vlcplayer=mediaplayer.vlcplayer()
 
 #API Key for YouTube and KS Search Engine
 google_cloud_api_key='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
@@ -149,51 +146,7 @@ language='en'
 
 
 
-def check_delete(file):
-    if os.path.isfile(file):
-        os.system(file)
 
-
-
-def end_callback(event):
-    if os.path.isfile("/home/pi/.player.json"):
-        with open('/home/pi/.player.json','r') as input_file:
-              playerinfo= json.load(input_file)
-        currenttrackid=playerinfo[0]
-        loopstatus=playerinfo[2]
-        numtracks=playerinfo[1]
-        musictype=playerinfo[3]
-        nexttrackid=currenttrackid+1
-        playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
-        with open('/home/pi/.player.json', 'w') as output_file:
-            json.dump(playerinfo, output_file)
-        if currenttrackid<numtracks:
-            if musictype=='Google Music':
-                googlemusic_player(currenttrackid)
-            if musictype=='YouTube':
-                youtube_player(currenttrackid)
-
-def media_manager(tracks,type):
-    check_delete("/home/pi/.player.json")
-    check_delete("/home/pi/.trackqueue.json")
-    with open('/home/pi/.trackqueue.json', 'w') as output_file:
-        json.dump(tracks, output_file)
-    currenttrackid=0
-    nexttrackid=currenttrackid+1
-    loopstatus='on'
-    musictype=type
-    numtracks=len(tracks)
-    playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
-    with open('/home/pi/.player.json', 'w') as output_file:
-        json.dump(playerinfo, output_file)
-
-
-def media_player(track):
-    media = vlc.media_new(track)
-    player.set_media(media)
-    player.play()
-    event_manager = player.event_manager()
-    event_manager.event_attach(EventType.MediaPlayerEndReached, end_callback)
 
 
 #Function for google KS custom search engine
@@ -269,7 +222,7 @@ def radio(phrase):
             print (station)
             say("Tuning into " + name)
             media_manager(station,'Radio')
-            media_player(station)
+            vlcplayer.media_player(station)
 
 #ESP6266 Devcies control
 def ESP(phrase):
@@ -297,7 +250,7 @@ def SetAngle(angle):
 
 
 def stop():
-    player.stop()
+    player.stop_vlc()
 
 #Parcel Tracking
 def track():
@@ -357,7 +310,6 @@ def feed(phrase):
         else:
             continue
 
-
 #Function to search YouTube and get videoid
 def youtube_search(query):
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
@@ -414,7 +366,7 @@ def youtube_search(query):
       urlid=videoids[0]
       YouTubeURL=("https://www.youtube.com/watch?v="+videoids[0])
 
-  return YouTubeURL,urlid
+  return YouTubeURL,urlid  
 
 
 #Function to get streaming links for YouTube URLs
@@ -444,7 +396,7 @@ def kodi_youtube(query):
  #print(YouTubeURL)
 
  #Instead of sending it to Kodi, if you want to play locally, uncomment the following two lines and comment the next two lines
- #media_player(YouTubeURL)
+ #vlcplayer.media_player(YouTubeURL)
  #say("Playing YouTube video")
 
     kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
@@ -967,11 +919,7 @@ def refreshlists():
         json.dump(playlist_list, output_file)
     say("Music list synchronised")
 
-def googlemusic_player(trackid):
-    with open('/home/pi/.trackqueue.json','r') as input_file:
-            tracks= json.load(input_file)
-    streamurl=api.get_stream_url(tracks[trackid])
-    media_player(streamurl)
+
 
 def gmusicselect(phrase):
     currenttrackid=0
@@ -979,8 +927,8 @@ def gmusicselect(phrase):
         say("Looking for your songs")
         tracks,numtracks=loadsonglist()
         if not tracks==[]:
-            media_manager(tracks,'Google Music')
-            googlemusic_player(currenttrackid)
+            vlcplayer.media_manager(tracks,'Google Music')
+            vlcplayer.googlemusic_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
 
@@ -1042,14 +990,8 @@ def gmusicselect(phrase):
 #----------End of functions defined for Google Music---------------------------
 
 
-#-----------------Start of Functions for YouTube Streaming---------------------
-def youtube_player(trackid):
-    with open('/home/pi/.trackqueue.json','r') as input_file:
-            tracks= json.load(input_file)
-    audiostream,videostream=youtube_stream_link(tracks[trackid])
-    streamurl=audiostream
-    media_player(streamurl)
-
+#-----------------Start of Functions for YouTube Streaming---------------------       
+    
 def YouTube_Autoplay(phrase):
     urllist=[]
     currenttrackid=0
@@ -1063,11 +1005,13 @@ def YouTube_Autoplay(phrase):
     autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
     print(autourls)
     for i in range(0,len(autourls)):
-        urllist.append(autourls[i])
+        audiostream,videostream=youtube_stream_link(autourls[i])
+        streamurl=audiostream
+        urllist.append(streamurl)
     say("Adding autoplay links to the playlist")
     if not autourls==[]:
-        media_manager(autourls,'YouTube')
-        youtube_player(currenttrackid)
+        vlcplayer.media_manager(autourls,'YouTube')
+        vlcplayer.youtube_player(currenttrackid)
     else:
         say("Unable to find songs matching your request")
 
@@ -1084,8 +1028,10 @@ def YouTube_No_Autoplay(phrase):
     urllist.append(fullurl)
     print(urllist)
     if not urllist==[]:
-        media_manager(urllist,'YouTube')
-        youtube_player(currenttrackid)
+        audiostream,videostream=youtube_stream_link(urllist)
+        streamurl=audiostream        
+        vlcplayer.media_manager(streamurl,'YouTube')
+        vlcplayer.youtube_player(currenttrackid)
     else:
         say("Unable to find songs matching your request")
 
