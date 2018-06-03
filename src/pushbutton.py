@@ -222,13 +222,13 @@ class SampleAssistant(object):
         led.ChangeDutyCycle(100)
         if vlcplayer.is_playing():
             if os.path.isfile("/home/pi/.mediavolume.json"):
-                vlcplayer.audio_set_volume(15)
+                vlcplayer.set_vlc_volume(15)
             else:
-                currentvolume=vlcplayer.audio_get_volume()
+                currentvolume=vlcplayer.get_vlc_volume()
                 print(currentvolume)
                 with open('/home/pi/.mediavolume.json', 'w') as vol:
                    json.dump(currentvolume, vol)
-                vlcplayer.audio_set_volume(15)
+                vlcplayer.set_vlc_volume(15)
 
         logging.info('Recording audio request.')
 
@@ -269,19 +269,17 @@ class SampleAssistant(object):
                     for i in range(1,len(hueconfig['lights'])+1):
                         try:
                             if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
-                                return continue_conversation
                                 hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
                                 break
                         except Keyerror:
                             say('Unable to help, please check your config file')
-
+                        return continue_conversation
                     for num, name in enumerate(tasmota_devicelist):
                         if name.lower() in str(usrcmd).lower():
-                            return continue_conversation
                             tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                             break
-                    if 'magic mirror'.lower() in str(usrcmd).lower():
                         return continue_conversation
+                    if 'magic mirror'.lower() in str(usrcmd).lower():
                         try:
                             mmmcommand=str(usrcmd).lower()
                             if 'weather'.lower() in mmmcommand:
@@ -303,8 +301,8 @@ class SampleAssistant(object):
                                 mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
                         except requests.exceptions.ConnectionError:
                             say("Magic mirror not online")
-                    if 'ingredients'.lower() in str(usrcmd).lower():
                         return continue_conversation
+                    if 'ingredients'.lower() in str(usrcmd).lower():
                         ingrequest=str(usrcmd).lower()
                         ingredientsidx=ingrequest.find('for')
                         ingrequest=ingrequest[ingredientsidx:]
@@ -313,45 +311,45 @@ class SampleAssistant(object):
                         ingrequest=ingrequest.strip()
                         ingrequest=ingrequest.replace(" ","%20",1)
                         getrecipe(ingrequest)
+                        return continue_conversation
                     if 'kickstarter'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         kickstarter_tracker(str(usrcmd).lower())
+                        return continue_conversation
                     if 'trigger'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         Action(str(usrcmd).lower())
-                    if 'stream'.lower() in str(usrcmd).lower():
                         return continue_conversation
+                    if 'stream'.lower() in str(usrcmd).lower():
                         vlcplayer.stop_vlc()
                         if 'autoplay'.lower() in str(usrcmd).lower():
                             YouTube_Autoplay(str(usrcmd).lower())
                         else:
                             YouTube_No_Autoplay(str(usrcmd).lower())
+                        return continue_conversation
                     if 'stop'.lower() in str(usrcmd).lower():
                         stop()
                     if 'radio'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         radio(str(usrcmd).lower())
+                        return continue_conversation
                     if 'wireless'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         ESP(str(usrcmd).lower())
+                        return continue_conversation
                     if 'parcel'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         track()
+                        return continue_conversation
                     if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         feed(str(usrcmd).lower())
-                    if 'on kodi'.lower() in str(usrcmd).lower():
                         return continue_conversation
+                    if 'on kodi'.lower() in str(usrcmd).lower():
                         kodiactions(str(usrcmd).lower())
+                        return continue_conversation
                     # Google Assistant now comes built in with chromecast control, so custom function has been commented
                     # if 'chromecast'.lower() in str(usrcmd).lower():
-                    #     return continue_conversation
                     #     if 'play'.lower() in str(usrcmd).lower():
                     #         chromecast_play_video(str(usrcmd).lower())
                     #     else:
                     #         chromecast_control(usrcmd)
+                    #     return continue_conversation
                     if 'pause music'.lower() in str(usrcmd).lower() or 'resume music'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         if vlcplayer.is_vlc_playing():
                             if 'pause music'.lower() in str(usrcmd).lower():
                                 vlcplayer.pause_vlc()
@@ -360,8 +358,8 @@ class SampleAssistant(object):
                                 vlcplayer.play_vlc()
                         elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
                             say("Sorry nothing is playing right now")
-                    if 'music volume'.lower() in str(usrcmd).lower():
                         return continue_conversation
+                    if 'music volume'.lower() in str(usrcmd).lower():
                         if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
                             if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                                 if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
@@ -428,11 +426,11 @@ class SampleAssistant(object):
                                 say("Sorry I could not help you")
                         else:
                             say("Sorry nothing is playing right now")
+                        return continue_conversation
                     if 'refresh'.lower() in str(usrcmd).lower() and 'music'.lower() in str(usrcmd).lower():
-                        return continue_conversation
                         refreshlists()
-                    if 'google music'.lower() in str(usrcmd).lower():
                         return continue_conversation
+                    if 'google music'.lower() in str(usrcmd).lower():
                         vlcplayer.stop_vlc()
                         gmusicselect(str(usrcmd).lower())
                         return continue_conversation
@@ -474,7 +472,7 @@ class SampleAssistant(object):
                 if vlcplayer.is_playing():
                     with open('/home/pi/.mediavolume.json', 'r') as vol:
                         oldvolume= json.load(vol)
-                    vlcplayer.audio_set_volume(int(oldvolume))
+                    vlcplayer.set_vlc_volume(int(oldvolume))
                 continue_conversation = False
             if resp.device_action.device_request_json:
                 device_request = json.loads(
@@ -502,7 +500,7 @@ class SampleAssistant(object):
         if vlcplayer.is_playing():
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
-            vlcplayer.audio_set_volume(int(oldvolume))
+            vlcplayer.set_vlc_volume(int(oldvolume))
         self.conversation_stream.stop_playback()
         return continue_conversation
 
