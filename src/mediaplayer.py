@@ -10,7 +10,7 @@ import os.path
 
 api = Mobileclient()
 #If you are using two-step authentication, use app specific password. For guidelines, go through README
-logged_in = api.login('ushivasiddharth@gmail.com', 'riccpwannhtpqyjt', '3467946b92383af8')    
+logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
     
 class vlcplayer():
 
