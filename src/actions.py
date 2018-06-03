@@ -6,6 +6,7 @@
 from kodijson import Kodi, PLAYER_VIDEO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from oauth2client.tools import argparser
 from gmusicapi import Mobileclient
 from googletrans import Translator
 from pushbullet import Pushbullet
@@ -250,7 +251,7 @@ def SetAngle(angle):
 
 
 def stop():
-    player.stop_vlc()
+    vlcplayer.stop_vlc()
 
 #Parcel Tracking
 def track():
@@ -322,7 +323,8 @@ def youtube_search(query):
     q=query,
     part='id,snippet'
   ).execute()
-
+  #print(search_response)
+  
   videos = []
   channels = []
   playlists = []
@@ -1001,16 +1003,17 @@ def YouTube_Autoplay(phrase):
     track = track.replace('stream','',1)
     track=track.strip()
     say("Getting autoplay links")
+    print(track)
     fullurl,urlid=youtube_search(track)
     autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
     print(autourls)
+    say("Adding autoplay links to the playlist")
     for i in range(0,len(autourls)):
         audiostream,videostream=youtube_stream_link(autourls[i])
         streamurl=audiostream
-        urllist.append(streamurl)
-    say("Adding autoplay links to the playlist")
+        urllist.append(streamurl)    
     if not autourls==[]:
-        vlcplayer.media_manager(autourls,'YouTube')
+        vlcplayer.media_manager(urllist,'YouTube')
         vlcplayer.youtube_player(currenttrackid)
     else:
         say("Unable to find songs matching your request")
@@ -1024,13 +1027,13 @@ def YouTube_No_Autoplay(phrase):
     track = track.replace('stream','',1)
     track=track.strip()
     say("Getting youtube link")
+    print(track)
     fullurl,urlid=youtube_search(track)
-    urllist.append(fullurl)
-    print(urllist)
-    if not urllist==[]:
-        audiostream,videostream=youtube_stream_link(urllist)
-        streamurl=audiostream        
-        vlcplayer.media_manager(streamurl,'YouTube')
+    audiostream,videostream=youtube_stream_link(fullurl)
+    streamurl=audiostream
+    urllist.append(streamurl)
+    if not urllist==[]:             
+        vlcplayer.media_manager(urllist,'YouTube')
         vlcplayer.youtube_player(currenttrackid)
     else:
         say("Unable to find songs matching your request")

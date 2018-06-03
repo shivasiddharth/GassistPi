@@ -107,7 +107,8 @@ class vlcplayer():
         
     def youtube_player(self,trackid):
         with open('/home/pi/.trackqueue.json','r') as input_file:
-            tracks= json.load(input_file)        
+            tracks= json.load(input_file)
+        print(tracks[trackid])
         self.media_player(tracks[trackid])
         
     def check_delete(self,file):
