@@ -439,8 +439,8 @@ class SampleAssistant(object):
                         continue
                 GPIO.output(5,GPIO.LOW)
                 GPIO.output(6,GPIO.HIGH)
-                led.ChangeDutyCycle(50)
-
+                led.ChangeDutyCycle(50)                      
+                                      
             if len(resp.audio_out.audio_data) > 0:
                 if not self.conversation_stream.playing:
                     self.conversation_stream.stop_recording()
@@ -490,6 +490,8 @@ class SampleAssistant(object):
             concurrent.futures.wait(device_actions_futures)
 
         logging.info('Finished playing assistant response.')
+        self.conversation_stream.stop_playback()
+        return continue_conversation
         GPIO.output(6,GPIO.LOW)
         GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
@@ -501,9 +503,7 @@ class SampleAssistant(object):
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
             vlcplayer.set_vlc_volume(int(oldvolume))
-        self.conversation_stream.stop_playback()
-        return continue_conversation
-
+        
     def gen_assist_requests(self):
         """Yields: AssistRequest messages to send to the API."""
 
