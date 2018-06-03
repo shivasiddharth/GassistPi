@@ -1,0 +1,73 @@
+#ESP control declarations. Follow a similar pattern to add your own list.
+ESP:
+  IP: 'xxxxxxxxxxxx' #Enter your ESP's IP here.
+  Devices:
+    - devicename: 'Device 1'
+      deviceid: '/Device1'
+    - devicename: 'Device 2'
+      deviceid: '/Device2'
+    - devicename: 'Device 3'
+      deviceid: '/Device3'
+
+#Enter your Google Login Credentials
+Gmusicapi:
+  #If you are using two-step authentication, use app specific password. For guidelines, go through README
+  email: 'ENTER_YOUR_EMAIL_HERE'
+  password: 'ENETER_YOUR_PASSWORD'
+  deviceid: Mobileclient.FROM_MAC_ADDRESS
+
+#API Key for YouTube and Kickstarter Search Engine
+Google_cloud_api_key: ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE
+
+#KODI custom declarations change IP, music directory and video directory according to your device
+Kodi:
+  ip: 192.168.88.226
+  port: 8080
+  username: kodi
+  password: kodi
+  musicdirectory: /home/osmc/Music/
+  videodirectory: /home/osmc/Movies/
+  windowcmd:
+    - Home
+    - Settings
+    - Weather
+    - Videos
+    - Music
+    - Player
+  window:
+    - home
+    - settings
+    - weather
+    - videos
+    - music
+    - playercontrols
+
+# Enter your Magic Mirror IP
+Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
+
+#Radio station declarations. Follow a similar pattern to add your own stations.
+Radio_stations:
+  - name: 'bbc 2'
+    url: 'http://www.radiofeeds.co.uk/bbcradio2.pls'
+  - name: 'bbc 6 music'
+    url: 'http://www.radiofeeds.co.uk/bbc6music.pls'
+  - name: 'Radio 3'
+    url: 'http://c5icy.prod.playlists.ihrhls.com/1469_icy'
+  - name: 'Radio 4'
+    url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3'
+
+#Pi GPIO control declarations. Follow a similar pattern to add your own list of GPIOs
+Raspberrypi_GPIO_Control:
+  - name: 'kitchen lights'
+    gpio: 12
+  - name: 'bathroom lights'
+    gpio: 13
+  - name: 'bedroom lights'
+    gpio: 24
+
+#Enter your Tasmota Device details below
+Tasmota_devicelist:
+  - friendly-name: 'Desk Light'
+    ip: '192.168.1.35'
+  - friendly-name: 'Table Light'
+    ip: '192.168.1.36'
