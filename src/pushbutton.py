@@ -334,8 +334,6 @@ class SampleAssistant(object):
                             os.system('echo "youtubeplayer()\n" >> /home/pi/.trackqueue.json')
                             if 'autoplay'.lower() in str(usrcmd).lower():
                                 YouTube_Autoplay(str(usrcmd).lower())
-                            else:
-                                YouTube_No_Autoplay(str(usrcmd).lower())
                         return continue_conversation
                     if 'stop'.lower() in str(usrcmd).lower():
                         stop()
