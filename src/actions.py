@@ -207,18 +207,6 @@ def kickstrater_search(query):
     return res
 
 
-#Function to manage mpv start volume
-def mpvvolmgr():
-    if os.path.isfile("/home/pi/.mediavolume.json"):
-        with open('/home/pi/.mediavolume.json', 'r') as vol:
-            oldvollevel = json.load(vol)
-        print(oldvollevel)
-        startvol=oldvollevel
-    else:
-        startvol=50
-    return startvol
-
-
 
 #Text to speech converter with translation
 def say(words):
@@ -277,11 +265,11 @@ def convert_rgb_xy(red,green,blue):
 def radio(phrase):
     for num, name in enumerate(stnname):
         if name.lower() in phrase:
-            startingvol=mpvvolmgr()
             station=stnlink[num]
             print (station)
             say("Tuning into " + name)
-            os.system('mpv --really-quiet --volume='+str(startingvol)+' '+station+' &')
+            media_manager(station,'Radio')
+            media_player(station)
 
 #ESP6266 Devcies control
 def ESP(phrase):
@@ -456,7 +444,7 @@ def kodi_youtube(query):
  #print(YouTubeURL)
 
  #Instead of sending it to Kodi, if you want to play locally, uncomment the following two lines and comment the next two lines
- #os.system("mpv "+YouTubeURL)
+ #media_player(YouTubeURL)
  #say("Playing YouTube video")
 
     kodi.Player.open(item={"file":"plugin://plugin.video.youtube/?action=play_video&videoid=" + urlid})
