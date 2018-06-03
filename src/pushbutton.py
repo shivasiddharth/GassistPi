@@ -75,9 +75,9 @@ except (SystemError, ImportError):
     import browser_helpers
     import device_helpers
 
-logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+# logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
+#                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
+# logger=logging.getLogger(__name__)
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -270,15 +270,15 @@ class SampleAssistant(object):
                         try:
                             if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
                                 hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                                return continue_conversation
                                 break
                         except Keyerror:
                             say('Unable to help, please check your config file')
-                        return continue_conversation
                     for num, name in enumerate(tasmota_devicelist):
                         if name.lower() in str(usrcmd).lower():
                             tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                            return continue_conversation
                             break
-                        return continue_conversation
                     if 'magic mirror'.lower() in str(usrcmd).lower():
                         try:
                             mmmcommand=str(usrcmd).lower()
@@ -791,7 +791,4 @@ def main(api_endpoint, credentials, project_id,
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as error:
-        logger.exception(error)
+    main()
