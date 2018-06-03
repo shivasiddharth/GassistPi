@@ -791,7 +791,4 @@ def main(api_endpoint, credentials, project_id,
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as error:
-        logger.exception(error)
+    main()    
