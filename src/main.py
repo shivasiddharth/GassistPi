@@ -51,6 +51,8 @@ from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
 from actions import vlcplayer
+from actions import spotify_playlist_select
+
 
 try:
     FileNotFoundError
@@ -501,6 +503,11 @@ def main():
                 assistant.stop_conversation()
                 vlcplayer.stop_vlc()
                 gmusicselect(str(usrcmd).lower())
+            if 'spotify'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                vlcplayer.stop_vlc()
+                spotify_playlist_select(str(usrcmd).lower())
+
 
 
 if __name__ == '__main__':

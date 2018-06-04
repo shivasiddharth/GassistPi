@@ -55,6 +55,8 @@ from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
 from actions import vlcplayer
+from actions import spotify_playlist_select
+
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -75,9 +77,9 @@ except (SystemError, ImportError):
     import browser_helpers
     import device_helpers
 
-logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+# logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
+#                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
+# logger=logging.getLogger(__name__)
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -220,7 +222,7 @@ class SampleAssistant(object):
         #kodi.Application.SetVolume({"volume": 0})
         GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
-        if vlcplayer.is_playing():
+        if vlcplayer.is_vlc_playing():
             if os.path.isfile("/home/pi/.mediavolume.json"):
                 vlcplayer.set_vlc_volume(15)
             else:
@@ -270,15 +272,15 @@ class SampleAssistant(object):
                         try:
                             if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
                                 hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                                return continue_conversation
                                 break
                         except Keyerror:
                             say('Unable to help, please check your config file')
-                        return continue_conversation
                     for num, name in enumerate(tasmota_devicelist):
                         if name.lower() in str(usrcmd).lower():
                             tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                            return continue_conversation
                             break
-                        return continue_conversation
                     if 'magic mirror'.lower() in str(usrcmd).lower():
                         try:
                             mmmcommand=str(usrcmd).lower()
@@ -434,7 +436,10 @@ class SampleAssistant(object):
                         vlcplayer.stop_vlc()
                         gmusicselect(str(usrcmd).lower())
                         return continue_conversation
-
+                    if 'spotify'.lower() in str(usrcmd).lower():
+                        vlcplayer.stop_vlc()
+                        spotify_playlist_select(str(usrcmd).lower())
+                        return continue_conversation
                     else:
                         continue
                 GPIO.output(5,GPIO.LOW)
@@ -469,7 +474,7 @@ class SampleAssistant(object):
                 #with open('/home/pi/.volume.json', 'r') as f:
                        #vollevel = json.load(f)
                        #kodi.Application.SetVolume({"volume": vollevel})
-                if vlcplayer.is_playing():
+                if vlcplayer.is_vlc_playing():
                     with open('/home/pi/.mediavolume.json', 'r') as vol:
                         oldvolume= json.load(vol)
                     vlcplayer.set_vlc_volume(int(oldvolume))
@@ -497,7 +502,7 @@ class SampleAssistant(object):
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
                #kodi.Application.SetVolume({"volume": vollevel})
-        if vlcplayer.is_playing():
+        if vlcplayer.is_vlc_playing():
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
             vlcplayer.set_vlc_volume(int(oldvolume))
@@ -791,7 +796,4 @@ def main(api_endpoint, credentials, project_id,
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as error:
-        logger.exception(error)
+    main()

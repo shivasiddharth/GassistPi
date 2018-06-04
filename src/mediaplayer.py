@@ -6,12 +6,15 @@ import os
 import json
 from gmusicapi import Mobileclient
 import os.path
+from youtube_search_engine import youtube_search
+from youtube_search_engine import youtube_stream_link
+
 
 
 api = Mobileclient()
 #If you are using two-step authentication, use app specific password. For guidelines, go through README
 logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
-    
+
 class vlcplayer():
 
     def __init__(self):
@@ -22,7 +25,7 @@ class vlcplayer():
         # self.libvlc_list_player.set_media_player(self.libvlc_player)
         # self.libvlc_list_player.set_media_list(self.libvlc_Media_list)
         # self.libvlc_player_event_manager= self.libvlc_player.event_manager()
-        
+
     def play_audio_file(self,fname):
         Instance=vlc.Instance()
         player=Instance.media_player_new()
@@ -46,6 +49,8 @@ class vlcplayer():
                     self.googlemusic_player(currenttrackid)
                 if musictype=='YouTube':
                     self.youtube_player(currenttrackid)
+                if musictype=='Spotify':
+                    self.spotify_player(currenttrackid)
 
     def media_player(self,mrl):
         self.libvlc_player = self.libvlc_Instance.media_player_new()
@@ -104,13 +109,22 @@ class vlcplayer():
             tracks= json.load(input_file)
         streamurl=api.get_stream_url(tracks[trackid])
         self.media_player(streamurl)
-        
+
     def youtube_player(self,trackid):
         with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         print(tracks[trackid])
         self.media_player(tracks[trackid])
-        
+
+    def spotify_player(self,trackid):
+        with open('/home/pi/.trackqueue.json','r') as input_file:
+            tracks= json.load(input_file)
+        print(tracks[trackid])
+        fullurl,urlid=youtube_search(tracks[trackid])
+        audiostream,videostream=youtube_stream_link(fullurl)
+        streamurl=audiostream
+        self.media_player(streamurl)
+
     def check_delete(self,file):
         if os.path.isfile(file):
             os.system(file)
