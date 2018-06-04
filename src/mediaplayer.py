@@ -6,6 +6,9 @@ import os
 import json
 from gmusicapi import Mobileclient
 import os.path
+from youtube_search_engine import youtube_search
+from youtube_search_engine import youtube_stream_link
+
 
 
 api = Mobileclient()
@@ -117,7 +120,10 @@ class vlcplayer():
         with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         print(tracks[trackid])
-        self.media_player(tracks[trackid])
+        fullurl,urlid=youtube_search(tracks[trackid])
+        audiostream,videostream=youtube_stream_link(fullurl)
+        streamurl=audiostream
+        self.media_player(streamurl)
 
     def check_delete(self,file):
         if os.path.isfile(file):
