@@ -1287,7 +1287,7 @@ def scan_spotify_playlists():
         print("Can't get token for ", username)
 
 def spotify_playlist_select(phrase):
-    urllist=[]
+    trackslist=[]
     currenttrackid=0
     idx=phrase.find('play')
     track=phrase[idx:]
@@ -1300,9 +1300,10 @@ def spotify_playlist_select(phrase):
     playlists,num=scan_spotify_playlists()
     if not num==[]:
         for i in range(0,num):
+            print(str(playlists['Playlists'][i][1]).lower())
             if track in str(playlists['Playlists'][i][1]).lower():
                 trackslist=playlists['Playlists'][i][2]
-            break
+                break
         if not trackslist==[]:
             vlcplayer.media_manager(trackslist,'Spotify')
             vlcplayer.spotify_player(currenttrackid)
