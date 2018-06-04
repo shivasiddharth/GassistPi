@@ -1319,11 +1319,11 @@ def show_spotify_track_names(tracks):
     return spotify_tracks
 
 def scan_spotify_playlists():
-    if token:
+    if spotify_token:
         i=0
         playlistdetails=[]
         spotify_tracks_list=[]
-        sp = spotipy.Spotify(auth=token)
+        sp = spotipy.Spotify(auth=spotify_token)
         # print(sp.user(username))
         # print("")
         # print("")
@@ -1374,7 +1374,7 @@ def spotify_playlist_select(phrase):
     playlists,num=scan_spotify_playlists()
     if not num==[]:
         for i in range(0,num):
-            if track in playlists['Playlists'][i][1]:
+            if track in str(playlists['Playlists'][i][1]).lower():
                 trackslist=playlists['Playlists'][i][2]
                 for i in range(0,len(trackslist)):
                     fullurl,urlid=youtube_search(trackslist[i])
