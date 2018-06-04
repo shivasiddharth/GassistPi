@@ -10,6 +10,7 @@
 **Ported the music player from mpv to python-vlc - Garbled audio issues with AIY HAT has been resolved. For more info, please go through the commit.**
 **For Google Music, now the credentials have to be entered in the mediaplayer.py script.**  
 
+**Upcoming: Spotify Playlist Playback**  
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
