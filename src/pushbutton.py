@@ -55,6 +55,8 @@ from actions import kickstarter_tracker
 from actions import getrecipe
 from actions import hue_control
 from actions import vlcplayer
+from actions import spotify_playlist_select
+
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -434,7 +436,10 @@ class SampleAssistant(object):
                         vlcplayer.stop_vlc()
                         gmusicselect(str(usrcmd).lower())
                         return continue_conversation
-
+                    if 'spotify'.lower() in str(usrcmd).lower():
+                        vlcplayer.stop_vlc()
+                        spotify_playlist_select(str(usrcmd).lower())
+                        return continue_conversation
                     else:
                         continue
                 GPIO.output(5,GPIO.LOW)

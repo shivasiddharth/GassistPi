@@ -16,3 +16,4 @@ google-api-python-client>=1.6.7
 requests>=2.18.4
 pushbullet.py>=0.11.0
 python-vlc>=3.0.102
+git+https://github.com/plamere/spotipy.git --upgrade

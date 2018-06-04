@@ -7,6 +7,9 @@ from kodijson import Kodi, PLAYER_VIDEO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
+from spotipy.oauth2 import SpotifyClientCredentials
+import spotipy.util as util
+import spotipy.oauth2 as oauth2
 from googletrans import Translator
 from pushbullet import Pushbullet
 from mediaplayer import api
@@ -25,12 +28,27 @@ import json
 import urllib.request
 import pafy
 import pychromecast
+import spotipy
+import pprint
 
 
+#Spotify Declarations
+#Register with spotify for a developer account to get client-id and client-secret
+client_id = 'ENTER YOUR SPOTIFY CLIENT ID HERE'
+client_secret = 'ENTER YOUR SPOTIFY CLIENT SECRET HERE'
+username='ENTER YOUR SPOTIFY USERNAME HERE'
+
+credentials = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+spotify_token = credentials.get_access_token()
+
+
+#Import VLC player
 vlcplayer=mediaplayer.vlcplayer()
 
 #API Key for YouTube and KS Search Engine
 google_cloud_api_key='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
+
+
 
 #Google Music Declarations
 song_ids=[]
@@ -1289,7 +1307,88 @@ def hue_control(phrase,lightindex,lightaddress):
 
 #------------------------------End of Hue Control Functions---------------------------------------------
 
+#------------------------------Start of Spotify Functions-----------------------------------------------
 
+def show_spotify_track_names(tracks):
+    spotify_tracks=[]
+    for i, item in enumerate(tracks['items']):
+        track = item['track']
+##        print ("%d %32.32s %s" % (i, track['artists'][0]['name'],track['name']))
+        # print ("%s %s" % (track['artists'][0]['name'],track['name']))
+        spotify_tracks.append("%s %s" % (track['artists'][0]['name'],track['name']))
+    return spotify_tracks
+
+def scan_spotify_playlists():
+    if token:
+        i=0
+        playlistdetails=[]
+        spotify_tracks_list=[]
+        sp = spotipy.Spotify(auth=token)
+        # print(sp.user(username))
+        # print("")
+        # print("")
+        playlists = sp.user_playlists(username)
+        print(len(playlists['items']))
+        num_playlists=len(playlists['items'])
+        spotify_playlists={"Playlists":[0]*(len(playlists['items']))}
+        # print(spotify_playlists)
+        # print("")
+        # print("")
+        for playlist in playlists['items']:
+            if playlist['owner']['id'] == username:
+                # print (playlist['name'])
+                playlist_name=playlist['name']
+                # print("")
+                # print("")
+    ##            print ('  total tracks', playlist['tracks']['total'])
+    ##            print("")
+    ##            print("")
+                results = sp.user_playlist(username, playlist['id'],fields="tracks,next")
+                tracks = results['tracks']
+                spotify_tracks_list=show_spotify_track_names(tracks)
+            playlistdetails.append(i)
+            playlistdetails.append(playlist_name)
+            playlistdetails.append(spotify_tracks_list)
+            spotify_playlists['Playlists'][i]=playlistdetails
+            playlistdetails=[]
+            i=i+1
+        # print("")
+        # print("")
+        # print(spotify_playlists['Playlists'])
+        return spotify_playlists, num_playlists
+    else:
+        say("Can't get token for, " + username)
+        print("Can't get token for ", username)
+
+def spotify_playlist_select(phrase):
+    urllist=[]
+    currenttrackid=0
+    idx=phrase.find('play')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track = track.replace('from spotify','',1)
+    track=track.strip()
+    say("Getting music links")
+    print(track)
+    playlists,num=scan_spotify_playlists()
+    if not num==[]:
+        for i in range(0,num):
+            if track in playlists['Playlists'][i][1]:
+                trackslist=playlists['Playlists'][i][2]
+                for i in range(0,len(trackslist)):
+                    fullurl,urlid=youtube_search(trackslist[i])
+                    audiostream,videostream=youtube_stream_link(fullurl)
+                    streamurl=audiostream
+                    urllist.append(streamurl)
+            break
+        if not urllist==[]:
+            vlcplayer.media_manager(urllist,'Spotify')
+            vlcplayer.spotify_player(currenttrackid)
+    else:
+        say("Unable to find matching playlist")
+
+#----------------------End of Spotify functions---------------------------------
 
 #GPIO Device Control
 def Action(phrase):
