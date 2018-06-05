@@ -11,7 +11,7 @@ import os.path
 api = Mobileclient()
 #If you are using two-step authentication, use app specific password. For guidelines, go through README
 logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
-    
+
 class vlcplayer():
 
     def __init__(self):
@@ -22,7 +22,7 @@ class vlcplayer():
         # self.libvlc_list_player.set_media_player(self.libvlc_player)
         # self.libvlc_list_player.set_media_list(self.libvlc_Media_list)
         # self.libvlc_player_event_manager= self.libvlc_player.event_manager()
-        
+
     def play_audio_file(self,fname):
         Instance=vlc.Instance()
         player=Instance.media_player_new()
@@ -52,6 +52,12 @@ class vlcplayer():
         media=self.libvlc_Instance.media_new(mrl)
         self.libvlc_player.set_media(media)
         self.libvlc_player.play()
+        if os.path.isfile("/home/pi/.mediavolume.json"):
+            with open('/home/pi/.mediavolume.json', 'r') as vol:
+                setvollevel = json.load(vol)
+            self.set_vlc_volume(setvollevel)
+        else:
+            self.set_vlc_volume(90)
         event_manager = self.libvlc_player.event_manager()
         event_manager.event_attach(vlc.EventType.MediaPlayerEndReached,self.end_callback)
         #self.libvlc_Media_list.add_media(media)
@@ -104,13 +110,13 @@ class vlcplayer():
             tracks= json.load(input_file)
         streamurl=api.get_stream_url(tracks[trackid])
         self.media_player(streamurl)
-        
+
     def youtube_player(self,trackid):
         with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         print(tracks[trackid])
         self.media_player(tracks[trackid])
-        
+
     def check_delete(self,file):
         if os.path.isfile(file):
-            os.system(file)
+            os.system("sudo rm "+file)
