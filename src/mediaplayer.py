@@ -52,12 +52,12 @@ class vlcplayer():
         media=self.libvlc_Instance.media_new(mrl)
         self.libvlc_player.set_media(media)
         self.libvlc_player.play()
-        if os.path.isfile("/home/pi/.mediavolume.json"):
-            with open('/home/pi/.mediavolume.json', 'r') as vol:
-                setvollevel = json.load(vol)
-            self.set_vlc_volume(setvollevel)
-        else:
-            self.set_vlc_volume(90)
+        #if os.path.isfile("/home/pi/.mediavolume.json"):
+        #    with open('/home/pi/.mediavolume.json', 'r') as vol:
+        #        setvollevel = json.load(vol)
+        #    self.set_vlc_volume(setvollevel)
+        #else:
+        #    self.set_vlc_volume(90)
         event_manager = self.libvlc_player.event_manager()
         event_manager.event_attach(vlc.EventType.MediaPlayerEndReached,self.end_callback)
         #self.libvlc_Media_list.add_media(media)
