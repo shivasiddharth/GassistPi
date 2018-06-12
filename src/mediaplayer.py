@@ -55,7 +55,7 @@ class vlcplayer():
         if os.path.isfile("/home/pi/.mediavolume.json"):
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 setvollevel = json.load(vol)
-            self.set_vlc_volume(setvollevel)
+            self.set_vlc_volume(int(setvollevel))
         else:
             self.set_vlc_volume(90)
         event_manager = self.libvlc_player.event_manager()
