@@ -396,7 +396,7 @@ def main():
                 stop()
             if 'raises the volume raspberry'.lower () in str (usrcmd) .lower ():
                 assistant.stop_conversation ()
-                os.system ("amixer set Master 5%")
+                os.system ("amixer set Master 5%+")
                 say ("I raise the volume of the raspberry")
             if 'lowers the volume raspberry'.lower () in str (usrcmd) .lower ():
                 assistant.stop_conversation ()
