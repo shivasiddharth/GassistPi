@@ -1,3 +1,5 @@
+#Config file for declaring custom actions'parameters. The parameters have been listed here in alphabetical order (A-Z).
+
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:
   IP: 'xxxxxxxxxxxx' #Enter your ESP's IP here.
