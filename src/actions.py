@@ -36,7 +36,7 @@ import pprint
 import yaml
 
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
-    settings = yaml.load(conf)
+    configuration = yaml.load(conf)
 
 
 
