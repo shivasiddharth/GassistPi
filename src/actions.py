@@ -33,7 +33,7 @@ import pafy
 import pychromecast
 import spotipy
 import pprint
-
+import yaml
 
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     settings = yaml.load(conf)
