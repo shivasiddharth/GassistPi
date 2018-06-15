@@ -3,13 +3,14 @@
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:
   IP: 'xxxxxxxxxxxx' #Enter your ESP's IP here.
-  Devices:
-    - devicename: 'Device 1'
-      deviceid: '/Device1'
-    - devicename: 'Device 2'
-      deviceid: '/Device2'
-    - devicename: 'Device 3'
-      deviceid: '/Device3'
+  devicename: 
+    - 'Device 1'
+    - 'Device 2'
+    - 'Device 3'
+  deviceid: 
+    - '/Device1'
+    - '/Device2'
+    - '/Device3'
 
 #Enter your Google Login Credentials
 Gmusicapi:
