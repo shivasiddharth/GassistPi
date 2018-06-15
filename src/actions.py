@@ -35,6 +35,11 @@ import spotipy
 import pprint
 
 
+with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
+    settings = yaml.load(conf)
+
+
+
 #Spotify Declarations
 #Register with spotify for a developer account to get client-id and client-secret
 client_id = 'ENTER YOUR SPOTIFY CLIENT ID HERE'
