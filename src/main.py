@@ -394,6 +394,14 @@ def main():
                     YouTube_No_Autoplay(str(usrcmd).lower())
             if 'stop'.lower() in str(usrcmd).lower():
                 stop()
+            if 'raises the volume raspberry'.lower () in str (usrcmd) .lower ():
+                assistant.stop_conversation ()
+                os.system ("amixer set Master 5%")
+                say ("I raise the volume of the raspberry")
+            if 'lowers the volume raspberry'.lower () in str (usrcmd) .lower ():
+                assistant.stop_conversation ()
+                os.system ("amixer set Master 5% -")
+                say ("lower the volume of the raspberry")    
             if 'radio'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 radio(str(usrcmd).lower())
