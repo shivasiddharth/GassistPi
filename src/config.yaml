@@ -28,8 +28,8 @@ Kodi:
   port: 8080
   username: kodi
   password: kodi
-  musicdirectory: /home/osmc/Music/
-  videodirectory: /home/osmc/Movies/
+  musicdirectory: '/home/osmc/Music/'
+  videodirectory: '/home/osmc/Movies/'
   windowcmd:
     - Home
     - Settings
