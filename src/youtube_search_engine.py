@@ -6,9 +6,11 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
 
+with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
+    configuration = yaml.load(conf)
 
 #API Key for YouTube and KS Search Engine
-google_cloud_api_key='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
+google_cloud_api_key=configuration['Google_cloud_api_key']
 
 #YouTube API Constants
 DEVELOPER_KEY = google_cloud_api_key

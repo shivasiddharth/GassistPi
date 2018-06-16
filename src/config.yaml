@@ -3,11 +3,11 @@
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:
   IP: 'xxxxxxxxxxxx' #Enter your ESP's IP here.
-  devicename: 
+  devicename:
     - 'Device 1'
     - 'Device 2'
     - 'Device 3'
-  deviceid: 
+  deviceid:
     - '/Device1'
     - '/Device2'
     - '/Device3'
@@ -50,27 +50,39 @@ Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
 
 #Radio station declarations. Follow a similar pattern to add your own stations.
 Radio_stations:
-  - name: 'bbc 2'
-    url: 'http://www.radiofeeds.co.uk/bbcradio2.pls'
-  - name: 'bbc 6 music'
-    url: 'http://www.radiofeeds.co.uk/bbc6music.pls'
-  - name: 'Radio 3'
-    url: 'http://c5icy.prod.playlists.ihrhls.com/1469_icy'
-  - name: 'Radio 4'
-    url: 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3'
+  stationnames:
+    - 'Radio 1'
+    - 'Radio 2'
+    - 'Radio 3'
+    - 'Radio 5'
+  stationlinks:
+    - 'http://www.radiofeeds.co.uk/bbcradio2.pls'
+    - 'http://www.radiofeeds.co.uk/bbc6music.pls'
+    - 'http://c5icy.prod.playlists.ihrhls.com/1469_icy'
+    - 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3'
 
 #Pi GPIO control declarations. Follow a similar pattern to add your own list of GPIOs
 Raspberrypi_GPIO_Control:
-  - name: 'kitchen lights'
-    gpio: 12
-  - name: 'bathroom lights'
-    gpio: 13
-  - name: 'bedroom lights'
-    gpio: 24
+  lightnames:
+    - 'kitchen lights'
+    - 'bathroom lights'
+    - 'bedroom lights'
+  lightgpio:
+    - 12
+    - 13
+    - 24
+
+#Spotify credentials. Register for a spotify developer and get the credentials.
+Spotify:
+  client_id: 'ENTER YOUR SPOTIFY CLIENT ID HERE'
+  client_secret: 'ENTER YOUR SPOTIFY CLIENT SECRET HERE'
+  username: 'ENTER YOUR SPOTIFY USERNAME HERE'
 
 #Enter your Tasmota Device details below
 Tasmota_devicelist:
-  - friendly-name: 'Desk Light'
-    ip: '192.168.1.35'
-  - friendly-name: 'Table Light'
-    ip: '192.168.1.36'
+  friendly-names:
+    - 'Desk Light'
+    - 'Table Light'
+  ipaddresses:
+    - '192.168.1.36'
+    - '192.168.1.35'

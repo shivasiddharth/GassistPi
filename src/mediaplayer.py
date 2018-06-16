@@ -9,11 +9,12 @@ import os.path
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
 
-
+with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
+    configuration = yaml.load(conf)
 
 api = Mobileclient()
 #If you are using two-step authentication, use app specific password. For guidelines, go through README
-logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
+logged_in = api.login(configuration['Gmusicapi']['email'],configuration['Gmusicapi']['password'] , configuration['Gmusicapi']['deviceid'])
 
 class vlcplayer():
 

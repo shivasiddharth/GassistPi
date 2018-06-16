@@ -42,9 +42,9 @@ with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
 
 #Spotify Declarations
 #Register with spotify for a developer account to get client-id and client-secret
-client_id = 'ENTER YOUR SPOTIFY CLIENT ID HERE'
-client_secret = 'ENTER YOUR SPOTIFY CLIENT SECRET HERE'
-username='ENTER YOUR SPOTIFY USERNAME HERE'
+client_id = configuration['Spotify']['client_id']
+client_secret = configuration['Spotify']['client_secret']
+username=configuration['Spotify']['username']
 
 credentials = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 spotify_token = credentials.get_access_token()
@@ -65,29 +65,30 @@ track_ids=[]
 
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
-kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
-musicdirectory="/home/osmc/Music/"
-videodirectory="/home/osmc/Movies/"
-windowcmd=["Home","Settings","Weather","Videos","Music","Player"]
-window=["home","settings","weather","videos","music","playercontrols"]
+kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
+kodi = Kodi(kodiurl, ,configuration['Kodi']['username'], configuration['Kodi']['password'])
+musicdirectory=configuration['Kodi']['musicdirectory']
+videodirectory=configuration['Kodi']['videodirectory']
+windowcmd=configuration['Kodi']['windowcmd']
+window=configuration['Kodi']['window']
 
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
-var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive
-gpio = (12,13,24)#GPIOS for 'var'. Add other GPIOs that you want
+var = configuration['Raspberrypi_GPIO_Control']['lightnames']
+gpio = configuration['Raspberrypi_GPIO_Control']['lightgpio']
 
 #Number of station names and station links should be the same
-stnname=('Radio 1', 'Radio 2', 'Radio 3', 'Radio 5')#Add more stations if you want
-stnlink=('http://www.radiofeeds.co.uk/bbcradio2.pls', 'http://www.radiofeeds.co.uk/bbc6music.pls', 'http://c5icy.prod.playlists.ihrhls.com/1469_icy', 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3')
+stnname=configuration['Radio_stations']['stationnames']
+stnlink=configuration['Radio_stations']['stationlinks']
 
 #IP Address of ESP
-ip='xxxxxxxxxxxx'
+ip=configuration['ESP']['IP']
 
 #Declaration of ESP names
-devname=('Device 1', 'Device 2', 'Device 3')
-devid=('/Device1', '/Device2', '/Device3')
+devname=configuration['ESP']['devicename']
+devid=configuration['ESP']['deviceid']
 
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
