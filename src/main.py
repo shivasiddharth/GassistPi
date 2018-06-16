@@ -195,8 +195,8 @@ def process_event(event):
 
     if event.type == EventType.ON_RESPONDING_FINISHED:
        GPIO.output(6,GPIO.LOW)
-       GPIO.output(5,GPIO.HIGH)
-       led.ChangeDutyCycle(100)
+       GPIO.output(5,GPIO.LOW)
+       led.ChangeDutyCycle(0)
 
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
        GPIO.output (5, GPIO.LOW)
