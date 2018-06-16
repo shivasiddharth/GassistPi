@@ -221,7 +221,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 2. In the developer's dashboard, choose "**CREATE A CLIENT ID**". In the pop-up window provide the requested details.  
 3. Click on the new app created and copy the CLIENT ID and CLIENT SECRET. Paste it in the config.yaml file in the indicated space.  
 
-**Syntax: Hey Google, Play __Your Spotify Playlist Name__ from Spotify**
+**Syntax: Hey Google, Play _Your Spotify Playlist Name_ from Spotify**
 
 
 ************************************************
@@ -239,7 +239,7 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 
 **Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
 
-**Syntax: Hey Google, (What is the status of) or (Track) __Your Desired Campaign Name__ Kickstarter campaign**  
+**Syntax: Hey Google, (What is the status of) or (Track) _Your Desired Campaign Name_ Kickstarter campaign**  
 
 
 ************************************************
@@ -273,9 +273,9 @@ alt="Google Play Philips Hue App" width="200" height="80" border="1" /></a>
 Open the app, scan and add the emulated Hue lights.  
 
 **Command Syntax:**    
-**To turn lights on/off :** "Hey Google, Turn __Hue-Light-Name__ On/Off"    
-**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc)  
-**To change brightness  :** "Hey Google, Change __Hue-Light-Name__ brightness to __Required-Brightness-Level__"   
+**To turn lights on/off :** "Hey Google, Turn _Hue-Light-Name_ On/Off"    
+**To change light colour:** "Hey Google, Change _Hue-Light-Name_ colour to _Required-Colour_"  (List of available colours is given at the end of readme doc)  
+**To change brightness  :** "Hey Google, Change _Hue-Light-Name_ brightness to _Required-Brightness-Level_"   
 
 
 *******************************************************************
@@ -299,7 +299,7 @@ GassistPi uses [Edamam](www.edamam.com) for getting recipe details/info. To use 
 **(Note: While copying the application key, do not copy the "—")  
 
 Command Syntax:  
-"Hey Google, Get ingredients for __Required-Item__"  
+"Hey Google, Get ingredients for _Required-Item_"  
 
 
 *******************************************************************
