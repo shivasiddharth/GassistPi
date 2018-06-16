@@ -6,10 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 4-June-2018 Update:
-**Ported the music player from mpv to python-vlc - Garbled audio issues with AIY HAT has been resolved. For more info, please go through the commit.**
-**For Google Music, now the credentials have to be entered in the mediaplayer.py script.**  
-
+## 16-June-2018 Update:
+**Added playback of spotify playlist for more details, click [here](https://github.com/shivasiddharth/GassistPi/tree/new-config-method#playing-spotify-playlist). Now all the credentials and declarations to be done in the config.yaml file. This makes updating easy.**  
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -35,7 +33,7 @@
 **20.  Search recipes and get push message of ingredients and link to recipe.**    
 **21.  Remote control of Magic Mirror.**  
 **22.  Sending voice messages from the phone to the raspberry.**
-
+**23.  Play your Spotify playlist.**  
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
