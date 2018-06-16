@@ -56,6 +56,7 @@ from actions import getrecipe
 from actions import hue_control
 from actions import vlcplayer
 from actions import spotify_playlist_select
+from actions import configuration
 
 
 from google.assistant.embedded.v1alpha2 import (
@@ -86,7 +87,8 @@ except (SystemError, ImportError):
 
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
-kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
+kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
+kodi = Kodi(kodiurl, ,configuration['Kodi']['username'], configuration['Kodi']['password'])
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -106,11 +108,11 @@ led.start(0)
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
-tasmota_devicelist=['Desk Lamp','Table Lamp']
-tasmota_deviceip=['192.168.1.35','192.168.1.36']
+tasmota_devicelist=configuration['Tasmota_devicelist']['friendly-names']
+tasmota_deviceip=configuration['Tasmota_devicelist']['ipaddresses']
 
 #Magic Mirror Remote Control Declarations
-mmmip='ENTER_YOUR_MAGIC_MIRROR_IP'
+mmmip=configuration['Mmmip']
 
 # Check if VLC is paused
 def checkvlcpaused():
