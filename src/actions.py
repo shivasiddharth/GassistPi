@@ -7,10 +7,16 @@ from kodijson import Kodi, PLAYER_VIDEO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
+from spotipy.oauth2 import SpotifyClientCredentials
+import spotipy.util as util
+import spotipy.oauth2 as oauth2
 from googletrans import Translator
 from pushbullet import Pushbullet
 from mediaplayer import api
+from youtube_search_engine import google_cloud_api_key
 from gtts import gTTS
+from youtube_search_engine import youtube_search
+from youtube_search_engine import youtube_stream_link
 import requests
 import mediaplayer
 import os
@@ -25,52 +31,64 @@ import json
 import urllib.request
 import pafy
 import pychromecast
+import spotipy
+import pprint
+import yaml
+
+with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
+    configuration = yaml.load(conf)
 
 
+
+#Spotify Declarations
+#Register with spotify for a developer account to get client-id and client-secret
+client_id = configuration['Spotify']['client_id']
+client_secret = configuration['Spotify']['client_secret']
+username=configuration['Spotify']['username']
+
+credentials = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+spotify_token = credentials.get_access_token()
+
+
+#Import VLC player
 vlcplayer=mediaplayer.vlcplayer()
 
-#API Key for YouTube and KS Search Engine
-google_cloud_api_key='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
+
 
 #Google Music Declarations
 song_ids=[]
 track_ids=[]
 
 
-
-#YouTube API Constants
-DEVELOPER_KEY = google_cloud_api_key
-YOUTUBE_API_SERVICE_NAME = 'youtube'
-YOUTUBE_API_VERSION = 'v3'
-
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
 
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
-kodi = Kodi("http://192.168.1.15:8080/jsonrpc", "kodi", "kodi")
-musicdirectory="/home/osmc/Music/"
-videodirectory="/home/osmc/Movies/"
-windowcmd=["Home","Settings","Weather","Videos","Music","Player"]
-window=["home","settings","weather","videos","music","playercontrols"]
+kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
+kodi = Kodi(kodiurl, ,configuration['Kodi']['username'], configuration['Kodi']['password'])
+musicdirectory=configuration['Kodi']['musicdirectory']
+videodirectory=configuration['Kodi']['videodirectory']
+windowcmd=configuration['Kodi']['windowcmd']
+window=configuration['Kodi']['window']
 
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
-var = ('kitchen lights', 'bathroom lights', 'bedroom lights')#Add whatever names you want. This is case is insensitive
-gpio = (12,13,24)#GPIOS for 'var'. Add other GPIOs that you want
+var = configuration['Raspberrypi_GPIO_Control']['lightnames']
+gpio = configuration['Raspberrypi_GPIO_Control']['lightgpio']
 
 #Number of station names and station links should be the same
-stnname=('Radio 1', 'Radio 2', 'Radio 3', 'Radio 5')#Add more stations if you want
-stnlink=('http://www.radiofeeds.co.uk/bbcradio2.pls', 'http://www.radiofeeds.co.uk/bbc6music.pls', 'http://c5icy.prod.playlists.ihrhls.com/1469_icy', 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3')
+stnname=configuration['Radio_stations']['stationnames']
+stnlink=configuration['Radio_stations']['stationlinks']
 
 #IP Address of ESP
-ip='xxxxxxxxxxxx'
+ip=configuration['ESP']['IP']
 
 #Declaration of ESP names
-devname=('Device 1', 'Device 2', 'Device 3')
-devid=('/Device1', '/Device2', '/Device3')
+devname=configuration['ESP']['devicename']
+devid=configuration['ESP']['deviceid']
 
 for pin in gpio:
     GPIO.setup(pin, GPIO.OUT)
@@ -309,75 +327,7 @@ def feed(phrase):
         else:
             continue
 
-#Function to search YouTube and get videoid
-def youtube_search(query):
-  youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-    developerKey=DEVELOPER_KEY)
 
-  req=query
-  # Call the search.list method to retrieve results matching the specified
-  # query term.
-  search_response = youtube.search().list(
-    q=query,
-    part='id,snippet'
-  ).execute()
-  #print(search_response)
-
-  videos = []
-  channels = []
-  playlists = []
-  videoids = []
-  channelids = []
-  playlistids = []
-
-  # Add each result to the appropriate list, and then display the lists of
-  # matching videos, channels, and playlists.
-
-  for search_result in search_response.get('items', []):
-
-    if search_result['id']['kind'] == 'youtube#video':
-      videos.append('%s (%s)' % (search_result['snippet']['title'],
-                                 search_result['id']['videoId']))
-      videoids.append(search_result['id']['videoId'])
-
-    elif search_result['id']['kind'] == 'youtube#channel':
-      channels.append('%s (%s)' % (search_result['snippet']['title'],
-                                   search_result['id']['channelId']))
-      channelids.append(search_result['id']['channelId'])
-
-    elif search_result['id']['kind'] == 'youtube#playlist':
-      playlists.append('%s (%s)' % (search_result['snippet']['title'],
-                                    search_result['id']['playlistId']))
-      playlistids.append(search_result['id']['playlistId'])
-
-  #Results of YouTube search. If you wish to see the results, uncomment them
-  # print 'Videos:\n', '\n'.join(videos), '\n'
-  # print 'Channels:\n', '\n'.join(channels), '\n'
-  # print 'Playlists:\n', '\n'.join(playlists), '\n'
-
-  #Checks if your query is for a channel, playlist or a video and changes the URL accordingly
-  if 'channel'.lower() in  str(req).lower() and len(channels)!=0:
-      urlid=channelids[0]
-      YouTubeURL=("https://www.youtube.com/watch?v="+channelids[0])
-  elif 'playlist'.lower() in  str(req).lower() and len(playlists)!=0:
-      urlid=playlistids[0]
-      YouTubeURL=("https://www.youtube.com/watch?v="+playlistids[0])
-  else:
-      urlid=videoids[0]
-      YouTubeURL=("https://www.youtube.com/watch?v="+videoids[0])
-
-  return YouTubeURL,urlid
-
-
-#Function to get streaming links for YouTube URLs
-def youtube_stream_link(videourl):
-    url=videourl
-    video = pafy.new(url)
-    bestvideo = video.getbest()
-    bestaudio = video.getbestaudio()
-    audiostreaminglink=bestaudio.url
-    videostreaminglink=bestvideo.url
-    return audiostreaminglink,videostreaminglink
 
 
 ##-------Start of functions defined for Kodi Actions--------------
@@ -1289,7 +1239,84 @@ def hue_control(phrase,lightindex,lightaddress):
 
 #------------------------------End of Hue Control Functions---------------------------------------------
 
+#------------------------------Start of Spotify Functions-----------------------------------------------
 
+def show_spotify_track_names(tracks):
+    spotify_tracks=[]
+    for i, item in enumerate(tracks['items']):
+        track = item['track']
+##        print ("%d %32.32s %s" % (i, track['artists'][0]['name'],track['name']))
+        # print ("%s %s" % (track['artists'][0]['name'],track['name']))
+        spotify_tracks.append("%s %s" % (track['artists'][0]['name'],track['name']))
+    return spotify_tracks
+
+def scan_spotify_playlists():
+    if spotify_token:
+        i=0
+        playlistdetails=[]
+        spotify_tracks_list=[]
+        sp = spotipy.Spotify(auth=spotify_token)
+        # print(sp.user(username))
+        # print("")
+        # print("")
+        playlists = sp.user_playlists(username)
+        print(len(playlists['items']))
+        num_playlists=len(playlists['items'])
+        spotify_playlists={"Playlists":[0]*(len(playlists['items']))}
+        # print(spotify_playlists)
+        # print("")
+        # print("")
+        for playlist in playlists['items']:
+            if playlist['owner']['id'] == username:
+                # print (playlist['name'])
+                playlist_name=playlist['name']
+                # print("")
+                # print("")
+    ##            print ('  total tracks', playlist['tracks']['total'])
+    ##            print("")
+    ##            print("")
+                results = sp.user_playlist(username, playlist['id'],fields="tracks,next")
+                tracks = results['tracks']
+                spotify_tracks_list=show_spotify_track_names(tracks)
+            playlistdetails.append(i)
+            playlistdetails.append(playlist_name)
+            playlistdetails.append(spotify_tracks_list)
+            spotify_playlists['Playlists'][i]=playlistdetails
+            playlistdetails=[]
+            i=i+1
+        # print("")
+        # print("")
+        # print(spotify_playlists['Playlists'])
+        return spotify_playlists, num_playlists
+    else:
+        say("Can't get token for, " + username)
+        print("Can't get token for ", username)
+
+def spotify_playlist_select(phrase):
+    trackslist=[]
+    currenttrackid=0
+    idx=phrase.find('play')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track = track.replace('from spotify','',1)
+    track=track.strip()
+    say("Getting music links")
+    print(track)
+    playlists,num=scan_spotify_playlists()
+    if not num==[]:
+        for i in range(0,num):
+            print(str(playlists['Playlists'][i][1]).lower())
+            if track in str(playlists['Playlists'][i][1]).lower():
+                trackslist=playlists['Playlists'][i][2]
+                break
+        if not trackslist==[]:
+            vlcplayer.media_manager(trackslist,'Spotify')
+            vlcplayer.spotify_player(currenttrackid)
+    else:
+        say("Unable to find matching playlist")
+
+#----------------------End of Spotify functions---------------------------------
 
 #GPIO Device Control
 def Action(phrase):

@@ -1,0 +1,88 @@
+#Config file for declaring custom actions'parameters. The parameters have been listed here in alphabetical order (A-Z).
+
+#ESP control declarations. Follow a similar pattern to add your own list.
+ESP:
+  IP: 'xxxxxxxxxxxx' #Enter your ESP's IP here.
+  devicename:
+    - 'Device 1'
+    - 'Device 2'
+    - 'Device 3'
+  deviceid:
+    - '/Device1'
+    - '/Device2'
+    - '/Device3'
+
+#Enter your Google Login Credentials
+Gmusicapi:
+  #If you are using two-step authentication, use app specific password. For guidelines, go through README
+  email: 'ENTER_YOUR_EMAIL_HERE'
+  password: 'ENETER_YOUR_PASSWORD'
+  deviceid: Mobileclient.FROM_MAC_ADDRESS
+
+#API Key for YouTube and Kickstarter Search Engine
+Google_cloud_api_key: ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE
+
+#KODI custom declarations change IP, music directory and video directory according to your device
+Kodi:
+  ip: 192.168.88.226
+  port: 8080
+  username: kodi
+  password: kodi
+  musicdirectory: /home/osmc/Music/
+  videodirectory: /home/osmc/Movies/
+  windowcmd:
+    - Home
+    - Settings
+    - Weather
+    - Videos
+    - Music
+    - Player
+  window:
+    - home
+    - settings
+    - weather
+    - videos
+    - music
+    - playercontrols
+
+# Enter your Magic Mirror IP
+Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
+
+#Radio station declarations. Follow a similar pattern to add your own stations.
+Radio_stations:
+  stationnames:
+    - 'Radio 1'
+    - 'Radio 2'
+    - 'Radio 3'
+    - 'Radio 5'
+  stationlinks:
+    - 'http://www.radiofeeds.co.uk/bbcradio2.pls'
+    - 'http://www.radiofeeds.co.uk/bbc6music.pls'
+    - 'http://c5icy.prod.playlists.ihrhls.com/1469_icy'
+    - 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3'
+
+#Pi GPIO control declarations. Follow a similar pattern to add your own list of GPIOs
+Raspberrypi_GPIO_Control:
+  lightnames:
+    - 'kitchen lights'
+    - 'bathroom lights'
+    - 'bedroom lights'
+  lightgpio:
+    - 12
+    - 13
+    - 24
+
+#Spotify credentials. Register for a spotify developer and get the credentials.
+Spotify:
+  client_id: 'ENTER YOUR SPOTIFY CLIENT ID HERE'
+  client_secret: 'ENTER YOUR SPOTIFY CLIENT SECRET HERE'
+  username: 'ENTER YOUR SPOTIFY USERNAME HERE'
+
+#Enter your Tasmota Device details below
+Tasmota_devicelist:
+  friendly-names:
+    - 'Desk Light'
+    - 'Table Light'
+  ipaddresses:
+    - '192.168.1.36'
+    - '192.168.1.35'

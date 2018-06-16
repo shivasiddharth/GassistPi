@@ -6,10 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 4-June-2018 Update:
-**Ported the music player from mpv to python-vlc - Garbled audio issues with AIY HAT has been resolved. For more info, please go through the commit.**
-**For Google Music, now the credentials have to be entered in the mediaplayer.py script.**  
-
+## 16-June-2018 Update:
+**Added playback of spotify playlist for more details, click [here](https://github.com/shivasiddharth/GassistPi/tree/new-config-method#playing-spotify-playlist). Now all the credentials and declarations to be done in the config.yaml file. This makes updating easy.**  
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -34,8 +32,8 @@
 **19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
 **20.  Search recipes and get push message of ingredients and link to recipe.**    
 **21.  Remote control of Magic Mirror.**  
-**22.  Sending voice messages from the phone to the raspberry.**
-
+**22.  Sending voice messages from the phone to the raspberry.**  
+**23.  Play your Spotify playlist.**  
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
@@ -214,6 +212,18 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 ************************************************
+### **PLAYING SPOTIFY PLAYLIST**  
+************************************************
+**NOTE: Spotify API currently only supports playback in a web browser, but DRM content is being blocked in the Raspberry Pi. As a roundabout approach, I have programmed the assistant to get the playlist details using Spotipy API and then fetch those tracks from YouTube. This custom program has a better accuracy than spotify playlist playback using mpsyt.**   
+
+1. Click [here](https://developer.spotify.com/dashboard/login) and register for a spotify developer account, if you already don't have one.  
+2. In the developer's dashboard, choose "**CREATE A CLIENT ID**". In the pop-up window provide the requested details.  
+3. Click on the new app created and copy the CLIENT ID and CLIENT SECRET. Paste it in the config.yaml file in the indicated space.  
+
+**Syntax: Hey Google, Play _Your Spotify Playlist Name_ from Spotify**
+
+
+************************************************
 ### **TRACKING KICKSTARTER CAMPAIGNS**  
 ************************************************
 A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has been used. This requires an API to be added to your existing project.  
@@ -228,7 +238,7 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 
 **Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
 
-**Syntax: Hey Google, (What is the status of) or (Track) __Your Desired Campaign Name__ Kickstarter campaign**  
+**Syntax: Hey Google, (What is the status of) or (Track) _Your Desired Campaign Name_ Kickstarter campaign**  
 
 
 ************************************************
@@ -262,9 +272,9 @@ alt="Google Play Philips Hue App" width="200" height="80" border="1" /></a>
 Open the app, scan and add the emulated Hue lights.  
 
 **Command Syntax:**    
-**To turn lights on/off :** "Hey Google, Turn __Hue-Light-Name__ On/Off"    
-**To change light colour:** "Hey Google, Change __Hue-Light-Name__ colour to __Required-Colour__"  (List of available colours is given at the end of readme doc)  
-**To change brightness  :** "Hey Google, Change __Hue-Light-Name__ brightness to __Required-Brightness-Level__"   
+**To turn lights on/off :** "Hey Google, Turn _Hue-Light-Name_ On/Off"    
+**To change light colour:** "Hey Google, Change _Hue-Light-Name_ colour to _Required-Colour_"  (List of available colours is given at the end of readme doc)  
+**To change brightness  :** "Hey Google, Change _Hue-Light-Name_ brightness to _Required-Brightness-Level_"   
 
 
 *******************************************************************
@@ -288,7 +298,7 @@ GassistPi uses [Edamam](www.edamam.com) for getting recipe details/info. To use 
 **(Note: While copying the application key, do not copy the "—")  
 
 Command Syntax:  
-"Hey Google, Get ingredients for __Required-Item__"  
+"Hey Google, Get ingredients for _Required-Item_"  
 
 
 *******************************************************************
@@ -296,7 +306,7 @@ Command Syntax:
 *******************************************************************
 You can control either Magic Mirror running on another Pi or Magic Mirror running on the same pi as GassistPi.  
 As a prerequisite, you should have the remote control module installed in the Pi running Magic Mirror.  
-Enter the Ip address of Pi running Magic Mirror in the main.py script against the variable **"mmmip"** declared.   
+Enter the Ip address of Pi running Magic Mirror in the **config.yaml** against the variable **"mmmip"** declared.   
 
 Command Syntax:  
 **To show/hide weather module             :**  "Hey Google, Show/Hide Weather on Magic Mirror"  
@@ -348,7 +358,7 @@ Download the Arduino IDE code for Nodemcu from here: https://github.com/shivasid
 
 Add the wifi credentials, make the desired changes and upload the Arduino code onto the NodeMCU and get the IP address from the serial monitor.  
 
-Add the NodeMCU's IP address in the actions.py file.  
+Add the NodeMCU's IP address in the **config.yaml**.  
 
 **Syntax: "Hey Google, Trigger Turn _Devicename_ On/Off"**    
 
@@ -367,7 +377,7 @@ Follow the instructions in this video to upload the firmware properly.
 " target="_blank"><img src="http://img.youtube.com/vi/MzcAS-K_TRU/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
 
-Pi3 and Pi Zero users, assign the device names and device ip addresses in the main.py script and pushbutton.py script respectively, in the marked locations.  
+Pi3 and Pi Zero users, assign the device names and device ip addresses in the **config.yaml** in the marked locations.  
 
 **Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
 
@@ -452,7 +462,7 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 ************************************************
 The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
 
-Enter your Google userid and password in the **mediaplayer.py** file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
+Enter your Google userid and password in the **config.yaml** file. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
 
 ### Getting app specific password:
 Refer to this page on google help - https://support.google.com/accounts/answer/185833?hl=en
@@ -497,7 +507,7 @@ http://worldradiomap.com/map/
 The default keyword for tracking parcel is **parcel**. For example, you can say **where is my parcel** or **track my parcel**.  
 
 Regsiter for a free account with Aftership at https://www.aftership.com gnereate an API number and add parcels to the tracking list.
-The generated API number should be added to the actions.py script at the indicated location. For a better understanding follow the attached youtube video.
+The generated API number should be added to the **config.yaml** at the indicated location. For a better understanding follow the attached youtube video.
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=WOyYL46s-q0
 " target="_blank"><img src="http://img.youtube.com/vi/WOyYL46s-q0/0.jpg"

@@ -6,11 +6,16 @@ import os
 import json
 from gmusicapi import Mobileclient
 import os.path
+from youtube_search_engine import youtube_search
+from youtube_search_engine import youtube_stream_link
 
+with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
+    configuration = yaml.load(conf)
 
 api = Mobileclient()
 #If you are using two-step authentication, use app specific password. For guidelines, go through README
-logged_in = api.login('ENTER_YOUR_EMAIL_HERE', 'ENETER_YOUR_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)
+logged_in = api.login(configuration['Gmusicapi']['email'],configuration['Gmusicapi']['password'] , configuration['Gmusicapi']['deviceid'])
+
 
 class vlcplayer():
 
@@ -46,6 +51,8 @@ class vlcplayer():
                     self.googlemusic_player(currenttrackid)
                 if musictype=='YouTube':
                     self.youtube_player(currenttrackid)
+                if musictype=='Spotify':
+                    self.spotify_player(currenttrackid)
 
     def media_player(self,mrl):
         self.libvlc_player = self.libvlc_Instance.media_player_new()
@@ -116,6 +123,15 @@ class vlcplayer():
             tracks= json.load(input_file)
         print(tracks[trackid])
         self.media_player(tracks[trackid])
+
+    def spotify_player(self,trackid):
+        with open('/home/pi/.trackqueue.json','r') as input_file:
+            tracks= json.load(input_file)
+        print(tracks[trackid])
+        fullurl,urlid=youtube_search(tracks[trackid])
+        audiostream,videostream=youtube_stream_link(fullurl)
+        streamurl=audiostream
+        self.media_player(streamurl)
 
     def check_delete(self,file):
         if os.path.isfile(file):
