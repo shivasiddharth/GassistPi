@@ -295,7 +295,7 @@ Command Syntax:
 *******************************************************************
 You can control either Magic Mirror running on another Pi or Magic Mirror running on the same pi as GassistPi.  
 As a prerequisite, you should have the remote control module installed in the Pi running Magic Mirror.  
-Enter the Ip address of Pi running Magic Mirror in the main.py script against the variable **"mmmip"** declared.   
+Enter the Ip address of Pi running Magic Mirror in the **config.yaml** against the variable **"mmmip"** declared.   
 
 Command Syntax:  
 **To show/hide weather module             :**  "Hey Google, Show/Hide Weather on Magic Mirror"  
@@ -347,7 +347,7 @@ Download the Arduino IDE code for Nodemcu from here: https://github.com/shivasid
 
 Add the wifi credentials, make the desired changes and upload the Arduino code onto the NodeMCU and get the IP address from the serial monitor.  
 
-Add the NodeMCU's IP address in the actions.py file.  
+Add the NodeMCU's IP address in the **config.yaml**.  
 
 **Syntax: "Hey Google, Trigger Turn _Devicename_ On/Off"**    
 
@@ -366,7 +366,7 @@ Follow the instructions in this video to upload the firmware properly.
 " target="_blank"><img src="http://img.youtube.com/vi/MzcAS-K_TRU/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
 
-Pi3 and Pi Zero users, assign the device names and device ip addresses in the main.py script and pushbutton.py script respectively, in the marked locations.  
+Pi3 and Pi Zero users, assign the device names and device ip addresses in the **config.yaml** in the marked locations.  
 
 **Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
 
@@ -451,7 +451,7 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 ************************************************
 The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
 
-Enter your Google userid and password in the **mediaplayer.py** file in the line **"logged_in = api.login('YOUR_GMAIL_ID', 'YOUR_GMAIL_PASSWORD', Mobileclient.FROM_MAC_ADDRESS)"**. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
+Enter your Google userid and password in the **config.yaml** file. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
 
 ### Getting app specific password:
 Refer to this page on google help - https://support.google.com/accounts/answer/185833?hl=en
@@ -496,7 +496,7 @@ http://worldradiomap.com/map/
 The default keyword for tracking parcel is **parcel**. For example, you can say **where is my parcel** or **track my parcel**.  
 
 Regsiter for a free account with Aftership at https://www.aftership.com gnereate an API number and add parcels to the tracking list.
-The generated API number should be added to the actions.py script at the indicated location. For a better understanding follow the attached youtube video.
+The generated API number should be added to the **config.yaml** at the indicated location. For a better understanding follow the attached youtube video.
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=WOyYL46s-q0
 " target="_blank"><img src="http://img.youtube.com/vi/WOyYL46s-q0/0.jpg"
