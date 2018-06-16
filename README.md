@@ -44,6 +44,7 @@
 1. Open the terminal and execute the following  
 
 ```
+sudo apt-get install git  
 git clone https://github.com/shivasiddharth/GassistPi    
 ```
 

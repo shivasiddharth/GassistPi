@@ -16,6 +16,7 @@ api = Mobileclient()
 #If you are using two-step authentication, use app specific password. For guidelines, go through README
 logged_in = api.login(configuration['Gmusicapi']['email'],configuration['Gmusicapi']['password'] , configuration['Gmusicapi']['deviceid'])
 
+
 class vlcplayer():
 
     def __init__(self):
@@ -58,6 +59,12 @@ class vlcplayer():
         media=self.libvlc_Instance.media_new(mrl)
         self.libvlc_player.set_media(media)
         self.libvlc_player.play()
+        if os.path.isfile("/home/pi/.mediavolume.json"):
+            with open('/home/pi/.mediavolume.json', 'r') as vol:
+                setvollevel = json.load(vol)
+            self.set_vlc_volume(int(setvollevel))
+        else:
+            self.set_vlc_volume(90)
         event_manager = self.libvlc_player.event_manager()
         event_manager.event_attach(vlc.EventType.MediaPlayerEndReached,self.end_callback)
         #self.libvlc_Media_list.add_media(media)
@@ -128,4 +135,4 @@ class vlcplayer():
 
     def check_delete(self,file):
         if os.path.isfile(file):
-            os.system(file)
+            os.system("sudo rm "+file)
