@@ -32,7 +32,7 @@
 **19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
 **20.  Search recipes and get push message of ingredients and link to recipe.**    
 **21.  Remote control of Magic Mirror.**  
-**22.  Sending voice messages from the phone to the raspberry.**
+**22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
