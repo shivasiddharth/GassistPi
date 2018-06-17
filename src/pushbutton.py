@@ -88,7 +88,7 @@ except (SystemError, ImportError):
 #Login with custom credentials
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
-kodi = Kodi(kodiurl, ,configuration['Kodi']['username'], configuration['Kodi']['password'])
+kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
