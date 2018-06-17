@@ -8,6 +8,7 @@ from gmusicapi import Mobileclient
 import os.path
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
+import yaml
 
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     configuration = yaml.load(conf)
