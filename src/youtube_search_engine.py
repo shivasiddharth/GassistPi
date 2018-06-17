@@ -5,6 +5,8 @@ import pafy
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
+import yaml
+
 
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     configuration = yaml.load(conf)
