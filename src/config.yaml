@@ -76,7 +76,7 @@ Raspberrypi_GPIO_Control:
 Spotify:
   client_id: 'ENTER YOUR SPOTIFY CLIENT ID HERE'
   client_secret: 'ENTER YOUR SPOTIFY CLIENT SECRET HERE'
-  username: 'ENTER YOUR SPOTIFY USERNAME HERE'
+  username: 'ENTER YOUR APPLICATION NAME HERE'
 
 #Enter your Tasmota Device details below
 Tasmota_devicelist:
