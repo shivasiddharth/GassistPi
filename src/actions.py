@@ -42,9 +42,10 @@ with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
 
 #Spotify Declarations
 #Register with spotify for a developer account to get client-id and client-secret
-client_id = configuration['Spotify']['client_id']
-client_secret = configuration['Spotify']['client_secret']
-username=configuration['Spotify']['username']
+if configuration['Spotify']['client_id']!= 'ENTER YOUR SPOTIFY CLIENT ID HERE' and configuration['Spotify']['client_secret']!='ENTER YOUR SPOTIFY CLIENT SECRET HERE':
+    client_id = configuration['Spotify']['client_id']
+    client_secret = configuration['Spotify']['client_secret']
+    username=configuration['Spotify']['username']
 
 credentials = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 spotify_token = credentials.get_access_token()
