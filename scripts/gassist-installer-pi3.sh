@@ -34,6 +34,9 @@ echo ""
 echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
 cd /home/pi/
 sudo apt-get update -y
+sudo apt-get install python-pyaudio python3-pyaudio sox -y
+sudo pip install pyaudio -y
+sudo apt-get install libatlas-base-dev -y
 
 sed 's/#.*//' /home/pi/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
 
