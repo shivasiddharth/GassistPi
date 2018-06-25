@@ -46,9 +46,8 @@ if configuration['Spotify']['client_id']!= 'ENTER YOUR SPOTIFY CLIENT ID HERE' a
     client_id = configuration['Spotify']['client_id']
     client_secret = configuration['Spotify']['client_secret']
     username=configuration['Spotify']['username']
-
-credentials = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-spotify_token = credentials.get_access_token()
+    credentials = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+    spotify_token = credentials.get_access_token()
 
 
 #Import VLC player
