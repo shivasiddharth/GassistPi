@@ -138,7 +138,7 @@ speaker-test -t wav
 	```
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
-	sudo chmod +x /home/pi/GassistPi/script/snowboy-deps-installer.sh
+	sudo chmod +x /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 
 	```
 
@@ -146,7 +146,7 @@ speaker-test -t wav
 	```
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
-	sudo  /home/pi/GassistPi/script/snowboy-deps-installer.sh
+	sudo  /home/pi/GassistPi/scripts/snowboy-deps-installer.sh
 
 	```
 
