@@ -34,7 +34,7 @@ class Light(object):
         self.set_off()
 
 if __name__ == "__main__":
-    light = Light(23)
+    light = Light(22)
     while True:
         light.blink()
         time.sleep(0.5)
