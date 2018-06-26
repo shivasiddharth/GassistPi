@@ -138,6 +138,7 @@ speaker-test -t wav
 	```
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
 	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo chmod +x /home/pi/GassistPi/script/snowboy-deps-installer.sh
 
 	```
 
@@ -145,6 +146,7 @@ speaker-test -t wav
 	```
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
 	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo  /home/pi/GassistPi/script/snowboy-deps-installer.sh
 
 	```
 
@@ -179,7 +181,8 @@ sudo /home/pi/GassistPi/scripts/service-installer.sh
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable gassistpi-push-button.service
-sudo systemctl enable stopbutton.service  
+sudo systemctl enable stopbutton.service
+sudo systemctl enable snowboy.service
 ```  
 
 5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
@@ -187,7 +190,8 @@ sudo systemctl enable stopbutton.service
 ```
 sudo systemctl start gassistpi-ok-google.service  
 sudo systemctl start gassistpi-push-button.service
-sudo systemctl start stopbutton.service  
+sudo systemctl start stopbutton.service
+sudo systemctl start snowboy.service
 ```  
 
 **RESTART and ENJOY**  
