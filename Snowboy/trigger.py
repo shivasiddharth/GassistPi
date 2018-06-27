@@ -13,12 +13,12 @@ def interrupt_callback():
     global interrupted
     return interrupted
 
-if len(sys.argv) == 1:
-    print("Error: need to specify model name")
-    print("Usage: python demo.py your.model")
-    sys.exit(-1)
-
-model = sys.argv[1]
+#if len(sys.argv) == 1:
+ #   print("Error: need to specify model name")
+  #  print("Usage: python demo.py your.model")
+   # sys.exit(-1)
+#model = sys.argv[1]
+model = "jarvis.pmdl"
 
 signal.signal(signal.SIGINT, signal_handler)
 
