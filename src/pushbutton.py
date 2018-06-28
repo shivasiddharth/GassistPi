@@ -324,6 +324,9 @@ class SampleAssistant(object):
                         return continue_conversation
                     if 'stream'.lower() in str(usrcmd).lower():
                         vlcplayer.stop_vlc()
+                        GPIO.output(6,GPIO.LOW)
+                        GPIO.output(5,GPIO.LOW)
+                        led.ChangeDutyCycle(0)
                         if 'autoplay'.lower() in str(usrcmd).lower():
                             YouTube_Autoplay(str(usrcmd).lower())
                         else:
