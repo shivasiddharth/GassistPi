@@ -2,13 +2,18 @@
 
 import collections
 import pyaudio
-from snowboydecoders import snowboydetect
 import time
 import wave
 import os
 import logging
+import platform
+import importlib
 from ctypes import *
 from contextlib import contextmanager
+
+snowboydetect = importlib.import_module('snowboydecoders.{}.snowboydetect'.format(
+    platform.machine()))
+
 
 logging.basicConfig()
 logger = logging.getLogger("snowboy")
@@ -189,7 +194,11 @@ class HotwordDetector(object):
         logger.debug("detecting...")
 
         state = "PASSIVE"
+        listening_counter=0
         while self._running is True:
+            if listening_counter==0:
+                listening_counter=1
+                print('Snowboy: Listening for hotword .....')
             if interrupt_check():
                 logger.debug("detect voice break")
                 break
