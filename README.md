@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 16-June-2018 Update:
-**Added playback of spotify playlist for more details, click [here](https://github.com/shivasiddharth/GassistPi/tree/new-config-method#playing-spotify-playlist). Now all the credentials and declarations to be entered in the config.yaml file. This makes updating easy.**  
+## 22-July-2018 Update:
+**Added custom wakeword activation for Armv7 boards, Pi2, Pi3. To use the feature, please install from scratch. Custom wakeword for Pi Zero boards will be added in next update.  
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -34,6 +34,7 @@
 **21.  Remote control of Magic Mirror.**  
 **22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
+**24.  Custom wakeword for Armv7 devices Pi2B, Pi3.    
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
@@ -211,6 +212,16 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
+************************************************
+### **CUSTOM WAKEWORD ACTIVATION**  
+************************************************
+1. You can choose to either Enable or Disable the custom wakeword activation in the config.yaml file.  
+2. In the config.yaml file, under Custom_wakeword, change the status to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
+3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
+4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/home/pi/GassistPi/src/resources**  directory.
+5. Change the paths to the models in the config.yaml file.  
+
+
 ************************************************
 ### **PLAYING SPOTIFY PLAYLIST**  
 ************************************************
