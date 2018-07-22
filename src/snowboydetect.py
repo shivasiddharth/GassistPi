@@ -121,9 +121,6 @@ class SnowboyDetect(_object):
     def SetSensitivity(self, sensitivity_str):
         return _snowboydetect.SnowboyDetect_SetSensitivity(self, sensitivity_str)
 
-    def SetHighSensitivity(self, high_sensitivity_str):
-        return _snowboydetect.SnowboyDetect_SetHighSensitivity(self, high_sensitivity_str)
-
     def GetSensitivity(self):
         return _snowboydetect.SnowboyDetect_GetSensitivity(self)
 
@@ -151,45 +148,6 @@ class SnowboyDetect(_object):
     __del__ = lambda self: None
 SnowboyDetect_swigregister = _snowboydetect.SnowboyDetect_swigregister
 SnowboyDetect_swigregister(SnowboyDetect)
-
-class SnowboyVad(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, SnowboyVad, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, SnowboyVad, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, resource_filename):
-        this = _snowboydetect.new_SnowboyVad(resource_filename)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-
-    def Reset(self):
-        return _snowboydetect.SnowboyVad_Reset(self)
-
-    def RunVad(self, *args):
-        return _snowboydetect.SnowboyVad_RunVad(self, *args)
-
-    def SetAudioGain(self, audio_gain):
-        return _snowboydetect.SnowboyVad_SetAudioGain(self, audio_gain)
-
-    def ApplyFrontend(self, apply_frontend):
-        return _snowboydetect.SnowboyVad_ApplyFrontend(self, apply_frontend)
-
-    def SampleRate(self):
-        return _snowboydetect.SnowboyVad_SampleRate(self)
-
-    def NumChannels(self):
-        return _snowboydetect.SnowboyVad_NumChannels(self)
-
-    def BitsPerSample(self):
-        return _snowboydetect.SnowboyVad_BitsPerSample(self)
-    __swig_destroy__ = _snowboydetect.delete_SnowboyVad
-    __del__ = lambda self: None
-SnowboyVad_swigregister = _snowboydetect.SnowboyVad_swigregister
-SnowboyVad_swigregister(SnowboyVad)
 
 # This file is compatible with both classic and new-style classes.
 

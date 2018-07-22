@@ -2,16 +2,13 @@
 
 import collections
 import pyaudio
+from . import snowboydetect
 import time
 import wave
 import os
 import logging
-import platform
-import importlib
 from ctypes import *
 from contextlib import contextmanager
-from snowboydecoders import snowboydetect
-
 
 logging.basicConfig()
 logger = logging.getLogger("snowboy")
@@ -60,6 +57,7 @@ class RingBuffer(object):
 def play_audio_file(fname=DETECT_DING):
     """Simple callback function to play a wave file. By default it plays
     a Ding sound.
+
     :param str fname: wave file name
     :return: None
     """
@@ -83,6 +81,7 @@ class HotwordDetector(object):
     """
     Snowboy decoder to detect whether a keyword specified by `decoder_model`
     exists in a microphone input stream.
+
     :param decoder_model: decoder model file path, a string or a list of strings
     :param resource: resource file path.
     :param sensitivity: decoder sensitivity, a float of a list of floats.
@@ -139,6 +138,7 @@ class HotwordDetector(object):
         function (single model) or a list of callback functions (multiple
         models). Every loop it also calls `interrupt_check` -- if it returns
         True, then breaks from the loop and return.
+
         :param detected_callback: a function or list of functions. The number of
                                   items must match the number of models in
                                   `decoder_model`.
@@ -192,11 +192,7 @@ class HotwordDetector(object):
         logger.debug("detecting...")
 
         state = "PASSIVE"
-        listening_counter=0
         while self._running is True:
-            if listening_counter==0:
-                listening_counter=1
-                print('Snowboy: Listening for hotword .....')
             if interrupt_check():
                 logger.debug("detect voice break")
                 break
