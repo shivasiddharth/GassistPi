@@ -7,7 +7,13 @@
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
 ## 16-June-2018 Update:
-**Added playback of spotify playlist for more details, click [here](https://github.com/shivasiddharth/GassistPi/tree/new-config-method#playing-spotify-playlist). Now all the credentials and declarations to be entered in the config.yaml file. This makes updating easy.**  
+**Added playback of spotify playlist for more details, click [here](https://github.com/shivasiddharth/GassistPi/tree/new-config-method#playing-spotify-playlist).**  
+*******************************************************************************************************************************
+## Now all the credentials and declarations to be entered in the config.yaml file. This makes updating easy.
+**the config.yaml file is located in the GassistPi / src folder.**
+**within the config.yaml file the youtube API and other desired functions will be inserted.**
+*******************************************************************************************************************************
+
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
