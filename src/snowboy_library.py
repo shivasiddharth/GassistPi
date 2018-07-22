@@ -174,7 +174,7 @@ class Myassistant():
                                             yield e['command'], None
 
 
-    def process_event(self,event, device_id):
+    def process_event(self,event):
         """Pretty prints events.
         Prints all events that occur with two spaces between each new
         conversation and a single space between turns of a conversation.
