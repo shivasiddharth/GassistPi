@@ -1,5 +1,13 @@
 #Config file for declaring custom actions'parameters. The parameters have been listed here in alphabetical order (A-Z).
 
+#Custom wakeword On/Off.
+#To enable custom wakeword, change status to Enabled and restart the assistant.
+Custom_wakeword:
+  status: 'Enabled'
+  models:
+    - '/home/pi/GassistPi/src/resources/alexa.umdl'
+    - '/home/pi/GassistPi/src/resources/snowboy.umdl'
+
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:
   IP: 'xxxxxxxxxxxx' #Enter your ESP's IP here.
