@@ -5,8 +5,8 @@
 Custom_wakeword:
   status: 'Disabled'
   models:
-    - '/home/pi/GassistPi/src/wakeword_models/alexa.umdl'
-    - '/home/pi/GassistPi/src/wakeword_models/jarvis.umdl'
+    - '/home/pi/GassistPi/src/resources/models/alexa.umdl'
+    - '/home/pi/GassistPi/src/resources/models/jarvis.umdl'
 
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:

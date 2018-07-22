@@ -10,9 +10,7 @@ import platform
 import importlib
 from ctypes import *
 from contextlib import contextmanager
-
-snowboydetect = importlib.import_module('snowboydecoders.{}.snowboydetect'.format(
-    platform.machine()))
+from snowboydecoders import snowboydetect
 
 
 logging.basicConfig()
