@@ -244,9 +244,9 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 2. Select your project from the list.  
 3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
 4. Move your mouse pointer over "API and services" and choose "credentials".
-5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the actions.py script at the indicated location.  
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the **config.yaml** script at the indicated location.  
 6. "From the API and services" option, select library and in the search bar type **search**, select "Custom Search API" and click on "ENABLE".
-7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
+7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated. 
 
 **Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
 
@@ -455,7 +455,7 @@ The updated music streaming features autoplaying of YouTube suggestions. This ma
 2. Select your project from the list.  
 3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
 4. Move your mouse pointer over "API and services" and choose "credentials".
-5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the actions.py script at the indicated location.  
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the **config.yaml** script at the indicated location.  
 6. "From the API and services" option, select library and in the search bar type youtube, select "YouTube Data API v3" API and click on "ENABLE".
 7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
 
