@@ -97,6 +97,7 @@ GPIO.setup(5, GPIO.OUT)
 GPIO.setup(6, GPIO.OUT)
 GPIO.output(5, GPIO.LOW)
 GPIO.output(6, GPIO.LOW)
+GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 led=GPIO.PWM(25,1)
 led.start(0)
 
@@ -152,12 +153,20 @@ class Myassistant():
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.t1 = Thread(target=self.start_detector)
+        self.t2 = Thread(target=self.stopbutton)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
 
     def interrupt_callback(self,):
         return self.interrupted
+    
+    def stopbutton(self):
+        while GPIO.input(23):
+            time.sleep(0.01)
+            if not GPIO.input(23):
+                print('Stopped')
+                stop() 
 
     def process_device_actions(self,event, device_id):
         if 'inputs' in event.args:
@@ -184,8 +193,10 @@ class Myassistant():
         print(event)
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
+            self.t2.start()
             if custom_wakeword:
                 self.t1.start()
+            
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             #Uncomment the following after starting the Kodi
