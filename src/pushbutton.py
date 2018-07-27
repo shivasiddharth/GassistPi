@@ -57,7 +57,8 @@ from actions import hue_control
 from actions import vlcplayer
 from actions import spotify_playlist_select
 from actions import configuration
-
+import snowboydecoder
+import signal
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -147,6 +148,22 @@ def tasmota_control(phrase,devname,devip):
             say("Tunring off "+devname)
         except requests.exceptions.ConnectionError:
             say("Device not online")
+
+#Check if custom wakeword has been enabled
+if configuration['Custom_wakeword']['status']=='Enabled':
+    custom_wakeword=True
+else:
+    custom_wakeword=False
+
+models=configuration['Custom_wakeword']['models']
+interrupted=False
+def signal_handler(signal, frame):
+    global interrupted
+    interrupted = True
+
+def interrupt_callback():
+    global interrupted
+    return interrupted
 
 
 class SampleAssistant(object):
@@ -446,8 +463,8 @@ class SampleAssistant(object):
                         continue
                 GPIO.output(5,GPIO.LOW)
                 GPIO.output(6,GPIO.HIGH)
-                led.ChangeDutyCycle(50)                      
-                                      
+                led.ChangeDutyCycle(50)
+
             if len(resp.audio_out.audio_data) > 0:
                 if not self.conversation_stream.playing:
                     self.conversation_stream.stop_recording()
@@ -510,7 +527,7 @@ class SampleAssistant(object):
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
             vlcplayer.set_vlc_volume(int(oldvolume))
-        
+
     def gen_assist_requests(self):
         """Yields: AssistRequest messages to send to the API."""
 
@@ -752,6 +769,9 @@ def main(api_endpoint, credentials, project_id,
             logging.info('Turning device on')
         else:
             logging.info('Turning device off')
+            
+    def detected():
+        assistant.assist()
 
     @device_handler.command('com.example.commands.BlinkLight')
     def blink(speed, number):
@@ -779,14 +799,20 @@ def main(api_endpoint, credentials, project_id,
         # keep recording voice requests using the microphone
         # and playing back assistant response using the speaker.
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
+
         wait_for_user_trigger = not once
         while True:
             if wait_for_user_trigger:
-                button_state=GPIO.input(22)
-                if button_state==True:
-                    continue
+                if custom_wakeword:
+                    detector.start(detected_callback=callbacks,
+                                   interrupt_check=interrupt_callback,
+                                   sleep_time=0.03)
                 else:
-                    pass
+                    button_state=GPIO.input(22)
+                    if button_state==True:
+                        continue
+                    else:
+                        pass
             continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
@@ -796,6 +822,12 @@ def main(api_endpoint, credentials, project_id,
             if once and (not continue_conversation):
                 break
 
+
+      signal.signal(signal.SIGINT, signal_handler)
+      sensitivity = [0.5]*len(models)
+      callbacks = [detected]*len(models)
+      detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
+      detector.terminate()
 
 if __name__ == '__main__':
     main()
