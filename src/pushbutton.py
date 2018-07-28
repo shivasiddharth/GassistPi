@@ -814,8 +814,8 @@ def main(api_endpoint, credentials, project_id,
         # and playing back assistant response using the speaker.
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
 
-       if SampleAssistant.detected():
-           assistant.assist()
+        if SampleAssistant.detected():
+            assistant.assist()
 
         wait_for_user_trigger = not once
         while True:
