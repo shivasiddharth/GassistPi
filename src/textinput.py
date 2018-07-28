@@ -22,6 +22,7 @@ import click
 import google.auth.transport.grpc
 import google.auth.transport.requests
 import google.oauth2.credentials
+from actions import configuration
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -130,23 +131,23 @@ class SampleTextAssistant(object):
               default=os.path.join(click.get_app_dir('google-oauthlib-tool'),
                                    'credentials.json'),
               help='Path to read OAuth2 credentials.')
-@click.option('--device-model-id',
-              metavar='<device model id>',
-              required=True,
-              help=(('Unique device model identifier, '
-                     'if not specifed, it is read from --device-config')))
-@click.option('--device-id',
-              metavar='<device id>',
-              required=True,
-              help=(('Unique registered device instance identifier, '
-                     'if not specified, it is read from --device-config, '
-                     'if no device_config found: a new device is registered '
-                     'using a unique id and a new device config is saved')))
+##@click.option('--device-model-id',
+##              metavar='<device model id>',
+##              required=True,
+##              help=(('Unique device model identifier, '
+##                     'if not specifed, it is read from --device-config')))
+##@click.option('--device-id',
+##              metavar='<device id>',
+##              required=True,
+##              help=(('Unique registered device instance identifier, '
+##                     'if not specified, it is read from --device-config, '
+##                     'if no device_config found: a new device is registered '
+##                     'using a unique id and a new device config is saved')))
 @click.option('--lang', show_default=True,
               metavar='<language code>',
               default='en-US',
               help='Language code of the Assistant')
-@click.option('--display', is_flag=True, default=False,
+@click.option('--display', is_flag=True, default=True,
               help='Enable visual display of Assistant responses in HTML.')
 @click.option('--verbose', '-v', is_flag=True, default=False,
               help='Verbose logging.')
@@ -156,11 +157,12 @@ class SampleTextAssistant(object):
 @click.option('--query', metavar='<textquery>', required=False)
 
 def main(api_endpoint, credentials,
-         device_model_id, device_id, lang, display, verbose,
-         grpc_deadline, textquery *args, **kwargs):
+         lang, display, verbose,
+         grpc_deadline, query, *args, **kwargs):
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
-
+    device_id = configuration['Assistant_Credentials']['device_id']
+    device_model_id = configuration['Assistant_Credentials']['device_model_id']
     # Load OAuth 2.0 credentials.
     try:
         with open(credentials, 'r') as f:
@@ -181,15 +183,14 @@ def main(api_endpoint, credentials,
 
     with SampleTextAssistant(lang, device_model_id, device_id, display,
                              grpc_channel, grpc_deadline) as assistant:
-        while True:
-            query = textquery
-            #click.echo('<you> %s' % query)
-            response_text, response_html = assistant.assist(text_query=query)
-            if display and response_html:
-                system_browser = browser_helpers.system_browser
-                system_browser.display(response_html)
-            if response_text:
-                click.echo('<@assistant> %s' % response_text)
+        q = query
+        #click.echo('<you> %s' % query)
+        response_text, response_html = assistant.assist(text_query=q)
+        if display and response_html:
+           system_browser = browser_helpers.system_browser
+           system_browser.display(response_html)
+        if response_text:
+           click.echo('<@assistant> %s' % response_text)
 
 
 if __name__ == '__main__':

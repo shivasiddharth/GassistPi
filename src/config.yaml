@@ -1,5 +1,10 @@
 #Config file for declaring custom actions'parameters. The parameters have been listed here in alphabetical order (A-Z).
 
+#Enter your Google assistant credentials below
+Assistant_Credentials:
+  device_id: 'ENTER YOUR DEVICE ID OBTAINED AFTER REGISTRATION'
+  device_model_id: 'ENTER THE MODEL ID AS GIVEN IN THE ACTIONS CONSOLE'
+
 #Custom wakeword On/Off.
 #To enable custom wakeword, change status to Enabled and restart the assistant.
 Custom_wakeword:

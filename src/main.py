@@ -161,13 +161,13 @@ class Myassistant():
 
     def interrupt_callback(self,):
         return self.interrupted
-    
+
     def stopbutton(self):
         while GPIO.input(23):
             time.sleep(0.01)
             if not GPIO.input(23):
                 print('Stopped')
-                stop() 
+                stop()
 
     def process_device_actions(self,event, device_id):
         if 'inputs' in event.args:
@@ -197,7 +197,7 @@ class Myassistant():
             self.t2.start()
             if custom_wakeword:
                 self.t1.start()
-            
+
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             #Uncomment the following after starting the Kodi
@@ -234,9 +234,11 @@ class Myassistant():
 
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
+           os.system('/home/pi/env/bin/python -u /home/pi/GassistPi/src/textinput.py --query '+str(event.args))
            GPIO.output(5,GPIO.LOW)
            GPIO.output(6,GPIO.HIGH)
            led.ChangeDutyCycle(50)
+
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
            GPIO.output(6,GPIO.LOW)
