@@ -7,7 +7,7 @@
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
 ## 28-July-2018 Update:
-**Custom wakeword for Pi Zero boards has been added. This update applies to Pi Zero and other non-Armv7 boards. Other need not update. Non-Armv7 users who want custom hotword, start from scratch.**      
+**Custom wakeword for Pi Zero boards has been added. This update applies to Pi Zero and other non-Armv7 boards. Others need not update. Non-Armv7 users who want custom hotword activation, start from scratch.**      
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
