@@ -150,22 +150,12 @@ def tasmota_control(phrase,devname,devip):
         except requests.exceptions.ConnectionError:
             say("Device not online")
 
+#Check if custom wakeword has been enabled
 if configuration['Custom_wakeword']['status']=='Enabled':
     custom_wakeword=True
 else:
     custom_wakeword=False
 models=configuration['Custom_wakeword']['models']
-interrupted=False
-
-def signal_handler(signal, frame):
-    global interrupted
-    interrupted = True
-
-
-
-def interrupt_callback():
-    global interrupted
-    return interrupted
 
 
 
@@ -191,7 +181,13 @@ class SampleAssistant(object):
         self.device_id = device_id
         self.conversation_stream = conversation_stream
         self.display = display
-
+        self.interrupted=False
+        self.sensitivity = [0.5]*len(models)
+        self.callbacks = [self.detected]*len(models)
+        self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
+        self.t1 = Thread(target=self.detector_start)
+        if custom_wakeword:
+            self.t1.start()
 
         # Opaque blob provided in AssistResponse that,
         # when provided in a follow-up AssistRequest,
@@ -211,6 +207,21 @@ class SampleAssistant(object):
 
         self.device_handler = device_handler
 
+    def signal_handler(self,signal, frame):
+        global interrupted
+        interrupted = True
+
+    def interrupt_callback(self):
+        global interrupted
+        return interrupted
+
+    def detected(self):
+        print('Assistant listening...')
+
+    def detector_start(self):
+        self.detector.start(detected_callback=self.callbacks,
+                       interrupt_check=self.interrupt_callback,
+                       sleep_time=0.03)
 
     def __enter__(self):
         return self
@@ -788,31 +799,42 @@ def main(api_endpoint, credentials, project_id,
             logging.info('Device is blinking.')
             time.sleep(delay)
 
-    gassist = SampleAssistant(lang, device_model_id, device_id,
-                           conversation_stream,
-                           grpc_channel, grpc_deadline,device_handler)
+    with SampleAssistant(lang, device_model_id, device_id,
+                         conversation_stream, display,
+                         grpc_channel, grpc_deadline,
+                         device_handler) as assistant:
+        # If file arguments are supplied:
+        # exit after the first turn of the conversation.
+        if input_audio_file or output_audio_file:
+            assistant.assist()
+            return
 
-    ###################### start snowboy code ###################
-    def detected():
-        # GPIO.output(22,GPIO.HIGH)
-        # time.sleep(.05)
-        # GPIO.output(22,GPIO.LOW)
-        #snowboydecoder.play_audio_file(snowboydecoder.DETECT_DING)
-        gassist.assist()
+        # If no file arguments supplied:
+        # keep recording voice requests using the microphone
+        # and playing back assistant response using the speaker.
+        # When the once flag is set, don't wait for a trigger. Otherwise, wait.
 
+       if SampleAssistant.detected():
+           assistant.assist()
 
-    # capture SIGINT signal, e.g., Ctrl+C
-    signal.signal(signal.SIGINT, signal_handler)
+        wait_for_user_trigger = not once
+        while True:
+            if wait_for_user_trigger:
+                button_state=GPIO.input(22)
+                if button_state==True:
+                    continue
+                else:
+                    pass
 
-    sensitivity = [0.5]*len(models)
-    callbacks = [detected]*len(models)
-    detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
+            continue_conversation = assistant.assist()
+            # wait for user trigger if there is no follow-up turn in
+            # the conversation.
+            wait_for_user_trigger = not continue_conversation
 
-    # main loop
-    # make sure you have the same numbers of callbacks and models
-    detector.start(detected_callback=callbacks,
-                   interrupt_check=interrupt_callback,
-                   sleep_time=0.03)
+            # If we only want one conversation, break.
+            if once and (not continue_conversation):
+                break
+
 
     detector.terminate()
 
