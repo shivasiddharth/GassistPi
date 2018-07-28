@@ -155,18 +155,8 @@ if configuration['Custom_wakeword']['status']=='Enabled':
     custom_wakeword=True
 else:
     custom_wakeword=False
-
 models=configuration['Custom_wakeword']['models']
-interrupted=False
-sensitivity = [0.5]*len(models)
-detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
-def signal_handler(signal, frame):
-    global interrupted
-    interrupted = True
 
-def interrupt_callback():
-    global interrupted
-    return interrupted
 
 
 class SampleAssistant(object):
@@ -191,6 +181,13 @@ class SampleAssistant(object):
         self.device_id = device_id
         self.conversation_stream = conversation_stream
         self.display = display
+        self.interrupted=False
+        self.sensitivity = [0.5]*len(models)
+        self.callbacks = [self.detected]*len(models)
+        self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
+        self.t1 = Thread(target=self.detector_start)
+        if custom_wakeword:
+            self.t1.start()
 
         # Opaque blob provided in AssistResponse that,
         # when provided in a follow-up AssistRequest,
@@ -209,6 +206,22 @@ class SampleAssistant(object):
         self.deadline = deadline_sec
 
         self.device_handler = device_handler
+
+    def signal_handler(self,signal, frame):
+        global interrupted
+        interrupted = True
+
+    def interrupt_callback(self):
+        global interrupted
+        return interrupted
+
+    def detected(self):
+        print('Assistant listening...')
+
+    def detector_start(self):
+        self.detector.start(detected_callback=self.callbacks,
+                       interrupt_check=self.interrupt_callback,
+                       sleep_time=0.03)
 
     def __enter__(self):
         return self
@@ -773,20 +786,6 @@ def main(api_endpoint, credentials, project_id,
         else:
             logging.info('Turning device off')
 
-    def detected():
-        assistant.assist()
-
-    signal.signal(signal.SIGINT, signal_handler)
-    callbacks = [detected]*len(models)
-
-    def detector_start():
-        detector.start(detected_callback=callbacks,
-                       interrupt_check=interrupt_callback,
-                       sleep_time=0.03)
-
-    t1 = Thread(target=detector_start)
-    if custom_wakeword:
-        t1.start()
 
     @device_handler.command('com.example.commands.BlinkLight')
     def blink(speed, number):
@@ -815,7 +814,9 @@ def main(api_endpoint, credentials, project_id,
         # and playing back assistant response using the speaker.
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
 
-
+       if SampleAssistant.detected():
+           assistant.assist()
+           
         wait_for_user_trigger = not once
         while True:
             if wait_for_user_trigger:
