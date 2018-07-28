@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 22-July-2018 Update:
-**Added custom wakeword activation for Armv7 boards, Pi2, Pi3. To use the feature, please install from scratch. Custom wakeword for Pi Zero boards will be added in next update.**    
+## 28-July-2018 Update:
+**Custom wakeword for Pi Zero boards has been added. This update applies to Pi Zero and other non-Armv7 boards. Other need not update. Non-Armv7 users who want custom hotword, start from scratch.**      
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -34,7 +34,7 @@
 **21.  Remote control of Magic Mirror.**  
 **22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
-**24.  Custom wakeword for Armv7 devices Pi2B, Pi3.**      
+**24.  Custom wakeword for all Pi boards.**      
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
