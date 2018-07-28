@@ -59,6 +59,7 @@ from actions import spotify_playlist_select
 from actions import configuration
 import snowboydecoder
 import signal
+from threading import Thread
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -157,6 +158,8 @@ else:
 
 models=configuration['Custom_wakeword']['models']
 interrupted=False
+sensitivity = [0.5]*len(models)
+detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
 def signal_handler(signal, frame):
     global interrupted
     interrupted = True
@@ -769,9 +772,18 @@ def main(api_endpoint, credentials, project_id,
             logging.info('Turning device on')
         else:
             logging.info('Turning device off')
-            
+
     def detected():
         assistant.assist()
+
+    def detector_start():
+        detector.start(detected_callback=callbacks,
+                       interrupt_check=interrupt_callback,
+                       sleep_time=0.03)
+
+    t1 = Thread(target=start_detector)
+    if custom_wakeword:
+        t1.start()
 
     @device_handler.command('com.example.commands.BlinkLight')
     def blink(speed, number):
@@ -800,19 +812,18 @@ def main(api_endpoint, credentials, project_id,
         # and playing back assistant response using the speaker.
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
 
+        signal.signal(signal.SIGINT, signal_handler)
+        callbacks = [detected]*len(models)
+
         wait_for_user_trigger = not once
         while True:
             if wait_for_user_trigger:
-                if custom_wakeword:
-                    detector.start(detected_callback=callbacks,
-                                   interrupt_check=interrupt_callback,
-                                   sleep_time=0.03)
+                button_state=GPIO.input(22)
+                if button_state==True:
+                    continue
                 else:
-                    button_state=GPIO.input(22)
-                    if button_state==True:
-                        continue
-                    else:
-                        pass
+                    pass             
+
             continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
@@ -823,10 +834,6 @@ def main(api_endpoint, credentials, project_id,
                 break
 
 
-      signal.signal(signal.SIGINT, signal_handler)
-      sensitivity = [0.5]*len(models)
-      callbacks = [detected]*len(models)
-      detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
       detector.terminate()
 
 if __name__ == '__main__':
