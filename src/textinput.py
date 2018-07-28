@@ -29,7 +29,7 @@ from google.assistant.embedded.v1alpha2 import (
 )
 
 try:
-    from . import (
+    from googlesamples.assistant.grpc import (
         assistant_helpers,
         browser_helpers,
     )
@@ -153,9 +153,11 @@ class SampleTextAssistant(object):
 @click.option('--grpc-deadline', default=DEFAULT_GRPC_DEADLINE,
               metavar='<grpc deadline>', show_default=True,
               help='gRPC deadline in seconds')
+@click.option('--query', metavar='<textquery>', required=False)
+
 def main(api_endpoint, credentials,
          device_model_id, device_id, lang, display, verbose,
-         grpc_deadline, *args, **kwargs):
+         grpc_deadline, textquery *args, **kwargs):
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
 
@@ -180,8 +182,8 @@ def main(api_endpoint, credentials,
     with SampleTextAssistant(lang, device_model_id, device_id, display,
                              grpc_channel, grpc_deadline) as assistant:
         while True:
-            query = click.prompt('')
-            click.echo('<you> %s' % query)
+            query = textquery
+            #click.echo('<you> %s' % query)
             response_text, response_html = assistant.assist(text_query=query)
             if display and response_html:
                 system_browser = browser_helpers.system_browser
