@@ -175,19 +175,17 @@ sudo /home/pi/GassistPi/scripts/service-installer.sh
 ```  
 
 4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
-**To stop music playback using a pushbutton connected to GPIO 23 enable stopbutton.service**  
+**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable gassistpi-push-button.service
-sudo systemctl enable stopbutton.service  
 ```  
 
 5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
-**To stop music playback using a pushbutton connected to GPIO 23 start stopbutton.service**   
+**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start gassistpi-push-button.service
-sudo systemctl start stopbutton.service  
+sudo systemctl start gassistpi-push-button.service 
 ```  
 
 **RESTART and ENJOY**  
