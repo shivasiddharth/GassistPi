@@ -59,6 +59,7 @@ from actions import spotify_playlist_select
 from actions import configuration
 import snowboydecoder
 import signal
+from threading import Thread
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -96,7 +97,7 @@ GPIO.setwarnings(False)
 
 #Trigger Pin
 GPIO.setup(22, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-
+GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 #Indicator Pins
 GPIO.setup(25, GPIO.OUT)
 GPIO.setup(5, GPIO.OUT)
@@ -166,6 +167,8 @@ def interrupt_callback():
     return interrupted
 
 
+    
+    
 class SampleAssistant(object):
     """Sample Assistant that supports conversations and device actions.
 
@@ -188,7 +191,8 @@ class SampleAssistant(object):
         self.device_id = device_id
         self.conversation_stream = conversation_stream
         self.display = display
-
+        self.t3 = Thread(target=self.stopbutton)
+        self.t3.start()
         # Opaque blob provided in AssistResponse that,
         # when provided in a follow-up AssistRequest,
         # gives the Assistant a context marker within the current state
@@ -206,7 +210,14 @@ class SampleAssistant(object):
         self.deadline = deadline_sec
 
         self.device_handler = device_handler
-
+        
+    def stopbutton(self):
+        while GPIO.input(23):
+            time.sleep(0.01)
+            if not GPIO.input(23):
+                print('Stopped')
+                stop()
+                
     def __enter__(self):
         return self
 
@@ -484,9 +495,7 @@ class SampleAssistant(object):
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.HIGH)
                 led.ChangeDutyCycle(100)
-                logging.info('Expecting follow-on query from user.')
-                if custom_wakeword:
-                    self.assist()
+                logging.info('Expecting follow-on query from user.')               
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.LOW)
@@ -529,6 +538,7 @@ class SampleAssistant(object):
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
             vlcplayer.set_vlc_volume(int(oldvolume))
+        
 
     def gen_assist_requests(self):
         """Yields: AssistRequest messages to send to the API."""
@@ -662,7 +672,7 @@ def main(api_endpoint, credentials, project_id,
     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
-
+    
     # Load OAuth 2.0 credentials.
     try:
         with open(credentials, 'r') as f:
@@ -772,14 +782,8 @@ def main(api_endpoint, credentials, project_id,
         else:
             logging.info('Turning device off')
 
-    def detected():
-        assistant.assist()
-
-    signal.signal(signal.SIGINT, signal_handler)
-    sensitivity = [0.5]*len(models)
-    callbacks = [detected]*len(models)
-    detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
-
+                
+                
     @device_handler.command('com.example.commands.BlinkLight')
     def blink(speed, number):
         logging.info('Blinking device %s times.' % number)
@@ -801,7 +805,22 @@ def main(api_endpoint, credentials, project_id,
         if input_audio_file or output_audio_file:
             assistant.assist()
             return
+        
+        def detected():
+            continue_conversation=assistant.assist()
+            if continue_conversation:
+                print('Continuing conversation')
+                assistant.assist()
 
+        signal.signal(signal.SIGINT, signal_handler)
+        sensitivity = [0.5]*len(models)
+        callbacks = [detected]*len(models)
+        detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
+        def start_detector():
+            detector.start(detected_callback=callbacks,
+                                   interrupt_check=interrupt_callback,
+                                   sleep_time=0.03)        
+            
         # If no file arguments supplied:
         # keep recording voice requests using the microphone
         # and playing back assistant response using the speaker.
@@ -811,15 +830,13 @@ def main(api_endpoint, credentials, project_id,
         while True:
             if wait_for_user_trigger:
                 if custom_wakeword:
-                    detector.start(detected_callback=callbacks,
-                                   interrupt_check=interrupt_callback,
-                                   sleep_time=0.03)
+                    start_detector()
                 else:
                     button_state=GPIO.input(22)
                     if button_state==True:
-                        continue
+                       continue
                     else:
-                        pass
+                       pass
             continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
             # the conversation.
@@ -831,7 +848,7 @@ def main(api_endpoint, credentials, project_id,
 
 
 
-     detector.terminate()
+    detector.terminate()
 
 if __name__ == '__main__':
     main()
