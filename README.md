@@ -34,7 +34,7 @@
 **21.  Remote control of Magic Mirror.**  
 **22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
-**24.  Custom wakeword for all Pi boards.**      
+**24.  Custom wakeword activation for all Pi boards.**      
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
