@@ -776,12 +776,15 @@ def main(api_endpoint, credentials, project_id,
     def detected():
         assistant.assist()
 
+    signal.signal(signal.SIGINT, signal_handler)
+    callbacks = [detected]*len(models)
+
     def detector_start():
         detector.start(detected_callback=callbacks,
                        interrupt_check=interrupt_callback,
                        sleep_time=0.03)
 
-    t1 = Thread(target=start_detector)
+    t1 = Thread(target=detector_start)
     if custom_wakeword:
         t1.start()
 
@@ -812,8 +815,6 @@ def main(api_endpoint, credentials, project_id,
         # and playing back assistant response using the speaker.
         # When the once flag is set, don't wait for a trigger. Otherwise, wait.
 
-        signal.signal(signal.SIGINT, signal_handler)
-        callbacks = [detected]*len(models)
 
         wait_for_user_trigger = not once
         while True:
@@ -822,7 +823,7 @@ def main(api_endpoint, credentials, project_id,
                 if button_state==True:
                     continue
                 else:
-                    pass             
+                    pass
 
             continue_conversation = assistant.assist()
             # wait for user trigger if there is no follow-up turn in
@@ -834,7 +835,7 @@ def main(api_endpoint, credentials, project_id,
                 break
 
 
-      detector.terminate()
+     detector.terminate()
 
 if __name__ == '__main__':
     main()
