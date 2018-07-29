@@ -103,7 +103,7 @@ led=GPIO.PWM(25,1)
 led.start(0)
 
 
-
+mediastopbutton=True
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -161,13 +161,13 @@ class Myassistant():
 
     def interrupt_callback(self,):
         return self.interrupted
-    
+
     def stopbutton(self):
-        while GPIO.input(23):
-            time.sleep(0.01)
+        while mediastopbutton:
+            time.sleep(0.25)
             if not GPIO.input(23):
                 print('Stopped')
-                stop() 
+                stop()
 
     def process_device_actions(self,event, device_id):
         if 'inputs' in event.args:
@@ -197,7 +197,7 @@ class Myassistant():
             self.t2.start()
             if custom_wakeword:
                 self.t1.start()
-            
+
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             #Uncomment the following after starting the Kodi

@@ -167,8 +167,8 @@ def interrupt_callback():
     return interrupted
 
 
-    
-    
+mediastopbutton=True
+
 class SampleAssistant(object):
     """Sample Assistant that supports conversations and device actions.
 
@@ -210,14 +210,14 @@ class SampleAssistant(object):
         self.deadline = deadline_sec
 
         self.device_handler = device_handler
-        
+
     def stopbutton(self):
-        while GPIO.input(23):
-            time.sleep(0.01)
+        while mediastopbutton:
+            time.sleep(0.25)
             if not GPIO.input(23):
                 print('Stopped')
                 stop()
-                
+
     def __enter__(self):
         return self
 
@@ -495,7 +495,7 @@ class SampleAssistant(object):
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.HIGH)
                 led.ChangeDutyCycle(100)
-                logging.info('Expecting follow-on query from user.')               
+                logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
                 GPIO.output(6,GPIO.LOW)
                 GPIO.output(5,GPIO.LOW)
@@ -538,7 +538,7 @@ class SampleAssistant(object):
             with open('/home/pi/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
             vlcplayer.set_vlc_volume(int(oldvolume))
-        
+
 
     def gen_assist_requests(self):
         """Yields: AssistRequest messages to send to the API."""
@@ -672,7 +672,7 @@ def main(api_endpoint, credentials, project_id,
     subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Startup.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
-    
+
     # Load OAuth 2.0 credentials.
     try:
         with open(credentials, 'r') as f:
@@ -782,8 +782,8 @@ def main(api_endpoint, credentials, project_id,
         else:
             logging.info('Turning device off')
 
-                
-                
+
+
     @device_handler.command('com.example.commands.BlinkLight')
     def blink(speed, number):
         logging.info('Blinking device %s times.' % number)
@@ -805,7 +805,7 @@ def main(api_endpoint, credentials, project_id,
         if input_audio_file or output_audio_file:
             assistant.assist()
             return
-        
+
         def detected():
             continue_conversation=assistant.assist()
             if continue_conversation:
@@ -819,8 +819,8 @@ def main(api_endpoint, credentials, project_id,
         def start_detector():
             detector.start(detected_callback=callbacks,
                                    interrupt_check=interrupt_callback,
-                                   sleep_time=0.03)        
-            
+                                   sleep_time=0.03)
+
         # If no file arguments supplied:
         # keep recording voice requests using the microphone
         # and playing back assistant response using the speaker.
