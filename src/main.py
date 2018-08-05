@@ -103,7 +103,7 @@ led=GPIO.PWM(25,1)
 led.start(0)
 
 
-
+mediastopbutton=True
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -155,6 +155,7 @@ class Myassistant():
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.t1 = Thread(target=self.start_detector)
         self.t2 = Thread(target=self.stopbutton)
+        self.detecteduserspeech = ''
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -163,8 +164,8 @@ class Myassistant():
         return self.interrupted
 
     def stopbutton(self):
-        while GPIO.input(23):
-            time.sleep(0.01)
+        while mediastopbutton:
+            time.sleep(0.25)
             if not GPIO.input(23):
                 print('Stopped')
                 stop()
@@ -238,7 +239,8 @@ class Myassistant():
            GPIO.output(5,GPIO.LOW)
            GPIO.output(6,GPIO.HIGH)
            led.ChangeDutyCycle(50)
-
+           print(self.detecteduserspeech)
+          
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
            GPIO.output(6,GPIO.LOW)
@@ -249,6 +251,13 @@ class Myassistant():
            GPIO.output (5, GPIO.LOW)
            GPIO.output (6, GPIO.LOW)
            led.ChangeDutyCycle (0)
+           self.detecteduserspeech=str(event.args)
+           detecteduserspeechidx=self.detecteduserspeech.find(':')
+           self.detecteduserspeech=self.detecteduserspeech[((detecteduserspeechidx)+1):]           
+           self.detecteduserspeech=self.detecteduserspeech.replace("'}","",1)
+           self.detecteduserspeech=self.detecteduserspeech.replace("'","",1)
+           self.detecteduserspeech=self.detecteduserspeech.strip()
+           
 
         print(event)
 
