@@ -465,19 +465,7 @@ Default keyword for playing music from **YouTube without autoplay** is **Stream*
 
 Default keyword for playing music from **YouTube with autoplay** is **Autoplay and Stream**. For example, **Autoplay and Stream I got you** command will play the requested I Got You and after the end of the track will autoplay susequent tracks. The number of autoplay tracks has been limited to a maximum of 10. this can be changed the under the YouTube_Autoplay function in the actions.py script.   
 
-
-| Command Syntax (Hey Google, ...)                   | What it does                                                                 |
-|----------------------------------------------------|------------------------------------------------------------------------------|
-| **stream** I got you                               | Fetches Bebe Rexha's I Got You from YouTube                                  |
-| **autoplay** and **stream** I got you              | Fetch up to 10 results for **I got you** and play them  all                  |
-| **stream** I got you **playlist**                  | Search for a **playlist** and randomly pick a song                           |
-| **autoplay** and **stream** I got you **playlist** | Find the **playlist** and fetch up to 10 songs from it                       |
-| **stream** I got you **channel**                   | Find the **channel** and randomly play a song from it's **uploaded** playlist|
-| **autoplay** and **stream** bebe rexha **channel** | Find the **channel** and fetch up to 10 songs from it's **uploaded** playlist|
-
-
 **Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
-
 
 ************************************************
 ### **MUSIC STREAMING FROM Google Music**  
