@@ -943,54 +943,49 @@ def gmusicselect(phrase):
 #-----------------Start of Functions for YouTube Streaming---------------------
 
 def YouTube_Autoplay(phrase):
-    try:
-        urllist=[]
-        currenttrackid=0
-        idx=phrase.find('stream')
-        track=phrase[idx:]
-        track=track.replace("'}", "",1)
-        track = track.replace('stream','',1)
-        track=track.strip()
-        say("Getting autoplay links")
-        print(track)
-        autourls=youtube_search(track,10) # Maximum of 10 URLS
-        print(autourls)
-        say("Adding autoplay links to the playlist")
-        for i in range(0,len(autourls)):
-            audiostream,videostream=youtube_stream_link(autourls[i])
-            streamurl=audiostream
-            urllist.append(streamurl)
-        if not urllist==[]:
-                vlcplayer.media_manager(urllist,'YouTube')
-                vlcplayer.youtube_player(currenttrackid)
-        else:
-            say("Unable to find songs matching your request")
-    except:
-        say('It is no longer available in youtube')
+    urllist=[]
+    currenttrackid=0
+    idx=phrase.find('stream')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('stream','',1)
+    track=track.strip()
+    say("Getting autoplay links")
+    print(track)
+    fullurl,urlid=youtube_search(track)
+    autourls=fetchautoplaylist(fullurl,10)#Maximum of 10 URLS
+    print(autourls)
+    say("Adding autoplay links to the playlist")
+    for i in range(0,len(autourls)):
+        audiostream,videostream=youtube_stream_link(autourls[i])
+        streamurl=audiostream
+        urllist.append(streamurl)
+    if not autourls==[]:
+        vlcplayer.media_manager(urllist,'YouTube')
+        vlcplayer.youtube_player(currenttrackid)
+    else:
+        say("Unable to find songs matching your request")
 
 def YouTube_No_Autoplay(phrase):
-    try:
-        urllist=[]
-        currenttrackid=0
-        idx=phrase.find('stream')
-        track=phrase[idx:]
-        track=track.replace("'}", "",1)
-        track = track.replace('stream','',1)
-        track=track.strip()
-        say("Getting youtube link")
-        print(track)
-        urlid=youtube_search(track)
-        if(urlid is not None):
-            fullurl="https://www.youtube.com/watch?v="+urlid
-            audiostream,videostream=youtube_stream_link(fullurl)
-            streamurl=audiostream
-            urllist.append(streamurl)
-            vlcplayer.media_manager(urllist,'YouTube')
-            vlcplayer.youtube_player(currenttrackid)
-        else:
-            say("Unable to find songs matching your request")
-    except:
-        say('It is no longer available in youtube')
+    urllist=[]
+    currenttrackid=0
+    idx=phrase.find('stream')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('stream','',1)
+    track=track.strip()
+    say("Getting youtube link")
+    print(track)
+    fullurl,urlid=youtube_search(track)
+    audiostream,videostream=youtube_stream_link(fullurl)
+    streamurl=audiostream
+    urllist.append(streamurl)
+    if not urllist==[]:
+        vlcplayer.media_manager(urllist,'YouTube')
+        vlcplayer.youtube_player(currenttrackid)
+    else:
+        say("Unable to find songs matching your request")
+
 
 #-----------------End of Functions for YouTube Streaming---------------------
 
