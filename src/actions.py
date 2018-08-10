@@ -980,7 +980,7 @@ def YouTube_No_Autoplay(phrase):
         say("Getting youtube link")
         print(track)
         urlid=youtube_search(track)
-        if(urlid is not None):
+        if urlid is not None:
             fullurl="https://www.youtube.com/watch?v="+urlid
             audiostream,videostream=youtube_stream_link(fullurl)
             streamurl=audiostream

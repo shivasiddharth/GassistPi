@@ -1,5 +1,3 @@
-
-
 import urllib.request
 import pafy
 from googleapiclient.discovery import build
@@ -7,7 +5,6 @@ from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
 import yaml
 import random
-
 
 with open('/home/pi/GassistPi/src/config.yaml', 'r') as conf:
     configuration = yaml.load(conf)
@@ -80,14 +77,14 @@ def youtube_search(query, maximum=1):
             playlistId=urlid,
             part='contentDetails'
         ).execute()
-        if(maximum == 1):
+        if maximum == 1:
             list_result = random.choice(list_response.get('items', []))
             return list_result['contentDetails']['videoId']
         else:
             ids = []
             for list_result in list_response.get('items', []):
                 ids.append(list_result['contentDetails']['videoId'])
-                if(len(ids) >= maximum):
+                if len(ids) >= maximum:
                     return ids
             return ids
     elif 'playlist' in str(req).lower() and len(playlists) != 0:
@@ -96,36 +93,35 @@ def youtube_search(query, maximum=1):
             playlistId=urlid,
             part='contentDetails'
         ).execute()
-        if(maximum == 1):
+        if maximum == 1:
             list_result = random.choice(list_response.get('items', []))
             return list_result['contentDetails']['videoId']
         else:
             ids = []
             for list_result in list_response.get('items', []):
                 ids.append(list_result['contentDetails']['videoId'])
-                if(len(ids) >= maximum):
+                if len(ids) >= maximum:
                     return ids
             return ids
     elif len(videoids) != 0:
-        if(maximum == 1):
+        if maximum == 1:
             return videoids[0]
         else:
             ids = []
             for id in videoids:
                 ids.append(id)
-                if(len(ids) >= maximum):
+                if len(ids) >= maximum:
                     return ids
             return ids
-    elif(maximum == 1):
-            return []
+    elif maximum == 1:
+        return []
 
 
 # Function to get streaming links for YouTube URLs
-def youtube_stream_link(videourl):
-    url = videourl
-    video = pafy.new(url)
-    bestvideo = video.getbest()
-    bestaudio = video.getbestaudio()
-    audiostreaminglink = bestaudio.url
-    videostreaminglink = bestvideo.url
-    return audiostreaminglink, videostreaminglink
+def youtube_stream_link(video_url):
+    video = pafy.new(video_url)
+    best_video = video.getbest()
+    best_audio = video.getbestaudio()
+    audio_streaming_link = best_audio.url
+    video_streaming_link = best_video.url
+    return audio_streaming_link, video_streaming_link
