@@ -129,10 +129,12 @@ class vlcplayer():
         with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         print(tracks[trackid])
-        fullurl,urlid=youtube_search(tracks[trackid])
-        audiostream,videostream=youtube_stream_link(fullurl)
-        streamurl=audiostream
-        self.media_player(streamurl)
+        urlid = youtube_search(tracks[trackid])
+        if urlid is not None:
+            fullurl = "https://www.youtube.com/watch?v=" + urlid
+            audiostream, videostream = youtube_stream_link(fullurl)
+            streamurl = audiostream
+            self.media_player(streamurl)
 
     def check_delete(self,file):
         if os.path.isfile(file):
