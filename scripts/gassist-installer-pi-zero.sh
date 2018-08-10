@@ -49,7 +49,7 @@ env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
 
 pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
-pip install https://www.piwheels.org/simple/grpcio/grpcio-1.8.6-cp35-cp35m-linux_armv6l.whl#sha256=157769004462e00b73e32fc47a8b264e3edeaef2d2efb9eecd6b160bc1179da5
+pip install https://www.piwheels.org/simple/grpcio/grpcio-1.14.1-cp35-cp35m-linux_armv6l.whl#sha256=a4e46be841646a97a600c71d77f7b7701ad0ee11fffdeeb51f5fe3454f926812
 pip install google-assistant-grpc==0.2.0
 pip install google-assistant-sdk==0.5.0
 pip install google-assistant-sdk[samples]==0.5.0
