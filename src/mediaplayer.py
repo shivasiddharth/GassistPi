@@ -55,6 +55,51 @@ class vlcplayer():
                 if musictype=='Spotify':
                     self.spotify_player(currenttrackid)
 
+    def change_media_next(self):
+        if os.path.isfile("/home/pi/.player.json"):
+            with open('/home/pi/.player.json','r') as input_file:
+                  playerinfo= json.load(input_file)
+            currenttrackid=playerinfo[0]
+            loopstatus=playerinfo[2]
+            numtracks=playerinfo[1]
+            musictype=playerinfo[3]
+            nexttrackid=currenttrackid+1
+            playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
+            with open('/home/pi/.player.json', 'w') as output_file:
+                json.dump(playerinfo, output_file)
+            if currenttrackid<numtracks:
+                if musictype=='Google Music':
+                    self.googlemusic_player(currenttrackid)
+                if musictype=='YouTube':
+                    self.youtube_player(currenttrackid)
+                if musictype=='Spotify':
+                    self.spotify_player(currenttrackid)
+
+    def change_media_previous(self):
+        if os.path.isfile("/home/pi/.player.json"):
+            with open('/home/pi/.player.json','r') as input_file:
+                  playerinfo= json.load(input_file)
+            currenttrackid=playerinfo[0]
+            loopstatus=playerinfo[2]
+            numtracks=playerinfo[1]
+            musictype=playerinfo[3]
+            nexttrackid=currenttrackid-1
+            prevtrackid=currenttrackid-2
+            if prevtrackid<0:
+                currenttrackid=0
+            else:
+                currenttrackid=prevtrackid
+            playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
+            with open('/home/pi/.player.json', 'w') as output_file:
+                json.dump(playerinfo, output_file)
+            if currenttrackid<numtracks:
+                if musictype=='Google Music':
+                    self.googlemusic_player(currenttrackid)
+                if musictype=='YouTube':
+                    self.youtube_player(currenttrackid)
+                if musictype=='Spotify':
+                    self.spotify_player(currenttrackid)
+
     def media_player(self,mrl):
         self.libvlc_player = self.libvlc_Instance.media_player_new()
         media=self.libvlc_Instance.media_new(mrl)

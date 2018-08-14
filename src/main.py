@@ -484,6 +484,20 @@ class Myassistant():
                             vlcplayer.play_vlc()
                     elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
                         say("Sorry nothing is playing right now")
+                if 'play next'.lower() in str(usrcmd).lower() or 'play next track'.lower() in str(usrcmd).lower() or 'play next song'.lower() in str(usrcmd).lower():
+                    assistant.stop_conversation()
+                    if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
+                        vlcplayer.stop_vlc()
+                        vlcplayer.change_media_next()
+                    elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
+                        say("Sorry nothing is playing right now")
+                if 'play previous'.lower() in str(usrcmd).lower() or 'play previous track'.lower() in str(usrcmd).lower() or 'play previous song'.lower() in str(usrcmd).lower():
+                    assistant.stop_conversation()
+                    if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
+                        vlcplayer.stop_vlc()
+                        vlcplayer.change_media_previous()                        
+                    elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
+                        say("Sorry nothing is playing right now")
                 if 'music volume'.lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
