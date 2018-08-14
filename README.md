@@ -443,6 +443,17 @@ Hey Google, Set/change Music Volume to ( a number between 0 and 100)
 Set volume to Maximum/Minimum:  
 Hey Google, Set/change Music Volume to maximum/minimum
 
+Change Tracks:  
+Play Previous Track:  
+Hey google, play previous
+Hey google, play previous song
+Hey google, play previous track
+
+Play Next Track:  
+Hey google, play next
+Hey google, play next song
+Hey google, play next track
+
 
 ************************************************
 ### **MUSIC STREAMING FROM YOUTUBE**  
