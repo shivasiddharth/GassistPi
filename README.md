@@ -84,6 +84,9 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
 
   3.3. USB MIC AND HDMI users,  
   ```
+  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
+  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
+  sudo reboot 
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   speaker-test  
@@ -91,6 +94,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
 
   3.4. USB MIC AND AUDIO JACK users,  
   ```
+  
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   speaker-test  
@@ -105,12 +109,6 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   speaker-test   
   ```
-
-**Those Using HDMI/Onboard Jack, make sure to force the audio**  
-```
-sudo raspi-config  
-```
-Select advanced options, then audio and choose to force audio
 
 **Those using any other DACs or HATs install the cards as per the manufacturer's guide
  and then you can try using the USB-DAC config file after changing the hardware ids**        
