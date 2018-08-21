@@ -93,8 +93,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   ```
 
   3.4. USB MIC AND AUDIO JACK users,  
-  ```
-  
+  ```  
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   speaker-test  
