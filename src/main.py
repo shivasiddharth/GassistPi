@@ -199,6 +199,7 @@ class Myassistant():
                 self.t1.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
+            self.can_start_conversation = False
             subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             #Uncomment the following after starting the Kodi
             #status=mutevolstatus()
@@ -219,7 +220,8 @@ class Myassistant():
                     vlcplayer.set_vlc_volume(15)
             print()
 
-        if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
+        if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
+          self.can_start_conversation = True
           GPIO.output(5,GPIO.LOW)
           GPIO.output(6,GPIO.LOW)
           led.ChangeDutyCycle(0)
@@ -252,6 +254,7 @@ class Myassistant():
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
+            self.can_start_conversation = True
             GPIO.output(5,GPIO.LOW)
             GPIO.output(6,GPIO.LOW)
             led.ChangeDutyCycle(0)
