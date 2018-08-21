@@ -21,6 +21,7 @@ for rcfile in "$asoundrc" "$global_asoundrc"; do
   fi
 done
 
+sudo amixer cset numid=3 1
 sudo cp scripts/asound.conf "$global_asoundrc"
 sudo cp scripts/.asoundrc "$asoundrc"
 echo "Installing USB MIC and onboard 3.5mm Jack config"
