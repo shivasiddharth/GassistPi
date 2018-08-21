@@ -3,7 +3,7 @@
 #Custom wakeword On/Off.
 #To enable custom wakeword, change status to Enabled and restart the assistant.
 Custom_wakeword:
-  Ok-Google: 'Enabled'
+  Ok_Google: 'Enabled'
   status: 'Enabled'
   models:
     - '/home/pi/GassistPi/src/resources/alexa.umdl'
