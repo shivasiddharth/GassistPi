@@ -218,7 +218,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
 4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/home/pi/GassistPi/src/resources**  directory.
 5. Change the paths to the models in the config.yaml file.  
-6. To disable the default **"Ok Google"** hotword, set the **Ok-Google option to "Disabled"**.  
+6. To disable the default **"Ok Google"** hotword, set the **Ok_Google option to "Disabled"**.  
 
 ************************************************
 ### **PLAYING SPOTIFY PLAYLIST**  
