@@ -222,7 +222,7 @@ class Myassistant():
                     vlcplayer.set_vlc_volume(15)
             print()
 
-        if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
+        if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
           self.can_start_conversation = True
           if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
@@ -259,6 +259,8 @@ class Myassistant():
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
+            if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
+                self.assistant.set_mic_mute(True)
             GPIO.output(5,GPIO.LOW)
             GPIO.output(6,GPIO.LOW)
             led.ChangeDutyCycle(0)
