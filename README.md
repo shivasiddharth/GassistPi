@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 23-Aug-2018 Update:
-**Added the ability to disable the default Ok-Google hotword. Changing GPIOs used has been made easy.**        
+## 28-July-2018 Update:
+**Custom wakeword for Pi Zero boards has been added. This update applies to Pi Zero and other non-Armv7 boards. Now you can activate all Pi boards by voice. Users who want custom hotword activation, start from scratch.**      
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -215,7 +215,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
 4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/home/pi/GassistPi/src/resources**  directory.
 5. Change the paths to the models in the config.yaml file.  
-6. To disable the default **"Ok Google"** hotword, set the **Ok_Google option to "Disabled"**.  
+
 
 ************************************************
 ### **PLAYING SPOTIFY PLAYLIST**  
