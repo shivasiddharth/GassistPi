@@ -97,9 +97,9 @@ kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['p
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-pushbuttontrigger=configuration['Gpios']['pushbutton_trigger']
-aiyindicator=configuration['Gpios']['AIY_indicator']
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton']
+pushbuttontrigger=configuration['Gpios']['pushbutton_trigger'][0]
+aiyindicator=configuration['Gpios']['AIY_indicator'][0]
+stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
 listening=configuration['Gpios']['assistant_indicators'][0]
 speaking=configuration['Gpios']['assistant_indicators'][1]
 
