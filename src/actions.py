@@ -77,7 +77,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
 var = configuration['Raspberrypi_GPIO_Control']['lightnames']
-gpio = configuration['Raspberrypi_GPIO_Control']['lightgpio']
+gpio = configuration['Gpios']['picontrol']
 
 #Number of station names and station links should be the same
 stnname=configuration['Radio_stations']['stationnames']
@@ -95,16 +95,16 @@ for pin in gpio:
     GPIO.output(pin, 0)
 
 #Servo pin declaration
-GPIO.setup(27, GPIO.OUT)
-pwm=GPIO.PWM(27, 50)
+GPIO.setup(configuration['Gpios']['servo'], GPIO.OUT)
+pwm=GPIO.PWM(configuration['Gpios']['servo'], 50)
 pwm.start(0)
 
 #Stopbutton
-GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(configuration['Gpios']['stopbutton_music_AIY_pushbutton'], GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 #Led Indicator
-GPIO.setup(25, GPIO.OUT)
-led=GPIO.PWM(25,1)
+GPIO.setup(configuration['Gpios']['AIY_indicator'], GPIO.OUT)
+led=GPIO.PWM(configuration['Gpios']['AIY_indicator'],1)
 led.start(0)
 
 playshell = None

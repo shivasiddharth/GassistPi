@@ -88,18 +88,22 @@ logger=logging.getLogger(__name__)
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
 
-
+#GPIO Declarations
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-#Indicator Pins
-GPIO.setup(25, GPIO.OUT)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(6, GPIO.OUT)
-GPIO.output(5, GPIO.LOW)
-GPIO.output(6, GPIO.LOW)
-GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-led=GPIO.PWM(25,1)
+aiyindicator=configuration['Gpios']['AIY_indicator']
+stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton']
+listening=configuration['Gpios']['assistant_indicators'][0]
+speaking=configuration['Gpios']['assistant_indicators'][1]
+
+GPIO.setup(aiyindicator, GPIO.OUT)
+GPIO.setup(listening, GPIO.OUT)
+GPIO.setup(speaking, GPIO.OUT)
+GPIO.output(listening, GPIO.LOW)
+GPIO.output(speaking, GPIO.LOW)
+GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+led=GPIO.PWM(aiyindicator,1)
 led.start(0)
 
 
@@ -165,7 +169,7 @@ class Myassistant():
     def stopbutton(self):
         while mediastopbutton:
             time.sleep(0.25)
-            if not GPIO.input(23):
+            if not GPIO.input(stoppushbutton):
                 print('Stopped')
                 stop()
 
@@ -209,7 +213,7 @@ class Myassistant():
             #with open('/home/pi/.volume.json', 'w') as f:
                    #json.dump(vollevel, f)
             #kodi.Application.SetVolume({"volume": 0})
-            GPIO.output(5,GPIO.HIGH)
+            GPIO.output(listening,GPIO.HIGH)
             led.ChangeDutyCycle(100)
             if vlcplayer.is_vlc_playing():
                 if os.path.isfile("/home/pi/.mediavolume.json"):
@@ -226,8 +230,8 @@ class Myassistant():
           self.can_start_conversation = True
           if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
-          GPIO.output(5,GPIO.LOW)
-          GPIO.output(6,GPIO.LOW)
+          GPIO.output(listening,GPIO.LOW)
+          GPIO.output(speaking,GPIO.LOW)
           led.ChangeDutyCycle(0)
             #Uncomment the following after starting the Kodi
             #with open('/home/pi/.volume.json', 'r') as f:
@@ -240,18 +244,18 @@ class Myassistant():
 
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-           GPIO.output(5,GPIO.LOW)
-           GPIO.output(6,GPIO.HIGH)
+           GPIO.output(listening,GPIO.LOW)
+           GPIO.output(speaking,GPIO.HIGH)
            led.ChangeDutyCycle(50)
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
-           GPIO.output(6,GPIO.LOW)
-           GPIO.output(5,GPIO.LOW)
+           GPIO.output(speaking,GPIO.LOW)
+           GPIO.output(listening,GPIO.LOW)
            led.ChangeDutyCycle(0)
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-           GPIO.output (5, GPIO.LOW)
-           GPIO.output (6, GPIO.LOW)
+           GPIO.output (listening, GPIO.LOW)
+           GPIO.output (speaking, GPIO.LOW)
            led.ChangeDutyCycle (0)
 
         print(event)
@@ -261,8 +265,8 @@ class Myassistant():
             self.can_start_conversation = True
             if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
-            GPIO.output(5,GPIO.LOW)
-            GPIO.output(6,GPIO.LOW)
+            GPIO.output(listening,GPIO.LOW)
+            GPIO.output(speaking,GPIO.LOW)
             led.ChangeDutyCycle(0)
             #Uncomment the following after starting the Kodi
             #with open('/home/pi/.volume.json', 'r') as f:
@@ -504,7 +508,7 @@ class Myassistant():
                     assistant.stop_conversation()
                     if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
                         vlcplayer.stop_vlc()
-                        vlcplayer.change_media_previous()                        
+                        vlcplayer.change_media_previous()
                     elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
                         say("Sorry nothing is playing right now")
                 if 'music volume'.lower() in str(usrcmd).lower():
