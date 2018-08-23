@@ -3,7 +3,6 @@
 #Custom wakeword On/Off.
 #To enable custom wakeword, change status to Enabled and restart the assistant.
 Custom_wakeword:
-  Ok_Google: 'Enabled'
   status: 'Enabled'
   models:
     - '/home/pi/GassistPi/src/resources/alexa.umdl'
@@ -30,24 +29,6 @@ Gmusicapi:
 
 #API Key for YouTube and Kickstarter Search Engine
 Google_cloud_api_key: ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE
-
-#GPIOS used in the project. Feel free to change in case.
-Gpios:
-  AIY_indicator:
-    - 25
-  assistant_indicators:
-    - 05
-    - 06
-  picontrol:
-    - 12
-    - 13
-    - 24
-  pushbutton_trigger:
-    - 22
-  servo:
-    - 27
-  stopbutton_music_AIY_pushbutton:
-    - 23
 
 #KODI custom declarations change IP, music directory and video directory according to your device
 Kodi:
@@ -94,6 +75,10 @@ Raspberrypi_GPIO_Control:
     - 'kitchen lights'
     - 'bathroom lights'
     - 'bedroom lights'
+  lightgpio:
+    - 12
+    - 13
+    - 24
 
 #Spotify credentials. Register for a spotify developer and get the credentials.
 Spotify:

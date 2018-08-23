@@ -92,25 +92,19 @@ except (SystemError, ImportError):
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
 
-
-#GPIO Declarations
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-pushbuttontrigger=configuration['Gpios']['pushbutton_trigger'][0]
-aiyindicator=configuration['Gpios']['AIY_indicator'][0]
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
-listening=configuration['Gpios']['assistant_indicators'][0]
-speaking=configuration['Gpios']['assistant_indicators'][1]
-
-GPIO.setup(aiyindicator, GPIO.OUT)
-GPIO.setup(listening, GPIO.OUT)
-GPIO.setup(speaking, GPIO.OUT)
-GPIO.output(listening, GPIO.LOW)
-GPIO.output(speaking, GPIO.LOW)
-GPIO.setup(pushbuttontrigger, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-led=GPIO.PWM(aiyindicator,1)
+#Trigger Pin
+GPIO.setup(22, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+#Indicator Pins
+GPIO.setup(25, GPIO.OUT)
+GPIO.setup(5, GPIO.OUT)
+GPIO.setup(6, GPIO.OUT)
+GPIO.output(5, GPIO.LOW)
+GPIO.output(6, GPIO.LOW)
+led=GPIO.PWM(25,1)
 led.start(0)
 
 
@@ -220,7 +214,7 @@ class SampleAssistant(object):
     def stopbutton(self):
         while mediastopbutton:
             time.sleep(0.25)
-            if not GPIO.input(stoppushbutton):
+            if not GPIO.input(23):
                 print('Stopped')
                 stop()
 
@@ -256,7 +250,7 @@ class SampleAssistant(object):
         #with open('/home/pi/.volume.json', 'w') as f:
                #json.dump(vollevel, f)
         #kodi.Application.SetVolume({"volume": 0})
-        GPIO.output(listening,GPIO.HIGH)
+        GPIO.output(5,GPIO.HIGH)
         led.ChangeDutyCycle(100)
         if vlcplayer.is_vlc_playing():
             if os.path.isfile("/home/pi/.mediavolume.json"):
@@ -478,8 +472,8 @@ class SampleAssistant(object):
                         return continue_conversation
                     else:
                         continue
-                GPIO.output(listening,GPIO.LOW)
-                GPIO.output(speaking,GPIO.HIGH)
+                GPIO.output(5,GPIO.LOW)
+                GPIO.output(6,GPIO.HIGH)
                 led.ChangeDutyCycle(50)
 
             if len(resp.audio_out.audio_data) > 0:
@@ -498,13 +492,13 @@ class SampleAssistant(object):
                 self.conversation_stream.volume_percentage = volume_percentage
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
-                GPIO.output(speaking,GPIO.LOW)
-                GPIO.output(listening,GPIO.HIGH)
+                GPIO.output(6,GPIO.LOW)
+                GPIO.output(5,GPIO.HIGH)
                 led.ChangeDutyCycle(100)
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
-                GPIO.output(speaking,GPIO.LOW)
-                GPIO.output(listening,GPIO.LOW)
+                GPIO.output(6,GPIO.LOW)
+                GPIO.output(5,GPIO.LOW)
                 led.ChangeDutyCycle(0)
                 #Uncomment the following after starting the Kodi
                 #with open('/home/pi/.volume.json', 'r') as f:
@@ -533,8 +527,8 @@ class SampleAssistant(object):
         logging.info('Finished playing assistant response.')
         self.conversation_stream.stop_playback()
         return continue_conversation
-        GPIO.output(speaking,GPIO.LOW)
-        GPIO.output(listening,GPIO.LOW)
+        GPIO.output(6,GPIO.LOW)
+        GPIO.output(5,GPIO.LOW)
         led.ChangeDutyCycle(0)
         #Uncomment the following after starting the Kodi
         #with open('/home/pi/.volume.json', 'r') as f:
@@ -838,7 +832,7 @@ def main(api_endpoint, credentials, project_id,
                 if custom_wakeword:
                     start_detector()
                 else:
-                    button_state=GPIO.input(pushbuttontrigger)
+                    button_state=GPIO.input(22)
                     if button_state==True:
                        continue
                     else:
