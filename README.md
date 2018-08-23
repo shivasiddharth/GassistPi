@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 28-July-2018 Update:
-**Custom wakeword for Pi Zero boards has been added. This update applies to Pi Zero and other non-Armv7 boards. Now you can activate all Pi boards by voice. Users who want custom hotword activation, start from scratch.**      
+## 23-Aug-2018 Update:
+**Added the ability to disable the default Ok-Google hotword. Changing GPIOs used has been made easy.**        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
