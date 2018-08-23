@@ -77,7 +77,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #Number of entities in 'var' and 'PINS' should be the same
 var = configuration['Raspberrypi_GPIO_Control']['lightnames']
-gpio = configuration['Raspberrypi_GPIO_Control']['lightgpio']
+gpio = configuration['Gpios']['picontrol']
 
 #Number of station names and station links should be the same
 stnname=configuration['Radio_stations']['stationnames']
@@ -95,16 +95,19 @@ for pin in gpio:
     GPIO.output(pin, 0)
 
 #Servo pin declaration
-GPIO.setup(27, GPIO.OUT)
-pwm=GPIO.PWM(27, 50)
+servopin=configuration['Gpios']['servo'][0]
+GPIO.setup(servopin, GPIO.OUT)
+pwm=GPIO.PWM(servopin, 50)
 pwm.start(0)
 
 #Stopbutton
-GPIO.setup(23, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
+GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 #Led Indicator
-GPIO.setup(25, GPIO.OUT)
-led=GPIO.PWM(25,1)
+aiyindicator=configuration['Gpios']['AIY_indicator'][0]
+GPIO.setup(aiyindicator, GPIO.OUT)
+led=GPIO.PWM(aiyindicator,1)
 led.start(0)
 
 playshell = None
@@ -258,12 +261,12 @@ def ESP(phrase):
 #Stepper Motor control
 def SetAngle(angle):
     duty = angle/18 + 2
-    GPIO.output(27, True)
+    GPIO.output(servopin, True)
     say("Moving motor by " + str(angle) + " degrees")
     pwm.ChangeDutyCycle(duty)
     time.sleep(1)
     pwm.ChangeDutyCycle(0)
-    GPIO.output(27, False)
+    GPIO.output(servopin, False)
 
 
 def stop():
@@ -312,7 +315,7 @@ def feed(phrase):
     title=feed['feed']['title']
     say(title)
     #To stop the feed, press and hold stop button
-    while GPIO.input(23):
+    while GPIO.input(stoppushbutton):
         for x in range(0,numfeeds):
             content=feed['entries'][x]['title']
             print(content)
@@ -320,7 +323,7 @@ def feed(phrase):
             summary=feed['entries'][x]['summary']
             print(summary)
             say(summary)
-            if not GPIO.input(23):
+            if not GPIO.input(stoppushbutton):
               break
         if x == numfeeds-1:
             break
