@@ -187,7 +187,7 @@ class Myassistant():
             led.ChangeDutyCycle(100)
             self.assistant.set_mic_mute(True)
             if custom_wakeword:
-                self.t1.terminate()
+                self.detector.terminate()
             print("Turning off the microphone")
 
     def buttondoublepress(self):
