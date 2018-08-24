@@ -212,14 +212,14 @@ class Myassistant():
                     self.buttonsinglepress()
                     GPIO.remove_event_detect(stoppushbutton)
                     GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
-               elif count == 3:
-                   self.buttondoublepress()
-                   GPIO.remove_event_detect(stoppushbutton)
-                   GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
-               elif count == 4:
-                   self.buttontriplepress()
-                   GPIO.remove_event_detect(stoppushbutton)
-                   GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                elif count == 3:
+                    self.buttondoublepress()
+                    GPIO.remove_event_detect(stoppushbutton)
+                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                elif count == 4:
+                    self.buttontriplepress()
+                    GPIO.remove_event_detect(stoppushbutton)
+                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
 
     def process_device_actions(self,event, device_id):
         if 'inputs' in event.args:
