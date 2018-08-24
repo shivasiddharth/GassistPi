@@ -248,6 +248,9 @@ class Myassistant():
             self.can_start_conversation = True
             self.t2.start()
             if os.path.isfile("/home/pi/.mute"):
+                GPIO.output(listening,GPIO.HIGH)
+                GPIO.output(speaking,GPIO.HIGH)
+                led.ChangeDutyCycle(100)
                 self.assistant.set_mic_mute(True)
             else:
                 if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
