@@ -103,11 +103,12 @@ GPIO.setup(speaking, GPIO.OUT)
 GPIO.output(listening, GPIO.LOW)
 GPIO.output(speaking, GPIO.LOW)
 GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
 led=GPIO.PWM(aiyindicator,1)
 led.start(0)
 
 
-mediastopbutton=True
+mutestopbutton=True
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -158,7 +159,7 @@ class Myassistant():
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.t1 = Thread(target=self.start_detector)
-        self.t2 = Thread(target=self.stopbutton)
+        self.t2 = Thread(target=self.pushbutton)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -166,12 +167,59 @@ class Myassistant():
     def interrupt_callback(self,):
         return self.interrupted
 
-    def stopbutton(self):
-        while mediastopbutton:
-            time.sleep(0.25)
-            if not GPIO.input(stoppushbutton):
-                print('Stopped')
-                stop()
+    def buttonsinglepress(self):
+        if os.path.isfile("/home/pi/.mute"):
+            os.system("sudo rm /home/pi/.mute")
+            GPIO.output(listening,GPIO.LOW)
+            GPIO.output(speaking,GPIO.LOW)
+            led.ChangeDutyCycle(0)
+            if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
+                self.assistant.set_mic_mute(True)
+            else:
+                self.assistant.set_mic_mute(False)
+            if custom_wakeword:
+                self.t1.start()
+            print("Turning on the microphone")
+        else:
+            open('/home/pi/.mute', 'a').close()
+            GPIO.output(listening,GPIO.HIGH)
+            GPIO.output(speaking,GPIO.HIGH)
+            led.ChangeDutyCycle(100)
+            self.assistant.set_mic_mute(True)
+            if custom_wakeword:
+                self.t1.terminate()
+            print("Turning off the microphone")
+
+    def buttondoublepress(self):
+        print('Stopped')
+        stop()
+
+    def buttontriplepress(self):
+        print("Create your own action for button triple press")
+
+    def pushbutton(self):
+        while mutestopbutton:
+            if GPIO.event_detected(stoppushbutton):
+               GPIO.remove_event_detect(stoppushbutton)
+               now = time.time()
+               count = 1
+               GPIO.add_event_detect(stoppushbutton,GPIO.RISING)
+               while time.time() < now + 1: # 1 second period
+                  if GPIO.event_detected(stoppushbutton):
+                     count +=1
+                     time.sleep(.25)
+               if count == 2:
+                   self.buttonsinglepress()
+         	       GPIO.remove_event_detect(stoppushbutton)
+                   GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+               elif count == 3:
+         	       self.buttondoublepress()
+         	       GPIO.remove_event_detect(stoppushbutton)
+         	       GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+               elif count == 4:
+                   self.buttontriplepress()
+                   GPIO.remove_event_detect(stoppushbutton)
+                   GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
 
     def process_device_actions(self,event, device_id):
         if 'inputs' in event.args:
@@ -198,11 +246,14 @@ class Myassistant():
         print(event)
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
-            if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
-                self.assistant.set_mic_mute(True)
             self.t2.start()
-            if custom_wakeword:
-                self.t1.start()
+            if os.path.isfile("/home/pi/.mute"):
+                self.assistant.set_mic_mute(True)
+            else:
+                if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
+                    self.assistant.set_mic_mute(True)
+                if custom_wakeword:
+                    self.t1.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             self.can_start_conversation = False
