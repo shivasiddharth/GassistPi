@@ -177,8 +177,8 @@ class Myassistant():
                 self.assistant.set_mic_mute(True)
             else:
                 self.assistant.set_mic_mute(False)
-            if custom_wakeword:
-                self.t1.start()
+            # if custom_wakeword:
+            #     self.t1.start()
             print("Turning on the microphone")
         else:
             open('/home/pi/.mute', 'a').close()
@@ -186,8 +186,8 @@ class Myassistant():
             GPIO.output(speaking,GPIO.HIGH)
             led.ChangeDutyCycle(100)
             self.assistant.set_mic_mute(True)
-            if custom_wakeword:
-                self.detector.terminate()
+            # if custom_wakeword:
+            #     self.detector.terminate()
             print("Turning off the microphone")
 
     def buttondoublepress(self):
@@ -255,8 +255,8 @@ class Myassistant():
             else:
                 if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
                     self.assistant.set_mic_mute(True)
-                if custom_wakeword:
-                    self.t1.start()
+            if custom_wakeword:
+                self.t1.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             self.can_start_conversation = False
