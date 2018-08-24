@@ -200,22 +200,22 @@ class Myassistant():
     def pushbutton(self):
         while mutestopbutton:
             if GPIO.event_detected(stoppushbutton):
-               GPIO.remove_event_detect(stoppushbutton)
-               now = time.time()
-               count = 1
-               GPIO.add_event_detect(stoppushbutton,GPIO.RISING)
-               while time.time() < now + 1: # 1 second period
-                  if GPIO.event_detected(stoppushbutton):
-                     count +=1
-                     time.sleep(.25)
-               if count == 2:
-                   self.buttonsinglepress()
-         	       GPIO.remove_event_detect(stoppushbutton)
-                   GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                GPIO.remove_event_detect(stoppushbutton)
+                now = time.time()
+                count = 1
+                GPIO.add_event_detect(stoppushbutton,GPIO.RISING)
+                while time.time() < now + 1:
+                     if GPIO.event_detected(stoppushbutton):
+                         count +=1
+                         time.sleep(.25)
+                if count == 2:
+                    self.buttonsinglepress()
+                    GPIO.remove_event_detect(stoppushbutton)
+                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
                elif count == 3:
-         	       self.buttondoublepress()
-         	       GPIO.remove_event_detect(stoppushbutton)
-         	       GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                   self.buttondoublepress()
+                   GPIO.remove_event_detect(stoppushbutton)
+                   GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
                elif count == 4:
                    self.buttontriplepress()
                    GPIO.remove_event_detect(stoppushbutton)
