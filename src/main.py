@@ -164,7 +164,7 @@ class Myassistant():
             subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Mic-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("Turning on the microphone")
         else:
-            open('/home/pi/.GassistPi-Config/.mute', 'a').close()
+            os.system("echo "" >> /home/pi/.GassistPi-Config/.mute")
             assistantindicator('mute')
             self.assistant.set_mic_mute(True)
             # if custom_wakeword:
