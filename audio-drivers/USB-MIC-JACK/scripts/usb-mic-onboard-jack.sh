@@ -13,12 +13,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 asoundrc=/home/pi/.asoundrc
 global_asoundrc=/etc/asound.conf
-
-if [ ! -d "/home/pi/.GassistPi-Config/" ]; then
-  sudo mkdir "/home/pi/.GassistPi-Config/"
-fi
-
-audioconfig=/home/pi/.GassistPi-Config/audiosetup
+audioconfig=/home/pi/audiosetup
 
 for rcfile in "$asoundrc" "$global_asoundrc"; do
   if [[ -f "$rcfile" ]] ; then
