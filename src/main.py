@@ -150,6 +150,10 @@ else:
 
 models=configuration['Custom_wakeword']['models']
 
+with open('/home/pi/.asoundrc') as f:
+    detected_audio_setup = f.readline().rstrip()
+    print(str(detected_audio_setup))
+
 class Myassistant():
 
     def __init__(self):
