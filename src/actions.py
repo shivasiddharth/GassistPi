@@ -691,7 +691,7 @@ def kodiactions(phrase):
     elif 'set'.lower() in str(phrase).lower() and 'volume'.lower() in str(phrase).lower():
         for s in re.findall(r'\b\d+\b', phrase):
             kodi.Application.SetVolume({"volume": int(s)})
-            with open('/home/pi/GassistPi-Config/.volume.json', 'w') as f:
+            with open('/home/pi/.volume.json', 'w') as f:
                    json.dump(int(s), f)
     elif 'toggle mute'.lower() in str(phrase).lower():
         status=mutevolstatus()
@@ -788,13 +788,13 @@ def fetchautoplaylist(url,numvideos):
 
 def loadsonglist():
     song_ids=[]
-    if os.path.isfile("/home/pi/GassistPi-Config/songs.json"):
-        with open('/home/pi/GassistPi-Config/songs.json','r') as input_file:
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
             songs_list= json.load(input_file)
 ##            print(songs_list)
     else:
         songs_list= api.get_all_songs()
-        with open('/home/pi/GassistPi-Config/songs.json', 'w') as output_file:
+        with open('/home/pi/songs.json', 'w') as output_file:
             json.dump(songs_list, output_file)
     for i in range(0,len(songs_list)):
         song_ids.append(songs_list[i]['id'])
@@ -804,13 +804,13 @@ def loadsonglist():
 def loadartist(artistname):
     song_ids=[]
     artist=str(artistname)
-    if os.path.isfile("/home/pi/GassistPi-Config/songs.json"):
-        with open('/home/pi/GassistPi-Config/songs.json','r') as input_file:
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
             songs_list= json.load(input_file)
 ##            print(songs_list)
     else:
         songs_list= api.get_all_songs()
-        with open('/home/pi/GassistPi-Config/songs.json', 'w') as output_file:
+        with open('/home/pi/songs.json', 'w') as output_file:
             json.dump(songs_list, output_file)
     for i in range(0,len(songs_list)):
         if artist.lower() in (songs_list[i]['albumArtist']).lower():
@@ -823,13 +823,13 @@ def loadartist(artistname):
 def loadalbum(albumname):
     song_ids=[]
     album=str(albumname)
-    if os.path.isfile("/home/pi/GassistPi-Config/songs.json"):
-        with open('/home/pi/GassistPi-Config/songs.json','r') as input_file:
+    if os.path.isfile("/home/pi/songs.json"):
+        with open('/home/pi/songs.json','r') as input_file:
             songs_list= json.load(input_file)
 ##            print(songs_list)
     else:
         songs_list= api.get_all_songs()
-        with open('/home/pi/GassistPi-Config/songs.json', 'w') as output_file:
+        with open('/home/pi/songs.json', 'w') as output_file:
             json.dump(songs_list, output_file)
     for i in range(0,len(songs_list)):
         if album.lower() in (songs_list[i]['album']).lower():
@@ -841,12 +841,12 @@ def loadalbum(albumname):
 
 def loadplaylist(playlistnum):
     track_ids=[]
-    if os.path.isfile("/home/pi/GassistPi-Config/playlist.json"):
-        with open('/home/pi/GassistPi-Config/playlist.json','r') as input_file:
+    if os.path.isfile("/home/pi/playlist.json"):
+        with open('/home/pi/playlist.json','r') as input_file:
             playlistcontents= json.load(input_file)
     else:
         playlistcontents=api.get_all_user_playlist_contents()
-        with open('/home/pi/GassistPi-Config/playlist.json', 'w') as output_file:
+        with open('/home/pi/playlist.json', 'w') as output_file:
             json.dump(playlistcontents, output_file)
 ##        print(playlistcontents[0]['tracks'])
 
@@ -859,9 +859,9 @@ def loadplaylist(playlistnum):
 def refreshlists():
     playlist_list=api.get_all_user_playlist_contents()
     songs_list=api.get_all_songs()
-    with open('/home/pi/GassistPi-Config/songs.json', 'w') as output_file:
+    with open('/home/pi/songs.json', 'w') as output_file:
         json.dump(songs_list, output_file)
-    with open('/home/pi/GassistPi-Config/playlist.json', 'w') as output_file:
+    with open('/home/pi/playlist.json', 'w') as output_file:
         json.dump(playlist_list, output_file)
     say("Music list synchronised")
 

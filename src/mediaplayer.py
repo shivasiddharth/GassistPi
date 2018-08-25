@@ -36,8 +36,8 @@ class vlcplayer():
         player.play()
 
     def end_callback(self,event):
-        if os.path.isfile("/home/pi/GassistPi-Config/.player.json"):
-            with open('/home/pi/GassistPi-Config/.player.json','r') as input_file:
+        if os.path.isfile("/home/pi/.player.json"):
+            with open('/home/pi/.player.json','r') as input_file:
                   playerinfo= json.load(input_file)
             currenttrackid=playerinfo[0]
             loopstatus=playerinfo[2]
@@ -45,7 +45,7 @@ class vlcplayer():
             musictype=playerinfo[3]
             nexttrackid=currenttrackid+1
             playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
-            with open('/home/pi/GassistPi-Config/.player.json', 'w') as output_file:
+            with open('/home/pi/.player.json', 'w') as output_file:
                 json.dump(playerinfo, output_file)
             if currenttrackid<numtracks:
                 if musictype=='Google Music':
@@ -56,8 +56,8 @@ class vlcplayer():
                     self.spotify_player(currenttrackid)
 
     def change_media_next(self):
-        if os.path.isfile("/home/pi/GassistPi-Config/.player.json"):
-            with open('/home/pi/GassistPi-Config/.player.json','r') as input_file:
+        if os.path.isfile("/home/pi/.player.json"):
+            with open('/home/pi/.player.json','r') as input_file:
                   playerinfo= json.load(input_file)
             currenttrackid=playerinfo[0]
             loopstatus=playerinfo[2]
@@ -65,7 +65,7 @@ class vlcplayer():
             musictype=playerinfo[3]
             nexttrackid=currenttrackid+1
             playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
-            with open('/home/pi/GassistPi-Config/.player.json', 'w') as output_file:
+            with open('/home/pi/.player.json', 'w') as output_file:
                 json.dump(playerinfo, output_file)
             if currenttrackid<numtracks:
                 if musictype=='Google Music':
@@ -76,8 +76,8 @@ class vlcplayer():
                     self.spotify_player(currenttrackid)
 
     def change_media_previous(self):
-        if os.path.isfile("/home/pi/GassistPi-Config/.player.json"):
-            with open('/home/pi/GassistPi-Config/.player.json','r') as input_file:
+        if os.path.isfile("/home/pi/.player.json"):
+            with open('/home/pi/.player.json','r') as input_file:
                   playerinfo= json.load(input_file)
             currenttrackid=playerinfo[0]
             loopstatus=playerinfo[2]
@@ -90,7 +90,7 @@ class vlcplayer():
             else:
                 currenttrackid=prevtrackid
             playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
-            with open('/home/pi/GassistPi-Config/.player.json', 'w') as output_file:
+            with open('/home/pi/.player.json', 'w') as output_file:
                 json.dump(playerinfo, output_file)
             if currenttrackid<numtracks:
                 if musictype=='Google Music':
@@ -105,8 +105,8 @@ class vlcplayer():
         media=self.libvlc_Instance.media_new(mrl)
         self.libvlc_player.set_media(media)
         self.libvlc_player.play()
-        if os.path.isfile("/home/pi/GassistPi-Config/.mediavolume.json"):
-            with open('/home/pi/GassistPi-Config/.mediavolume.json', 'r') as vol:
+        if os.path.isfile("/home/pi/.mediavolume.json"):
+            with open('/home/pi/.mediavolume.json', 'r') as vol:
                 setvollevel = json.load(vol)
             self.set_vlc_volume(int(setvollevel))
         else:
@@ -145,9 +145,9 @@ class vlcplayer():
         return self.libvlc_player.get_state()
 
     def media_manager(self,tracks,type):
-        self.check_delete("/home/pi/GassistPi-Config/.player.json")
-        self.check_delete("/home/pi/GassistPi-Config/.trackqueue.json")
-        with open('/home/pi/GassistPi-Config/.trackqueue.json', 'w') as output_file:
+        self.check_delete("/home/pi/.player.json")
+        self.check_delete("/home/pi/.trackqueue.json")
+        with open('/home/pi/.trackqueue.json', 'w') as output_file:
             json.dump(tracks, output_file)
         currenttrackid=0
         nexttrackid=currenttrackid+1
@@ -155,23 +155,23 @@ class vlcplayer():
         musictype=type
         numtracks=len(tracks)
         playerinfo=[nexttrackid,numtracks,loopstatus,musictype]
-        with open('/home/pi/GassistPi-Config/.player.json', 'w') as output_file:
+        with open('/home/pi/.player.json', 'w') as output_file:
             json.dump(playerinfo, output_file)
 
     def googlemusic_player(self,trackid):
-        with open('/home/pi/GassistPi-Config/.trackqueue.json','r') as input_file:
+        with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         streamurl=api.get_stream_url(tracks[trackid])
         self.media_player(streamurl)
 
     def youtube_player(self,trackid):
-        with open('/home/pi/GassistPi-Config/.trackqueue.json','r') as input_file:
+        with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         print(tracks[trackid])
         self.media_player(tracks[trackid])
 
     def spotify_player(self,trackid):
-        with open('/home/pi/GassistPi-Config/.trackqueue.json','r') as input_file:
+        with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         print(tracks[trackid])
         urlid = youtube_search(tracks[trackid])
