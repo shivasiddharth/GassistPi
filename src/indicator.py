@@ -6,7 +6,8 @@ import os
 from actions import configuration
 
 
-with open('/home/pi/.asoundrc') as f:
+
+with open('/home/pi/.GassistPi/audiosetup') as f:
     detected_audio_setup = f.readline().rstrip()
     print(detected_audio_setup)
     if (detected_audio_setup=='AIY-HAT' or detected_audio_setup=='CUSTOM-VOICE-HAT'):
