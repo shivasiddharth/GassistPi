@@ -15,8 +15,8 @@ if os.path.isfile("/home/pi/.GassistPi-Config/audiosetup"):
             audiosetup='AIY'
         elif (detected_audio_setup=='USB-DAC' or detected_audio_setup=='USB-MIC-HDMI' or detected_audio_setup=='USB-MIC-JACK'):
             audiosetup='GEN'
-    else:
-        audiosetup='GEN'
+        else:
+            audiosetup='GEN'
 
 
 GPIO.setmode(GPIO.BCM)
