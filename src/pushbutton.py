@@ -242,17 +242,17 @@ class SampleAssistant(object):
         #Uncomment the following after starting the Kodi
         #status=mutevolstatus()
         #vollevel=status[1]
-        #with open('/home/pi/.volume.json', 'w') as f:
+        #with open('/home/pi/.GassistPi-Config/.volume.json', 'w') as f:
                #json.dump(vollevel, f)
         #kodi.Application.SetVolume({"volume": 0})
         assistantindicator('listening')
         if vlcplayer.is_vlc_playing():
-            if os.path.isfile("/home/pi/.mediavolume.json"):
+            if os.path.isfile("/home/pi/.GassistPi-Config/.mediavolume.json"):
                 vlcplayer.set_vlc_volume(15)
             else:
                 currentvolume=vlcplayer.get_vlc_volume()
                 print(currentvolume)
-                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'w') as vol:
                    json.dump(currentvolume, vol)
                 vlcplayer.set_vlc_volume(15)
 
@@ -390,21 +390,21 @@ class SampleAssistant(object):
                             if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                                 if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
                                     settingvollevel=100
-                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
                                 elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
                                     settingvollevel=0
-                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
                                 else:
                                     for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
-                                        with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                        with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'w') as vol:
                                             json.dump(settingvollevel, vol)
                                 print('Setting volume to: '+str(settingvollevel))
                                 vlcplayer.set_vlc_volume(int(settingvollevel))
                             elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                                if os.path.isfile("/home/pi/.mediavolume.json"):
-                                    with open('/home/pi/.mediavolume.json', 'r') as vol:
+                                if os.path.isfile("/home/pi/.GassistPi-Config/.mediavolume.json"):
+                                    with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'r') as vol:
                                         oldvollevel = json.load(vol)
                                         for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
                                             oldvollevel=int(oldvollevel)
@@ -426,7 +426,7 @@ class SampleAssistant(object):
                                         settingvollevel==0
                                     else:
                                         settingvollevel=newvollevel
-                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
                                     print('Setting volume to: '+str(settingvollevel))
                                     vlcplayer.set_vlc_volume(int(settingvollevel))
@@ -444,7 +444,7 @@ class SampleAssistant(object):
                                         settingvollevel==0
                                     else:
                                         settingvollevel=newvollevel
-                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'w') as vol:
                                         json.dump(settingvollevel, vol)
                                     print('Setting volume to: '+str(settingvollevel))
                                     vlcplayer.set_vlc_volume(int(settingvollevel))
@@ -489,11 +489,11 @@ class SampleAssistant(object):
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
                 assistantindicator('off')
                 #Uncomment the following after starting the Kodi
-                #with open('/home/pi/.volume.json', 'r') as f:
+                #with open('/home/pi/.GassistPi-Config/.volume.json', 'r') as f:
                        #vollevel = json.load(f)
                        #kodi.Application.SetVolume({"volume": vollevel})
                 if vlcplayer.is_vlc_playing():
-                    with open('/home/pi/.mediavolume.json', 'r') as vol:
+                    with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'r') as vol:
                         oldvolume= json.load(vol)
                     vlcplayer.set_vlc_volume(int(oldvolume))
                 continue_conversation = False
@@ -517,11 +517,11 @@ class SampleAssistant(object):
         return continue_conversation
         assistantindicator('off')
         #Uncomment the following after starting the Kodi
-        #with open('/home/pi/.volume.json', 'r') as f:
+        #with open('/home/pi/.GassistPi-Config/.volume.json', 'r') as f:
                #vollevel = json.load(f)
                #kodi.Application.SetVolume({"volume": vollevel})
         if vlcplayer.is_vlc_playing():
-            with open('/home/pi/.mediavolume.json', 'r') as vol:
+            with open('/home/pi/.GassistPi-Config/.mediavolume.json', 'r') as vol:
                 oldvolume= json.load(vol)
             vlcplayer.set_vlc_volume(int(oldvolume))
 
