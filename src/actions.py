@@ -103,13 +103,6 @@ pwm.start(0)
 #Stopbutton
 stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
 GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-
-#Led Indicator
-aiyindicator=configuration['Gpios']['AIY_indicator'][0]
-GPIO.setup(aiyindicator, GPIO.OUT)
-led=GPIO.PWM(aiyindicator,1)
-led.start(0)
-
 playshell = None
 
 #Initialize colour list

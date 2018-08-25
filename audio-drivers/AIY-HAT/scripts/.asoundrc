@@ -1,4 +1,4 @@
-soundcard=AIY-HAT
+AIY-HAT
 
 pcm.softvol {
     type softvol

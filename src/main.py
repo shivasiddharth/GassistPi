@@ -58,8 +58,8 @@ import snowboydecoder
 import sys
 import signal
 from threading import Thread
-
-
+from indicator import assistantindicator
+from indicator import stoppushbutton
 
 try:
     FileNotFoundError
@@ -89,24 +89,6 @@ logger=logging.getLogger(__name__)
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
 
-#GPIO Declarations
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
-aiyindicator=configuration['Gpios']['AIY_indicator'][0]
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
-listening=configuration['Gpios']['assistant_indicators'][0]
-speaking=configuration['Gpios']['assistant_indicators'][1]
-
-GPIO.setup(aiyindicator, GPIO.OUT)
-GPIO.setup(listening, GPIO.OUT)
-GPIO.setup(speaking, GPIO.OUT)
-GPIO.output(listening, GPIO.LOW)
-GPIO.output(speaking, GPIO.LOW)
-GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
-led=GPIO.PWM(aiyindicator,1)
-led.start(0)
 
 
 mutestopbutton=True
@@ -150,9 +132,6 @@ else:
 
 models=configuration['Custom_wakeword']['models']
 
-with open('/home/pi/.asoundrc') as f:
-    detected_audio_setup = f.readline().rstrip()
-    print(str(detected_audio_setup))
 
 class Myassistant():
 
@@ -175,9 +154,7 @@ class Myassistant():
     def buttonsinglepress(self):
         if os.path.isfile("/home/pi/.mute"):
             os.system("sudo rm /home/pi/.mute")
-            GPIO.output(listening,GPIO.LOW)
-            GPIO.output(speaking,GPIO.LOW)
-            led.ChangeDutyCycle(0)
+            assistantindicator('unmute')
             if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
             else:
@@ -187,9 +164,7 @@ class Myassistant():
             print("Turning on the microphone")
         else:
             open('/home/pi/.mute', 'a').close()
-            GPIO.output(listening,GPIO.HIGH)
-            GPIO.output(speaking,GPIO.HIGH)
-            led.ChangeDutyCycle(100)
+            assistantindicator('mute')
             self.assistant.set_mic_mute(True)
             # if custom_wakeword:
             #     self.thread_end(t1)
@@ -253,9 +228,7 @@ class Myassistant():
             self.can_start_conversation = True
             self.t2.start()
             if os.path.isfile("/home/pi/.mute"):
-                GPIO.output(listening,GPIO.HIGH)
-                GPIO.output(speaking,GPIO.HIGH)
-                led.ChangeDutyCycle(100)
+                assistantindicator('mute')
                 self.assistant.set_mic_mute(True)
             else:
                 if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
@@ -272,8 +245,7 @@ class Myassistant():
             #with open('/home/pi/.volume.json', 'w') as f:
                    #json.dump(vollevel, f)
             #kodi.Application.SetVolume({"volume": 0})
-            GPIO.output(listening,GPIO.HIGH)
-            led.ChangeDutyCycle(100)
+            assistantindicator('listening')
             if vlcplayer.is_vlc_playing():
                 if os.path.isfile("/home/pi/.mediavolume.json"):
                     vlcplayer.set_vlc_volume(15)
@@ -289,9 +261,7 @@ class Myassistant():
           self.can_start_conversation = True
           if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
-          GPIO.output(listening,GPIO.LOW)
-          GPIO.output(speaking,GPIO.LOW)
-          led.ChangeDutyCycle(0)
+          assistantindicator('off')
             #Uncomment the following after starting the Kodi
             #with open('/home/pi/.volume.json', 'r') as f:
                    #vollevel = json.load(f)
@@ -303,19 +273,13 @@ class Myassistant():
 
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-           GPIO.output(listening,GPIO.LOW)
-           GPIO.output(speaking,GPIO.HIGH)
-           led.ChangeDutyCycle(50)
+           assistantindicator('speaking')
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
-           GPIO.output(speaking,GPIO.LOW)
-           GPIO.output(listening,GPIO.LOW)
-           led.ChangeDutyCycle(0)
+           assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-           GPIO.output (listening, GPIO.LOW)
-           GPIO.output (speaking, GPIO.LOW)
-           led.ChangeDutyCycle (0)
+           assistantindicator('off')
 
         print(event)
 
@@ -324,9 +288,7 @@ class Myassistant():
             self.can_start_conversation = True
             if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
-            GPIO.output(listening,GPIO.LOW)
-            GPIO.output(speaking,GPIO.LOW)
-            led.ChangeDutyCycle(0)
+            assistantindicator('off')
             #Uncomment the following after starting the Kodi
             #with open('/home/pi/.volume.json', 'r') as f:
                    #vollevel = json.load(f)

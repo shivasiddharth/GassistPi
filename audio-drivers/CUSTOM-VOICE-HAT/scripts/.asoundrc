@@ -1,4 +1,4 @@
-soundcard=CUSTOM-VOICE-HAT
+CUSTOM-VOICE-HAT
 
 pcm.softvol {
     type softvol
