@@ -1,4 +1,4 @@
-options snd_rpi_googlemihat_soundcard index=0
+soundcard=AIY-HAT
 
 pcm.softvol {
     type softvol

@@ -1,3 +1,4 @@
+soundcard=USB-DAC
 pcm.dsnooper {
     type dsnoop
     ipc_key 816357492

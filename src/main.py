@@ -58,7 +58,7 @@ import snowboydecoder
 import sys
 import signal
 from threading import Thread
-import threader
+
 
 
 try:
@@ -161,21 +161,12 @@ class Myassistant():
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.t1 = Thread(target=self.start_detector)
         self.t2 = Thread(target=self.pushbutton)
-        self.threadnum.stopped= False
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
 
     def interrupt_callback(self,):
         return self.interrupted
-
-    def is_alive(threadnum,self):
-        return not self.threadnum.stopped
-
-    def thread_end(threadnum,self):
-        if self.is_alive():
-            threader.killThread(self.threadnum.ident)
-            self.threadnum.stopped = True
 
     def buttonsinglepress(self):
         if os.path.isfile("/home/pi/.mute"):
@@ -187,8 +178,8 @@ class Myassistant():
                 self.assistant.set_mic_mute(True)
             else:
                 self.assistant.set_mic_mute(False)
-            if custom_wakeword:
-                self.t1.start()
+            # if custom_wakeword:
+            #     self.t1.start()
             print("Turning on the microphone")
         else:
             open('/home/pi/.mute', 'a').close()
@@ -196,8 +187,8 @@ class Myassistant():
             GPIO.output(speaking,GPIO.HIGH)
             led.ChangeDutyCycle(100)
             self.assistant.set_mic_mute(True)
-            if custom_wakeword:
-                self.thread_end(t1)
+            # if custom_wakeword:
+            #     self.thread_end(t1)
             print("Turning off the microphone")
 
     def buttondoublepress(self):
