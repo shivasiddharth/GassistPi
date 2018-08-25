@@ -170,12 +170,12 @@ class Myassistant():
         return self.interrupted
 
     def is_alive(threadnum,self):
-		return not self.threadnum.stopped
+        return not self.threadnum.stopped
 
     def thread_end(threadnum,self):
-		if self.is_alive():
-			threader.killThread(self.threadnum.ident)
-			self.threadnum.stopped = True
+        if self.is_alive():
+            threader.killThread(self.threadnum.ident)
+            self.threadnum.stopped = True
 
     def buttonsinglepress(self):
         if os.path.isfile("/home/pi/.mute"):
