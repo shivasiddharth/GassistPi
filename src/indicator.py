@@ -5,15 +5,19 @@ import time
 import os
 from actions import configuration
 
+audiosetup=''
 
-
-with open('/home/pi/.GassistPi/audiosetup') as f:
-    detected_audio_setup = f.readline().rstrip()
-    print(detected_audio_setup)
-    if (detected_audio_setup=='AIY-HAT' or detected_audio_setup=='CUSTOM-VOICE-HAT'):
-        audiosetup='AIY'
-    elif (detected_audio_setup=='USB-DAC' or detected_audio_setup=='USB-MIC-HDMI' or detected_audio_setup=='USB-MIC-JACK'):
+if os.path.isfile("/home/pi/.GassistPi/audiosetup"):
+    with open('/home/pi/.GassistPi/audiosetup') as f:
+        detected_audio_setup = f.readline().rstrip()
+        print(detected_audio_setup)
+        if (detected_audio_setup=='AIY-HAT' or detected_audio_setup=='CUSTOM-VOICE-HAT'):
+            audiosetup='AIY'
+        elif (detected_audio_setup=='USB-DAC' or detected_audio_setup=='USB-MIC-HDMI' or detected_audio_setup=='USB-MIC-JACK'):
+            audiosetup='GEN'
+    else:
         audiosetup='GEN'
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
