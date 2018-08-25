@@ -27,12 +27,12 @@ stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
 GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
 
-if (audiosetup='AIY'):
+if (audiosetup=='AIY'):
     GPIO.setup(aiyindicator, GPIO.OUT)
     led=GPIO.PWM(aiyindicator,1)
     led.start(0)
     print('Initializing GPIO '+str(aiyindicator)+' for assistant activity indication')
-elif (audiosetup='GEN'):
+elif (audiosetup=='GEN'):
     GPIO.setup(listening, GPIO.OUT)
     GPIO.setup(speaking, GPIO.OUT)
     GPIO.output(listening, GPIO.LOW)
@@ -43,26 +43,26 @@ elif (audiosetup='GEN'):
 def assistantindicator(activity):
     activity=activity.lower()
     if activity=='listening':
-        if (audiosetup='GEN'):
+        if (audiosetup=='GEN'):
             GPIO.output(speakingindicator,GPIO.LOW)
             GPIO.output(listeningindicator,GPIO.HIGH)
-        elif (audiosetup='AIY'):
+        elif (audiosetup=='AIY'):
             led.ChangeDutyCycle(75)
     elif activity=='speaking':
-        if (audiosetup='GEN'):
+        if (audiosetup=='GEN'):
             GPIO.output(speakingindicator,GPIO.HIGH)
             GPIO.output(listeningindicator,GPIO.LOW)
-        elif (audiosetup='AIY'):
+        elif (audiosetup=='AIY'):
             led.ChangeDutyCycle(50)
     elif (activity=='off' or activity=='unmute'):
-        if (audiosetup='GEN'):
+        if (audiosetup=='GEN'):
             GPIO.output(speakingindicator,GPIO.LOW)
             GPIO.output(listeningindicator,GPIO.LOW)
-        elif (audiosetup='AIY'):
+        elif (audiosetup=='AIY'):
             led.ChangeDutyCycle(0)
     elif (activity=='on' or activity=='mute'):
-        if (audiosetup='GEN'):
+        if (audiosetup=='GEN'):
             GPIO.output(speakingindicator,GPIO.HIGH)
             GPIO.output(listeningindicator,GPIO.HIGH)
-        elif (audiosetup='AIY'):
+        elif (audiosetup=='AIY'):
             led.ChangeDutyCycle(100)
