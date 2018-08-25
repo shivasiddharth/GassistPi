@@ -231,7 +231,7 @@ class Myassistant():
             self.t2.start()
             if os.path.isfile("/home/pi/.GassistPi-Config/.mute"):
                 assistantindicator('mute')
-            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.GassistPi-Config/.mute"):
+            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.GassistPi-Config/.mute")):
                 self.assistant.set_mic_mute(True)
             if custom_wakeword:
                 self.t1.start()
@@ -264,7 +264,7 @@ class Myassistant():
             #with open('/home/pi/.GassistPi-Config/.volume.json', 'r') as f:
                    #vollevel = json.load(f)
                    #kodi.Application.SetVolume({"volume": vollevel})
-            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.GassistPi-Config/.mute"):
+            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.GassistPi-Config/.mute")):
                   self.assistant.set_mic_mute(True)
             if os.path.isfile("/home/pi/.GassistPi-Config/.mute"):
                 assistantindicator('mute')
@@ -288,7 +288,7 @@ class Myassistant():
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
             assistantindicator('off')
-            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.GassistPi-Config/.mute"):
+            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.GassistPi-Config/.mute")):
                 self.assistant.set_mic_mute(True)
             if os.path.isfile("/home/pi/.GassistPi-Config/.mute"):
                 assistantindicator('mute')
