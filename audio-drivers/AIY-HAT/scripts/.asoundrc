@@ -1,5 +1,3 @@
-AIY-HAT
-
 pcm.softvol {
     type softvol
     slave.pcm dmix

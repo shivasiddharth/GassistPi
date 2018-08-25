@@ -1,5 +1,3 @@
-USB-MIC-HDMI
-
 pcm.dsnooper {
     type dsnoop
     ipc_key 816357492
