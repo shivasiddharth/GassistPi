@@ -17,6 +17,8 @@ if os.path.isfile("/home/pi/audiosetup"):
             audiosetup='GEN'
         else:
             audiosetup='GEN'
+else:
+    audiosetup='GEN'
 
 
 GPIO.setmode(GPIO.BCM)
