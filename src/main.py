@@ -126,12 +126,12 @@ def tasmota_control(phrase,devname,devip):
         say("Device not online")
 
 #Check if custom wakeword has been enabled
-if configuration['Custom_wakeword']['status']=='Enabled':
+if configuration['Wakewords']['Custom_Wakeword']=='Enabled':
     custom_wakeword=True
 else:
     custom_wakeword=False
 
-models=configuration['Custom_wakeword']['models']
+models=configuration['Wakewords']['Custom_wakeword_models']
 
 
 class Myassistant():
@@ -156,7 +156,7 @@ class Myassistant():
         if os.path.isfile("/home/pi/.mute"):
             os.system("sudo rm /home/pi/.mute")
             assistantindicator('unmute')
-            if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
+            if configuration['Wakewords']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
             else:
                 self.assistant.set_mic_mute(False)
@@ -232,7 +232,7 @@ class Myassistant():
             self.t2.start()
             if os.path.isfile("/home/pi/.mute"):
                 assistantindicator('mute')
-            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
                 self.assistant.set_mic_mute(True)
             if custom_wakeword:
                 self.t1.start()
@@ -265,7 +265,7 @@ class Myassistant():
             #with open('/home/pi/.volume.json', 'r') as f:
                    #vollevel = json.load(f)
                    #kodi.Application.SetVolume({"volume": vollevel})
-            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
                   self.assistant.set_mic_mute(True)
             if os.path.isfile("/home/pi/.mute"):
                 assistantindicator('mute')
@@ -289,7 +289,7 @@ class Myassistant():
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
             assistantindicator('off')
-            if (configuration['Custom_wakeword']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
                 self.assistant.set_mic_mute(True)
             if os.path.isfile("/home/pi/.mute"):
                 assistantindicator('mute')

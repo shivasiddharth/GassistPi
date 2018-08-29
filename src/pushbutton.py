@@ -146,12 +146,12 @@ def tasmota_control(phrase,devname,devip):
             say("Device not online")
 
 #Check if custom wakeword has been enabled
-if configuration['Custom_wakeword']['status']=='Enabled':
+if configuration['Wakewords']['Custom_Wakeword']=='Enabled':
     custom_wakeword=True
 else:
     custom_wakeword=False
 
-models=configuration['Custom_wakeword']['models']
+models=configuration['Wakewords']['Custom_wakeword_models']
 interrupted=False
 def signal_handler(signal, frame):
     global interrupted

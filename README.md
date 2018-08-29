@@ -86,7 +86,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo reboot 
+  sudo reboot
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   speaker-test  
@@ -182,7 +182,7 @@ sudo systemctl enable gassistpi-push-button.service
 **Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start gassistpi-push-button.service 
+sudo systemctl start gassistpi-push-button.service
 ```  
 
 **RESTART and ENJOY**  
@@ -211,7 +211,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 ### **CUSTOM WAKEWORD ACTIVATION**  
 ************************************************
 1. You can choose to either Enable or Disable the custom wakeword activation in the config.yaml file.  
-2. In the config.yaml file, under Custom_wakeword, change the status to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
+2. In the config.yaml file, under Wakewords, change the **"Custom_Wakeword"** to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
 3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
 4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/home/pi/GassistPi/src/resources**  directory.
 5. Change the paths to the models in the config.yaml file.  
@@ -241,7 +241,7 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 4. Move your mouse pointer over "API and services" and choose "credentials".
 5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the **config.yaml** script at the indicated location.  
 6. "From the API and services" option, select library and in the search bar type **search**, select "Custom Search API" and click on "ENABLE".
-7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated. 
+7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
 
 **Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
 
