@@ -27,6 +27,11 @@ import re
 import psutil
 import logging
 import time
+import random
+import snowboydecoder
+import sys
+import signal
+import requests
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
@@ -41,7 +46,6 @@ from actions import radio
 from actions import ESP
 from actions import track
 from actions import feed
-import requests
 from actions import kodiactions
 from actions import mutevolstatus
 from actions import gmusicselect
@@ -54,9 +58,6 @@ from actions import hue_control
 from actions import vlcplayer
 from actions import spotify_playlist_select
 from actions import configuration
-import snowboydecoder
-import sys
-import signal
 from threading import Thread
 from indicator import assistantindicator
 from indicator import stoppushbutton
@@ -133,6 +134,9 @@ else:
 
 models=configuration['Wakewords']['Custom_wakeword_models']
 
+#Custom Conversation
+numques=len(configuration['Conversation']['question'])
+numans=len(configuration['Conversation']['answer'])
 
 class Myassistant():
 
@@ -442,6 +446,13 @@ class Myassistant():
                         assistant.stop_conversation()
                         tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                         break
+                for i in range(0,numques):
+                    try:
+                        if str(configuration['Conversation']['question'][i]).lower() in str(usrcmd).lower():
+                            assistant.stop_conversation()
+                            selectedans=random.sample(configuration['Conversation']['answer'][i])
+                            say(selectedans)
+                            break
                 if 'magic mirror'.lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     try:
