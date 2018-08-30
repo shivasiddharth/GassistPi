@@ -453,6 +453,8 @@ class Myassistant():
                             selectedans=random.sample(configuration['Conversation']['answer'][i])
                             say(selectedans)
                             break
+                    except Keyerror:
+                        say('Please check if the number of questions matches the number of answers')
                 if 'magic mirror'.lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     try:
