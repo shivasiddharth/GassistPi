@@ -451,7 +451,7 @@ class Myassistant():
                         if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
                             assistant.stop_conversation()
                             selectedans=random.sample(configuration['Conversation']['answer'][i],1)
-                            say(selectedans)
+                            say(selectedans[0])
                             break
                     except Keyerror:
                         say('Please check if the number of questions matches the number of answers')
