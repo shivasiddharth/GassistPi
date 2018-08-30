@@ -448,7 +448,7 @@ class Myassistant():
                         break
                 for i in range(1,numques):
                     try:
-                        if str(configuration['Conversation']['question'][i]).lower() in str(usrcmd).lower():
+                        if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
                             assistant.stop_conversation()
                             selectedans=random.sample(configuration['Conversation']['answer'][i])
                             say(selectedans)
