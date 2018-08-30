@@ -446,7 +446,7 @@ class Myassistant():
                         assistant.stop_conversation()
                         tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                         break
-                for i in range(1,numques):
+                for i in range(1,numques+1):
                     try:
                         if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
                             assistant.stop_conversation()
