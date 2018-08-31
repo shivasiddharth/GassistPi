@@ -164,6 +164,10 @@ def interrupt_callback():
 
 mediastopbutton=True
 
+#Custom Conversation
+numques=len(configuration['Conversation']['question'])
+numans=len(configuration['Conversation']['answer'])
+
 class SampleAssistant(object):
     """Sample Assistant that supports conversations and device actions.
 
@@ -305,6 +309,15 @@ class SampleAssistant(object):
                             tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                             return continue_conversation
                             break
+                    for i in range(1,numques+1):
+                        try:
+                            if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
+                                selectedans=random.sample(configuration['Conversation']['answer'][i],1)
+                                say(selectedans[0])
+                                return continue_conversation
+                                break
+                        except Keyerror:
+                            say('Please check if the number of questions matches the number of answers')
                     if 'magic mirror'.lower() in str(usrcmd).lower():
                         try:
                             mmmcommand=str(usrcmd).lower()
