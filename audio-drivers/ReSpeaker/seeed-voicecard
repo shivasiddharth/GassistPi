@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+# Copyright (c) 2018 Baozhu Zuo <zuobaozhu@gmail.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+set -x
+exec 1>/var/log/$(basename $0).log 2>&1
+#enable i2c interface
+dtparam i2c_arm=on
+modprobe i2c-dev
+
+#enable spi interface
+dtparam spi=on
+sleep 1
+
+audioconfig=/home/pi/audiosetup
+
+
+is_1a=$(i2cdetect -y  1 0x1a 0x1a | grep 1a | awk '{print $2}')
+is_35=$(i2cdetect -y  1 0x35 0x35 | grep 35 | awk '{print $2}')
+is_3b=$(i2cdetect -y  1 0x3b 0x3b | grep 3b | awk '{print $2}')
+
+if [ "x${is_1a}" == "x1a" ] && [ "x${is_35}" == "x" ] ; then
+    echo "install 2mic"
+    dtoverlay seeed-2mic-voicecard
+    sleep 1
+    hw=$(aplay -l | grep seeed2micvoicec | awk '{print $2}' | sed 's/://')
+
+    cp /etc/voicecard/asound_2mic.conf /etc/asound.conf
+
+    if [ -f $audioconfig ] ; then
+        sudo rm $audioconfig
+    fi
+
+    echo 'Respeaker-2-Mic' >> $audioconfig
+
+    echo "get old hw number"
+    old=$(cat /etc/asound.conf | grep hw: | awk 'NR==1 {print $2}' | sed 's/\"//g')
+
+    echo "replace new hw:${hw},0"
+    sed -i -e "s/${old}/hw:${hw},0/g" /etc/asound.conf
+
+    cp /etc/voicecard/wm8960_asound.state /var/lib/alsa/asound.state
+fi
+
+if [ "x${is_3b}" == "x3b" ] && [ "x${is_35}" == "x" ] ; then
+    #Force 3.5mm ('headphone') jack
+    amixer cset numid=3 1
+    echo "install 4mic"
+    dtoverlay seeed-4mic-voicecard
+    sleep 1
+    hw=$(arecord -l | grep seeed4micvoicec | awk '{print $2}' | sed 's/://')
+
+    cp /etc/voicecard/asound_4mic.conf /etc/asound.conf
+
+    if [ -f $audioconfig ] ; then
+        sudo rm $audioconfig
+    fi
+
+    echo 'Respeaker-4-Mic' >> $audioconfig
+
+    echo "get slavepcm line number"
+    line=$(grep -n ac108-slavepcm /etc/asound.conf | awk '{print $1}' | sed 's/://')
+
+    echo "delete ${line} slavepcm hw number"
+    sed -i -e "${line}d"  /etc/asound.conf
+
+    echo "insert slavepcm hw:${hw},0"
+    sed -i "${line}i slave.pcm \"hw:${hw},0\""  /etc/asound.conf
+
+    cp /etc/voicecard/ac108_asound.state /var/lib/alsa/asound.state
+fi
+
+if [ "x${is_3b}" == "x3b" ] && [ "x${is_35}" == "x35" ] ; then
+    echo "install 6mic"
+    dtoverlay seeed-8mic-voicecard
+    sleep 1
+    hw=$(aplay -l | grep seeed8micvoicec | awk '{print $2}' | sed 's/://')
+
+    cp /etc/voicecard/asound_6mic.conf /etc/asound.conf
+
+    old=$(cat /etc/asound.conf | grep hw: | awk 'NR==1 {print $2}' | sed 's/\"//g')
+
+    sed -i -e "s/${old}/hw:${hw},0/g" /etc/asound.conf
+
+    cp /etc/voicecard/ac108_6mic.state /var/lib/alsa/asound.state
+fi
+
+alsactl restore
+
+#Force 3.5mm ('headphone') jack
+amixer cset numid=3 1

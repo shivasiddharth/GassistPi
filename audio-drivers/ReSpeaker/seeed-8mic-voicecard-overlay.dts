@@ -1,0 +1,113 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2708";
+
+	fragment@0 {
+		target = <&i2s>;
+		__overlay__ {
+			#sound-dai-cells = <0>;
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target-path = "/clocks";
+		__overlay__ {
+			ac10x_mclk: codec-mclk {
+				compatible = "fixed-clock";
+				#clock-cells = <0>;
+				clock-frequency = <24000000>;
+			};  
+		};
+	};
+
+	fragment@2 {
+		target = <&gpio>;
+		__overlay__ {
+			spk_amp_switch_pins: speaker_amp_switch_pins {
+				brcm,pins = <17>;
+				brcm,function = <1>; /* out */
+			};
+			gpclk0_pins: gpclk0_pins {
+				brcm,pins = <4>;
+				brcm,function = <4>; /* alt func 0 */
+			};
+		};
+	};
+
+	fragment@3 {
+		target = <&i2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			ac101: ac101@1a{
+				compatible = "x-power,ac101";
+				pinctrl-names = "default";
+				pinctrl-0 = <&spk_amp_switch_pins>,<&gpclk0_pins>;
+				spk-amp-switch-gpios = <&gpio 17 0>;
+				reg = <0x1a>;
+				#sound-dai-cells = <0>;
+			};
+
+			ac108_a: ac108@35{
+				compatible = "x-power,ac108_0";
+				reg = <0x35>;
+				#sound-dai-cells = <0>;
+				data-protocol = <0>;
+				tdm-chips-count = <2>;
+			};
+
+			ac108_b: ac108@3b{
+				compatible = "x-power,ac108_1";
+				reg = <0x3b>;
+				#sound-dai-cells = <0>;
+				data-protocol = <0>;
+				tdm-chips-count = <2>;
+			};
+		};
+	};
+
+	fragment@4 {
+		target = <&sound>;
+
+		sound_overlay: __overlay__ {
+			compatible = "simple-audio-card";
+			simple-audio-card,name = "seeed-8mic-voicecard"; 
+			simple-audio-card,channels-playback-override = <8>;
+			simple-audio-card,channels-capture-override  = <8>;
+			status = "okay";
+
+			simple-audio-card,dai-link@0 {
+				format = "dsp_a";
+				/* below is dummy master, real clock master is ac101 */
+				bitclock-master = <&codec0_dai>;
+				frame-master = <&codec0_dai>;
+				/* bitclock-inversion; */
+				/* frame-inversion; */
+
+				cpu {
+					sound-dai = <&i2s>;
+					dai-tdm-slot-num     = <2>;
+					dai-tdm-slot-width   = <32>;
+					dai-tdm-slot-tx-mask = <1 1 0 0>;
+					dai-tdm-slot-rx-mask = <1 1 0 0>;
+				};
+
+				codec0_dai: codec {
+					sound-dai = <&ac108_a>;
+					clocks =  <&ac10x_mclk>;
+					system-clock-id = <1>;
+				};
+			};
+		};
+	};
+
+	__overrides__ {
+		card-name = <&sound_overlay>,"seeed-voicecard,name";
+	};
+};
+

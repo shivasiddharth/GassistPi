@@ -1,0 +1,12 @@
+[Unit]
+Description=Seeed Voicecard service
+After=alsa-restore.service
+ 
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/seeed-voicecard
+User=root
+ 
+[Install]
+WantedBy=sysinit.target
