@@ -109,6 +109,15 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   speaker-test   
   ```
 
+  3.6. RESPEAKER HAT users,  
+  ```
+  cd /home/pi/GassistPi/audio-drivers/RESPEAKER-HAT/  
+  sudo chmod +x ./install.sh    
+  sudo ./install.sh  
+  sudo reboot   
+  speaker-test     
+  ```  
+
 **Those using any other DACs or HATs install the cards as per the manufacturer's guide
  and then you can try using the USB-DAC config file after changing the hardware ids**        
 
