@@ -1,5 +1,6 @@
 /*
  * ac101.c
+ *
  * (C) Copyright 2017-2018
  * Seeed Technology Co., Ltd. <www.seeedstudio.com>
  *
@@ -19,7 +20,10 @@
  * the License, or (at your option) any later version.
  *
  */
-#undef AC101_DEBG
+
+/* #undef AC101_DEBG
+ * use 'make DEBUG=1' to enable debugging
+ */
 #include <linux/module.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -32,8 +36,20 @@
 #include <linux/clk.h>
 #include <linux/gpio/consumer.h>
 #include <linux/regmap.h>
+#include <linux/input.h>
+#include <linux/delay.h>
 #include "ac101_regs.h"
 #include "ac10x.h"
+
+/*
+ * *** To sync channels ***
+ *
+ * 1. disable clock in codec   hw_params()
+ * 2. clear   fifo  in bcm2835 hw_params()
+ * 3. clear   fifo  in bcm2385 prepare()
+ * 4. enable  RX    in bcm2835 trigger()
+ * 5. enable  clock in machine trigger()
+ */
 
 /*Default initialize configuration*/
 static bool speaker_double_used = 1;
@@ -62,6 +78,8 @@ int ac101_read(struct snd_soc_codec *codec, unsigned reg) {
 	int r, v = 0;
 
 	if ((r = regmap_read(ac10x->regmap101, reg, &v)) < 0) {
+		dev_err(codec->dev, "%s() L%d read reg %02X fail\n",
+			__func__, __LINE__, reg);
 		return r;
 	}
 	return v;
@@ -69,17 +87,366 @@ int ac101_read(struct snd_soc_codec *codec, unsigned reg) {
 
 int ac101_write(struct snd_soc_codec *codec, unsigned reg, unsigned val) {
 	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
+	int v;
 
-	return regmap_write(ac10x->regmap101, reg, val);
+	v = regmap_write(ac10x->regmap101, reg, val);
+	return v;
 }
 
 int ac101_update_bits(struct snd_soc_codec *codec, unsigned reg,
 			unsigned mask, unsigned value
 ) {
 	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
+	int v;
 
-	return regmap_update_bits(ac10x->regmap101, reg, mask, value);
+	v = regmap_update_bits(ac10x->regmap101, reg, mask, value);
+	return v;
 }
+
+
+
+#ifdef CONFIG_AC101_SWITCH_DETECT
+/******************************************************************************/
+/********************************switch****************************************/
+/******************************************************************************/
+#define KEY_HEADSETHOOK         226		/* key define */
+#define HEADSET_FILTER_CNT	(10)
+
+/*
+ * switch_hw_config:config the 53 codec register
+ */
+static void switch_hw_config(struct snd_soc_codec *codec)
+{
+	int r;
+
+	AC101_DBG("%s,line:%d\n",__func__,__LINE__);
+
+	/*HMIC/MMIC BIAS voltage level select:2.5v*/
+	ac101_update_bits(codec, OMIXER_BST1_CTRL, (0xf<<BIASVOLTAGE), (0xf<<BIASVOLTAGE));
+	/*debounce when Key down or keyup*/
+	ac101_update_bits(codec, HMIC_CTRL1, (0xf<<HMIC_M), (0x0<<HMIC_M));
+	/*debounce when earphone plugin or pullout*/
+	ac101_update_bits(codec, HMIC_CTRL1, (0xf<<HMIC_N), (0x0<<HMIC_N));
+	/*Down Sample Setting Select: Downby 4,32Hz*/
+	ac101_update_bits(codec, HMIC_CTRL2, (0x3<<HMIC_SAMPLE_SELECT), (0x02<<HMIC_SAMPLE_SELECT));
+	/*Hmic_th2 for detecting Keydown or Keyup.*/
+	ac101_update_bits(codec, HMIC_CTRL2, (0x1f<<HMIC_TH2), (0x8<<HMIC_TH2));
+	/*Hmic_th1[4:0],detecting eraphone plugin or pullout*/
+	ac101_update_bits(codec, HMIC_CTRL2, (0x1f<<HMIC_TH1), (0x1<<HMIC_TH1));
+	/*Headset microphone BIAS working mode: when HBIASEN = 1 */
+	ac101_update_bits(codec, ADC_APC_CTRL, (0x1<<HBIASMOD), (0x1<<HBIASMOD));
+	/*Headset microphone BIAS Enable*/
+	ac101_update_bits(codec, ADC_APC_CTRL, (0x1<<HBIASEN), (0x1<<HBIASEN));
+	/*Headset microphone BIAS Current sensor & ADC Enable*/
+	ac101_update_bits(codec, ADC_APC_CTRL, (0x1<<HBIASADCEN), (0x1<<HBIASADCEN));
+	/*Earphone Plugin/out Irq Enable*/
+	ac101_update_bits(codec, HMIC_CTRL1, (0x1<<HMIC_PULLOUT_IRQ), (0x1<<HMIC_PULLOUT_IRQ));
+	ac101_update_bits(codec, HMIC_CTRL1, (0x1<<HMIC_PLUGIN_IRQ), (0x1<<HMIC_PLUGIN_IRQ));
+
+	/*Hmic KeyUp/key down Irq Enable*/
+	ac101_update_bits(codec, HMIC_CTRL1, (0x1<<HMIC_KEYDOWN_IRQ), (0x1<<HMIC_KEYDOWN_IRQ));
+	ac101_update_bits(codec, HMIC_CTRL1, (0x1<<HMIC_KEYUP_IRQ), (0x1<<HMIC_KEYUP_IRQ));
+
+	/*headphone calibration clock frequency select*/
+	ac101_update_bits(codec, SPKOUT_CTRL, (0x7<<HPCALICKS), (0x7<<HPCALICKS));
+
+	/*clear hmic interrupt */
+	r = HMIC_PEND_ALL;
+	ac101_write(codec, HMIC_STS, r);
+
+	return;
+}
+
+/*
+ * switch_status_update: update the switch state.
+ */
+static void switch_status_update(struct ac10x_priv *ac10x)
+{
+	AC101_DBG("%s,line:%d,ac10x->state:%d\n", __func__, __LINE__, ac10x->state);
+
+        input_report_switch(ac10x->inpdev, SW_HEADPHONE_INSERT, ac10x->state);
+        input_sync(ac10x->inpdev);
+        return;
+}
+
+/*
+ * work_cb_clear_irq: clear audiocodec pending and Record the interrupt.
+ */
+static void work_cb_clear_irq(struct work_struct *work)
+{
+	int reg_val = 0;
+	struct ac10x_priv *ac10x = container_of(work, struct ac10x_priv, work_clear_irq);
+	struct snd_soc_codec *codec = ac10x->codec;
+
+	ac10x->irq_cntr++;
+
+	reg_val = ac101_read(codec, HMIC_STS);
+	if (BIT(HMIC_PULLOUT_PEND) & reg_val) {
+		ac10x->pullout_cntr++;
+		AC101_DBG("ac10x->pullout_cntr: %d\n",ac10x->pullout_cntr);
+	}
+
+	reg_val |= HMIC_PEND_ALL;
+	ac101_write(codec, HMIC_STS, reg_val);
+
+	reg_val = ac101_read(codec, HMIC_STS);
+	if ((reg_val & HMIC_PEND_ALL) != 0){
+		reg_val |= HMIC_PEND_ALL;
+		ac101_write(codec, HMIC_STS, reg_val);
+	}
+
+	if (cancel_work_sync(&ac10x->work_switch) != 0) {
+		ac10x->irq_cntr--;
+	}
+
+	if (0 == schedule_work(&ac10x->work_switch)) {
+		ac10x->irq_cntr--;
+		AC101_DBG("[work_cb_clear_irq] add work struct failed!\n");
+	}
+}
+
+enum {
+	HBIAS_LEVEL_1 = 0x02,
+	HBIAS_LEVEL_2 = 0x0B,
+	HBIAS_LEVEL_3 = 0x13,
+	HBIAS_LEVEL_4 = 0x17,
+	HBIAS_LEVEL_5 = 0x19,
+};
+
+static int __ac101_get_hmic_data(struct snd_soc_codec *codec) {
+	#ifdef AC101_DEBG
+	static long counter;
+	#endif
+	int r, d;
+
+	d = GET_HMIC_DATA(ac101_read(codec, HMIC_STS));
+
+	r = 0x1 << HMIC_DATA_PEND;
+	ac101_write(codec, HMIC_STS, r);
+
+	/* prevent i2c accessing too frequently */
+	usleep_range(1500, 3000);
+
+	AC101_DBG("%s,line:%d HMIC_DATA(%3ld): %02X\n", __func__, __LINE__,
+			counter++, d
+		);
+	return d;
+}
+
+/*
+ * work_cb_earphone_switch: judge the status of the headphone
+ */
+static void work_cb_earphone_switch(struct work_struct *work)
+{
+	struct ac10x_priv *ac10x = container_of(work, struct ac10x_priv, work_switch);
+	struct snd_soc_codec *codec = ac10x->codec;
+
+	static int hook_flag1 = 0, hook_flag2 = 0;
+	static int KEY_VOLUME_FLAG = 0;
+
+	unsigned filter_buf = 0;
+	int filt_index = 0;
+	int t = 0;
+
+	ac10x->irq_cntr--;
+
+	/* read HMIC_DATA */
+	t = __ac101_get_hmic_data(codec);
+
+	if ((t >= HBIAS_LEVEL_2) && (ac10x->mode == FOUR_HEADPHONE_PLUGIN)) {
+		t = __ac101_get_hmic_data(codec);
+
+		if (t >= HBIAS_LEVEL_5){
+			msleep(150);
+			t = __ac101_get_hmic_data(codec);
+			if (((t < HBIAS_LEVEL_2 && t >= HBIAS_LEVEL_1 - 1) || t >= HBIAS_LEVEL_5)
+			&& (ac10x->pullout_cntr == 0)) {
+				input_report_key(ac10x->inpdev, KEY_HEADSETHOOK, 1);
+				input_sync(ac10x->inpdev);
+
+				AC101_DBG("%s,line:%d KEY_HEADSETHOOK1\n", __func__, __LINE__);
+
+				if (hook_flag1 != hook_flag2)
+					hook_flag1 = hook_flag2 = 0;
+				hook_flag1++;
+			}
+			if (ac10x->pullout_cntr)
+				ac10x->pullout_cntr--;
+		} else if (t >= HBIAS_LEVEL_4) {
+			msleep(80);
+			t = __ac101_get_hmic_data(codec);
+			if (t < HBIAS_LEVEL_5 && t >= HBIAS_LEVEL_4 && (ac10x->pullout_cntr == 0)) {
+				KEY_VOLUME_FLAG = 1;
+				input_report_key(ac10x->inpdev, KEY_VOLUMEUP, 1);
+				input_sync(ac10x->inpdev);
+				input_report_key(ac10x->inpdev, KEY_VOLUMEUP, 0);
+				input_sync(ac10x->inpdev);
+
+				AC101_DBG("%s,line:%d HMIC_DATA: %d KEY_VOLUMEUP\n", __func__, __LINE__, t);
+			}
+			if (ac10x->pullout_cntr)
+				ac10x->pullout_cntr--;
+		} else if (t >= HBIAS_LEVEL_3){
+			msleep(80);
+			t = __ac101_get_hmic_data(codec);
+			if (t < HBIAS_LEVEL_4 && t >= HBIAS_LEVEL_3  && (ac10x->pullout_cntr == 0)){
+				KEY_VOLUME_FLAG = 1;
+				input_report_key(ac10x->inpdev, KEY_VOLUMEDOWN, 1);
+				input_sync(ac10x->inpdev);
+				input_report_key(ac10x->inpdev, KEY_VOLUMEDOWN, 0);
+				input_sync(ac10x->inpdev);
+				AC101_DBG("%s,line:%d KEY_VOLUMEDOWN\n", __func__, __LINE__);
+			}
+			if (ac10x->pullout_cntr)
+				ac10x->pullout_cntr--;
+		}
+	} else if ((t < HBIAS_LEVEL_2 && t >= HBIAS_LEVEL_1) && (ac10x->mode == FOUR_HEADPHONE_PLUGIN)) {
+		t = __ac101_get_hmic_data(codec);
+		if (t < HBIAS_LEVEL_2 && t >= HBIAS_LEVEL_1) {
+			if (KEY_VOLUME_FLAG) {
+				KEY_VOLUME_FLAG = 0;
+			}
+			if (hook_flag1 == (++hook_flag2)) {
+				hook_flag1 = hook_flag2 = 0;
+				input_report_key(ac10x->inpdev, KEY_HEADSETHOOK, 0);
+				input_sync(ac10x->inpdev);
+
+				AC101_DBG("%s,line:%d KEY_HEADSETHOOK0\n", __func__, __LINE__);
+			}
+		}
+	} else {
+		while (ac10x->irq_cntr == 0 && ac10x->irq != 0) {
+			msleep(20);
+
+			t = __ac101_get_hmic_data(codec);
+
+			if (filt_index <= HEADSET_FILTER_CNT) {
+				if (filt_index++ == 0) {
+					filter_buf = t;
+				} else if (filter_buf != t) {
+					filt_index = 0;
+				}
+				continue;
+			}
+
+			filt_index = 0;
+			if (filter_buf >= HBIAS_LEVEL_2) {
+				ac10x->mode = THREE_HEADPHONE_PLUGIN;
+				ac10x->state = 2;
+			} else if (filter_buf >= HBIAS_LEVEL_1 - 1) {
+				ac10x->mode = FOUR_HEADPHONE_PLUGIN;
+				ac10x->state = 1;
+			} else {
+				ac10x->mode = HEADPHONE_IDLE;
+				ac10x->state = 0;
+			}
+			switch_status_update(ac10x);
+			ac10x->pullout_cntr = 0;
+			break;
+		}
+	}
+}
+
+/*
+ * audio_hmic_irq:  the interrupt handlers
+ */
+static irqreturn_t audio_hmic_irq(int irq, void *para)
+{
+	struct ac10x_priv *ac10x = (struct ac10x_priv *)para;
+	if (ac10x == NULL) {
+		return -EINVAL;
+	}
+
+	if (0 == schedule_work(&ac10x->work_clear_irq)){
+		AC101_DBG("[audio_hmic_irq] work already in queue_codec_irq, adding failed!\n");
+	}
+	return IRQ_HANDLED;
+}
+
+static int ac101_switch_probe(struct ac10x_priv *ac10x) {
+	struct i2c_client *i2c = ac10x->i2c101;
+	int ret;
+
+	ac10x->gpiod_irq = devm_gpiod_get_optional(&i2c->dev, "switch-irq", GPIOD_IN);
+	if (IS_ERR(ac10x->gpiod_irq)) {
+		ac10x->gpiod_irq = NULL;
+		dev_err(&i2c->dev, "failed get switch-irq in device tree\n");
+		goto _err_irq;
+	}
+
+	gpiod_direction_input(ac10x->gpiod_irq);
+
+	ac10x->irq = gpiod_to_irq(ac10x->gpiod_irq);
+	if (IS_ERR_VALUE(ac10x->irq)) {
+		pr_info("[ac101] map gpio to irq failed, errno = %d\n", ac10x->irq);
+		ac10x->irq = 0;
+		goto _err_irq;
+	}
+
+	/* request irq, set irq type to falling edge trigger */
+	ret = devm_request_irq(ac10x->codec->dev, ac10x->irq, audio_hmic_irq, IRQF_TRIGGER_FALLING, "SWTICH_EINT", ac10x);
+	if (IS_ERR_VALUE(ret)) {
+		pr_info("[ac101] request virq %d failed, errno = %d\n", ac10x->irq, ret);
+		goto _err_irq;
+	}
+
+	ac10x->mode = HEADPHONE_IDLE;
+	ac10x->state = -1;
+
+	/*use for judge the state of switch*/
+	INIT_WORK(&ac10x->work_switch, work_cb_earphone_switch);
+	INIT_WORK(&ac10x->work_clear_irq, work_cb_clear_irq);
+
+	/********************create input device************************/
+	ac10x->inpdev = devm_input_allocate_device(ac10x->codec->dev);
+	if (!ac10x->inpdev) {
+		AC101_DBG("input_allocate_device: not enough memory for input device\n");
+		ret = -ENOMEM;
+		goto _err_input_allocate_device;
+	}
+
+	ac10x->inpdev->name          = "seed-voicecard-headset";
+	ac10x->inpdev->phys          = dev_name(ac10x->codec->dev);
+	ac10x->inpdev->id.bustype    = BUS_I2C;
+	ac10x->inpdev->dev.parent    = ac10x->codec->dev;
+	input_set_drvdata(ac10x->inpdev, ac10x->codec);
+
+	ac10x->inpdev->evbit[0] = BIT_MASK(EV_KEY) | BIT(EV_SW);
+
+	set_bit(KEY_HEADSETHOOK, ac10x->inpdev->keybit);
+	set_bit(KEY_VOLUMEUP,    ac10x->inpdev->keybit);
+	set_bit(KEY_VOLUMEDOWN,  ac10x->inpdev->keybit);
+	input_set_capability(ac10x->inpdev, EV_SW, SW_HEADPHONE_INSERT);
+
+	ret = input_register_device(ac10x->inpdev);
+	if (ret) {
+		AC101_DBG("input_register_device: input_register_device failed\n");
+		goto _err_input_register_device;
+	}
+
+	/* the first headset state checking */
+	switch_hw_config(ac10x->codec);
+	ac10x->irq_cntr = 1;
+	schedule_work(&ac10x->work_switch);
+
+	return 0;
+
+_err_input_register_device:
+_err_input_allocate_device:
+
+	if (ac10x->irq) {
+		devm_free_irq(&i2c->dev, ac10x->irq, ac10x);
+		ac10x->irq = 0;
+	}
+_err_irq:
+	return ret;
+}
+/******************************************************************************/
+/********************************switch****************************************/
+/******************************************************************************/
+#endif
+
+
 
 void drc_config(struct snd_soc_codec *codec)
 {
@@ -218,6 +585,7 @@ void set_configuration(struct snd_soc_codec *codec)
 
 static int late_enable_dac(struct snd_soc_codec* codec, int event) {
 	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
+
 	mutex_lock(&ac10x->dac_mutex);
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
@@ -232,21 +600,14 @@ static int late_enable_dac(struct snd_soc_codec* codec, int event) {
 		ac10x->dac_enable++;
 		break;
 	case SND_SOC_DAPM_POST_PMD:
-		#if 0
-		if (ac10x->dac_enable > 0){
-			ac10x->dac_enable--;
-		#else
-		{
-		#endif
-			if (ac10x->dac_enable != 0){
-				ac10x->dac_enable = 0;
+		if (ac10x->dac_enable != 0){
+			ac10x->dac_enable = 0;
 
-				ac101_update_bits(codec, DAC_DIG_CTRL, (0x1<<ENHPF),(0x0<<ENHPF));
-				ac101_update_bits(codec, DAC_DIG_CTRL, (0x1<<ENDA), (0x0<<ENDA));
-				/*disable dac module clk*/
-				ac101_update_bits(codec, MOD_CLK_ENA, (0x1<<MOD_CLK_DAC_DIG), (0x0<<MOD_CLK_DAC_DIG));
-				ac101_update_bits(codec, MOD_RST_CTRL, (0x1<<MOD_RESET_DAC_DIG), (0x0<<MOD_RESET_DAC_DIG));
-			}
+			ac101_update_bits(codec, DAC_DIG_CTRL, (0x1<<ENHPF),(0x0<<ENHPF));
+			ac101_update_bits(codec, DAC_DIG_CTRL, (0x1<<ENDA), (0x0<<ENDA));
+			/*disable dac module clk*/
+			ac101_update_bits(codec, MOD_CLK_ENA, (0x1<<MOD_CLK_DAC_DIG), (0x0<<MOD_CLK_DAC_DIG));
+			ac101_update_bits(codec, MOD_RST_CTRL, (0x1<<MOD_RESET_DAC_DIG), (0x0<<MOD_RESET_DAC_DIG));
 		}
 		break;
 	}
@@ -260,63 +621,75 @@ static int ac101_headphone_event(struct snd_soc_codec* codec, int event) {
 		/*open*/
 		AC101_DBG("post:open:%s,line:%d\n", __func__, __LINE__);
 		ac101_update_bits(codec, OMIXER_DACA_CTRL, (0xf<<HPOUTPUTENABLE), (0xf<<HPOUTPUTENABLE));
-		ac101_update_bits(codec, HPOUT_CTRL, (0x1<<HPPA_EN), (0x1<<HPPA_EN));
 		msleep(10);
+		ac101_update_bits(codec, HPOUT_CTRL, (0x1<<HPPA_EN), (0x1<<HPPA_EN));
 		ac101_update_bits(codec, HPOUT_CTRL, (0x3<<LHPPA_MUTE), (0x3<<LHPPA_MUTE));
 		break;
 	case SND_SOC_DAPM_PRE_PMD:
 		/*close*/
 		AC101_DBG("pre:close:%s,line:%d\n", __func__, __LINE__);
-		ac101_update_bits(codec, HPOUT_CTRL, (0x1<<HPPA_EN), (0x0<<HPPA_EN));
-		ac101_update_bits(codec, OMIXER_DACA_CTRL, (0xf<<HPOUTPUTENABLE), (0x0<<HPOUTPUTENABLE));
 		ac101_update_bits(codec, HPOUT_CTRL, (0x3<<LHPPA_MUTE), (0x0<<LHPPA_MUTE));
+		msleep(10);
+		ac101_update_bits(codec, OMIXER_DACA_CTRL, (0xf<<HPOUTPUTENABLE), (0x0<<HPOUTPUTENABLE));
+		ac101_update_bits(codec, HPOUT_CTRL, (0x1<<HPPA_EN), (0x0<<HPPA_EN));
 		break;
 	}
 	return 0;
 }
-static int ac101_aif1clk(struct snd_soc_codec* codec, int event) {
+
+static int ac101_sysclk_started(void) {
+	int reg_val;
+
+	reg_val = ac101_read(static_ac10x->codec, SYSCLK_CTRL);
+	return (reg_val & (0x1<<SYSCLK_ENA));
+}
+
+static int ac101_aif1clk(struct snd_soc_codec* codec, int event, int quick) {
 	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
+	int ret;
+
+	/* spin_lock move to machine trigger */
+
+	switch (event) {
+	case SND_SOC_DAPM_PRE_PMU:
+		if (ac10x->aif1_clken == 0){
+			ret = ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<AIF1CLK_ENA), (0x1<<AIF1CLK_ENA));
+			if(!quick || _MASTER_MULTI_CODEC != _MASTER_AC101) {
+				/* enable aif1clk & sysclk */
+				ret = ret || ac101_update_bits(codec, MOD_CLK_ENA, (0x1<<MOD_CLK_AIF1), (0x1<<MOD_CLK_AIF1));
+				ret = ret || ac101_update_bits(codec, MOD_RST_CTRL, (0x1<<MOD_RESET_AIF1), (0x1<<MOD_RESET_AIF1));
+			}
+			ret = ret || ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<SYSCLK_ENA), (0x1<<SYSCLK_ENA));
+
+			if (ret) {
+				AC101_DBG("%s() L%d start sysclk failed\n", __func__, __LINE__);
+			} else {
+				AC101_DBG("%s() L%d hw sysclk enable\n", __func__, __LINE__);
+				ac10x->aif1_clken++;
+			}
+		}
+		break;
+	case SND_SOC_DAPM_POST_PMD:
+		if (ac10x->aif1_clken != 0) {
+			/* disable aif1clk & sysclk */
+			ret = ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<AIF1CLK_ENA),(0x0<<AIF1CLK_ENA));
+			ret = ret || ac101_update_bits(codec, MOD_CLK_ENA, (0x1<<MOD_CLK_AIF1), (0x0<<MOD_CLK_AIF1));
+			ret = ret || ac101_update_bits(codec, MOD_RST_CTRL, (0x1<<MOD_RESET_AIF1), (0x0<<MOD_RESET_AIF1));
+			ret = ret || ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<SYSCLK_ENA), (0x0<<SYSCLK_ENA));
+
+			if (ret) {
+				AC101_DBG("%s() L%d stop sysclk failed\n", __func__, __LINE__);
+			} else {
+				AC101_DBG("%s() L%d hw sysclk disable\n", __func__, __LINE__);
+				ac10x->aif1_clken = 0;
+			}
+			break;
+		}
+	}
 
 	AC101_DBG("%s() L%d event=%d pre_up/%d post_down/%d\n", __func__, __LINE__,
 		event, SND_SOC_DAPM_PRE_PMU, SND_SOC_DAPM_POST_PMD);
 
-	mutex_lock(&ac10x->aifclk_mutex);
-	switch (event) {
-	case SND_SOC_DAPM_PRE_PMU:
-		if (ac10x->aif1_clken == 0){
-			/*enable AIF1CLK*/
-			ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<AIF1CLK_ENA), (0x1<<AIF1CLK_ENA));
-			ac101_update_bits(codec, MOD_CLK_ENA, (0x1<<MOD_CLK_AIF1), (0x1<<MOD_CLK_AIF1));
-			ac101_update_bits(codec, MOD_RST_CTRL, (0x1<<MOD_RESET_AIF1), (0x1<<MOD_RESET_AIF1));
-			/*enable systemclk*/
-			if (ac10x->aif2_clken == 0)
-				ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<SYSCLK_ENA), (0x1<<SYSCLK_ENA));
-		}
-		ac10x->aif1_clken++;
-
-		break;
-	case SND_SOC_DAPM_POST_PMD:
-		#if 0
-		if (ac10x->aif1_clken > 0){
-			ac10x->aif1_clken--;
-			if (ac10x->aif1_clken == 0){
-		#else
-		{
-			if (ac10x->aif1_clken != 0) {
-				ac10x->aif1_clken = 0;
-		#endif
-				/*disable AIF1CLK*/
-				ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<AIF1CLK_ENA), (0x0<<AIF1CLK_ENA));
-				ac101_update_bits(codec, MOD_CLK_ENA, (0x1<<MOD_CLK_AIF1), (0x0<<MOD_CLK_AIF1));
-				ac101_update_bits(codec, MOD_RST_CTRL, (0x1<<MOD_RESET_AIF1), (0x0<<MOD_RESET_AIF1));
-				/*DISABLE systemclk*/
-				if (ac10x->aif2_clken == 0)
-					ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<SYSCLK_ENA), (0x0<<SYSCLK_ENA));
-			}
-		}
-		break;
-	}
-	mutex_unlock(&ac10x->aifclk_mutex);
 	return 0;
 }
 
@@ -347,6 +720,15 @@ static int snd_ac101_get_volsw(struct snd_kcontrol *kcontrol,
 	if (invert) {
 		ucontrol->value.integer.value[0] =
 			mc->max - ucontrol->value.integer.value[0];
+	}
+
+	if (snd_soc_volsw_is_stereo(mc)) {
+		val = (ret >> mc->rshift) & mask;
+		ucontrol->value.integer.value[1] = val - mc->min;
+		if (invert) {
+			ucontrol->value.integer.value[1] =
+				mc->max - ucontrol->value.integer.value[1];
+		}
 	}
 	return 0;
 }
@@ -379,10 +761,17 @@ static int snd_ac101_put_volsw(struct snd_kcontrol *kcontrol,
 		val = mc->max - val;
 	}
 
-	mask = mask << mc->shift;
-	val = val << mc->shift;
+	ret = ac101_update_bits(static_ac10x->codec, mc->reg, mask << mc->shift, val << mc->shift);
 
-	ret = ac101_update_bits(static_ac10x->codec, mc->reg, mask, val);
+	if (! snd_soc_volsw_is_stereo(mc)) {
+		return ret;
+	}
+	val = ((ucontrol->value.integer.value[1] + mc->min) & mask);
+	if (invert) {
+		val = mc->max - val;
+	}
+
+	ret = ac101_update_bits(static_ac10x->codec, mc->reg, mask << mc->rshift, val << mc->rshift);
 	return ret;
 }
 
@@ -426,30 +815,40 @@ struct kv_map {
 };
 
 /*
- *	Note : pll code from original tdm/i2s driver.
- * 	freq_out = freq_in * N/(m*(2k+1)) , k=1,N=N_i+N_f,N_f=factor*0.2;
+ * Note : pll code from original tdm/i2s driver.
+ * freq_out = freq_in * N/(M*(2k+1)) , k=1,N=N_i+N_f,N_f=factor*0.2;
+ * 		N_i[0,1023], N_f_factor[0,7], m[1,64]=REG_VAL[1-63,0]
  */
 static const struct pll_div codec_pll_div[] = {
-	{128000, 22579200, 1, 529, 1},
-	{192000, 22579200, 1, 352, 4},
-	{256000, 22579200, 1, 264, 3},
-	{384000, 22579200, 1, 176, 2},/*((176+2*0.2)*6000000)/(38*(2*1+1))*/
-	{6000000, 22579200, 38, 429, 0},/*((429+0*0.2)*6000000)/(38*(2*1+1))*/
-	{13000000, 22579200, 19, 99, 0},
-	{19200000, 22579200, 25, 88, 1},
-	{24000000, 22579200, 63, 177, 4},/*((177 + 4 * 0.2) * 24000000) / (63 * (2 * 1 + 1)) */
-	{128000, 24576000, 1, 576, 0},
-	{192000, 24576000, 1, 384, 0},
-	{256000, 24576000, 1, 288, 0},
-	{384000, 24576000, 1, 192, 0},
-	{1411200, 22579200, 1, 48, 0},
-	{2048000, 24576000, 1, 36, 0},
-	{6000000, 24576000, 25, 307, 1},
-	{13000000, 24576000, 42, 238, 1},
-	{19200000, 24576000, 25, 96, 0},
-	{24000000, 24576000, 39, 119, 4},/*((119 + 4 * 0.2) * 24000000) / (39 * (2 * 1 + 1)) */
-	{11289600, 22579200, 1, 6, 0},
-	{12288000, 24576000, 1, 6, 0},
+	{128000,   _FREQ_22_579K,  1, 529, 1},
+	{192000,   _FREQ_22_579K,  1, 352, 4},
+	{256000,   _FREQ_22_579K,  1, 264, 3},
+	{384000,   _FREQ_22_579K,  1, 176, 2}, /*((176+2*0.2)*6000000)/(38*(2*1+1))*/
+	{1411200,  _FREQ_22_579K,  1,  48, 0},
+	{2822400,  _FREQ_22_579K,  1,  24, 0}, /* accurate, 11025 * 256 */
+	{5644800,  _FREQ_22_579K,  1,  12, 0}, /* accurate, 22050 * 256 */
+	{6000000,  _FREQ_22_579K, 38, 429, 0}, /*((429+0*0.2)*6000000)/(38*(2*1+1))*/
+	{11289600, _FREQ_22_579K,  1,   6, 0}, /* accurate, 44100 * 256 */
+	{13000000, _FREQ_22_579K, 19,  99, 0},
+	{19200000, _FREQ_22_579K, 25,  88, 1},
+	{24000000, _FREQ_22_579K, 63, 177, 4}, /* 22577778 Hz */
+
+	{128000,   _FREQ_24_576K,  1, 576, 0},
+	{192000,   _FREQ_24_576K,  1, 384, 0},
+	{256000,   _FREQ_24_576K,  1, 288, 0},
+	{384000,   _FREQ_24_576K,  1, 192, 0},
+	{2048000,  _FREQ_24_576K,  1,  36, 0}, /* accurate,  8000 * 256 */
+	{3072000,  _FREQ_24_576K,  1,  24, 0}, /* accurate, 12000 * 256 */
+	{4096000,  _FREQ_24_576K,  1,  18, 0}, /* accurate, 16000 * 256 */
+	{6000000,  _FREQ_24_576K, 25, 307, 1},
+	{6144000,  _FREQ_24_576K,  4,  48, 0}, /* accurate, 24000 * 256 */
+	{12288000, _FREQ_24_576K,  8,  48, 0}, /* accurate, 48000 * 256 */
+	{13000000, _FREQ_24_576K, 42, 238, 1},
+	{19200000, _FREQ_24_576K, 25,  96, 0},
+	{24000000, _FREQ_24_576K, 25,  76, 4}, /* accurate */
+
+	{_FREQ_22_579K, _FREQ_22_579K,  8,  24, 0}, /* accurate, 88200 * 256 */
+	{_FREQ_24_576K, _FREQ_24_576K,  8,  24, 0}, /* accurate, 96000 * 256 */
 };
 
 static const struct aif1_fs codec_aif1_fs[] = {
@@ -488,6 +887,30 @@ static const unsigned ac101_bclkdivs[] = {
 	128, 192,   0,   0,
 };
 
+static int ac101_aif_play(struct ac10x_priv* ac10x) {
+	struct snd_soc_codec * codec = ac10x->codec;
+
+	late_enable_dac(codec, SND_SOC_DAPM_PRE_PMU);
+	ac101_headphone_event(codec, SND_SOC_DAPM_POST_PMU);
+	if (drc_used) {
+		drc_enable(codec, 1);
+	}
+
+	/* Enable Left & Right Speaker */
+	ac101_update_bits(codec, SPKOUT_CTRL, (0x1 << LSPK_EN) | (0x1 << RSPK_EN), (0x1 << LSPK_EN) | (0x1 << RSPK_EN));
+	if (ac10x->gpiod_spk_amp_gate) {
+		gpiod_set_value(ac10x->gpiod_spk_amp_gate, 1);
+	}
+	return 0;
+}
+
+static void ac10x_work_aif_play(struct work_struct *work) {
+	struct ac10x_priv *ac10x = container_of(work, struct ac10x_priv, dlywork.work);
+
+	ac101_aif_play(ac10x);
+	return;
+}
+
 int ac101_aif_mute(struct snd_soc_dai *codec_dai, int mute)
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
@@ -498,30 +921,34 @@ int ac101_aif_mute(struct snd_soc_dai *codec_dai, int mute)
 	ac101_write(codec, DAC_VOL_CTRL, mute? 0: 0xA0A0);
 
 	if (!mute) {
-		late_enable_dac(codec, SND_SOC_DAPM_PRE_PMU);
-		ac101_headphone_event(codec, SND_SOC_DAPM_POST_PMU);
-		if (drc_used) {
-			drc_enable(codec, 1);
-		}
-		if (ac10x->gpiod_spk_amp_gate) {
-			gpiod_set_value(ac10x->gpiod_spk_amp_gate, 1);
-		}
 		#if _MASTER_MULTI_CODEC != _MASTER_AC101
 		/* enable global clock */
-		ac101_aif1clk(static_ac10x->codec, SND_SOC_DAPM_PRE_PMU);
+		ac10x->aif1_clken = 0;
+		ac101_aif1clk(codec, SND_SOC_DAPM_PRE_PMU, 0);
+		ac101_aif_play(ac10x);
+		#else
+		schedule_delayed_work(&ac10x->dlywork, msecs_to_jiffies(50));
 		#endif
 	} else {
+		#if _MASTER_MULTI_CODEC == _MASTER_AC101
+		cancel_delayed_work_sync(&ac10x->dlywork);
+		#endif
+
 		if (ac10x->gpiod_spk_amp_gate) {
 			gpiod_set_value(ac10x->gpiod_spk_amp_gate, 0);
 		}
+		/* Disable Left & Right Speaker */
+		ac101_update_bits(codec, SPKOUT_CTRL, (0x1 << LSPK_EN) | (0x1 << RSPK_EN), (0x0 << LSPK_EN) | (0x0 << RSPK_EN));
 		if (drc_used) {
 			drc_enable(codec, 0);
 		}
 		ac101_headphone_event(codec, SND_SOC_DAPM_PRE_PMD);
 		late_enable_dac(codec, SND_SOC_DAPM_POST_PMD);
 
+		#if _MASTER_MULTI_CODEC != _MASTER_AC101
 		ac10x->aif1_clken = 1;
-		ac101_aif1clk(codec, SND_SOC_DAPM_POST_PMD);
+		ac101_aif1clk(codec, SND_SOC_DAPM_POST_PMD, 0);
+		#endif
 	}
 	return 0;
 }
@@ -529,41 +956,47 @@ int ac101_aif_mute(struct snd_soc_dai *codec_dai, int mute)
 void ac101_aif_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *codec_dai)
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
-	int reg_val;
+	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
 
-	AC101_DBG("%s,line:%d stream = %d, play-active = %d\n", __func__, __LINE__,
-		substream->stream, codec_dai->playback_active);
+	AC101_DBG("%s,line:%d stream = %s, play: %d, capt: %d, active: %d\n", __func__, __LINE__,
+		snd_pcm_stream_str(substream),
+		codec_dai->playback_active, codec_dai->capture_active,
+		codec_dai->active);
 
-	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-		reg_val = (ac101_read(codec, AIF_SR_CTRL) >> 12) & 0xF;
-		if (codec_dai->playback_active && dmic_used && reg_val == 0x4) {
-			ac101_update_bits(codec, AIF_SR_CTRL, (0xf<<AIF1_FS), (0x7<<AIF1_FS));
-		}
+	if (!codec_dai->active) {
+		ac10x->aif1_clken = 1;
+		ac101_aif1clk(codec, SND_SOC_DAPM_POST_PMD, 0);
+	} else {
+		ac101_aif1clk(codec, SND_SOC_DAPM_PRE_PMU, 0);
 	}
 }
 
 static int ac101_set_pll(struct snd_soc_dai *codec_dai, int pll_id, int source,
 			unsigned int freq_in, unsigned int freq_out)
 {
-	int i = 0;
-	int m 	= 0;
-	int n_i = 0;
-	int n_f = 0;
 	struct snd_soc_codec *codec = codec_dai->codec;
+	int i, m, n_i, n_f;
 
 	AC101_DBG("%s, line:%d, pll_id:%d\n", __func__, __LINE__, pll_id);
 
+	/* clear volatile reserved bits*/
+	ac101_update_bits(codec, SYSCLK_CTRL, 0xFF & ~(0x1 << SYSCLK_ENA), 0x0);
+
+	/* select aif1 clk srouce from mclk1 */
+	ac101_update_bits(codec, SYSCLK_CTRL, (0x3<<AIF1CLK_SRC), (0x0<<AIF1CLK_SRC));
+	/* disable pll */
+	ac101_update_bits(codec, PLL_CTRL2, (0x1<<PLL_EN), (0<<PLL_EN));
+
 	if (!freq_out)
 		return 0;
-	if ((freq_in < 128000) || (freq_in > 24576000)) {
+	if ((freq_in < 128000) || (freq_in > _FREQ_24_576K)) {
 		return -EINVAL;
-	} else if ((freq_in == 24576000) || (freq_in == 22579200)) {
+	} else if ((freq_in == _FREQ_24_576K) || (freq_in == _FREQ_22_579K)) {
 		if (pll_id == AC101_MCLK1) {
 			/*select aif1 clk source from mclk1*/
 			ac101_update_bits(codec, SYSCLK_CTRL, (0x3<<AIF1CLK_SRC), (0x0<<AIF1CLK_SRC));
 			return 0;
 		}
-		return -EINVAL;
 	}
 
 	switch (pll_id) {
@@ -578,8 +1011,9 @@ static int ac101_set_pll(struct snd_soc_dai *codec_dai, int pll_id, int source,
 	default:
 		return -EINVAL;
 	}
+
 	/* freq_out = freq_in * n/(m*(2k+1)) , k=1,N=N_i+N_f */
-	for (i = 0; i < ARRAY_SIZE(codec_pll_div); i++) {
+	for (i = m = n_i = n_f = 0; i < ARRAY_SIZE(codec_pll_div); i++) {
 		if ((codec_pll_div[i].pll_in == freq_in) && (codec_pll_div[i].pll_out == freq_out)) {
 			m   = codec_pll_div[i].m;
 			n_i = codec_pll_div[i].n_i;
@@ -587,13 +1021,14 @@ static int ac101_set_pll(struct snd_soc_dai *codec_dai, int pll_id, int source,
 			break;
 		}
 	}
-	/*config pll m*/
+	/* config pll m */
+	if (m  == 64) m = 0;
 	ac101_update_bits(codec, PLL_CTRL1, (0x3f<<PLL_POSTDIV_M), (m<<PLL_POSTDIV_M));
-	/*config pll n*/
+	/* config pll n */
 	ac101_update_bits(codec, PLL_CTRL2, (0x3ff<<PLL_PREDIV_NI), (n_i<<PLL_PREDIV_NI));
 	ac101_update_bits(codec, PLL_CTRL2, (0x7<<PLL_POSTDIV_NF), (n_f<<PLL_POSTDIV_NF));
+	/* enable pll */
 	ac101_update_bits(codec, PLL_CTRL2, (0x1<<PLL_EN), (1<<PLL_EN));
-	/*enable pll_enable*/
 	ac101_update_bits(codec, SYSCLK_CTRL, (0x1<<PLLCLK_ENA),  (0x1<<PLLCLK_ENA));
 	ac101_update_bits(codec, SYSCLK_CTRL, (0x3<<AIF1CLK_SRC), (0x3<<AIF1CLK_SRC));
 
@@ -616,11 +1051,12 @@ int ac101_hw_params(struct snd_pcm_substream *substream,
 
 	AC101_DBG("%s() L%d +++\n", __func__, __LINE__);
 
-	/* Master mode, to clear cpu_dai fifos, disable output bclk & lrck */
-	#if 0
-	ac10x->aif1_clken = 1;
-	ac101_aif1clk(codec, SND_SOC_DAPM_POST_PMD);
-	#endif
+	if (_MASTER_MULTI_CODEC == _MASTER_AC101 && ac101_sysclk_started()) {
+		/* not configure hw_param twice if stream is playback, tell the caller it's started */
+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+			return 1;
+		}
+	}
 
 	/* get channels count & slot size */
 	channels = params_channels(params);
@@ -646,7 +1082,7 @@ int ac101_hw_params(struct snd_pcm_substream *substream,
 	ac101_update_bits(codec, AIF_CLK_CTRL, (0x7<<AIF1_LRCK_DIV), codec_aif1_lrck[i].bit<<AIF1_LRCK_DIV);
 
 	/* set PLL output freq */
-	freq_out = 24576000;
+	freq_out = _FREQ_24_576K;
 	for (i = 0; i < ARRAY_SIZE(codec_aif1_fs); i++) {
 		if (codec_aif1_fs[i].samp_rate == params_rate(params)) {
 			if (codec_dai->capture_active && dmic_used && codec_aif1_fs[i].samp_rate == 44100) {
@@ -655,7 +1091,7 @@ int ac101_hw_params(struct snd_pcm_substream *substream,
 				ac101_update_bits(codec, AIF_SR_CTRL, (0xf<<AIF1_FS), ((codec_aif1_fs[i].srbit)<<AIF1_FS));
 			}
 			if (codec_aif1_fs[i].series == _SERIES_22_579K)
-				freq_out = 22579200;
+				freq_out = _FREQ_22_579K;
 			break;
 		}
 	}
@@ -686,7 +1122,15 @@ int ac101_hw_params(struct snd_pcm_substream *substream,
 			}
 		}
 		ac101_update_bits(codec, AIF_CLK_CTRL, (0xf<<AIF1_BCLK_DIV), i<<AIF1_BCLK_DIV);
+	} else {
+		/* set pll clock source to BCLK if slave mode */
+		ac101_set_pll(codec_dai, AC101_BCLK1, 0, aif1_lrck_div * params_rate(params), freq_out);
 	}
+
+	#if _MASTER_MULTI_CODEC == _MASTER_AC101
+	/* Master mode, to clear cpu_dai fifos, disable output bclk & lrck */
+	ac101_aif1clk(codec, SND_SOC_DAPM_POST_PMD, 0);
+	#endif
 
 	AC101_DBG("rate: %d , channels: %d , samp_res: %d",
 		params_rate(params), channels, aif1_slot_size);
@@ -694,22 +1138,6 @@ int ac101_hw_params(struct snd_pcm_substream *substream,
 	AC101_DBG("%s() L%d ---\n", __func__, __LINE__);
 	return 0;
 }
-
-#if 0
-static int ac101_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-				  int clk_id, unsigned int freq, int dir)
-{
-	struct snd_soc_codec *codec = codec_dai->codec;
-	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
-
-	AC101_DBG("%s,line:%d, id=%d freq=%d, dir=%d\n", __func__, __LINE__,
-		clk_id, freq, dir);
-
-	ac10x->sysclk = freq;
-
-	return 0;
-}
-#endif
 
 int ac101_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
 {
@@ -766,6 +1194,10 @@ int ac101_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_DSP_A:      /* L reg_val msb after FRM LRC */
 		reg_val |= (0x3<<AIF1_DATA_FMT);
 		break;
+	case SND_SOC_DAIFMT_DSP_B:
+		/* TODO: data offset set to 0 */
+		reg_val |= (0x3<<AIF1_DATA_FMT);
+		break;
 	default:
 		pr_err("%s, line:%d\n", __func__, __LINE__);
 		return -EINVAL;
@@ -813,26 +1245,44 @@ int ac101_audio_startup(struct snd_pcm_substream *substream,
 static int ac101_set_clock(int y_start_n_stop) {
 	if (y_start_n_stop) {
 		/* enable global clock */
-		ac101_aif1clk(static_ac10x->codec, SND_SOC_DAPM_PRE_PMU);
+		ac101_aif1clk(static_ac10x->codec, SND_SOC_DAPM_PRE_PMU, 1);
+	} else {
+		/* disable global clock */
+		static_ac10x->aif1_clken = 1;
+		ac101_aif1clk(static_ac10x->codec, SND_SOC_DAPM_POST_PMD, 0);
 	}
 	return 0;
 }
 #endif
 
-#if 0
-static int ac101_trigger(struct snd_pcm_substream *substream, int cmd,
-			     struct snd_soc_dai *dai)
+int ac101_trigger(struct snd_pcm_substream *substream, int cmd,
+	 	  struct snd_soc_dai *dai)
 {
+	struct snd_soc_codec *codec = dai->codec;
+	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
 	int ret = 0;
 
-	AC101_DBG("%s() stream=%d  cmd=%d\n",
-		__FUNCTION__, substream->stream, cmd);
+	AC101_DBG("%s() stream=%s  cmd=%d\n",
+		__FUNCTION__,
+		snd_pcm_stream_str(substream),
+		cmd);
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-
+		#if _MASTER_MULTI_CODEC == _MASTER_AC101
+		if (ac10x->aif1_clken == 0){
+			/*
+			 * enable aif1clk, it' here due to reduce time between 'AC108 Sysclk Enable' and 'AC101 Sysclk Enable'
+			 * Or else the two AC108 chips lost the sync.
+			 */
+			ret = 0;
+			ret = ret || ac101_update_bits(codec, MOD_CLK_ENA, (0x1<<MOD_CLK_AIF1), (0x1<<MOD_CLK_AIF1));
+			ret = ret || ac101_update_bits(codec, MOD_RST_CTRL, (0x1<<MOD_RESET_AIF1), (0x1<<MOD_RESET_AIF1));
+		}
+		#endif
+		break;
 	case SNDRV_PCM_TRIGGER_STOP:
 	case SNDRV_PCM_TRIGGER_SUSPEND:
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
@@ -841,6 +1291,21 @@ static int ac101_trigger(struct snd_pcm_substream *substream, int cmd,
 		ret = -EINVAL;
 	}
 	return ret;
+}
+
+#if 0
+static int ac101_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+				  int clk_id, unsigned int freq, int dir)
+{
+	struct snd_soc_codec *codec = codec_dai->codec;
+	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
+
+	AC101_DBG("%s,line:%d, id=%d freq=%d, dir=%d\n", __func__, __LINE__,
+		clk_id, freq, dir);
+
+	ac10x->sysclk = freq;
+
+	return 0;
 }
 
 static const struct snd_soc_dai_ops ac101_aif1_dai_ops = {
@@ -908,8 +1373,15 @@ int ac101_set_bias_level(struct snd_soc_codec *codec, enum snd_soc_bias_level le
 		break;
 	case SND_SOC_BIAS_STANDBY:
 		AC101_DBG("%s,line:%d, SND_SOC_BIAS_STANDBY\n", __func__, __LINE__);
+		#ifdef CONFIG_AC101_SWITCH_DETECT
+		switch_hw_config(codec);
+		#endif
 		break;
 	case SND_SOC_BIAS_OFF:
+		#ifdef CONFIG_AC101_SWITCH_DETECT
+		ac101_update_bits(codec, ADC_APC_CTRL, (0x1<<HBIASEN), (0<<HBIASEN));
+		ac101_update_bits(codec, ADC_APC_CTRL, (0x1<<HBIASADCEN), (0<<HBIASADCEN));
+		#endif
 		ac101_update_bits(codec, OMIXER_DACA_CTRL, (0xf<<HPOUTPUTENABLE), (0<<HPOUTPUTENABLE));
 		ac101_update_bits(codec, ADDA_TUNE3, (0x1<<OSCEN), (0<<OSCEN));
 		AC101_DBG("%s,line:%d, SND_SOC_BIAS_OFF\n", __func__, __LINE__);
@@ -931,16 +1403,14 @@ int ac101_codec_probe(struct snd_soc_codec *codec)
 	}
 	ac10x->codec = codec;
 
+	INIT_DELAYED_WORK(&ac10x->dlywork, ac10x_work_aif_play);
 	INIT_WORK(&ac10x->codec_resume, codec_resume_work);
 	ac10x->dac_enable = 0;
 	ac10x->aif1_clken = 0;
-	ac10x->aif2_clken = 0;
 	mutex_init(&ac10x->dac_mutex);
-	mutex_init(&ac10x->adc_mutex);
-	mutex_init(&ac10x->aifclk_mutex);
 
 	#if _MASTER_MULTI_CODEC == _MASTER_AC101
-	asoc_simple_card_register_set_clock(ac101_set_clock);
+	seeed_voice_card_register_set_clock(SNDRV_PCM_STREAM_PLAYBACK, ac101_set_clock);
 	#endif
 
 	set_configuration(ac10x->codec);
@@ -961,13 +1431,40 @@ int ac101_codec_probe(struct snd_soc_codec *codec)
 		pr_err("[ac10x] Failed to register audio mode control, "
 				"will continue without it.\n");
 	}
+
+	#ifdef CONFIG_AC101_SWITCH_DETECT
+	ret = ac101_switch_probe(ac10x);
+	if (ret) {
+		// not care the switch return value
+	}
+	#endif
+
 	return 0;
 }
 
 /* power down chip */
 int ac101_codec_remove(struct snd_soc_codec *codec)
 {
-	// struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
+	#ifdef CONFIG_AC101_SWITCH_DETECT
+	struct ac10x_priv *ac10x = snd_soc_codec_get_drvdata(codec);
+
+	if (ac10x->irq) {
+		devm_free_irq(codec->dev, ac10x->irq, ac10x);
+		ac10x->irq = 0;
+	}
+
+	if (cancel_work_sync(&ac10x->work_switch) != 0) {
+	}
+
+	if (cancel_work_sync(&ac10x->work_clear_irq) != 0) {
+	}
+
+	if (ac10x->inpdev) {
+		input_unregister_device(ac10x->inpdev);
+		ac10x->inpdev = NULL;
+	}
+	#endif
+
 	return 0;
 }
 
@@ -996,6 +1493,11 @@ int ac101_codec_resume(struct snd_soc_codec *codec)
 		return ret;
 	}
 
+	#ifdef CONFIG_AC101_SWITCH_DETECT
+	ac10x->mode = HEADPHONE_IDLE;
+	ac10x->state = -1;
+	#endif
+
 	ac101_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 	schedule_work(&ac10x->codec_resume);
 	return 0;
@@ -1005,32 +1507,32 @@ int ac101_codec_resume(struct snd_soc_codec *codec)
 static ssize_t ac101_debug_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
-	static int val = 0, flag = 0;
-	u8 reg,num,i=0;
-	u16 value_w,value_r[128];
 	struct ac10x_priv *ac10x = dev_get_drvdata(dev);
+	int val = 0, flag = 0;
+	u16 value_w, value_r;
+	u8 reg, num, i=0;
+
 	val = simple_strtol(buf, NULL, 16);
 	flag = (val >> 24) & 0xF;
-	if(flag) {
+	if (flag) {
 		reg = (val >> 16) & 0xFF;
 		value_w =  val & 0xFFFF;
 		ac101_write(ac10x->codec, reg, value_w);
-		printk("write 0x%x to reg:0x%x\n",value_w,reg);
+		printk("write 0x%x to reg:0x%x\n", value_w, reg);
 	} else {
-		reg =(val>>8)& 0xFF;
-		num=val&0xff;
+		reg = (val >> 8) & 0xFF;
+		num = val & 0xff;
 		printk("\n");
-		printk("read:start add:0x%x,count:0x%x\n",reg,num);
+		printk("read:start add:0x%x,count:0x%x\n", reg, num);
+
+		regcache_cache_bypass(ac10x->regmap101, true);
 		do {
-			value_r[i] = ac101_read(ac10x->codec, reg);
-			printk("0x%x: 0x%04x ",reg,value_r[i]);
-			reg+=1;
-			i++;
-			if(i == num)
+			value_r = ac101_read(ac10x->codec, reg);
+			printk("0x%x: 0x%04x ", reg++, value_r);
+			if (++i % 4 == 0 || i == num)
 				printk("\n");
-			if(i%4==0)
-				printk("\n");
-		} while(i<num);
+		} while (i < num);
+		regcache_cache_bypass(ac10x->regmap101, false);
 	}
 	return count;
 }
@@ -1056,13 +1558,49 @@ static struct attribute_group audio_debug_attr_group = {
 /***************************************************************************/
 
 /************************************************************/
+static bool ac101_volatile_reg(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case PLL_CTRL2:
+	case HMIC_STS:
+		return true;
+	}
+	return false;
+}
+
 static const struct regmap_config ac101_regmap = {
 	.reg_bits = 8,
 	.val_bits = 16,
 	.reg_stride = 1,
 	.max_register = 0xB5,
-	.cache_type = REGCACHE_RBTREE,
+	.cache_type = REGCACHE_FLAT,
+	.volatile_reg = ac101_volatile_reg,
 };
+
+/* Sync reg_cache from the hardware */
+int ac10x_fill_regcache(struct device* dev, struct regmap* map) {
+	int r, i, n;
+	int v;
+
+	n = regmap_get_max_register(map);
+	for (i = 0; i < n; i++) {
+		regcache_cache_bypass(map, true);
+		r = regmap_read(map, i, &v);
+		if (r) {
+			dev_err(dev, "failed to read register %d\n", i);
+			continue;
+		}
+		regcache_cache_bypass(map, false);
+
+		regcache_cache_only(map, true);
+		r = regmap_write(map, i, v);
+		regcache_cache_only(map, false);
+	}
+	regcache_cache_bypass(map, false);
+	regcache_cache_only(map, false);
+
+	return 0;
+}
 
 int ac101_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 {
@@ -1081,6 +1619,14 @@ int ac101_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		return ret;
 	}
 
+	/* Chip reset */
+	regcache_cache_only(ac10x->regmap101, false);
+	ret = regmap_write(ac10x->regmap101, CHIP_AUDIO_RST, 0);
+	msleep(50);
+
+	/* sync regcache for FLAT type */
+	ac10x_fill_regcache(&i2c->dev, ac10x->regmap101);
+
 	ret = regmap_read(ac10x->regmap101, CHIP_AUDIO_RST, &v);
 	if (ret < 0) {
 		dev_err(&i2c->dev, "failed to read vendor ID: %d\n", ret);
@@ -1088,7 +1634,7 @@ int ac101_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 	}
 
 	if (v != AC101_CHIP_ID) {
-		dev_err(&i2c->dev, "chip is not AC101\n");
+		dev_err(&i2c->dev, "chip is not AC101 (%X)\n", v);
 		dev_err(&i2c->dev, "Expected %X\n", AC101_CHIP_ID);
 		return -ENODEV;
 	}
@@ -1103,6 +1649,7 @@ int ac101_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 		ac10x->gpiod_spk_amp_gate = NULL;
 		dev_err(&i2c->dev, "failed get spk-amp-switch in device tree\n");
 	}
+
 	return 0;
 }
 

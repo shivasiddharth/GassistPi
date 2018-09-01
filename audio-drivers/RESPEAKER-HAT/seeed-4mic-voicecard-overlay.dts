@@ -44,24 +44,24 @@
 		target = <&sound>;
 
 		sound_overlay: __overlay__ {
-			compatible = "simple-audio-card";
-			simple-audio-card,format = "dsp_a";
-			simple-audio-card,name = "seeed-4mic-voicecard"; 
+			compatible = "seeed-voicecard";
+			seeed-voice-card,format = "dsp_a";
+			seeed-voice-card,name = "seeed-4mic-voicecard"; 
 			status = "okay";
 		
-			simple-audio-card,bitclock-master = <&codec_dai>;
-			simple-audio-card,frame-master = <&codec_dai>;
-			simple-audio-card,channels-playback-override = <4>;
-			simple-audio-card,channels-capture-override  = <4>;
+			seeed-voice-card,bitclock-master = <&codec_dai>;
+			seeed-voice-card,frame-master = <&codec_dai>;
+			seeed-voice-card,channels-playback-override = <4>;
+			seeed-voice-card,channels-capture-override  = <4>;
 
-			cpu_dai: simple-audio-card,cpu {
+			cpu_dai: seeed-voice-card,cpu {
 				sound-dai = <&i2s>;
 				dai-tdm-slot-num     = <2>;
 				dai-tdm-slot-width   = <32>;
 				dai-tdm-slot-tx-mask = <1 1 0 0>;
 				dai-tdm-slot-rx-mask = <1 1 0 0>;
 			};
-			codec_dai: simple-audio-card,codec {
+			codec_dai: seeed-voice-card,codec {
 				sound-dai = <&ac108_a>;
 				clocks =  <&ac108_mclk>;
 			};
@@ -69,7 +69,7 @@
 	};
 
 	__overrides__ {
-		card-name = <&sound_overlay>,"seeed-voicecard,name";
+		card-name = <&sound_overlay>,"seeed-voice-card,name";
 	};
 };
 

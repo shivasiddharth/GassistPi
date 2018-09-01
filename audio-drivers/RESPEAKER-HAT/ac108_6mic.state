@@ -26,7 +26,7 @@ state.ALSA {
 	control.3 {
 		iface MIXER
 		name 'PCM Playback Route'
-		value 0
+		value 1
 		comment {
 			access 'read write'
 			type INTEGER
@@ -68,132 +68,120 @@ state.ALSA {
 state.seeed8micvoicec {
 	control.1 {
 		iface MIXER
-		name 'OUT1 Mute'
-		value false
+		name 'CH1 digital volume'
+		value 208
 		comment {
 			access 'read write'
-			type BOOLEAN
+			type INTEGER
 			count 1
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 3675
 		}
 	}
 	control.2 {
 		iface MIXER
-		name 'OUT2 Mute'
-		value true
+		name 'CH2 digital volume'
+		value 208
 		comment {
 			access 'read write'
-			type BOOLEAN
+			type INTEGER
 			count 1
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 3675
 		}
 	}
 	control.3 {
 		iface MIXER
-		name 'TX1 Channel1~8 enable'
-		value '1-4 channels '
+		name 'CH3 digital volume'
+		value 208
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 'disable all'
-			item.1 '1-1 channels '
-			item.2 '1-2 channels '
-			item.3 '1-3 channels '
-			item.4 '1-4 channels '
-			item.5 '1-5 channels '
-			item.6 '1-6 channels '
-			item.7 '1-7 channels '
-			item.8 '1-8 channels '
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 3675
 		}
 	}
 	control.4 {
 		iface MIXER
-		name 'TX1 Channel9~16 enable'
-		value 'disable all'
+		name 'CH4 digital volume'
+		value 208
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 'disable all'
-			item.1 '8-9 channels '
-			item.2 '8-10 channels '
-			item.3 '8-11 channels '
-			item.4 '8-12 channels '
-			item.5 '8-13 channels '
-			item.6 '8-14 channels '
-			item.7 '8-15 channels '
-			item.8 '8-16 channels '
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 3675
 		}
 	}
 	control.5 {
 		iface MIXER
-		name 'TX2 Channel1~8 enable'
-		value 'disable all'
+		name 'ADC1 PGA gain'
+		value 0
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 'disable all'
-			item.1 '1-1 channels '
-			item.2 '1-2 channels '
-			item.3 '1-3 channels '
-			item.4 '1-4 channels '
-			item.5 '1-5 channels '
-			item.6 '1-6 channels '
-			item.7 '1-7 channels '
-			item.8 '1-8 channels '
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
 		}
 	}
 	control.6 {
 		iface MIXER
-		name 'TX2 Channel9~16 enable'
-		value 'disable all'
+		name 'ADC2 PGA gain'
+		value 0
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 'disable all'
-			item.1 '8-9 channels '
-			item.2 '8-10 channels '
-			item.3 '8-11 channels '
-			item.4 '8-12 channels '
-			item.5 '8-13 channels '
-			item.6 '8-14 channels '
-			item.7 '8-15 channels '
-			item.8 '8-16 channels '
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
 		}
 	}
 	control.7 {
 		iface MIXER
-		name 'CH1 digital volume'
-		value 181
+		name 'ADC3 PGA gain'
+		value 0
 		comment {
 			access 'read write'
 			type INTEGER
 			count 1
-			range '0 - 255'
-			dbmin -11925
-			dbmax 7200
-			dbvalue.0 1650
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
 		}
 	}
 	control.8 {
 		iface MIXER
-		name 'CH2 digital volume'
-		value 181
+		name 'ADC4 PGA gain'
+		value 0
 		comment {
 			access 'read write'
 			type INTEGER
 			count 1
-			range '0 - 255'
-			dbmin -11925
-			dbmax 7200
-			dbvalue.0 1650
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
 		}
 	}
 	control.9 {
 		iface MIXER
-		name 'CH3 digital volume'
-		value 181
+		name 'CH5 digital volume'
+		value 208
 		comment {
 			access 'read write'
 			type INTEGER
@@ -201,13 +189,13 @@ state.seeed8micvoicec {
 			range '0 - 255'
 			dbmin -11925
 			dbmax 7200
-			dbvalue.0 1650
+			dbvalue.0 3675
 		}
 	}
 	control.10 {
 		iface MIXER
-		name 'CH4 digital volume'
-		value 181
+		name 'CH6 digital volume'
+		value 208
 		comment {
 			access 'read write'
 			type INTEGER
@@ -215,41 +203,41 @@ state.seeed8micvoicec {
 			range '0 - 255'
 			dbmin -11925
 			dbmax 7200
-			dbvalue.0 1650
+			dbvalue.0 3675
 		}
 	}
 	control.11 {
 		iface MIXER
-		name 'ADC1 PGA gain'
-		value 27
+		name 'CH7 digital volume'
+		value 198
 		comment {
 			access 'read write'
 			type INTEGER
 			count 1
-			range '0 - 31'
-			dbmin 0
-			dbmax 3100
-			dbvalue.0 2700
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 2925
 		}
 	}
 	control.12 {
 		iface MIXER
-		name 'ADC2 PGA gain'
-		value 27
+		name 'CH8 digital volume'
+		value 198
 		comment {
 			access 'read write'
 			type INTEGER
 			count 1
-			range '0 - 31'
-			dbmin 0
-			dbmax 3100
-			dbvalue.0 2700
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 2925
 		}
 	}
 	control.13 {
 		iface MIXER
-		name 'ADC3 PGA gain'
-		value 27
+		name 'ADC5 PGA gain'
+		value 0
 		comment {
 			access 'read write'
 			type INTEGER
@@ -257,13 +245,13 @@ state.seeed8micvoicec {
 			range '0 - 31'
 			dbmin 0
 			dbmax 3100
-			dbvalue.0 2700
+			dbvalue.0 0
 		}
 	}
 	control.14 {
 		iface MIXER
-		name 'ADC4 PGA gain'
-		value 27
+		name 'ADC6 PGA gain'
+		value 0
 		comment {
 			access 'read write'
 			type INTEGER
@@ -271,683 +259,109 @@ state.seeed8micvoicec {
 			range '0 - 31'
 			dbmin 0
 			dbmax 3100
-			dbvalue.0 2700
+			dbvalue.0 0
 		}
 	}
 	control.15 {
 		iface MIXER
-		name 'Tx1 Channels'
-		value '4 channels '
+		name 'ADC7 PGA gain'
+		value 0
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 '1 channels '
-			item.1 '2 channels '
-			item.2 '3 channels '
-			item.3 '4 channels '
-			item.4 '5 channels '
-			item.5 '6 channels '
-			item.6 '7 channels '
-			item.7 '8 channels '
-			item.8 '9 channels '
-			item.9 '10 channels '
-			item.10 '11 channels '
-			item.11 '12 channels '
-			item.12 '13 channels '
-			item.13 '14 channels '
-			item.14 '15 channels '
-			item.15 '16 channels '
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
 		}
 	}
 	control.16 {
 		iface MIXER
-		name 'Tx2 Channels'
-		value '1 channels '
+		name 'ADC8 PGA gain'
+		value 0
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 '1 channels '
-			item.1 '2 channels '
-			item.2 '3 channels '
-			item.3 '4 channels '
-			item.4 '5 channels '
-			item.5 '6 channels '
-			item.6 '7 channels '
-			item.7 '8 channels '
-			item.8 '9 channels '
-			item.9 '10 channels '
-			item.10 '11 channels '
-			item.11 '12 channels '
-			item.12 '13 channels '
-			item.13 '14 channels '
-			item.14 '15 channels '
-			item.15 '16 channels '
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
 		}
 	}
 	control.17 {
 		iface MIXER
-		name 'Tx1 Channels 1 MAP'
-		value '1st adc sample'
+		name 'DAC volume'
+		value.0 0
+		value.1 0
 		comment {
 			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
+			type INTEGER
+			count 2
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 -11925
+			dbvalue.1 -11925
 		}
 	}
 	control.18 {
 		iface MIXER
-		name 'Tx1 Channels 2 MAP'
-		value '2st adc sample'
+		name 'DAC mixer gain'
+		value.0 0
+		value.1 0
 		comment {
 			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
+			type INTEGER
+			count 2
+			range '0 - 15'
+			dbmin -600
+			dbmax 8400
+			dbvalue.0 -600
+			dbvalue.1 -600
 		}
 	}
 	control.19 {
 		iface MIXER
-		name 'Tx1 Channels 3 MAP'
-		value '3st adc sample'
+		name 'digital volume'
+		value 51
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
+			range '0 - 63'
+			dbmin -7308
+			dbmax 0
+			dbvalue.0 -1392
 		}
 	}
 	control.20 {
 		iface MIXER
-		name 'Tx1 Channels 4 MAP'
-		value '4st adc sample'
+		name 'speaker volume'
+		value 25
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
+			range '0 - 31'
+			dbmin -4800
+			dbmax -150
+			dbvalue.0 -1050
 		}
 	}
 	control.21 {
 		iface MIXER
-		name 'Tx1 Channels 5 MAP'
-		value '1st adc sample'
+		name 'headphone volume'
+		value 52
 		comment {
 			access 'read write'
-			type ENUMERATED
+			type INTEGER
 			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.22 {
-		iface MIXER
-		name 'Tx1 Channels 6 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.23 {
-		iface MIXER
-		name 'Tx1 Channels 7 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.24 {
-		iface MIXER
-		name 'Tx1 Channels 8 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.25 {
-		iface MIXER
-		name 'Tx1 Channels 9 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.26 {
-		iface MIXER
-		name 'Tx1 Channels 10 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.27 {
-		iface MIXER
-		name 'Tx1 Channels 11 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.28 {
-		iface MIXER
-		name 'Tx1 Channels 12 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.29 {
-		iface MIXER
-		name 'Tx1 Channels 13 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.30 {
-		iface MIXER
-		name 'Tx1 Channels 14 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.31 {
-		iface MIXER
-		name 'Tx1 Channels 15 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.32 {
-		iface MIXER
-		name 'Tx1 Channels 16 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.33 {
-		iface MIXER
-		name 'Tx2 Channels 1 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.34 {
-		iface MIXER
-		name 'Tx2 Channels 2 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.35 {
-		iface MIXER
-		name 'Tx2 Channels 3 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.36 {
-		iface MIXER
-		name 'Tx2 Channels 4 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.37 {
-		iface MIXER
-		name 'Tx2 Channels 5 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.38 {
-		iface MIXER
-		name 'Tx2 Channels 6 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.39 {
-		iface MIXER
-		name 'Tx2 Channels 7 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.40 {
-		iface MIXER
-		name 'Tx2 Channels 8 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.41 {
-		iface MIXER
-		name 'Tx2 Channels 9 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.42 {
-		iface MIXER
-		name 'Tx2 Channels 10 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.43 {
-		iface MIXER
-		name 'Tx2 Channels 11 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.44 {
-		iface MIXER
-		name 'Tx2 Channels 12 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.45 {
-		iface MIXER
-		name 'Tx2 Channels 13 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.46 {
-		iface MIXER
-		name 'Tx2 Channels 14 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.47 {
-		iface MIXER
-		name 'Tx2 Channels 15 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.48 {
-		iface MIXER
-		name 'Tx2 Channels 16 MAP'
-		value '1st adc sample'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '1st adc sample'
-			item.1 '2st adc sample'
-			item.2 '3st adc sample'
-			item.3 '4st adc sample'
-		}
-	}
-	control.49 {
-		iface MIXER
-		name 'ADC4 Source'
-		value 'Analog ADC4'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'Analog ADC1'
-			item.1 'Analog ADC2'
-			item.2 'Analog ADC3'
-			item.3 'Analog ADC4'
-		}
-	}
-	control.50 {
-		iface MIXER
-		name 'ADC3 Source'
-		value 'Analog ADC3'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'Analog ADC1'
-			item.1 'Analog ADC2'
-			item.2 'Analog ADC3'
-			item.3 'Analog ADC4'
-		}
-	}
-	control.51 {
-		iface MIXER
-		name 'ADC2 Source'
-		value 'Analog ADC2'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'Analog ADC1'
-			item.1 'Analog ADC2'
-			item.2 'Analog ADC3'
-			item.3 'Analog ADC4'
-		}
-	}
-	control.52 {
-		iface MIXER
-		name 'ADC1 Source'
-		value 'Analog ADC1'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'Analog ADC1'
-			item.1 'Analog ADC2'
-			item.2 'Analog ADC3'
-			item.3 'Analog ADC4'
-		}
-	}
-	control.53 {
-		iface MIXER
-		name 'ADC1 Digital Mixer gc'
-		value 'disable all'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
-		}
-	}
-	control.54 {
-		iface MIXER
-		name 'ADC1 Digital Mixer src'
-		value 'ADC1 data'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
-		}
-	}
-	control.55 {
-		iface MIXER
-		name 'ADC2 Digital Mixer gc'
-		value 'disable all'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
-		}
-	}
-	control.56 {
-		iface MIXER
-		name 'ADC2 Digital Mixer src'
-		value 'ADC2 data'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
-		}
-	}
-	control.57 {
-		iface MIXER
-		name 'ADC3 Digital Mixer gc'
-		value 'disable all'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
-		}
-	}
-	control.58 {
-		iface MIXER
-		name 'ADC3 Digital Mixer src'
-		value 'ADC3 data'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
-		}
-	}
-	control.59 {
-		iface MIXER
-		name 'ADC4 Digital Mixer gc'
-		value 'disable all'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
-		}
-	}
-	control.60 {
-		iface MIXER
-		name 'ADC4 Digital Mixer src'
-		value 'ADC4 data'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 'disable all'
-			item.1 'ADC1 data'
-			item.2 'ADC2 data'
-			item.3 'ADC3 data'
-			item.4 'ADC4 data'
+			range '0 - 63'
+			dbmin -6300
+			dbmax 0
+			dbvalue.0 -1100
 		}
 	}
 }

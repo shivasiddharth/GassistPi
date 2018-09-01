@@ -32,18 +32,17 @@ sleep 1
 
 audioconfig=/home/pi/audiosetup
 
-
 is_1a=$(i2cdetect -y  1 0x1a 0x1a | grep 1a | awk '{print $2}')
 is_35=$(i2cdetect -y  1 0x35 0x35 | grep 35 | awk '{print $2}')
 is_3b=$(i2cdetect -y  1 0x3b 0x3b | grep 3b | awk '{print $2}')
+
+rm /etc/asound.conf
+rm /var/lib/alsa/asound.state
 
 if [ "x${is_1a}" == "x1a" ] && [ "x${is_35}" == "x" ] ; then
     echo "install 2mic"
     dtoverlay seeed-2mic-voicecard
     sleep 1
-    hw=$(aplay -l | grep seeed2micvoicec | awk '{print $2}' | sed 's/://')
-
-    cp /etc/voicecard/asound_2mic.conf /etc/asound.conf
 
     if [ -f $audioconfig ] ; then
         sudo rm $audioconfig
@@ -51,24 +50,20 @@ if [ "x${is_1a}" == "x1a" ] && [ "x${is_35}" == "x" ] ; then
 
     echo 'Respeaker-2-Mic' >> $audioconfig
 
-    echo "get old hw number"
-    old=$(cat /etc/asound.conf | grep hw: | awk 'NR==1 {print $2}' | sed 's/\"//g')
+    echo "create 2mic asound configure file"
+    ln -s /etc/voicecard/asound_2mic.conf /etc/asound.conf
 
-    echo "replace new hw:${hw},0"
-    sed -i -e "s/${old}/hw:${hw},0/g" /etc/asound.conf
-
-    cp /etc/voicecard/wm8960_asound.state /var/lib/alsa/asound.state
+    echo "create 2mic asound status file"
+    ln -s /etc/voicecard/wm8960_asound.state /var/lib/alsa/asound.state
 fi
 
 if [ "x${is_3b}" == "x3b" ] && [ "x${is_35}" == "x" ] ; then
-    #Force 3.5mm ('headphone') jack
-    amixer cset numid=3 1
     echo "install 4mic"
     dtoverlay seeed-4mic-voicecard
     sleep 1
-    hw=$(arecord -l | grep seeed4micvoicec | awk '{print $2}' | sed 's/://')
-
-    cp /etc/voicecard/asound_4mic.conf /etc/asound.conf
+    
+    #Fore 3.5mm ('headphone') jack
+    amixer cset numid=3 1
 
     if [ -f $audioconfig ] ; then
         sudo rm $audioconfig
@@ -76,34 +71,26 @@ if [ "x${is_3b}" == "x3b" ] && [ "x${is_35}" == "x" ] ; then
 
     echo 'Respeaker-4-Mic' >> $audioconfig
 
-    echo "get slavepcm line number"
-    line=$(grep -n ac108-slavepcm /etc/asound.conf | awk '{print $1}' | sed 's/://')
+    echo "create 4mic asound configure file"
+    ln -s /etc/voicecard/asound_4mic.conf /etc/asound.conf
 
-    echo "delete ${line} slavepcm hw number"
-    sed -i -e "${line}d"  /etc/asound.conf
-
-    echo "insert slavepcm hw:${hw},0"
-    sed -i "${line}i slave.pcm \"hw:${hw},0\""  /etc/asound.conf
-
-    cp /etc/voicecard/ac108_asound.state /var/lib/alsa/asound.state
+    echo "create 4mic asound status file"
+    ln -s /etc/voicecard/ac108_asound.state /var/lib/alsa/asound.state
 fi
 
 if [ "x${is_3b}" == "x3b" ] && [ "x${is_35}" == "x35" ] ; then
     echo "install 6mic"
     dtoverlay seeed-8mic-voicecard
     sleep 1
-    hw=$(aplay -l | grep seeed8micvoicec | awk '{print $2}' | sed 's/://')
 
-    cp /etc/voicecard/asound_6mic.conf /etc/asound.conf
+    echo "create 6mic asound configure file"
+    ln -s /etc/voicecard/asound_6mic.conf /etc/asound.conf
 
-    old=$(cat /etc/asound.conf | grep hw: | awk 'NR==1 {print $2}' | sed 's/\"//g')
-
-    sed -i -e "s/${old}/hw:${hw},0/g" /etc/asound.conf
-
-    cp /etc/voicecard/ac108_6mic.state /var/lib/alsa/asound.state
+    echo "create 6mic asound status file"
+    ln -s /etc/voicecard/ac108_6mic.state /var/lib/alsa/asound.state
 fi
 
 alsactl restore
 
-#Force 3.5mm ('headphone') jack
+#Fore 3.5mm ('headphone') jack
 amixer cset numid=3 1

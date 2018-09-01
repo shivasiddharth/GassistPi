@@ -1,6 +1,12 @@
 /*
- * sound\soc\sunxi\virtual_audio\ac100.h
- * (C) Copyright 2010-2016
+ * ac101_regs.h
+ *
+ * (C) Copyright 2017-2018
+ * Seeed Technology Co., Ltd. <www.seeedstudio.com>
+ *
+ * PeterYang <linsheng.yang@seeed.cc>
+ *
+ * (C) Copyright 2010-2017
  * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
  * huangxin <huangxin@reuuimllatech.com>
  *
@@ -241,11 +247,13 @@
 
 /*HMIC_STS*/
 #define HMIC_DATA			8
+#define GET_HMIC_DATA(r)		(((r) >> HMIC_DATA) & 0x1F)
 #define HMIC_PULLOUT_PEND	4
 #define HMIC_PLUGIN_PEND	3
 #define HMIC_KEYUP_PEND		2
 #define HMKC_KEYDOWN_PEND	1
 #define HMIC_DATA_PEND		0
+#define HMIC_PEND_ALL		(0x1F)
 
 /*DAC_DIG_CTRL*/
 #define ENDA				15

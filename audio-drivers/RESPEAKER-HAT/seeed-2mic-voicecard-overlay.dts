@@ -38,44 +38,8 @@
 		};
     };
 
+
     fragment@3 {
-        target = <&sound>;
-        master_overlay: __dormant__ {
-            compatible = "simple-audio-card";
-            simple-audio-card,format = "i2s";
-            simple-audio-card,name = "seeed-2mic-voicecard";
-            simple-audio-card,bitclock-master = <&dailink0_master>;
-            simple-audio-card,frame-master = <&dailink0_master>;
-            status = "okay";
-                simple-audio-card,widgets =
-                        "Microphone", "Mic Jack",
-                        "Line", "Line In",
-                        "Line", "Line Out",
-                        "Speaker", "Speaker",
-                        "Headphone", "Headphone Jack";
-                simple-audio-card,routing =
-                        "Headphone Jack", "HP_L",
-                        "Headphone Jack", "HP_R",
-                        "Speaker", "SPK_LP",
-                        "Speaker", "SPK_LN",
-                        "LINPUT1", "Mic Jack",
-                        "LINPUT3", "Mic Jack",
-                        "RINPUT1", "Mic Jack",
-                        "RINPUT2", "Mic Jack";
-
-
-            simple-audio-card,cpu {
-                sound-dai = <&i2s>;
-            };
-            dailink0_master: simple-audio-card,codec {
-                sound-dai = <&wm8960>;
-                        clocks = <&wm8960_mclk>;
-                        clock-names = "mclk";
-            };
-        };
-    };
-
-    fragment@4 {
         target = <&sound>;
         slave_overlay: __overlay__ {
                 compatible = "simple-audio-card";
@@ -114,8 +78,7 @@
     };
 
     __overrides__ {
-        alsaname = <&master_overlay>,"simple-audio-card,name",
-                    <&slave_overlay>,"simple-audio-card,name";
+        alsaname = <&slave_overlay>,"simple-audio-card,name";
         compatible = <&wm8960>,"compatible";
         master = <0>,"=2!3";
     };

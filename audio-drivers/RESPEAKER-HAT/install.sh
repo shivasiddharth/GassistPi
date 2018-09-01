@@ -20,7 +20,7 @@ marker="0.0.0"
 
 apt update
 apt-get -y install raspberrypi-kernel-headers raspberrypi-kernel 
-apt-get -y install  dkms git i2c-tools
+apt-get -y install  dkms git i2c-tools libasound2-plugins
 
 # locate currently installed kernels (may be different to running kernel if
 # it's just been updated)
@@ -57,11 +57,12 @@ cp seeed-8mic-voicecard.dtbo /boot/overlays
 
 #install alsa plugins
 # no need this plugin now
-# install -D ac108_plugin/libasound_module_pcm_ac108.so   /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_ac108.so
+# install -D ac108_plugin/libasound_module_pcm_ac108.so /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_ac108.so
+rm -f /usr/lib/arm-linux-gnueabihf/alsa-lib/libasound_module_pcm_ac108.so
 
 #set kernel moduels
-grep -q "snd-soc-simple-card" /etc/modules || \
-  echo "snd-soc-simple-card" >> /etc/modules
+grep -q "snd-soc-seeed-voicecard" /etc/modules || \
+  echo "snd-soc-seeed-voicecard" >> /etc/modules
 grep -q "snd-soc-ac108" /etc/modules || \
   echo "snd-soc-ac108" >> /etc/modules
 grep -q "snd-soc-wm8960" /etc/modules || \
@@ -81,6 +82,20 @@ mkdir /etc/voicecard || true
 cp *.conf /etc/voicecard
 cp *.state /etc/voicecard
 
+#create git repo
+git_email=$(git config --global --get user.email)
+git_name=$(git config --global --get user.name)
+if [ "x${git_email}" == "x" ] || [ "x${git_name}" == "x" ] ; then
+    echo "setup git config"
+    git config --global user.email "respeaker@seeed.cc"
+    git config --global user.name "respeaker"
+fi
+echo "git init"
+git --git-dir=/etc/voicecard/.git init
+echo "git add --all"
+git --git-dir=/etc/voicecard/.git --work-tree=/etc/voicecard/ add --all
+echo "git commit -m \"origin configures\""
+git --git-dir=/etc/voicecard/.git --work-tree=/etc/voicecard/ commit  -m "origin configures"
 
 cp seeed-voicecard /usr/bin/
 cp seeed-voicecard.service /lib/systemd/system/
