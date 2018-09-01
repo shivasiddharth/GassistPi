@@ -134,11 +134,10 @@ class GoogleHomeLedPattern(object):
     def off(self):
         self.show([0] * 4 * 12)
 
-GoogleLight=GoogleHomeLedPattern()
 
 class Pixels4mic:
     PIXELS_N = 12
-    def __init__(self, pattern=GoogleLight):
+    def __init__(self, pattern=GoogleHomeLedPattern):
         self.pattern = pattern(show=self.show)
         self.dev = apa102.APA102(num_led=self.PIXELS_N)
         self.power = LED(5)

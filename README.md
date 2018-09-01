@@ -111,8 +111,8 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
 
   3.6. RESPEAKER HAT users,  
   ```
-  cd /home/pi/GassistPi/audio-drivers/RESPEAKER-HAT/ 
-  sudo chmod +x ./install.sh  
+  git clone https://github.com/shivasiddharth/seeed-voicecard
+  cd /home/pi/seeed-voicecard/  
   sudo ./install.sh  
   sudo reboot   
   speaker-test     
