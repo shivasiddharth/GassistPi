@@ -40,7 +40,7 @@ GPIO.setwarnings(False)
 
 #Indicators
 aiyindicator=configuration['Gpios']['AIY_indicator'][0]
-liseningindicator=configuration['Gpios']['assistant_indicators'][0]
+listeningindicator=configuration['Gpios']['assistant_indicators'][0]
 speakingindicator=configuration['Gpios']['assistant_indicators'][1]
 
 #Stopbutton
@@ -58,7 +58,7 @@ elif (audiosetup=='GEN'):
     GPIO.setup(speakingindicator, GPIO.OUT)
     GPIO.output(listeningindicator, GPIO.LOW)
     GPIO.output(speakingindicator, GPIO.LOW)
-    print('Initializing GPIOs '+str(liseningindicator)+' and '+str(speakingindicator)+' for assistant activity indication')
+    print('Initializing GPIOs '+str(listeningindicator)+' and '+str(speakingindicator)+' for assistant activity indication')
 
 class GoogleHomeLedPattern(object):
     def __init__(self, show=None):
