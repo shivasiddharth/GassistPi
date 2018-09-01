@@ -54,10 +54,10 @@ if (audiosetup=='AIY'):
     led.start(0)
     print('Initializing GPIO '+str(aiyindicator)+' for assistant activity indication')
 elif (audiosetup=='GEN'):
-    GPIO.setup(listening, GPIO.OUT)
-    GPIO.setup(speaking, GPIO.OUT)
-    GPIO.output(listening, GPIO.LOW)
-    GPIO.output(speaking, GPIO.LOW)
+    GPIO.setup(listeningindicator, GPIO.OUT)
+    GPIO.setup(speakingindicator, GPIO.OUT)
+    GPIO.output(listeningindicator, GPIO.LOW)
+    GPIO.output(speakingindicator, GPIO.LOW)
     print('Initializing GPIOs '+str(liseningindicator)+' and '+str(speakingindicator)+' for assistant activity indication')
 
 class GoogleHomeLedPattern(object):
