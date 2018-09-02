@@ -133,6 +133,9 @@ class GoogleHomeLedPattern(object):
 
     def off(self):
         self.show([0] * 4 * 12)
+    
+    def red(self):
+        self.show([0,1,0,0] * 12)
 
 
 class Pixels4mic:
@@ -186,10 +189,8 @@ class Pixels4mic:
             self.dev.set_pixel(i, int(data[4*i + 1]), int(data[4*i + 2]), int(data[4*i + 3]))
         self.dev.show()
 
-    def red(self,data):
-        for i in range(self.PIXELS_N):
-            self.dev.set_pixel(i, int(data[4*i + 1]), int(data[4*i + 2]), int(data[4*i + 3]))
-        self.dev.show()
+    def mute(self):
+        self.put(self.pattern.red)
 
 class Pixels2mic:
     PIXELS_N = 3
@@ -285,10 +286,8 @@ class Pixels2mic:
             self.dev.set_pixel(i, int(colors[3*i]), int(colors[3*i + 1]), int(colors[3*i + 2]))
         self.dev.show()
 
-    def red(self, colors):
-        for i in range(self.PIXELS_N):
-            self.dev.set_pixel(i, int(colors[3*i]), int(colors[3*i + 1]), int(colors[3*i + 2]))
-        self.dev.show()
+    def mute(self):
+        self.write([1,0,0] * self.PIXELS_N)
 
 if audiosetup=='R2M':
     pixels=Pixels2mic()
@@ -326,6 +325,6 @@ def assistantindicator(activity):
             GPIO.output(speakingindicator,GPIO.HIGH)
             GPIO.output(listeningindicator,GPIO.HIGH)
         elif (audiosetup=='R2M' or audiosetup=='R4M'):
-            pixels.red([1,0,0])
+            pixels.mute()
         elif (audiosetup=='AIY'):
             led.ChangeDutyCycle(100)
