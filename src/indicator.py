@@ -326,6 +326,6 @@ def assistantindicator(activity):
             GPIO.output(speakingindicator,GPIO.HIGH)
             GPIO.output(listeningindicator,GPIO.HIGH)
         elif (audiosetup=='R2M' or audiosetup=='R4M'):
-            pixels.red()
+            pixels.red([1,0,0])
         elif (audiosetup=='AIY'):
             led.ChangeDutyCycle(100)
