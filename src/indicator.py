@@ -188,7 +188,7 @@ class Pixels4mic:
 
     def red(self,data):
         for i in range(self.PIXELS_N):
-            self.dev.set_pixel(i, int(data[4*i + 1]), 0, 0)
+            self.dev.set_pixel(i, int(data[4*i + 1]), int(data[4*i + 2]), int(data[4*i + 3]))
         self.dev.show()
 
 class Pixels2mic:
@@ -287,7 +287,7 @@ class Pixels2mic:
 
     def red(self, colors):
         for i in range(self.PIXELS_N):
-            self.dev.set_pixel(i, int(colors[3*i]), 0, 0)
+            self.dev.set_pixel(i, int(colors[3*i]), int(colors[3*i + 1]), int(colors[3*i + 2]))
         self.dev.show()
 
 if audiosetup=='R2M':
