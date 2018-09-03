@@ -27,6 +27,11 @@ import re
 import psutil
 import logging
 import time
+import random
+import snowboydecoder
+import sys
+import signal
+import requests
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
@@ -41,7 +46,6 @@ from actions import radio
 from actions import ESP
 from actions import track
 from actions import feed
-import requests
 from actions import kodiactions
 from actions import mutevolstatus
 from actions import gmusicselect
@@ -54,11 +58,10 @@ from actions import hue_control
 from actions import vlcplayer
 from actions import spotify_playlist_select
 from actions import configuration
-import snowboydecoder
-import sys
-import signal
 from threading import Thread
-
+from indicator import assistantindicator
+from indicator import stoppushbutton
+from pathlib import Path
 
 try:
     FileNotFoundError
@@ -88,26 +91,9 @@ logger=logging.getLogger(__name__)
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
 
-#GPIO Declarations
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
-aiyindicator=configuration['Gpios']['AIY_indicator'][0]
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
-listening=configuration['Gpios']['assistant_indicators'][0]
-speaking=configuration['Gpios']['assistant_indicators'][1]
-
-GPIO.setup(aiyindicator, GPIO.OUT)
-GPIO.setup(listening, GPIO.OUT)
-GPIO.setup(speaking, GPIO.OUT)
-GPIO.output(listening, GPIO.LOW)
-GPIO.output(speaking, GPIO.LOW)
-GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-led=GPIO.PWM(aiyindicator,1)
-led.start(0)
 
 
-mediastopbutton=True
+mutestopbutton=True
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -141,12 +127,16 @@ def tasmota_control(phrase,devname,devip):
         say("Device not online")
 
 #Check if custom wakeword has been enabled
-if configuration['Custom_wakeword']['status']=='Enabled':
+if configuration['Wakewords']['Custom_Wakeword']=='Enabled':
     custom_wakeword=True
 else:
     custom_wakeword=False
 
-models=configuration['Custom_wakeword']['models']
+models=configuration['Wakewords']['Custom_wakeword_models']
+
+#Custom Conversation
+numques=len(configuration['Conversation']['question'])
+numans=len(configuration['Conversation']['answer'])
 
 class Myassistant():
 
@@ -158,7 +148,7 @@ class Myassistant():
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.t1 = Thread(target=self.start_detector)
-        self.t2 = Thread(target=self.stopbutton)
+        self.t2 = Thread(target=self.pushbutton)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -166,12 +156,57 @@ class Myassistant():
     def interrupt_callback(self,):
         return self.interrupted
 
-    def stopbutton(self):
-        while mediastopbutton:
-            time.sleep(0.25)
-            if not GPIO.input(stoppushbutton):
-                print('Stopped')
-                stop()
+    def buttonsinglepress(self):
+        if os.path.isfile("/home/pi/.mute"):
+            os.system("sudo rm /home/pi/.mute")
+            assistantindicator('unmute')
+            if configuration['Wakewords']['Ok_Google']=='Disabled':
+                self.assistant.set_mic_mute(True)
+            else:
+                self.assistant.set_mic_mute(False)
+            # if custom_wakeword:
+            #     self.t1.start()
+            subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Mic-On.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("Turning on the microphone")
+        else:
+            open('/home/pi/.mute', 'a').close()
+            assistantindicator('mute')
+            self.assistant.set_mic_mute(True)
+            # if custom_wakeword:
+            #     self.thread_end(t1)
+            subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Mic-Off.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("Turning off the microphone")
+
+    def buttondoublepress(self):
+        print('Stopped')
+        stop()
+
+    def buttontriplepress(self):
+        print("Create your own action for button triple press")
+
+    def pushbutton(self):
+        while mutestopbutton:
+            if GPIO.event_detected(stoppushbutton):
+                GPIO.remove_event_detect(stoppushbutton)
+                now = time.time()
+                count = 1
+                GPIO.add_event_detect(stoppushbutton,GPIO.RISING)
+                while time.time() < now + 1:
+                     if GPIO.event_detected(stoppushbutton):
+                         count +=1
+                         time.sleep(.25)
+                if count == 2:
+                    self.buttonsinglepress()
+                    GPIO.remove_event_detect(stoppushbutton)
+                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                elif count == 3:
+                    self.buttondoublepress()
+                    GPIO.remove_event_detect(stoppushbutton)
+                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                elif count == 4:
+                    self.buttontriplepress()
+                    GPIO.remove_event_detect(stoppushbutton)
+                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
 
     def process_device_actions(self,event, device_id):
         if 'inputs' in event.args:
@@ -198,9 +233,11 @@ class Myassistant():
         print(event)
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
-            if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
-                self.assistant.set_mic_mute(True)
             self.t2.start()
+            if os.path.isfile("/home/pi/.mute"):
+                assistantindicator('mute')
+            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+                self.assistant.set_mic_mute(True)
             if custom_wakeword:
                 self.t1.start()
 
@@ -213,8 +250,7 @@ class Myassistant():
             #with open('/home/pi/.volume.json', 'w') as f:
                    #json.dump(vollevel, f)
             #kodi.Application.SetVolume({"volume": 0})
-            GPIO.output(listening,GPIO.HIGH)
-            led.ChangeDutyCycle(100)
+            assistantindicator('listening')
             if vlcplayer.is_vlc_playing():
                 if os.path.isfile("/home/pi/.mediavolume.json"):
                     vlcplayer.set_vlc_volume(15)
@@ -227,47 +263,40 @@ class Myassistant():
             print()
 
         if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
-          self.can_start_conversation = True
-          if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
-                self.assistant.set_mic_mute(True)
-          GPIO.output(listening,GPIO.LOW)
-          GPIO.output(speaking,GPIO.LOW)
-          led.ChangeDutyCycle(0)
+            self.can_start_conversation = True
+            assistantindicator('off')
             #Uncomment the following after starting the Kodi
             #with open('/home/pi/.volume.json', 'r') as f:
                    #vollevel = json.load(f)
                    #kodi.Application.SetVolume({"volume": vollevel})
-          if vlcplayer.is_vlc_playing():
-              with open('/home/pi/.mediavolume.json', 'r') as vol:
-                  oldvolume = json.load(vol)
-              vlcplayer.set_vlc_volume(int(oldvolume))
-
+            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+                  self.assistant.set_mic_mute(True)
+            if os.path.isfile("/home/pi/.mute"):
+                assistantindicator('mute')
+            if vlcplayer.is_vlc_playing():
+                with open('/home/pi/.mediavolume.json', 'r') as vol:
+                    oldvolume = json.load(vol)
+                vlcplayer.set_vlc_volume(int(oldvolume))
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-           GPIO.output(listening,GPIO.LOW)
-           GPIO.output(speaking,GPIO.HIGH)
-           led.ChangeDutyCycle(50)
+            assistantindicator('speaking')
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
-           GPIO.output(speaking,GPIO.LOW)
-           GPIO.output(listening,GPIO.LOW)
-           led.ChangeDutyCycle(0)
+            assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-           GPIO.output (listening, GPIO.LOW)
-           GPIO.output (speaking, GPIO.LOW)
-           led.ChangeDutyCycle (0)
+            assistantindicator('off')
 
         print(event)
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
-            if configuration['Custom_wakeword']['Ok_Google']=='Disabled':
+            assistantindicator('off')
+            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
                 self.assistant.set_mic_mute(True)
-            GPIO.output(listening,GPIO.LOW)
-            GPIO.output(speaking,GPIO.LOW)
-            led.ChangeDutyCycle(0)
+            if os.path.isfile("/home/pi/.mute"):
+                assistantindicator('mute')
             #Uncomment the following after starting the Kodi
             #with open('/home/pi/.volume.json', 'r') as f:
                    #vollevel = json.load(f)
@@ -417,6 +446,15 @@ class Myassistant():
                         assistant.stop_conversation()
                         tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                         break
+                for i in range(1,numques+1):
+                    try:
+                        if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
+                            assistant.stop_conversation()
+                            selectedans=random.sample(configuration['Conversation']['answer'][i],1)
+                            say(selectedans[0])
+                            break
+                    except Keyerror:
+                        say('Please check if the number of questions matches the number of answers')
                 if 'magic mirror'.lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     try:

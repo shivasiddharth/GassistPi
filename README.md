@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 23-Aug-2018 Update:
-**Added the ability to disable the default Ok-Google hotword. Changing GPIOs used has been made easy.**        
+## 03-Sep-2018 Update:
+**Added the ability to mute the microphone (works only for Ok-Google, mic will still hear custom wakewords). Added custom conversations. Now this project supports Respeaker HATs (4mic and 2mic)**        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -35,6 +35,9 @@
 **22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
 **24.  Custom wakeword activation for all Pi boards.**      
+**25.  Mute microphones to prevent listening to Ok-Google hotword.**  
+**26.  Create custom conversations.**  
+
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
@@ -86,7 +89,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   ```
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo reboot 
+  sudo reboot
   sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   speaker-test  
@@ -108,6 +111,15 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   speaker-test   
   ```
+
+  3.6. RESPEAKER HAT users,  
+  ```
+  git clone https://github.com/shivasiddharth/seeed-voicecard
+  cd /home/pi/seeed-voicecard/  
+  sudo ./install.sh  
+  sudo reboot   
+  speaker-test     
+  ```  
 
 **Those using any other DACs or HATs install the cards as per the manufacturer's guide
  and then you can try using the USB-DAC config file after changing the hardware ids**        
@@ -182,7 +194,7 @@ sudo systemctl enable gassistpi-push-button.service
 **Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start gassistpi-push-button.service 
+sudo systemctl start gassistpi-push-button.service
 ```  
 
 **RESTART and ENJOY**  
@@ -208,10 +220,18 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 ************************************************
+### **CUSTOM CONVERSATIONS**  
+************************************************
+1. Customize the assistant's reply to a specific question.  
+2. Add the list of questions and answers in config.yaml under the **Conversation:** option.  
+3. **There must be only one question, but corresponding answers can be as many.**  
+4. Sample questions and answers has been provided, please follow the same pattern.  
+
+************************************************
 ### **CUSTOM WAKEWORD ACTIVATION**  
 ************************************************
 1. You can choose to either Enable or Disable the custom wakeword activation in the config.yaml file.  
-2. In the config.yaml file, under Custom_wakeword, change the status to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
+2. In the config.yaml file, under Wakewords, change the **"Custom_Wakeword"** to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
 3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
 4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/home/pi/GassistPi/src/resources**  directory.
 5. Change the paths to the models in the config.yaml file.  
@@ -241,7 +261,7 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 4. Move your mouse pointer over "API and services" and choose "credentials".
 5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the **config.yaml** script at the indicated location.  
 6. "From the API and services" option, select library and in the search bar type **search**, select "Custom Search API" and click on "ENABLE".
-7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated. 
+7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
 
 **Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
 
@@ -327,9 +347,9 @@ Command Syntax:
 Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
 *******************************************************************
-### **PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK**  
+### **PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK AND MUTE MICROPHONE**  
 *******************************************************************
-Connect a pushbutton between GPIO23 and Ground. Using this pushbutton, now you can stop the music or radio playback.  
+Connect a pushbutton between GPIO23 and Ground. Single press mutes microphone and double press stops music streaming.  
 
 
 ************************************************

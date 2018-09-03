@@ -60,6 +60,8 @@ from actions import configuration
 import snowboydecoder
 import signal
 from threading import Thread
+from indicator import stoppushbutton
+from indicator import assistantindicator
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -98,21 +100,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 pushbuttontrigger=configuration['Gpios']['pushbutton_trigger'][0]
-aiyindicator=configuration['Gpios']['AIY_indicator'][0]
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
-listening=configuration['Gpios']['assistant_indicators'][0]
-speaking=configuration['Gpios']['assistant_indicators'][1]
 
-GPIO.setup(aiyindicator, GPIO.OUT)
-GPIO.setup(listening, GPIO.OUT)
-GPIO.setup(speaking, GPIO.OUT)
-GPIO.output(listening, GPIO.LOW)
-GPIO.output(speaking, GPIO.LOW)
 GPIO.setup(pushbuttontrigger, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-led=GPIO.PWM(aiyindicator,1)
-led.start(0)
-
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -157,12 +146,12 @@ def tasmota_control(phrase,devname,devip):
             say("Device not online")
 
 #Check if custom wakeword has been enabled
-if configuration['Custom_wakeword']['status']=='Enabled':
+if configuration['Wakewords']['Custom_Wakeword']=='Enabled':
     custom_wakeword=True
 else:
     custom_wakeword=False
 
-models=configuration['Custom_wakeword']['models']
+models=configuration['Wakewords']['Custom_wakeword_models']
 interrupted=False
 def signal_handler(signal, frame):
     global interrupted
@@ -174,6 +163,10 @@ def interrupt_callback():
 
 
 mediastopbutton=True
+
+#Custom Conversation
+numques=len(configuration['Conversation']['question'])
+numans=len(configuration['Conversation']['answer'])
 
 class SampleAssistant(object):
     """Sample Assistant that supports conversations and device actions.
@@ -256,8 +249,7 @@ class SampleAssistant(object):
         #with open('/home/pi/.volume.json', 'w') as f:
                #json.dump(vollevel, f)
         #kodi.Application.SetVolume({"volume": 0})
-        GPIO.output(listening,GPIO.HIGH)
-        led.ChangeDutyCycle(100)
+        assistantindicator('listening')
         if vlcplayer.is_vlc_playing():
             if os.path.isfile("/home/pi/.mediavolume.json"):
                 vlcplayer.set_vlc_volume(15)
@@ -317,6 +309,15 @@ class SampleAssistant(object):
                             tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
                             return continue_conversation
                             break
+                    for i in range(1,numques+1):
+                        try:
+                            if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
+                                selectedans=random.sample(configuration['Conversation']['answer'][i],1)
+                                say(selectedans[0])
+                                return continue_conversation
+                                break
+                        except Keyerror:
+                            say('Please check if the number of questions matches the number of answers')
                     if 'magic mirror'.lower() in str(usrcmd).lower():
                         try:
                             mmmcommand=str(usrcmd).lower()
@@ -374,7 +375,7 @@ class SampleAssistant(object):
                     if 'parcel'.lower() in str(usrcmd).lower():
                         track()
                         return continue_conversation
-                    if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+                    if 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
                         feed(str(usrcmd).lower())
                         return continue_conversation
                     if 'on kodi'.lower() in str(usrcmd).lower():
@@ -478,9 +479,7 @@ class SampleAssistant(object):
                         return continue_conversation
                     else:
                         continue
-                GPIO.output(listening,GPIO.LOW)
-                GPIO.output(speaking,GPIO.HIGH)
-                led.ChangeDutyCycle(50)
+                assistantindicator('speaking')
 
             if len(resp.audio_out.audio_data) > 0:
                 if not self.conversation_stream.playing:
@@ -498,14 +497,10 @@ class SampleAssistant(object):
                 self.conversation_stream.volume_percentage = volume_percentage
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
-                GPIO.output(speaking,GPIO.LOW)
-                GPIO.output(listening,GPIO.HIGH)
-                led.ChangeDutyCycle(100)
+                assistantindicator('listening')
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
-                GPIO.output(speaking,GPIO.LOW)
-                GPIO.output(listening,GPIO.LOW)
-                led.ChangeDutyCycle(0)
+                assistantindicator('off')
                 #Uncomment the following after starting the Kodi
                 #with open('/home/pi/.volume.json', 'r') as f:
                        #vollevel = json.load(f)
@@ -533,9 +528,7 @@ class SampleAssistant(object):
         logging.info('Finished playing assistant response.')
         self.conversation_stream.stop_playback()
         return continue_conversation
-        GPIO.output(speaking,GPIO.LOW)
-        GPIO.output(listening,GPIO.LOW)
-        led.ChangeDutyCycle(0)
+        assistantindicator('off')
         #Uncomment the following after starting the Kodi
         #with open('/home/pi/.volume.json', 'r') as f:
                #vollevel = json.load(f)
