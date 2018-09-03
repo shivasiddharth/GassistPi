@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 23-Aug-2018 Update:
-**Added the ability to disable the default Ok-Google hotword. Changing GPIOs used has been made easy.**        
+## 03-Sep-2018 Update:
+**Added the ability to mute the microphone (works only for Ok-Google, mic will still hear custom wakewords). Added custom conversations. Now this project supports Respeaker HATs (4mic and 2mic)**        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -35,6 +35,9 @@
 **22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
 **24.  Custom wakeword activation for all Pi boards.**      
+**25.  Mute microphones to prevent listening to Ok-Google hotword.**  
+**26.  Create custom conversations.**  
+
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
@@ -217,6 +220,14 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 ************************************************
+### **CUSTOM CONVERSATIONS**  
+************************************************
+1. Customize the assistant's reply to a specific question.  
+2. Add the list of questions and answers in config.yaml under the **Conversation:** option.  
+3. **There must be only one question, but corresponding answers can be as many.**  
+4. Sample questions and answers has been provided, please follow the same pattern.  
+
+************************************************
 ### **CUSTOM WAKEWORD ACTIVATION**  
 ************************************************
 1. You can choose to either Enable or Disable the custom wakeword activation in the config.yaml file.  
@@ -336,9 +347,9 @@ Command Syntax:
 Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
 
 *******************************************************************
-### **PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK**  
+### **PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK AND MUTE MICROPHONE**  
 *******************************************************************
-Connect a pushbutton between GPIO23 and Ground. Using this pushbutton, now you can stop the music or radio playback.  
+Connect a pushbutton between GPIO23 and Ground. Single press mutes microphone and double press stops music streaming.  
 
 
 ************************************************
