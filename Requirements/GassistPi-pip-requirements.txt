@@ -20,3 +20,4 @@ git+https://github.com/plamere/spotipy.git
 pyyaml==3.12
 spidev>=3.2
 gpiozero>=1.4.1
+numpy>=1.15.1
