@@ -99,6 +99,7 @@ mutestopbutton=True
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
 tasmota_devicelist=configuration['Tasmota_devicelist']['friendly-names']
 tasmota_deviceip=configuration['Tasmota_devicelist']['ipaddresses']
+tasmota_deviceportid=configuration['Tasmota_devicelist']['portID']
 
 #Magic Mirror Remote Control Declarations
 mmmip=configuration['Mmmip']
@@ -115,13 +116,13 @@ def checkvlcpaused():
 
 
 #Function to control Sonoff Tasmota Devices
-def tasmota_control(phrase,devname,devip):
+def tasmota_control(phrase,devname,devip,devportid):
     try:
         if 'on' in phrase:
-            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20on")
+            rq=requests.head("http://"+devip+"/cm?cmnd=Power"+devportid+"%20on")
             say("Tunring on "+devname)
         elif 'off' in phrase:
-            rq=requests.head("http://"+devip+"/cm?cmnd=Power%20off")
+            rq=requests.head("http://"+devip+"/cm?cmnd=Power"+devportid+"%20off")
             say("Tunring off "+devname)
     except requests.exceptions.ConnectionError:
         say("Device not online")
@@ -444,7 +445,7 @@ class Myassistant():
                 for num, name in enumerate(tasmota_devicelist):
                     if name.lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
-                        tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                        tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num],tasmota_deviceportid[num])
                         break
                 for i in range(1,numques+1):
                     try:

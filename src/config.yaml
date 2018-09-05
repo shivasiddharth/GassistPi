@@ -116,6 +116,9 @@ Tasmota_devicelist:
   ipaddresses:
     - '192.168.1.36'
     - '192.168.1.35'
+  portID:
+    - '1'
+    - '1'
 
 #Custom wakeword On/Off.
 #To enable custom wakeword, change status to Enabled and restart the assistant.
