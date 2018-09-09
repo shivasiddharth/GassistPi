@@ -53,6 +53,7 @@ from actions import hue_control
 from actions import vlcplayer
 from actions import spotify_playlist_select
 from actions import configuration
+from actions import custom_action_keyword
 
 try:
     FileNotFoundError
