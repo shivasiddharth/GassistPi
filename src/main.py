@@ -58,6 +58,7 @@ from actions import hue_control
 from actions import vlcplayer
 from actions import spotify_playlist_select
 from actions import configuration
+from actions import custom_action_keyword
 from threading import Thread
 from indicator import assistantindicator
 from indicator import stoppushbutton
@@ -456,7 +457,7 @@ class Myassistant():
                             break
                     except Keyerror:
                         say('Please check if the number of questions matches the number of answers')
-                if 'magic mirror'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Magic_mirror'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     try:
                         mmmcommand=str(usrcmd).lower()
@@ -479,7 +480,7 @@ class Myassistant():
                             mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
                     except requests.exceptions.ConnectionError:
                         say("Magic mirror not online")
-                if 'ingredients'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Recipe_pushbullet'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     ingrequest=str(usrcmd).lower()
                     ingredientsidx=ingrequest.find('for')
@@ -489,34 +490,34 @@ class Myassistant():
                     ingrequest=ingrequest.strip()
                     ingrequest=ingrequest.replace(" ","%20",1)
                     getrecipe(ingrequest)
-                if 'kickstarter'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     kickstarter_tracker(str(usrcmd).lower())
-                if 'trigger'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Pi_GPIO_control'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     Action(str(usrcmd).lower())
-                if 'stream'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     vlcplayer.stop_vlc()
                     if 'autoplay'.lower() in str(usrcmd).lower():
                         YouTube_Autoplay(str(usrcmd).lower())
                     else:
                         YouTube_No_Autoplay(str(usrcmd).lower())
-                if 'stop'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
                     stop()
                 if 'radio'.lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     radio(str(usrcmd).lower())
-                if 'wireless'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     ESP(str(usrcmd).lower())
-                if 'parcel'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Parcel_tracking'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     track()
-                if 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['RSS'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][1]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     feed(str(usrcmd).lower())
-                if 'on kodi'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     kodiactions(str(usrcmd).lower())
                 # Google Assistant now comes built in with chromecast control, so custom function has been commented
@@ -526,31 +527,31 @@ class Myassistant():
                 #         chromecast_play_video(str(usrcmd).lower())
                 #     else:
                 #         chromecast_control(usrcmd)
-                if 'pause music'.lower() in str(usrcmd).lower() or 'resume music'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Pause_resume'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Pause_resume'][1]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     if vlcplayer.is_vlc_playing():
-                        if 'pause music'.lower() in str(usrcmd).lower():
+                        if (custom_action_keyword['Keywords']['Pause_resume'][0]).lower() in str(usrcmd).lower():
                             vlcplayer.pause_vlc()
                     if checkvlcpaused():
-                        if 'resume music'.lower() in str(usrcmd).lower():
+                        if (custom_action_keyword['Keywords']['Pause_resume'][1]).lower() in str(usrcmd).lower():
                             vlcplayer.play_vlc()
                     elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
                         say("Sorry nothing is playing right now")
-                if 'play next'.lower() in str(usrcmd).lower() or 'play next track'.lower() in str(usrcmd).lower() or 'play next song'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Track_change']['Next'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Next'][1]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Next'][2]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
                         vlcplayer.stop_vlc()
                         vlcplayer.change_media_next()
                     elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
                         say("Sorry nothing is playing right now")
-                if 'play previous'.lower() in str(usrcmd).lower() or 'play previous track'.lower() in str(usrcmd).lower() or 'play previous song'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Track_change']['Previous'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Previous'][1]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Previous'][2]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
                         vlcplayer.stop_vlc()
                         vlcplayer.change_media_previous()
                     elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
                         say("Sorry nothing is playing right now")
-                if 'music volume'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['VLC_music_volume'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
                         if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
@@ -618,14 +619,14 @@ class Myassistant():
                             say("Sorry I could not help you")
                     else:
                         say("Sorry nothing is playing right now")
-                if 'refresh'.lower() in str(usrcmd).lower() and 'music'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     refreshlists()
-                if 'google music'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     vlcplayer.stop_vlc()
                     gmusicselect(str(usrcmd).lower())
-                if 'spotify'.lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     vlcplayer.stop_vlc()
                     spotify_playlist_select(str(usrcmd).lower())

@@ -38,7 +38,8 @@ import yaml
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     configuration = yaml.load(conf)
 
-
+with open('/home/pi/GassistPi/src/keywords.yaml','r') as conf:
+    custom_action_keyword = yaml.load(conf)
 
 #Spotify Declarations
 #Register with spotify for a developer account to get client-id and client-secret
@@ -483,7 +484,7 @@ def singleplaykodi(query):
     track=query[idx:]
     track=track.replace("'}", "",1)
     track = track.replace('play','',1)
-    track = track.replace('on kodi','',1)
+    track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
     track=track.strip()
     say("Searching for your file")
     if 'song'.lower() in str(track).lower() or 'track'.lower() in str(track).lower() or 'audio'.lower() in str(track).lower():
@@ -618,7 +619,7 @@ def kodiactions(phrase):
         track=query[idx:]
         track=track.replace("'}", "",1)
         track = track.replace('play','',1)
-        track = track.replace('on kodi','',1)
+        track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         if 'youtube'.lower() in track:
             track=track.replace('youtube','',1)
         elif 'video'.lower() in track:
@@ -638,7 +639,7 @@ def kodiactions(phrase):
         artist = query[idx:]
         artist = artist.replace("'}", "",1)
         artist = artist.replace('artist','',1)
-        artist = artist.replace('on kodi','',1)
+        artist = artist.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         artist = artist.strip()
         say("Searching for renditions")
         kodiartist(artist)
@@ -659,7 +660,7 @@ def kodiactions(phrase):
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
         cmd=str(phrase).lower()
-        cmd=cmd.replace('on kodi','',1)
+        cmd=cmd.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         cmd=cmd.strip()
         if 'on'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":True})
@@ -898,9 +899,9 @@ def gmusicselect(phrase):
         album = album.replace('album','',1)
         if 'from'.lower() in req:
             album = album.replace('from','',1)
-            album = album.replace('google music','',1)
+            album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         else:
-            album = album.replace('google music','',1)
+            album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         album=album.strip()
         print(album)
         say("Looking for songs from the album")
@@ -919,9 +920,9 @@ def gmusicselect(phrase):
         artist = artist.replace('artist','',1)
         if 'from'.lower() in req:
             artist = artist.replace('from','',1)
-            artist = artist.replace('google music','',1)
+            artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         else:
-            artist = artist.replace('google music','',1)
+            artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         artist=artist.strip()
         print(artist)
         say("Looking for songs rendered by the artist")
@@ -942,10 +943,10 @@ def YouTube_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find('stream')
+        idx=phrase.find((custom_action_keyword['Keywords']['YouTube_music_stream'][0]))
         track=phrase[idx:]
         track=track.replace("'}", "",1)
-        track = track.replace('stream','',1)
+        track = track.replace((custom_action_keyword['Keywords']['YouTube_music_stream'][0]),'',1)
         track=track.strip()
         say("Getting autoplay links")
         print(track)
@@ -968,10 +969,10 @@ def YouTube_No_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find('stream')
+        idx=phrase.find((custom_action_keyword['Keywords']['YouTube_music_stream'][0]))
         track=phrase[idx:]
         track=track.replace("'}", "",1)
-        track = track.replace('stream','',1)
+        track = track.replace((custom_action_keyword['Keywords']['YouTube_music_stream'][0]),'',1)
         track=track.strip()
         say("Getting youtube link")
         print(track)
