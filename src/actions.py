@@ -35,14 +35,21 @@ import spotipy
 import pprint
 import yaml
 
+
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     configuration = yaml.load(conf)
 
 with open('/home/pi/GassistPi/src/keywords.yaml','r') as conf:
     custom_action_keyword = yaml.load(conf)
 
-#Spotify Declarations
-#Register with spotify for a developer account to get client-id and client-secret
+# Get devices list from domoticz server
+domoticz_devices = requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name")
+with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
+    json.dump(domoticz_devices, devlist)
+
+
+# Spotify Declarations
+# Register with spotify for a developer account to get client-id and client-secret
 if configuration['Spotify']['client_id']!= 'ENTER YOUR SPOTIFY CLIENT ID HERE' and configuration['Spotify']['client_secret']!='ENTER YOUR SPOTIFY CLIENT SECRET HERE':
     client_id = configuration['Spotify']['client_id']
     client_secret = configuration['Spotify']['client_secret']
