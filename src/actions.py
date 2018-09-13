@@ -48,7 +48,7 @@ try:
     domoticz_devices=json.loads(domoticz_response.text)
     with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
         json.dump(domoticz_devices, devlist)
-except ConnectionError:
+except requests.exceptions.ConnectionError:
     print("Domoticz server not online")
 
 
