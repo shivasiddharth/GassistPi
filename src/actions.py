@@ -44,9 +44,10 @@ with open('/home/pi/GassistPi/src/keywords.yaml','r') as conf:
 
 # Get devices list from domoticz server
 try:
-    domoticz_response = requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name",verify=False)
+    domoticz_response = requests.get("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name",verify=False)
+    domoticz_devices=json.loads(domoticz_response.text)
     with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
-        json.dump(domoticz_response.text, devlist)
+        json.dump(domoticz_devices, devlist)
 except ConnectionError:
     print("Domoticz server not online")
 
