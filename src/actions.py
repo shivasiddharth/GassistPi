@@ -43,13 +43,12 @@ with open('/home/pi/GassistPi/src/keywords.yaml','r') as conf:
     custom_action_keyword = yaml.load(conf)
 
 # Get devices list from domoticz server
-if os.path.isfile("/home/pi/domoticz_device_list.json"):
-    with open('/home/pi/domoticz_device_list.json', 'r') as devlist:
-        domoticz_devices = json.load(devlist)
-else:
+try:
     domoticz_devices = requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name")
     with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
         json.dump(domoticz_devices, devlist)
+except ConnectionError:
+    print("Domoticz server not online")
 
 
 # Spotify Declarations
