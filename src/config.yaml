@@ -22,7 +22,7 @@ Domoticz:
     # If you are running the server on the Pi itself, then change the ip to 'localhost'
     - '192.168.0.10'
   Server_port:
-    - '8080'
+    - '443'
 
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:
