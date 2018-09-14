@@ -1361,14 +1361,12 @@ def domoticz_control(i,query,index,devicename):
                 hexcolour=hexcolour.strip()
                 print(hexcolour)
                 if bright=='':
-                    bright=str(domoticz_devices['result'][i]['Level'])                   
-                print("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false")
+                    bright=str(domoticz_devices['result'][i]['Level'])
                 devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false",verify=False)
-                
                 say('Setting ' + devicename + ' to ' + colour + ' .')
             else:
                 say('The requested light is not a colour bulb')
-        if 'brightness'.lower() in query:          
+        if 'brightness' in query:
             if domoticz_devices['result'][i]['HaveDimmer']:
                 if 'hundred' in query or 'hundred'.lower() in query or 'maximum' in query:
                     bright=str(100)
@@ -1377,7 +1375,6 @@ def domoticz_control(i,query,index,devicename):
                 else:
                     bright=re.findall('\d+', query)
                     bright=bright[0]
-                
                 devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Set%20Level&level=" + bright ,verify=False)
                 say('Setting ' + devicename + ' brightness to ' + str(bright) + ' percent.')
             else:
