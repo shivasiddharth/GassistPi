@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 03-Sep-2018 Update:
-**Added the ability to mute the microphone (works only for Ok-Google, mic will still hear custom wakewords). Added custom conversations. Now this project supports Respeaker HATs (4mic and 2mic)**        
+## 15-Sep-2018 Update:
+**Now control lights and switches added to Domoticz. Have made the keyword changing process for custom actions easier for users.**        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -37,6 +37,7 @@
 **24.  Custom wakeword activation for all Pi boards.**      
 **25.  Mute microphones to prevent listening to Ok-Google hotword.**  
 **26.  Create custom conversations.**  
+**27.  Control of lights added to Domoticz.**  
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -219,6 +220,20 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
+************************************************
+************************************************
+### **DOMOTICZ CONTROL**  
+As of today, you can control lights and switches only, more controls will be added in the future.  
+1. If you want to control devices with Domoticz, in the config.yaml file under **"Domoticz:"** change **"Domoticz_Control:"** from **"Disabled"** to **"Enabled"**.  
+2. Syntaxes:  
+To On/Off/Toggle (The light name should be the same as the Hardware name in Domoticz):  
+Hey Google, Turn On/Turn Off/Toggle  _Name of your light_ .  
+To Change Brightness (between 0 and 100):  
+Hey Google, Set  _Name of your light_ brightness to _desired value_ .    
+To Change Colour (refer the list of available colors given below):
+Hey Google, Set  _Name of your light_ color to _desired color_ .  
+Hey Google, Change  _Name of your light_ to _desired color_ .      
+
 ************************************************
 ### **CUSTOM CONVERSATIONS**  
 ************************************************

@@ -1,5 +1,5 @@
 # Keywords are certain specific word/words that must be present in the user query/command to trigger the custom action.
-# Keywords for the custom actions. Feel free to modify, but make sure that each custom has unique keyword.
+# Feel free to modify, but make sure that each custom action has unique keyword.
 # CHANGE THE WORD PRESENT WITHIN THE QUOTES ONLY. DO NOT ALTER OTHERS
 
 Keywords:

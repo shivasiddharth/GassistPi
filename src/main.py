@@ -63,6 +63,9 @@ from threading import Thread
 from indicator import assistantindicator
 from indicator import stoppushbutton
 from pathlib import Path
+from actions import Domoticz_Device_Control
+from actions import domoticz_control
+from actions import domoticz_devices
 
 try:
     FileNotFoundError
@@ -457,6 +460,14 @@ class Myassistant():
                             break
                     except Keyerror:
                         say('Please check if the number of questions matches the number of answers')
+
+                if Domoticz_Device_Control==True and len(domoticz_devices['result'])>0:
+                    for i in range(0,len(domoticz_devices['result'])):
+                        if str(domoticz_devices['result'][i]['HardwareName']).lower() in str(usrcmd).lower():
+                            assistant.stop_conversation()
+                            domoticz_control(str(usrcmd).lower(),domoticz_devices['result'][i]['idx'])
+                            break
+
                 if (custom_action_keyword['Keywords']['Magic_mirror'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     try:

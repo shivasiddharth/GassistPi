@@ -43,13 +43,18 @@ with open('/home/pi/GassistPi/src/keywords.yaml','r') as conf:
     custom_action_keyword = yaml.load(conf)
 
 # Get devices list from domoticz server
-try:
-    domoticz_response = requests.get("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name",verify=False)
-    domoticz_devices=json.loads(domoticz_response.text)
-    with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
-        json.dump(domoticz_devices, devlist)
-except requests.exceptions.ConnectionError:
-    print("Domoticz server not online")
+if configuration['Domoticz']['Domoticz_Control']=='Enabled':
+    Domoticz_Device_Control=True
+    try:
+        domoticz_response = requests.get("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name",verify=False)
+        domoticz_devices=json.loads(domoticz_response.text)
+        with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
+            json.dump(domoticz_devices, devlist)
+    except requests.exceptions.ConnectionError:
+        print("Domoticz server not online")
+else:
+    Domoticz_Device_Control=False
+
 
 
 # Spotify Declarations
@@ -1235,10 +1240,10 @@ def hue_control(phrase,lightindex,lightaddress):
             print("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
             say("Setting "+huelightname+" to "+colour)
         if 'brightness'.lower() in phrase:
-            if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
+            if 'hundred'.lower() in phrase or 'maximum' in phrase:
                 bright=100
-            elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
-                bright=100
+            elif 'zero'.lower() in phrase or 'minimum' in phrase:
+                bright=0
             else:
                 bright=re.findall('\d+', phrase)
             brightval= (bright/100)*255
@@ -1330,6 +1335,47 @@ def spotify_playlist_select(phrase):
         say("Unable to find matching playlist")
 
 #----------------------End of Spotify functions---------------------------------
+
+#----------------------Start of Domoticz Control Functions----------------------
+def domoticz_control(query,index):
+    try:
+        if 'on' in query:
+            devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
+            say('Turning on ' + domoticz_devices['result'][i]['HardwareName'] + ' .')
+        if 'off' in query:
+            devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Off",verify=False)
+            say('Turning off ' + domoticz_devices['result'][i]['HardwareName'] + ' .')
+        if 'toggle' in query:
+            devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
+            say('Toggling ' + domoticz_devices['result'][i]['HardwareName'] + ' .')
+        if 'çolor' in query:
+            if 'RGB' in domoticz_devices['result'][i]['SubType']:
+                rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
+                hexcolour=hexcolour.replace("#","",1)
+                hexcolour.strip()
+                devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&iswhite=false",verify=False)
+                say('Setting ' + domoticz_devices['result'][i]['HardwareName'] + ' to ' + colour + ' .')
+            else:
+                say('The requested light is not a colour bulb')
+        if 'brightness'.lower() in query:
+            if domoticz_devices['result'][i]['HaveDimmer'] == 'true':
+                if 'hundred'.lower() in query or 'maximum' in query:
+                    bright=100
+                elif 'zero'.lower() in query or 'minimum' in query:
+                    bright=0
+                else:
+                    bright=re.findall('\d+', query)
+                    devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&brightness=" + str(bright) + "&iswhite=false",verify=False)
+                    say('Setting ' + domoticz_devices['result'][i]['HardwareName'] + ' brightness to ' + str(bright) + ' percent.')
+            else:
+                say('The requested light does not have a dimer')
+
+    except (requests.exceptions.ConnectionError,TypeError) as errors:
+        if str(errors)=="'NoneType' object is not iterable":
+            print("Type Error")
+        else:
+            say("Device or Domoticz server is not online")
+#------------------------End of Domoticz Control Functions----------------------
 
 #GPIO Device Control
 def Action(phrase):
