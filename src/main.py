@@ -465,7 +465,7 @@ class Myassistant():
                     for i in range(0,len(domoticz_devices['result'])):
                         if str(domoticz_devices['result'][i]['HardwareName']).lower() in str(usrcmd).lower():
                             assistant.stop_conversation()
-                            domoticz_control(str(usrcmd).lower(),domoticz_devices['result'][i]['idx'])
+                            domoticz_control(i,str(usrcmd).lower(),domoticz_devices['result'][i]['idx'],domoticz_devices['result'][i]['HardwareName'])
                             break
 
                 if (custom_action_keyword['Keywords']['Magic_mirror'][0]).lower() in str(usrcmd).lower():
