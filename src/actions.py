@@ -37,6 +37,9 @@ import yaml
 
 domoticz_devices=''
 Domoticz_Device_Control=False
+bright=''
+hexcolour=''
+
 
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     configuration = yaml.load(conf)
@@ -1340,8 +1343,9 @@ def spotify_playlist_select(phrase):
 
 #----------------------Start of Domoticz Control Functions----------------------
 def domoticz_control(i,query,index,devicename):
+    global hexcolour,bright
     try:
-        if 'on' in query:
+        if ' on ' in query or ' on' in query or 'on ' in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
             say('Turning on ' + devicename + ' .')
         if 'off' in query:
@@ -1350,25 +1354,32 @@ def domoticz_control(i,query,index,devicename):
         if 'toggle' in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
             say('Toggling ' + devicename + ' .')
-        if 'çolor' in query:
+        if 'colour' in query:
             if 'RGB' in domoticz_devices['result'][i]['SubType']:
                 rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
                 hexcolour=hexcolour.replace("#","",1)
-                hexcolour.strip()
-                devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&iswhite=false",verify=False)
+                hexcolour=hexcolour.strip()
+                print(hexcolour)
+                if bright=='':
+                    bright=str(domoticz_devices['result'][i]['Level'])                   
+                print("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false")
+                devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false",verify=False)
+                
                 say('Setting ' + devicename + ' to ' + colour + ' .')
             else:
                 say('The requested light is not a colour bulb')
-        if 'brightness'.lower() in query:
-            if domoticz_devices['result'][i]['HaveDimmer'] == 'true':
-                if 'hundred'.lower() in query or 'maximum' in query:
-                    bright=100
-                elif 'zero'.lower() in query or 'minimum' in query:
-                    bright=0
+        if 'brightness'.lower() in query:          
+            if domoticz_devices['result'][i]['HaveDimmer']:
+                if 'hundred' in query or 'hundred'.lower() in query or 'maximum' in query:
+                    bright=str(100)
+                elif 'zero' in query or 'minimum' in query:
+                    bright=str(0)
                 else:
                     bright=re.findall('\d+', query)
-                    devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&brightness=" + str(bright) + "&iswhite=false",verify=False)
-                    say('Setting ' + devicename + ' brightness to ' + str(bright) + ' percent.')
+                    bright=bright[0]
+                
+                devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Set%20Level&level=" + bright ,verify=False)
+                say('Setting ' + devicename + ' brightness to ' + str(bright) + ' percent.')
             else:
                 say('The requested light does not have a dimer')
 
