@@ -35,6 +35,8 @@ import spotipy
 import pprint
 import yaml
 
+domoticz_devices=''
+Domoticz_Device_Control=False
 
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     configuration = yaml.load(conf)
