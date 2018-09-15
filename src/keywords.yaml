@@ -1,0 +1,63 @@
+# Keywords are certain specific word/words that must be present in the user query/command to trigger the custom action.
+# Feel free to modify, but make sure that each custom action has unique keyword.
+# CHANGE THE WORD PRESENT WITHIN THE QUOTES ONLY. DO NOT ALTER OTHERS
+
+Keywords:
+  # Magic Mirror
+  Magic_mirror:
+    - 'magic mirror'
+  # Sending recipe to mobile devices
+  Recipe_pushbullet:
+    - 'ingredients'
+  # Kickstarter campaign tracking
+  Kickstarter_tracking:
+    - 'kickstarter'
+  # Pi power off, servo control and Pi GPIO control
+  Pi_GPIO_control:
+    - 'trigger'
+  # Stream songs from YouTube
+  YouTube_music_stream:
+    - 'stream'
+  # Stop music and radio playback
+  Stop_music:
+    - 'stop'
+  # ESP control
+  ESP_control:
+    - 'wireless'
+  # Parcel tracking
+  Parcel_tracking:
+    - 'parcel'
+  # RSS feed playback
+  RSS:
+    - 'feed'
+    - 'quote'
+  # Kodi actions
+  Kodi_actions:
+    - 'on kodi'
+  # Music pause/resume
+  Pause_resume:
+    - 'pause music'
+    - 'resume music'
+  # Change tracks
+  Track_change:
+    Next:
+      - 'play next'
+      - 'play next track'
+      - 'play next song'
+    Previous:
+      - 'play previous'
+      - 'play previous track'
+      - 'play previous song'
+  #Control music/vlc volume
+  VLC_music_volume:
+    - 'music volume'
+  # Refresh music lists. Both the words given below should be present in the command issued.
+  Music_index_refresh:
+    - 'refresh'
+    - 'music'
+  # Streaming music from google music
+  Google_music_streaming:
+    - 'google music'
+  # Streaming music from spotify
+  Spotify_music_streaming:
+    - 'spotify'

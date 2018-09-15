@@ -4,7 +4,7 @@
 Conversation:
   question:
     1:
-      - 'Who are you'      
+      - 'Who are you'
     2:
       - 'Do you have a family'
   answer:
@@ -15,6 +15,16 @@ Conversation:
     2:
       - 'Nope i am forever alone'
       - 'The whole world is my family'
+
+# Domoticz declarations
+Domoticz:
+  # Set this to 'Enabled' to control devices registered to Domoticz server.
+  Domoticz_Control: 'Disabled'
+  Server_IP:
+    # If you are running the server on the Pi itself, then change the ip to 'localhost'
+    - '192.168.0.10'
+  Server_port:
+    - '443'
 
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:

@@ -39,7 +39,7 @@ from actions import mutevolstatus
 import blinkt
 import sys
 import math
-
+from actions import custom_action_keyword
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -211,28 +211,28 @@ def main():
         for event in events:
             process_event(event, assistant.device_id)
             usrcmd=event.args
-            
-            if 'trigger'.lower() in str(usrcmd).lower():
+
+            if (custom_action_keyword['Keywords']['Pi_GPIO_control'][0]).lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 Action(str(usrcmd).lower())
-            if 'stream'.lower() in str(usrcmd).lower():
+            if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 YouTube(str(usrcmd).lower())
-            if 'stop'.lower() in str(usrcmd).lower():
+            if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
                 stop()
             if 'tune into'.lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 radio(str(usrcmd).lower())
-            if 'wireless'.lower() in str(usrcmd).lower():
+            if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 ESP(str(usrcmd).lower())
-            if 'parcel'.lower() in str(usrcmd).lower():
+            if (custom_action_keyword['Keywords']['Parcel_tracking'][0]).lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 track()
-            if 'news'.lower() in str(usrcmd).lower() or 'feed'.lower() in str(usrcmd).lower() or 'quote'.lower() in str(usrcmd).lower():
+            if 'news'.lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][1]).lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 feed(str(usrcmd).lower())
-            if 'on kodi'.lower() in str(usrcmd).lower():
+            if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
                 assistant.stop_conversation()
                 kodiactions(str(usrcmd).lower())
 

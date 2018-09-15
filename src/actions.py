@@ -35,13 +35,35 @@ import spotipy
 import pprint
 import yaml
 
+domoticz_devices=''
+Domoticz_Device_Control=False
+bright=''
+hexcolour=''
+
+
 with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
     configuration = yaml.load(conf)
 
+with open('/home/pi/GassistPi/src/keywords.yaml','r') as conf:
+    custom_action_keyword = yaml.load(conf)
+
+# Get devices list from domoticz server
+if configuration['Domoticz']['Domoticz_Control']=='Enabled':
+    Domoticz_Device_Control=True
+    try:
+        domoticz_response = requests.get("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name",verify=False)
+        domoticz_devices=json.loads(domoticz_response.text)
+        with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
+            json.dump(domoticz_devices, devlist)
+    except requests.exceptions.ConnectionError:
+        print("Domoticz server not online")
+else:
+    Domoticz_Device_Control=False
 
 
-#Spotify Declarations
-#Register with spotify for a developer account to get client-id and client-secret
+
+# Spotify Declarations
+# Register with spotify for a developer account to get client-id and client-secret
 if configuration['Spotify']['client_id']!= 'ENTER YOUR SPOTIFY CLIENT ID HERE' and configuration['Spotify']['client_secret']!='ENTER YOUR SPOTIFY CLIENT SECRET HERE':
     client_id = configuration['Spotify']['client_id']
     client_secret = configuration['Spotify']['client_secret']
@@ -483,7 +505,7 @@ def singleplaykodi(query):
     track=query[idx:]
     track=track.replace("'}", "",1)
     track = track.replace('play','',1)
-    track = track.replace('on kodi','',1)
+    track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
     track=track.strip()
     say("Searching for your file")
     if 'song'.lower() in str(track).lower() or 'track'.lower() in str(track).lower() or 'audio'.lower() in str(track).lower():
@@ -618,7 +640,7 @@ def kodiactions(phrase):
         track=query[idx:]
         track=track.replace("'}", "",1)
         track = track.replace('play','',1)
-        track = track.replace('on kodi','',1)
+        track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         if 'youtube'.lower() in track:
             track=track.replace('youtube','',1)
         elif 'video'.lower() in track:
@@ -638,7 +660,7 @@ def kodiactions(phrase):
         artist = query[idx:]
         artist = artist.replace("'}", "",1)
         artist = artist.replace('artist','',1)
-        artist = artist.replace('on kodi','',1)
+        artist = artist.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         artist = artist.strip()
         say("Searching for renditions")
         kodiartist(artist)
@@ -659,7 +681,7 @@ def kodiactions(phrase):
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
         cmd=str(phrase).lower()
-        cmd=cmd.replace('on kodi','',1)
+        cmd=cmd.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         cmd=cmd.strip()
         if 'on'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":True})
@@ -898,9 +920,9 @@ def gmusicselect(phrase):
         album = album.replace('album','',1)
         if 'from'.lower() in req:
             album = album.replace('from','',1)
-            album = album.replace('google music','',1)
+            album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         else:
-            album = album.replace('google music','',1)
+            album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         album=album.strip()
         print(album)
         say("Looking for songs from the album")
@@ -919,9 +941,9 @@ def gmusicselect(phrase):
         artist = artist.replace('artist','',1)
         if 'from'.lower() in req:
             artist = artist.replace('from','',1)
-            artist = artist.replace('google music','',1)
+            artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         else:
-            artist = artist.replace('google music','',1)
+            artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         artist=artist.strip()
         print(artist)
         say("Looking for songs rendered by the artist")
@@ -942,10 +964,10 @@ def YouTube_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find('stream')
+        idx=phrase.find((custom_action_keyword['Keywords']['YouTube_music_stream'][0]))
         track=phrase[idx:]
         track=track.replace("'}", "",1)
-        track = track.replace('stream','',1)
+        track = track.replace((custom_action_keyword['Keywords']['YouTube_music_stream'][0]),'',1)
         track=track.strip()
         say("Getting autoplay links")
         print(track)
@@ -968,10 +990,10 @@ def YouTube_No_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find('stream')
+        idx=phrase.find((custom_action_keyword['Keywords']['YouTube_music_stream'][0]))
         track=phrase[idx:]
         track=track.replace("'}", "",1)
-        track = track.replace('stream','',1)
+        track = track.replace((custom_action_keyword['Keywords']['YouTube_music_stream'][0]),'',1)
         track=track.strip()
         say("Getting youtube link")
         print(track)
@@ -1223,10 +1245,10 @@ def hue_control(phrase,lightindex,lightaddress):
             print("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
             say("Setting "+huelightname+" to "+colour)
         if 'brightness'.lower() in phrase:
-            if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
+            if 'hundred'.lower() in phrase or 'maximum' in phrase:
                 bright=100
-            elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
-                bright=100
+            elif 'zero'.lower() in phrase or 'minimum' in phrase:
+                bright=0
             else:
                 bright=re.findall('\d+', phrase)
             brightval= (bright/100)*255
@@ -1318,6 +1340,52 @@ def spotify_playlist_select(phrase):
         say("Unable to find matching playlist")
 
 #----------------------End of Spotify functions---------------------------------
+
+#----------------------Start of Domoticz Control Functions----------------------
+def domoticz_control(i,query,index,devicename):
+    global hexcolour,bright
+    try:
+        if ' on ' in query or ' on' in query or 'on ' in query:
+            devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
+            say('Turning on ' + devicename + ' .')
+        if 'off' in query:
+            devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Off",verify=False)
+            say('Turning off ' + devicename + ' .')
+        if 'toggle' in query:
+            devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
+            say('Toggling ' + devicename + ' .')
+        if 'colour' in query:
+            if 'RGB' in domoticz_devices['result'][i]['SubType']:
+                rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
+                hexcolour=hexcolour.replace("#","",1)
+                hexcolour=hexcolour.strip()
+                print(hexcolour)
+                if bright=='':
+                    bright=str(domoticz_devices['result'][i]['Level'])
+                devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false",verify=False)
+                say('Setting ' + devicename + ' to ' + colour + ' .')
+            else:
+                say('The requested light is not a colour bulb')
+        if 'brightness' in query:
+            if domoticz_devices['result'][i]['HaveDimmer']:
+                if 'hundred' in query or 'hundred'.lower() in query or 'maximum' in query:
+                    bright=str(100)
+                elif 'zero' in query or 'minimum' in query:
+                    bright=str(0)
+                else:
+                    bright=re.findall('\d+', query)
+                    bright=bright[0]
+                devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Set%20Level&level=" + bright ,verify=False)
+                say('Setting ' + devicename + ' brightness to ' + str(bright) + ' percent.')
+            else:
+                say('The requested light does not have a dimer')
+
+    except (requests.exceptions.ConnectionError,TypeError) as errors:
+        if str(errors)=="'NoneType' object is not iterable":
+            print("Type Error")
+        else:
+            say("Device or Domoticz server is not online")
+#------------------------End of Domoticz Control Functions----------------------
 
 #GPIO Device Control
 def Action(phrase):
