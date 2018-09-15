@@ -325,7 +325,7 @@ class SampleAssistant(object):
                     if Domoticz_Device_Control==True and len(domoticz_devices['result'])>0:
                         for i in range(0,len(domoticz_devices['result'])):
                             if str(domoticz_devices['result'][i]['HardwareName']).lower() in str(usrcmd).lower():
-                                domoticz_control(str(usrcmd).lower(),domoticz_devices['result'][i]['idx'])
+                                domoticz_control(i,str(usrcmd).lower(),domoticz_devices['result'][i]['idx'],domoticz_devices['result'][i]['HardwareName'])
                                 return continue_conversation
                                 break
                     if (custom_action_keyword['Keywords']['Magic_mirror'][0]).lower() in str(usrcmd).lower():
