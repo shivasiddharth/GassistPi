@@ -1411,13 +1411,13 @@ def getgaanaplaylistinfo(playlisturl):
     for d in re.finditer('}</span>',response):
         playlistend=int(d.start())+1
     playlistinfo=json.loads(response[playliststart:playlistend])
-    numtracks=playlistinfo['trackcount']
     playlistname=playlistinfo['title']
-    if len(trackstart)==len(trackend) and numtracks>0:
+    if len(trackstart)==len(trackend) and len(trackstart)>0:
         for i in range(0,len(trackstart)):
             trackdetails.append(json.loads(response[trackstart[i]:trackend[i]]))
     else:
         trackdetails=[]
+    numtracks=len(trackdetails)
     return playlistname,numtracks,trackdetails
 
 def gaana_playlist_select(phrase):
@@ -1430,22 +1430,25 @@ def gaana_playlist_select(phrase):
     track = track.replace('from gaana.com','',1)
     track=track.strip()
     playlistnumreq=re.findall(r'\b\d+\b', track)
+    if playlistnumreq !=[]:
+        playlistnumreq=playlistnumreq[0]
     userplaylists=configuration['Gaana']['Playlist']
     numuserplaylists=len(userplaylists)
-    if playlistnumreq !='' and "top" not in track and playlistnumreq <= int(numuserplaylists):
+    if playlistnumreq !=[] and "top" not in track and int(playlistnumreq) <= int(numuserplaylists):
         print("Getting links for playlist number " + playlistnumreq)
         say("Getting links for playlist number " + playlistnumreq)
-        reqplaylist=configuration['Gaana']['Playlist'][(int(numuserplaylists)-1)]
+        reqplaylist=configuration['Gaana']['Playlist'][(int(playlistnumreq)-1)]
     else:
         print("Searching for " + track +  " in gaana.com")
         say("Searching for " + track +  " in gaana.com")
         page_link=gaana_search(track)
         reqplaylist=page_link['items'][0]['link']
     name,numsongs,tracks= getgaanaplaylistinfo(reqplaylist)
+    print(numsongs)
     if not numsongs==[]:
         for i in range(0,numsongs):
             say("Getting the list of tracks")
-            trackslist=(tracks[0]['title'] + ' ' + tracks[0]['albumtitle'])
+            trackslist.append((tracks[i]['title'] + ' ' + tracks[i]['albumtitle']))
         if not trackslist==[]:
             vlcplayer.media_manager(trackslist,'Gaana')
             vlcplayer.gaana_player(currenttrackid)
