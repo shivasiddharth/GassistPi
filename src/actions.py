@@ -179,11 +179,6 @@ language='en'
 ##'uk'    : 'Ukrainian'         'vi' : 'Vietnamese'         'cy' : 'Welsh'
 
 
-
-
-
-
-
 #Function for google KS custom search engine
 def kickstrater_search(query):
     service = build("customsearch", "v1",
@@ -191,6 +186,17 @@ def kickstrater_search(query):
     res = service.cse().list(
         q=query,
         cx = '012926744822728151901:gefufijnci4',
+        ).execute()
+    return res
+
+
+#Function for google Gaana custom search engine
+def gaana_search(query):
+    service = build("customsearch", "v1",
+            developerKey=google_cloud_api_key)
+    res = service.cse().list(
+        q=query,
+        cx = '012926744822728151901:jzpzbzih5hi',
         ).execute()
     return res
 
@@ -1386,6 +1392,67 @@ def domoticz_control(i,query,index,devicename):
         else:
             say("Device or Domoticz server is not online")
 #------------------------End of Domoticz Control Functions----------------------
+
+#------------------------Start of Gaana Functions-------------------------------
+def getgaanaplaylistinfo(playlisturl):
+    trackstart=[]
+    trackend=[]
+    playliststart=[]
+    playlistend=[]
+    trackdetails=[]
+    response=urllib.request.urlopen(playlisturl)
+    response=response.read().decode('utf-8')
+    for a in re.finditer('{"title":',response):
+        trackstart.append(a.start())
+    for b in re.finditer('"parental_warning":0}',response):
+        trackend.append(b.end())
+    for c in re.finditer('{"source":',response):
+        playliststart=c.start()
+    for d in re.finditer('}</span>',response):
+        playlistend=int(d.start())+1
+    playlistinfo=json.loads(response[playliststart:playlistend])
+    numtracks=playlistinfo['trackcount']
+    playlistname=playlistinfo['title']
+    if len(trackstart)==len(trackend) and numtracks>0:
+        for i in range(0,len(trackstart)):
+            trackdetails.append(json.loads(response[trackstart[i]:trackend[i]]))
+    else:
+        trackdetails=[]
+    return playlistname,numtracks,trackdetails
+
+def gaana_playlist_select(phrase):
+    trackslist=[]
+    currenttrackid=0
+    idx=phrase.find('play')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track = track.replace('from gaana.com','',1)
+    track=track.strip()
+    playlistnumreq=re.findall(r'\b\d+\b', track)
+    userplaylists=configuration['Gaana']['Playlist']
+    numuserplaylists=len(userplaylists)
+    if playlistnumreq !='' and "top" not in track and playlistnumreq <= int(numuserplaylists):
+        print("Getting links for playlist number " + playlistnumreq)
+        say("Getting links for playlist number " + playlistnumreq)
+        reqplaylist=configuration['Gaana']['Playlist'][(int(numuserplaylists)-1)]
+    else:
+        print("Searching for " + track +  " in gaana.com")
+        say("Searching for " + track +  " in gaana.com")
+        page_link=gaana_search(track)
+        reqplaylist=page_link['items'][0]['link']
+    name,numsongs,tracks= getgaanaplaylistinfo(reqplaylist)
+    if not numsongs==[]:
+        for i in range(0,numsongs):
+            say("Getting the list of tracks")
+            trackslist=(tracks[0]['title'] + ' ' + tracks[0]['albumtitle'])
+        if not trackslist==[]:
+            vlcplayer.media_manager(trackslist,'Gaana')
+            vlcplayer.gaana_player(currenttrackid)
+    else:
+        say("Unable to find matching playlist")
+
+#------------------------End of Gaana Functions-------------------------------
 
 #GPIO Device Control
 def Action(phrase):

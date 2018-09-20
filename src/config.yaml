@@ -38,6 +38,13 @@ ESP:
     - '/Device2'
     - '/Device3'
 
+#Streaming songs from Gaana.com
+Gaana:
+  Playlist:
+    # Enter your desired playlists
+    - 'https://gaana.com/playlist/gaana-dj-bollywood-top-50-1'
+    - 'https://gaana.com/playlist/alka-yagnik-bday'
+
 #Enter your Google Login Credentials
 Gmusicapi:
   #If you are using two-step authentication, use app specific password. For guidelines, go through README
