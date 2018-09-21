@@ -16,6 +16,10 @@ Conversation:
       - 'Nope i am forever alone'
       - 'The whole world is my family'
 
+# Deezer user credentials
+Deezer:
+  User_id: '2247762504'
+
 # Domoticz declarations
 Domoticz:
   # Set this to 'Enabled' to control devices registered to Domoticz server.

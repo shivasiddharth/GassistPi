@@ -56,6 +56,8 @@ class vlcplayer():
                     self.spotify_player(currenttrackid)
                 if musictype=='Gaana':
                     self.gaana_player(currenttrackid)
+                if musictype=='Deezer':
+                    self.deezer_player(currenttrackid)
 
     def change_media_next(self):
         if os.path.isfile("/home/pi/.player.json"):
@@ -78,6 +80,8 @@ class vlcplayer():
                     self.spotify_player(currenttrackid)
                 if musictype=='Gaana':
                     self.gaana_player(currenttrackid)
+                if musictype=='Deezer':
+                    self.deezer_player(currenttrackid)
 
     def change_media_previous(self):
         if os.path.isfile("/home/pi/.player.json"):
@@ -105,6 +109,8 @@ class vlcplayer():
                     self.spotify_player(currenttrackid)
                 if musictype=='Gaana':
                     self.gaana_player(currenttrackid)
+                if musictype=='Deezer':
+                    self.deezer_player(currenttrackid)
 
     def media_player(self,mrl):
         self.libvlc_player = self.libvlc_Instance.media_player_new()
@@ -188,6 +194,17 @@ class vlcplayer():
             self.media_player(streamurl)
 
     def gaana_player(self,trackid):
+        with open('/home/pi/.trackqueue.json','r') as input_file:
+            tracks= json.load(input_file)
+        print(tracks[trackid])
+        urlid = youtube_search(tracks[trackid])
+        if urlid is not None:
+            fullurl = "https://www.youtube.com/watch?v=" + urlid
+            audiostream, videostream = youtube_stream_link(fullurl)
+            streamurl = audiostream
+            self.media_player(streamurl)
+
+    def deezer_player(self,trackid):
         with open('/home/pi/.trackqueue.json','r') as input_file:
             tracks= json.load(input_file)
         print(tracks[trackid])

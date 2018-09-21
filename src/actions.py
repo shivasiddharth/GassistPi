@@ -1457,6 +1457,49 @@ def gaana_playlist_select(phrase):
 
 #------------------------End of Gaana Functions-------------------------------
 
+#------------------------Start of Deezer Functions-------------------------------
+def deezer_playlist_select(phrase):
+    trackslist=[]
+    deezer_user_playlists=[]
+    currenttrackid=0
+    idx=phrase.find('play')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track = track.replace('from deezer','',1)
+    track=track.strip()
+    playlistnumreq=re.findall(r'\b\d+\b', track)
+    if playlistnumreq !=[]:
+        playlistnumreq=playlistnumreq[0]
+    deezer_response = requests.get("https://api.deezer.com/user/" + configuration['Deezer']['User_id'] + "/playlists",verify=False)
+    deezer_user_playlist_info=json.loads(deezer_response.text)
+    if deezer_user_playlist_info['data'] != []:
+        for i range(0,len(deezer_user_playlist_info['data'])):
+            deezer_user_playlists.append(deezer_user_playlist_info['data'][i]['tracklist'])
+    else:
+        say("No playlists found for the user")
+    numuserplaylists=len(deezer_user_playlists)
+    if playlistnumreq !=[] and "top" not in track and int(playlistnumreq) <= int(numuserplaylists):
+        print("Getting links for playlist number " + playlistnumreq)
+        say("Getting links for playlist number " + playlistnumreq)
+        tracklisturl=deezer_user_playlists[(int(playlistnumreq)-1)]
+    else:
+        say("No matching playlists found")
+    deezer_tracks_response = requests.get(tracklisturl,verify=False)
+    deezer_user_playlist_tracks_info=json.loads(deezer_tracks_response.text)
+    numsongs=len(deezer_user_playlist_tracks_info['data'])
+    if not numsongs==[]:
+        for i in range(0,numsongs):
+            say("Getting the tracks from " + deezer_user_playlist_info['data'][int(playlistnumreq)-1]'['title'])
+            trackslist.append((deezer_user_playlist_tracks_info[i]['title'] + ' ' + deezer_user_playlist_tracks_info[i]['artist']['name']))
+        if not trackslist==[]:
+            vlcplayer.media_manager(trackslist,'Deezer')
+            vlcplayer.gaana_player(currenttrackid)
+    else:
+        say("Unable to find matching tracks")
+
+#------------------------End of Deezer Functions-------------------------------
+
 #GPIO Device Control
 def Action(phrase):
     if 'shut down' in phrase:

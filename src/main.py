@@ -67,6 +67,7 @@ from actions import Domoticz_Device_Control
 from actions import domoticz_control
 from actions import domoticz_devices
 from actions import gaana_playlist_select
+from actions import deezer_playlist_select
 
 try:
     FileNotFoundError
@@ -646,6 +647,11 @@ class Myassistant():
                     assistant.stop_conversation()
                     vlcplayer.stop_vlc()
                     gaana_playlist_select(str(usrcmd).lower())
+                if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
+                    assistant.stop_conversation()
+                    vlcplayer.stop_vlc()
+                    deezer_playlist_select(str(usrcmd).lower())
+
         if custom_wakeword:
             self.detector.terminate()
 
