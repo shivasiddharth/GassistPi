@@ -1447,7 +1447,7 @@ def gaana_playlist_select(phrase):
     print(numsongs)
     if not numsongs==[]:
         for i in range(0,numsongs):
-            say("Getting the list of tracks")
+            say("Getting the tracks from " + name)
             trackslist.append((tracks[i]['title'] + ' ' + tracks[i]['albumtitle']))
         if not trackslist==[]:
             vlcplayer.media_manager(trackslist,'Gaana')
