@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 15-Sep-2018 Update:
-**Now control lights and switches added to Domoticz. Have made the keyword changing process for custom actions easier for users.**        
+## 22-Sep-2018 Update:
+**Now stream music from Gaana.com**        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -222,7 +222,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 ************************************************
-### ** MUSIC STREAMING FROM GAANA.COM
+### **MUSIC STREAMING FROM GAANA.COM**  
 ************************************************
 This feature uses a custom search engine as well as YouTube Data API v3.  
 ### Adding Google Custom Search Engine API, YouTube Data API and Generating API Key  
