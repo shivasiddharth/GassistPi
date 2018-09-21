@@ -7,7 +7,7 @@
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
 ## 22-Sep-2018 Update:
-**Now stream music from Gaana.com**        
+**Now stream music from Gaana.com and Deezer**        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
