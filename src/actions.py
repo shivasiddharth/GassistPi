@@ -1446,8 +1446,8 @@ def gaana_playlist_select(phrase):
     name,numsongs,tracks= getgaanaplaylistinfo(reqplaylist)
     print(numsongs)
     if not numsongs==[]:
+        say("Getting the tracks from " + name)
         for i in range(0,numsongs):
-            say("Getting the tracks from " + name)
             trackslist.append((tracks[i]['title'] + ' ' + tracks[i]['albumtitle']))
         if not trackslist==[]:
             vlcplayer.media_manager(trackslist,'Gaana')
@@ -1474,7 +1474,7 @@ def deezer_playlist_select(phrase):
     deezer_response = requests.get("https://api.deezer.com/user/" + configuration['Deezer']['User_id'] + "/playlists",verify=False)
     deezer_user_playlist_info=json.loads(deezer_response.text)
     if deezer_user_playlist_info['data'] != []:
-        for i range(0,len(deezer_user_playlist_info['data'])):
+        for i in range(0,len(deezer_user_playlist_info['data'])):
             deezer_user_playlists.append(deezer_user_playlist_info['data'][i]['tracklist'])
     else:
         say("No playlists found for the user")
@@ -1489,9 +1489,9 @@ def deezer_playlist_select(phrase):
     deezer_user_playlist_tracks_info=json.loads(deezer_tracks_response.text)
     numsongs=len(deezer_user_playlist_tracks_info['data'])
     if not numsongs==[]:
+        say("Getting the tracks from " + deezer_user_playlist_info['data'][int(playlistnumreq)-1]['title'])
         for i in range(0,numsongs):
-            say("Getting the tracks from " + deezer_user_playlist_info['data'][int(playlistnumreq)-1]'['title'])
-            trackslist.append((deezer_user_playlist_tracks_info[i]['title'] + ' ' + deezer_user_playlist_tracks_info[i]['artist']['name']))
+            trackslist.append((deezer_user_playlist_tracks_info['data'][i]['title'] + ' by ' + deezer_user_playlist_tracks_info['data'][i]['artist']['name'] + ' from ' + deezer_user_playlist_tracks_info['data'][i]['album']['title']))
         if not trackslist==[]:
             vlcplayer.media_manager(trackslist,'Deezer')
             vlcplayer.gaana_player(currenttrackid)
