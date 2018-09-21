@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 15-Sep-2018 Update:
-**Now control lights and switches added to Domoticz. Have made the keyword changing process for custom actions easier for users.**        
+## 22-Sep-2018 Update:
+**Now stream music from Gaana.com and Deezer**        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -38,6 +38,8 @@
 **25.  Mute microphones to prevent listening to Ok-Google hotword.**  
 **26.  Create custom conversations.**  
 **27.  Control of lights added to Domoticz.**  
+**28.  Stream music from Gaana.com.**  
+**29.  Stream your playlist from Deezer.**    
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -220,9 +222,57 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
+*******************************************************************
+### **MUSIC STREAMING FROM DEEZER**  
 ************************************************
+**NOTE: As a roundabout approach, I have programmed the assistant to get the playlist details using Deezer API and then fetch those tracks from YouTube.**   
+This feature uses a YouTube Data API v3.  
+### Adding YouTube Data API and Generating API Key  
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. Move your mouse pointer over "API and services" and choose "credentials".
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the **config.yaml** script at the indicated location.  
+6. "From the API and services" option, select library and in the search bar type **youtube**, select "YouTube Data API v3" API and click on "ENABLE".  
+7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.  
+8. Add your Deezer user number in the **config.yaml** under the "Deezer" and "User_id".  
+
+**Note: The same API key can be used for Kickstarter, YouTube and Gaana feature.**  
+
+Syntax:  
+1. To play the playlists added to your Deezer account:    
+Hey Google, Play playlist _playlist-number_ from Deezer   
+Example: Hey Google, Play playlist number 1 from Deezer   
+
+************************************************
+### **MUSIC STREAMING FROM GAANA.COM**  
+************************************************
+**NOTE: As a roundabout approach, I have programmed the assistant to get the playlist details using web requests and then fetch those tracks from YouTube.**   
+This feature uses a custom search engine as well as YouTube Data API v3.  
+### Adding Google Custom Search Engine API, YouTube Data API and Generating API Key  
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. Move your mouse pointer over "API and services" and choose "credentials".
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the **config.yaml** script at the indicated location.  
+6. "From the API and services" option, select library and in the search bar type **search**, select "Custom Search API" and click on "ENABLE".
+7. "From the API and services" option, select library and in the search bar type **youtube**, select "YouTube Data API v3" API and click on "ENABLE".  
+8. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.  
+
+**Note: The same API key can be used for Kickstarter and YouTube feature.**  
+
+Syntaxes:  
+**Note - It is necessary to Say the full "Gaana.com", otherwise the assistant will pick it up as Ghana (a country).**    
+1. To play the playlists added in config.yaml file:  
+Hey Google, Play playlist _playlist-number_ from Gaana.com   
+Example: Hey Google, Play playlist number 1 from Gaana.com   
+
+2. To play other playlists:  
+Hey Google, Play _user-playlist-query_ from Gaana.com
+
 ************************************************
 ### **DOMOTICZ CONTROL**  
+************************************************
 As of today, you can control lights and switches only, more controls will be added in the future.  
 1. If you want to control devices with Domoticz, in the config.yaml file under **"Domoticz:"** change **"Domoticz_Control:"** from **"Disabled"** to **"Enabled"**.  
 2. Syntaxes:  
@@ -278,7 +328,7 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 6. "From the API and services" option, select library and in the search bar type **search**, select "Custom Search API" and click on "ENABLE".
 7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
 
-**Note: The same API key can be used for YouTube, but YouTube Data v3 API must be added to the project in the cloud console.**  
+**Note: The same API key can be used for YouTube and Gaana, but YouTube Data v3 API must be added to the project in the cloud console.**  
 
 **Syntax: Hey Google, (What is the status of) or (Track) _Your Desired Campaign Name_ Kickstarter campaign**  
 
@@ -500,7 +550,7 @@ The updated music streaming features autoplaying of YouTube suggestions. This ma
 6. "From the API and services" option, select library and in the search bar type youtube, select "YouTube Data API v3" API and click on "ENABLE".
 7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.
 
-**Note: The same API key can be used for Kickstarter Tracking, but Custom Search API must be added to the project in the cloud console.**  
+**Note: The same API key can be used for Kickstarter Tracking and Gaana, but Custom Search API must be added to the project in the cloud console.**  
 
 Music streaming has been enabled for both OK-Google and Custom hotwords/wakewords.  
 

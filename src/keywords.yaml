@@ -61,3 +61,8 @@ Keywords:
   # Streaming music from spotify
   Spotify_music_streaming:
     - 'spotify'
+  # Streaming music from gaana
+  Gaana_music_streaming:
+    - 'gaana.com'
+  Deezer_music_streaming:
+    - 'deezer'

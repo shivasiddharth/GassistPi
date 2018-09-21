@@ -179,11 +179,6 @@ language='en'
 ##'uk'    : 'Ukrainian'         'vi' : 'Vietnamese'         'cy' : 'Welsh'
 
 
-
-
-
-
-
 #Function for google KS custom search engine
 def kickstrater_search(query):
     service = build("customsearch", "v1",
@@ -191,6 +186,17 @@ def kickstrater_search(query):
     res = service.cse().list(
         q=query,
         cx = '012926744822728151901:gefufijnci4',
+        ).execute()
+    return res
+
+
+#Function for google Gaana custom search engine
+def gaana_search(query):
+    service = build("customsearch", "v1",
+            developerKey=google_cloud_api_key)
+    res = service.cse().list(
+        q=query,
+        cx = '012926744822728151901:jzpzbzih5hi',
         ).execute()
     return res
 
@@ -1386,6 +1392,113 @@ def domoticz_control(i,query,index,devicename):
         else:
             say("Device or Domoticz server is not online")
 #------------------------End of Domoticz Control Functions----------------------
+
+#------------------------Start of Gaana Functions-------------------------------
+def getgaanaplaylistinfo(playlisturl):
+    trackstart=[]
+    trackend=[]
+    playliststart=[]
+    playlistend=[]
+    trackdetails=[]
+    response=urllib.request.urlopen(playlisturl)
+    response=response.read().decode('utf-8')
+    for a in re.finditer('{"title":',response):
+        trackstart.append(a.start())
+    for b in re.finditer('"parental_warning":0}',response):
+        trackend.append(b.end())
+    for c in re.finditer('{"source":',response):
+        playliststart=c.start()
+    for d in re.finditer('}</span>',response):
+        playlistend=int(d.start())+1
+    playlistinfo=json.loads(response[playliststart:playlistend])
+    playlistname=playlistinfo['title']
+    if len(trackstart)==len(trackend) and len(trackstart)>0:
+        for i in range(0,len(trackstart)):
+            trackdetails.append(json.loads(response[trackstart[i]:trackend[i]]))
+    else:
+        trackdetails=[]
+    numtracks=len(trackdetails)
+    return playlistname,numtracks,trackdetails
+
+def gaana_playlist_select(phrase):
+    trackslist=[]
+    currenttrackid=0
+    idx=phrase.find('play')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track = track.replace('from gaana.com','',1)
+    track=track.strip()
+    playlistnumreq=re.findall(r'\b\d+\b', track)
+    if playlistnumreq !=[]:
+        playlistnumreq=playlistnumreq[0]
+    userplaylists=configuration['Gaana']['Playlist']
+    numuserplaylists=len(userplaylists)
+    if playlistnumreq !=[] and "top" not in track and int(playlistnumreq) <= int(numuserplaylists):
+        print("Getting links for playlist number " + playlistnumreq)
+        say("Getting links for playlist number " + playlistnumreq)
+        reqplaylist=configuration['Gaana']['Playlist'][(int(playlistnumreq)-1)]
+    else:
+        print("Searching for " + track +  " in gaana.com")
+        say("Searching for " + track +  " in gaana.com")
+        page_link=gaana_search(track)
+        reqplaylist=page_link['items'][0]['link']
+    name,numsongs,tracks= getgaanaplaylistinfo(reqplaylist)
+    print(numsongs)
+    if not numsongs==[]:
+        for i in range(0,numsongs):
+            say("Getting the tracks from " + name)
+            trackslist.append((tracks[i]['title'] + ' ' + tracks[i]['albumtitle']))
+        if not trackslist==[]:
+            vlcplayer.media_manager(trackslist,'Gaana')
+            vlcplayer.gaana_player(currenttrackid)
+    else:
+        say("Unable to find matching playlist")
+
+#------------------------End of Gaana Functions-------------------------------
+
+#------------------------Start of Deezer Functions-------------------------------
+def deezer_playlist_select(phrase):
+    trackslist=[]
+    deezer_user_playlists=[]
+    currenttrackid=0
+    idx=phrase.find('play')
+    track=phrase[idx:]
+    track=track.replace("'}", "",1)
+    track = track.replace('play','',1)
+    track = track.replace('from deezer','',1)
+    track=track.strip()
+    playlistnumreq=re.findall(r'\b\d+\b', track)
+    if playlistnumreq !=[]:
+        playlistnumreq=playlistnumreq[0]
+    deezer_response = requests.get("https://api.deezer.com/user/" + configuration['Deezer']['User_id'] + "/playlists",verify=False)
+    deezer_user_playlist_info=json.loads(deezer_response.text)
+    if deezer_user_playlist_info['data'] != []:
+        for i range(0,len(deezer_user_playlist_info['data'])):
+            deezer_user_playlists.append(deezer_user_playlist_info['data'][i]['tracklist'])
+    else:
+        say("No playlists found for the user")
+    numuserplaylists=len(deezer_user_playlists)
+    if playlistnumreq !=[] and "top" not in track and int(playlistnumreq) <= int(numuserplaylists):
+        print("Getting links for playlist number " + playlistnumreq)
+        say("Getting links for playlist number " + playlistnumreq)
+        tracklisturl=deezer_user_playlists[(int(playlistnumreq)-1)]
+    else:
+        say("No matching playlists found")
+    deezer_tracks_response = requests.get(tracklisturl,verify=False)
+    deezer_user_playlist_tracks_info=json.loads(deezer_tracks_response.text)
+    numsongs=len(deezer_user_playlist_tracks_info['data'])
+    if not numsongs==[]:
+        for i in range(0,numsongs):
+            say("Getting the tracks from " + deezer_user_playlist_info['data'][int(playlistnumreq)-1]'['title'])
+            trackslist.append((deezer_user_playlist_tracks_info[i]['title'] + ' ' + deezer_user_playlist_tracks_info[i]['artist']['name']))
+        if not trackslist==[]:
+            vlcplayer.media_manager(trackslist,'Deezer')
+            vlcplayer.gaana_player(currenttrackid)
+    else:
+        say("Unable to find matching tracks")
+
+#------------------------End of Deezer Functions-------------------------------
 
 #GPIO Device Control
 def Action(phrase):

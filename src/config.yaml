@@ -16,6 +16,10 @@ Conversation:
       - 'Nope i am forever alone'
       - 'The whole world is my family'
 
+# Deezer user credentials
+Deezer:
+  User_id: '2247762504'
+
 # Domoticz declarations
 Domoticz:
   # Set this to 'Enabled' to control devices registered to Domoticz server.
@@ -37,6 +41,13 @@ ESP:
     - '/Device1'
     - '/Device2'
     - '/Device3'
+
+#Streaming songs from Gaana.com
+Gaana:
+  Playlist:
+    # Enter your desired playlists
+    - 'https://gaana.com/playlist/gaana-dj-bollywood-top-50-1'
+    - 'https://gaana.com/playlist/alka-yagnik-bday'
 
 #Enter your Google Login Credentials
 Gmusicapi:
