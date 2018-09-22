@@ -66,6 +66,8 @@ from indicator import assistantindicator
 from actions import Domoticz_Device_Control
 from actions import domoticz_control
 from actions import domoticz_devices
+from actions import gaana_playlist_select
+from actions import deezer_playlist_select
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -501,6 +503,14 @@ class SampleAssistant(object):
                         vlcplayer.stop_vlc()
                         spotify_playlist_select(str(usrcmd).lower())
                         return continue_conversation
+                    if (custom_action_keyword['Keywords']['Gaana_music_streaming'][0]).lower() in str(usrcmd).lower():
+                        vlcplayer.stop_vlc()
+                        gaana_playlist_select(str(usrcmd).lower())
+                        return continue_conversation
+                    if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
+                        vlcplayer.stop_vlc()
+                        deezer_playlist_select(str(usrcmd).lower())
+                        return continue_conversation                    
                     else:
                         continue
                 assistantindicator('speaking')
