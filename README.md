@@ -301,6 +301,7 @@ Hey Google, Change  _Name of your light_ to _desired color_ .
 4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/home/pi/GassistPi/src/resources**  directory.
 5. Change the paths to the models in the config.yaml file.  
 6. To disable the default **"Ok Google"** hotword, set the **Ok_Google option to "Disabled"**.  
+7. Users using pushbutton.py or Pi Zero users have an option between using custom wakeword and GPIO trigerring. If custom wakeword is enabled, then GPIO trigger will not work. To enable GPIO triggering, set custom wakeword to 'Disabled'.    
 
 ************************************************
 ### **PLAYING SPOTIFY PLAYLIST**  
