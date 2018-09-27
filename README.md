@@ -47,9 +47,9 @@
 
 ```
 sudo apt-get install git  
-git clone https://github.com/shivasiddharth/GassistPi -b 'Google_Assistant_Desktop'   ```
+git clone https://github.com/shivasiddharth/GassistPi -b 'Google_Assistant_Desktop'    
 
-
+```
 
 **********************************************************************  
 ## **SETTING UP ASSISTANT**
