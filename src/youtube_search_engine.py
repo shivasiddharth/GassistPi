@@ -7,6 +7,7 @@ import yaml
 import random
 import os
 
+
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 

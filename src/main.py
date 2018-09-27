@@ -83,7 +83,8 @@ logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
 
-
+ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
+USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
@@ -94,8 +95,6 @@ kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi'
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
 
 
-
-mutestopbutton=True
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -184,31 +183,28 @@ class Myassistant():
         """
         print(event)
         if event.type == EventType.ON_START_FINISHED:
-            self.can_start_conversation = True
-            if os.path.isfile("/home/pi/.mute"):
-                assistantindicator('mute')
-            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+            self.can_start_conversation = True            
+            if (configuration['Wakewords']['Ok_Google']=='Disabled'):
                 self.assistant.set_mic_mute(True)
             if custom_wakeword:
                 self.t1.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             self.can_start_conversation = False
-            subprocess.Popen(["aplay", "/home/pi/GassistPi/sample-audio-files/Fb.wav"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             #Uncomment the following after starting the Kodi
             #status=mutevolstatus()
             #vollevel=status[1]
             #with open('/home/pi/.volume.json', 'w') as f:
                    #json.dump(vollevel, f)
-            #kodi.Application.SetVolume({"volume": 0})
-            assistantindicator('listening')
+            #kodi.Application.SetVolume({"volume": 0})            
             if vlcplayer.is_vlc_playing():
-                if os.path.isfile("/home/pi/.mediavolume.json"):
+                if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
                     vlcplayer.set_vlc_volume(15)
                 else:
                     currentvolume=vlcplayer.get_vlc_volume()
                     print(currentvolume)
-                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                    with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                        json.dump(currentvolume, vol)
                     vlcplayer.set_vlc_volume(15)
             print()
@@ -220,11 +216,11 @@ class Myassistant():
             #with open('/home/pi/.volume.json', 'r') as f:
                    #vollevel = json.load(f)
                    #kodi.Application.SetVolume({"volume": vollevel})
-            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+            if (configuration['Wakewords']['Ok_Google']=='Disabled'):
                   self.assistant.set_mic_mute(True)
 
             if vlcplayer.is_vlc_playing():
-                with open('/home/pi/.mediavolume.json', 'r') as vol:
+                with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                     oldvolume = json.load(vol)
                 vlcplayer.set_vlc_volume(int(oldvolume))
 
@@ -234,7 +230,7 @@ class Myassistant():
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
 
-            if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("/home/pi/.mute")):
+            if (configuration['Wakewords']['Ok_Google']=='Disabled'):
                 self.assistant.set_mic_mute(True)
 
             #Uncomment the following after starting the Kodi
@@ -242,7 +238,7 @@ class Myassistant():
                    #vollevel = json.load(f)
                    #kodi.Application.SetVolume({"volume": vollevel})
             if vlcplayer.is_vlc_playing():
-                with open('/home/pi/.mediavolume.json', 'r') as vol:
+                with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                     oldvolume= json.load(vol)
                 vlcplayer.set_vlc_volume(int(oldvolume))
             print()
@@ -370,7 +366,7 @@ class Myassistant():
             for event in events:
                 self.process_event(event)
                 usrcmd=event.args
-                with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
+                with open('{}/GassistPi/src/diyHue/config.json'.format(USER_PATH), 'r') as config:
                      hueconfig = json.load(config)
                 for i in range(1,len(hueconfig['lights'])+1):
                     try:
@@ -500,21 +496,21 @@ class Myassistant():
                         if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
                             if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
                                 settingvollevel=100
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                with open('{}.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                     json.dump(settingvollevel, vol)
                             elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
                                 settingvollevel=0
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                     json.dump(settingvollevel, vol)
                             else:
                                 for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
-                                    with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                    with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                         json.dump(settingvollevel, vol)
                             print('Setting volume to: '+str(settingvollevel))
                             vlcplayer.set_vlc_volume(int(settingvollevel))
                         elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                            if os.path.isfile("/home/pi/.mediavolume.json"):
-                                with open('/home/pi/.mediavolume.json', 'r') as vol:
+                            if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
+                                with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                                     oldvollevel = json.load(vol)
                                     for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
                                         oldvollevel=int(oldvollevel)
@@ -536,7 +532,7 @@ class Myassistant():
                                     settingvollevel==0
                                 else:
                                     settingvollevel=newvollevel
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                     json.dump(settingvollevel, vol)
                                 print('Setting volume to: '+str(settingvollevel))
                                 vlcplayer.set_vlc_volume(int(settingvollevel))
@@ -554,7 +550,7 @@ class Myassistant():
                                     settingvollevel==0
                                 else:
                                     settingvollevel=newvollevel
-                                with open('/home/pi/.mediavolume.json', 'w') as vol:
+                                with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                     json.dump(settingvollevel, vol)
                                 print('Setting volume to: '+str(settingvollevel))
                                 vlcplayer.set_vlc_volume(int(settingvollevel))

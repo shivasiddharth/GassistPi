@@ -123,6 +123,7 @@ class SnowboyDetect(_object):
     __swig_destroy__ = _snowboydetect.delete_SnowboyDetect
     def __del__(self):
         return None
+
 # Register SnowboyDetect in _snowboydetect:
 _snowboydetect.SnowboyDetect_swigregister(SnowboyDetect)
 
@@ -163,6 +164,7 @@ class SnowboyVad(_object):
     __swig_destroy__ = _snowboydetect.delete_SnowboyVad
     def __del__(self):
         return None
+
 # Register SnowboyVad in _snowboydetect:
 _snowboydetect.SnowboyVad_swigregister(SnowboyVad)
 

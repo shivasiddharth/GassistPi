@@ -26,11 +26,7 @@ Keywords:
     - 'wireless'
   # Parcel tracking
   Parcel_tracking:
-    - 'parcel'
-  # RSS feed playback
-  RSS:
-    - 'feed'
-    - 'quote'
+    - 'parcel'  
   # Kodi actions
   Kodi_actions:
     - 'on kodi'
