@@ -127,24 +127,13 @@ class Myassistant():
             if Ok_Google_Wakeword_Status=='Disabled':
                   self.assistant.set_mic_mute(True)
 
-
-
-        if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-
-
-        if event.type == EventType.ON_RESPONDING_FINISHED:
-
-
-        if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-
-
         print(event)
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
             if Ok_Google_Wakeword_Status=='Disabled':
-                self.assistant.set_mic_mute(True)          
+                self.assistant.set_mic_mute(True)
                 print()
 
         if event.type == EventType.ON_DEVICE_ACTION:
