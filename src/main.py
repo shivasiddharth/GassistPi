@@ -231,15 +231,6 @@ class Myassistant():
                     oldvolume = json.load(vol)
                 vlcplayer.set_vlc_volume(int(oldvolume))
 
-        if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-
-
-        if event.type == EventType.ON_RESPONDING_FINISHED:
-
-
-        if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-
-
         print(event)
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
