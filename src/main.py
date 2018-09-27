@@ -44,7 +44,6 @@ from actions import stop
 from actions import radio
 from actions import ESP
 from actions import track
-from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
 from actions import gmusicselect
@@ -59,8 +58,6 @@ from actions import spotify_playlist_select
 from actions import configuration
 from actions import custom_action_keyword
 from threading import Thread
-from indicator import assistantindicator
-from indicator import stoppushbutton
 from pathlib import Path
 from actions import Domoticz_Device_Control
 from actions import domoticz_control
