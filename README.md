@@ -1,6 +1,7 @@
 
 
-# GassistPi -- Google Assistant for all Raspberry Pi Boards  
+# Branch of GassistPi for Linux Desktops  
+
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
@@ -11,162 +12,74 @@
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
-**1.   Headless auto start on boot.**    
-**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
-**3.   Voice control of NodeMCU without IFTTT and MQTT.**  
-**4.   Radio streaming.**  
-**5.   Voice control of servo connected to RPi GPIO.**  
-**6.   Safe shutdown RPi using voice command.**  
-**7.   Stream Music from YouTube.**  
-**8.   Indicator lights for assistant listening and speaking events.**  
-**9.   Startup audio and audio feedback for wakeword detection.**   
-**10.  Pushbutton service to stop Music or Radio playback.**   
-**11.  Parcel tracking using Aftership API.**  
-**12.  RSS Feed streaming.**  
-**13.  Control of Kodi or Kodi Integration.**    
-**14.  Streaming music from Google Play Music.**  
-**15.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
-**16.  Voice control of Radio/YouTube/Google Music volume levels.**         
-**17.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
-**18.  Track [Kickstarter](https://www.kickstarter.com) campaigns.**  
-**19.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
-**20.  Search recipes and get push message of ingredients and link to recipe.**    
-**21.  Remote control of Magic Mirror.**  
-**22.  Sending voice messages from the phone to the raspberry.**  
-**23.  Play your Spotify playlist.**  
-**24.  Custom wakeword activation for all Pi boards.**      
-**25.  Mute microphones to prevent listening to Ok-Google hotword.**  
-**26.  Create custom conversations.**  
-**27.  Control of lights added to Domoticz.**  
-**28.  Stream music from Gaana.com.**  
-**29.  Stream your playlist from Deezer.**    
+**1.   Headless auto start on boot.**  
+**2.   Voice control of NodeMCU without IFTTT and MQTT.**  
+**3.   Radio streaming.**   
+**4.   Safe shutdown system using voice command.**  
+**5.   Stream Music from YouTube.**
+**6.   Startup audio and audio feedback for wakeword detection.**  
+**7.   Parcel tracking using Aftership API.**  
+**8.   Control of Kodi or Kodi Integration.**    
+**9.   Streaming music from Google Play Music.**  
+**10.  Casting of YouTube Videos to Chromecast and Chromecast media control by voice.**  
+**11.  Voice control of Radio/YouTube/Google Music volume levels.**         
+**12.  Control Sonoff Tasmota Devices/Emulated Wemo.**  
+**13.  Track [Kickstarter](https://www.kickstarter.com) campaigns.**  
+**14.  Emulated Philips Hue HUB service and control of Emulated Hue Lights.**  
+**15.  Search recipes and get push message of ingredients and link to recipe.**    
+**16.  Remote control of Magic Mirror.**  
+**17.  Sending voice messages from the phone to the raspberry.**  
+**18.  Play your Spotify playlist.**  
+**19.  Custom wakeword activation for all Pi boards.**      
+**20.  Mute microphones to prevent listening to Ok-Google hotword.**  
+**21.  Create custom conversations.**  
+**22.  Control of lights added to Domoticz.**  
+**23.  Stream music from Gaana.com.**  
+**24.  Stream your playlist from Deezer.**    
 
-*******************************************************************************************************************************  
-**Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
-*******************************************************************************************************************************
+**If you do not want to use the custom actions, then replace the main.py in src folder with the main.py from Extras folder.**    
+
 
 *************************************************
-## **FIRST STEP- CLONE the PROJECT on to Pi**   
+## **FIRST STEP- CLONE the PROJECT**   
 *************************************************
 1. Open the terminal and execute the following  
 
 ```
 sudo apt-get install git  
-git clone https://github.com/shivasiddharth/GassistPi    
-```
+git clone https://github.com/shivasiddharth/GassistPi -b 'Google_Assistant_Desktop'   ```
 
-*************************************************  
-## **INSTALL AUDIO CONFIG FILES**
-*************************************************  
-1. Update OS and Kernel    
 
-```
-sudo apt-get update  
-sudo apt-get install raspberrypi-kernel  
-```
-
-2. Restart Pi  
-
-3. Choose the audio configuration according to your setup.   
-**The speaker-test command is used to initialize alsa, so please do not skip that.  
-AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.**  
-
-  3.1. USB DAC or USB Sound CARD users,  
-  ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
-  speaker-test  
-  ```
-
-  3.2. AIY-HAT users,  
-  ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-  sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-  sudo reboot  
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
-  sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
-  speaker-test  
-  ```
-
-  3.3. USB MIC AND HDMI users,  
-  ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo reboot
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
-  speaker-test  
-  ```
-
-  3.4. USB MIC AND AUDIO JACK users,  
-  ```  
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-  speaker-test  
-  ```
-
-  3.5. CUSTOM VOICE HAT users,  
-  ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
-  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
-  sudo reboot
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  speaker-test   
-  ```
-
-  3.6. RESPEAKER HAT users,  
-  ```
-  git clone https://github.com/shivasiddharth/seeed-voicecard
-  cd /home/pi/seeed-voicecard/  
-  sudo ./install.sh  
-  sudo reboot   
-  speaker-test     
-  ```  
-
-**Those using any other DACs or HATs install the cards as per the manufacturer's guide
- and then you can try using the USB-DAC config file after changing the hardware ids**        
-
-4. Restart Pi
-
-5. Check the speaker using the following command    
-
-```
-speaker-test -t wav  
-```  
 
 **********************************************************************  
-## **CONTINUE after SETTING UP AUDIO**
+## **SETTING UP ASSISTANT**
 **********************************************************************   
 
 1. Follow the instructions [here](https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account) to Configure a Developer Project and Account Settings. Then follow this [guide](https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device) to register the device and obtain the credentials.json file.  
 
 2. Place the credentials.json file in/home/pi directory **DO NOT RENAME**  
 
-3. Use the one-line installer for installing Google Assistant    
-**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
-	4.1 Make the installers Executable  
+3. Use the one-line installer for installing Google Assistant  
+	3.1 Make the installer Executable  
 
 	```
-	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
-	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo chmod +x /home/pi/GassistPi/scripts/gassist-desktop.sh
 
 	```
 
-	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
+	3.2 Execute the installer      
 	```
-	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
-	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo  /home/pi/GassistPi/scripts/gassist-desktop.sh  	
 
 	```
 
-5. Copy the google assistant authentication link from terminal and authorize using your google account  
+4. Copy the google assistant authentication link from terminal and authorize using your google account  
 
-6. Copy the authorization code from browser onto the terminal and press enter    
+5. Copy the authorization code from browser onto the terminal and press enter    
 
-7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
+6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
 
-8. After verifying the working of assistant, close and exit the terminal    
+7. After verifying the working of assistant, close and exit the terminal    
 
 
 *************************************************  
@@ -186,18 +99,14 @@ sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
 sudo /home/pi/GassistPi/scripts/service-installer.sh    
 ```  
 
-4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
-**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**  
+4. Enable the service -   
 ```
-sudo systemctl enable gassistpi-ok-google.service  
-sudo systemctl enable gassistpi-push-button.service
+sudo systemctl enable gassistpi-desktop.service  
 ```  
 
-5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
-**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
+5. Start the service -    
 ```
-sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start gassistpi-push-button.service
+sudo systemctl start gassistpi-desktop.service  
 ```  
 
 **RESTART and ENJOY**  
@@ -206,18 +115,12 @@ sudo systemctl start gassistpi-push-button.service
 
 At any point of time, if you wish to manually start the assistant:
 
-**Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
 /home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py --device_model_id 'replace this with the model id'
 
 ```
-**Pushbutton/Pi Zero/Pi B+ and other users**   
-Open a terminal and execute the following:
-```
-/home/pi/env/bin/python -u /home/pi/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
 
-```
 Insert your Project Id and Model Id in quotes in the mentioned places
 
 *******************************************************************
@@ -387,7 +290,7 @@ GassistPi uses [Edamam](www.edamam.com) for getting recipe details/info. To use 
 2. Signup as a developer/login with your existing account.  
 3. In the Menubar at the top, Click on Dashboard-->Applications-->Create a new applicatiuon-->Recipe Search API and then create a new application.  
 4. Copy the application id and application key and paste it in the actions.py script under the getrecipe function.  
-**(Note: While copying the application key, do not copy the "—")  
+**(Note: While copying the application key, do not copy the "—")**    
 
 Command Syntax:  
 "Hey Google, Get ingredients for _Required-Item_"  
@@ -404,39 +307,6 @@ Command Syntax:
 **To show/hide weather module             :**  "Hey Google, Show/Hide Weather on Magic Mirror"  
 **To turn magic mirror display on/off     :**  "Hey Google, Turn Magic Mirror display on/off"  
 **To power off/reboot/restart Magic Mirror:**  "Hey Google, Power off/Reboot/Restart Magic Mirror"  
-
-
-*******************************************************************
-### **INDICATORS FOR GOOGLE ASSISTANT'S LISTENING AND SPEAKING EVENTS**  
-*******************************************************************
-Connect LEDs with colours of your choice to GPIO05 for Listening and GPIO06 for Speaking Events.  
-
-*******************************************************************
-### **PUSHBUTTON TO STOP MUSIC/RADIO PLAYBACK AND MUTE MICROPHONE**  
-*******************************************************************
-Connect a pushbutton between GPIO23 and Ground. Single press mutes microphone and double press stops music streaming.  
-
-
-************************************************
-### **VOICE CONTROL OF GPIOs, SERVO and Pi SHUTDOWN**
-************************************************
-The default GPIO and shutdown trigger word is **trigger**. It should be used for controlling the GPIOs, servo and for safe shutdown of Pi.
-
-It has been intentionally included to prevent control actions due to false positive commands.  If you wish to change the trigger word, you can replace the '**trigger**'in the main.py code with your desired trigger word.
-
-The default keyword for servo motor is **servo**. For example, the command **trigger servo 90** will rotate the servo by 90 degrees.   
-
-If you wish to change the keyword, you can replace the 'servo' in the action.py script with your desired keyword for the motor.
-
-For safe shutdown of the pi, command is: **trigger shutdown**  
-
-You can define your own custom actions in the **actions.py** script.  
-**THE ACTIONS SCRIPT OF THIS PROJECT IS DIFFERENT FROM AIY KIT's SCRIPT, COPY PASTING THE COMMANDS FROM AIY's ACTION SCRIPT WILL NOT WORK HERE. FOR A BETTER UNDERSTANDING OF THE ACTIONS FILE, FOLLOW THE FOLLOWING YOUTUBE VIDEO.**    
-
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=-MmxWWgceCg
-" target="_blank"><img src="http://img.youtube.com/vi/-MmxWWgceCg/0.jpg"
-alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
-
 
 ************************************************
 ### **VOICE CONTROL OF NodeMCU**
@@ -469,7 +339,7 @@ Follow the instructions in this video to upload the firmware properly.
 " target="_blank"><img src="http://img.youtube.com/vi/MzcAS-K_TRU/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
 
-Pi3 and Pi Zero users, assign the device names and device ip addresses in the **config.yaml** in the marked locations.  
+Assign the device names and device ip addresses in the **config.yaml** in the marked locations.  
 
 **Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
 
@@ -569,9 +439,6 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 | **autoplay** and **stream** bebe rexha **channel** | Find the **channel** and fetch up to 10 songs from it's **uploaded** playlist|
 
 
-**Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
-
-
 ************************************************
 ### **MUSIC STREAMING FROM Google Music**  
 ************************************************
@@ -597,8 +464,6 @@ Change tracks
 Shuffle tracks
 Repeat tracks
 
-**Due to the Pi Zero's limitations, and computationally intensive nature of the Google Music streaming feature, this action has not been enabled for Pi Zero.**  
-
 
 ************************************************
 ### **RADIO STREAMING**  
@@ -614,7 +479,6 @@ http://www.live-radio.net/worldwide.shtml
 
 http://worldradiomap.com/map/  
 
-**Due to the Pi Zero's limitations, users are advised to not use the Radio streaming feature. Radio streaming will send the CPU usage of Pi Zero into next galaxy.**  
 
 ***********************************************  
 ### **PARCEL TRACKING**  
@@ -627,15 +491,6 @@ The generated API number should be added to the **config.yaml** at the indicated
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=WOyYL46s-q0
 " target="_blank"><img src="http://img.youtube.com/vi/WOyYL46s-q0/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
-
-************************************************  
-### **RSS FEEDS STREAMING**  
-************************************************  
-Default keywords for playing RSS feeds is **feed** or **news** or **quote**. Example usage, **top tech news** will play the top technology news, **top world news** will play top news related to different countires, **top sports news** will play the top sports related news and **quote of the day** will give some quotes.
-
-Do not mix the commands with **Play** as that has been associated with music streaming from YouTube.  
-
-**numfeeds** variable within the feed function in actions.py file is the feed limit. Certain RSS feeds can have upto 60 items and **numfeeds** variable limits the number of items to stream. The default value has been set to 10, which if you want can change.  
 
 
 ************************************************  
@@ -703,13 +558,6 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 
 
 ************************************************  
-### **GOOGLE HOME LIKE NEOPIXEL INDICATOR**
-************************************************  
-1. Change the Pin numbers in the given sketch according to your board and upload it.  
-
-2. Follow the circuit diagram given.  
-
-************************************************  
 ### **LIST OF AVAILABLE LIGHT COLOURS**  
 ************************************************
 |          |                 | COLOURS   | LIST        |             |                   |
@@ -742,16 +590,4 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 ### **Sending voice messages from the phone to the raspberry**  
 ************************************************
 1. https://support.google.com/googlehome/answer/7531913.
-************************************************  
-### **LIST OF GPIOs USED**  
-************************************************  
-| GPIO Number (BCM) | Purpose                                        |
-|-------------------|------------------------------------------------|
-| 25                | Assistant activity indicator for AIY Kits      |
-| 23                | Pushbutton to stop music/radio AIY and others  |    
-| 05 and 06         | Google assistant listening and responding      |  
-| 22                | Pushbutton trigger for gRPC API. Connect a pushbutton between GPIO 22 and GRND for manually triggering                     |  
-| 12,13,24          | Voice control of devices connected to GPIO     |  
-| 27                | Voice control of servo                         |  
-
-**Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**          
+************************************************

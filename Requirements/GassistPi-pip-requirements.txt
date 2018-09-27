@@ -1,4 +1,3 @@
-RPi.GPIO>=0.6.3
 pyaudio>=0.2.11
 aftership>=0.2
 feedparser>=5.2.1
@@ -17,6 +16,4 @@ pushbullet.py>=0.11.0
 python-vlc>=3.0.102
 git+https://github.com/plamere/spotipy.git
 pyyaml==3.12
-spidev>=3.2
-gpiozero>=1.4.1
 numpy>=1.15.1

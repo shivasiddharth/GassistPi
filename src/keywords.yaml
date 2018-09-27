@@ -13,7 +13,7 @@ Keywords:
   Kickstarter_tracking:
     - 'kickstarter'
   # Pi power off, servo control and Pi GPIO control
-  Pi_GPIO_control:
+  Shutdown_Command:
     - 'trigger'
   # Stream songs from YouTube
   YouTube_music_stream:

@@ -59,23 +59,6 @@ Gmusicapi:
 #API Key for YouTube and Kickstarter Search Engine
 Google_cloud_api_key: ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE
 
-#GPIOS used in the project. Feel free to change in case.
-Gpios:
-  AIY_indicator:
-    - 25
-  assistant_indicators:
-    - 05
-    - 06
-  picontrol:
-    - 12
-    - 13
-    - 24
-  pushbutton_trigger:
-    - 22
-  servo:
-    - 27
-  stopbutton_music_AIY_pushbutton:
-    - 23
 
 #KODI custom declarations change IP, music directory and video directory according to your device
 Kodi:
@@ -116,12 +99,6 @@ Radio_stations:
     - 'http://c5icy.prod.playlists.ihrhls.com/1469_icy'
     - 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3'
 
-#Pi GPIO control declarations. Follow a similar pattern to add your own list of GPIOs
-Raspberrypi_GPIO_Control:
-  lightnames:
-    - 'kitchen lights'
-    - 'bathroom lights'
-    - 'bedroom lights'
 
 #Spotify credentials. Register for a spotify developer and get the credentials.
 Spotify:

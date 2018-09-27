@@ -21,7 +21,6 @@ import requests
 import mediaplayer
 import os
 import os.path
-import RPi.GPIO as GPIO
 import time
 import re
 import subprocess
@@ -95,12 +94,6 @@ windowcmd=configuration['Kodi']['windowcmd']
 window=configuration['Kodi']['window']
 
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-#Number of entities in 'var' and 'PINS' should be the same
-var = configuration['Raspberrypi_GPIO_Control']['lightnames']
-gpio = configuration['Gpios']['picontrol']
-
 #Number of station names and station links should be the same
 stnname=configuration['Radio_stations']['stationnames']
 stnlink=configuration['Radio_stations']['stationlinks']
@@ -112,19 +105,7 @@ ip=configuration['ESP']['IP']
 devname=configuration['ESP']['devicename']
 devid=configuration['ESP']['deviceid']
 
-for pin in gpio:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, 0)
 
-#Servo pin declaration
-servopin=configuration['Gpios']['servo'][0]
-GPIO.setup(servopin, GPIO.OUT)
-pwm=GPIO.PWM(servopin, 50)
-pwm.start(0)
-
-#Stopbutton
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
-GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 playshell = None
 
 #Initialize colour list
@@ -279,16 +260,6 @@ def ESP(phrase):
             rq = requests.head("https://"+ip + dev + ctrl)
 
 
-#Stepper Motor control
-def SetAngle(angle):
-    duty = angle/18 + 2
-    GPIO.output(servopin, True)
-    say("Moving motor by " + str(angle) + " degrees")
-    pwm.ChangeDutyCycle(duty)
-    time.sleep(1)
-    pwm.ChangeDutyCycle(0)
-    GPIO.output(servopin, False)
-
 
 def stop():
     vlcplayer.stop_vlc()
@@ -314,43 +285,6 @@ def track():
         trackinfo= ("Parcel Number " + str(x+1)+ " with tracking id " + parcelid + " is "+ description)
         say(trackinfo)
         #time.sleep(10)
-
-#RSS Feed Reader
-def feed(phrase):
-    if 'world news' in phrase:
-        URL=worldnews
-    elif 'top news' in phrase:
-        URL=topnews
-    elif 'sports news' in phrase:
-        URL=sportsnews
-    elif 'tech news' in phrase:
-        URL=technews
-    elif 'my feed' in phrase:
-        URL=quote
-    numfeeds=10
-    feed=feedparser.parse(URL)
-    feedlength=len(feed['entries'])
-    print(feedlength)
-    if feedlength<numfeeds:
-        numfeeds=feedlength
-    title=feed['feed']['title']
-    say(title)
-    #To stop the feed, press and hold stop button
-    while GPIO.input(stoppushbutton):
-        for x in range(0,numfeeds):
-            content=feed['entries'][x]['title']
-            print(content)
-            say(content)
-            summary=feed['entries'][x]['summary']
-            print(summary)
-            say(summary)
-            if not GPIO.input(stoppushbutton):
-              break
-        if x == numfeeds-1:
-            break
-        else:
-            continue
-
 
 
 
@@ -1507,18 +1441,3 @@ def Action(phrase):
         time.sleep(10)
         os.system("sudo shutdown -h now")
         #subprocess.call(["shutdown -h now"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if 'servo' in phrase:
-        for s in re.findall(r'\b\d+\b', phrase):
-            SetAngle(int(s))
-    if 'zero' in phrase:
-        SetAngle(0)
-    else:
-        for num, name in enumerate(var):
-            if name.lower() in phrase:
-                pinout=gpio[num]
-                if 'on' in phrase:
-                    GPIO.output(pinout, 1)
-                    say("Turning On " + name)
-                elif 'off' in phrase:
-                    GPIO.output(pinout, 0)
-                    say("Turning Off " + name)
