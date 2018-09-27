@@ -459,10 +459,7 @@ class Myassistant():
                     ESP(str(usrcmd).lower())
                 if (custom_action_keyword['Keywords']['Parcel_tracking'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
-                    track()
-                if (custom_action_keyword['Keywords']['RSS'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][1]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    feed(str(usrcmd).lower())
+                    track()                
                 if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     kodiactions(str(usrcmd).lower())
