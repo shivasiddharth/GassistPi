@@ -364,8 +364,10 @@ def mutevolstatus():
 
 
 def kodi_youtube(query):
-    fullurl,urlid=youtube_search(query)
-
+    urlid = youtube_search(query)
+    if urlid is not None:
+        fullurl = "https://www.youtube.com/watch?v=" + urlid
+                    
  #If you want to see the URL, uncomment the following line
  #print(YouTubeURL)
 
