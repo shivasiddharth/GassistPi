@@ -39,11 +39,13 @@ Domoticz_Device_Control=False
 bright=''
 hexcolour=''
 
+ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
+USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
-with open('/home/pi/GassistPi/src/config.yaml','r') as conf:
+with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
 
-with open('/home/pi/GassistPi/src/keywords.yaml','r') as conf:
+with open('{}/src/keywords.yaml'.format(ROOT_PATH),'r') as conf:
     custom_action_keyword = yaml.load(conf)
 
 # Get devices list from domoticz server
@@ -52,7 +54,7 @@ if configuration['Domoticz']['Domoticz_Control']=='Enabled':
     try:
         domoticz_response = requests.get("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=devices&filter=all&order=Name",verify=False)
         domoticz_devices=json.loads(domoticz_response.text)
-        with open('/home/pi/domoticz_device_list.json', 'w') as devlist:
+        with open('{}/domoticz_device_list.json'.format(USER_PATH), 'w') as devlist:
             json.dump(domoticz_devices, devlist)
     except requests.exceptions.ConnectionError:
         print("Domoticz server not online")
@@ -113,7 +115,7 @@ clrlist=[]
 clrlistfullname=[]
 clrrgblist=[]
 clrhexlist=[]
-with open('/home/pi/GassistPi/src/colours.json', 'r') as col:
+with open('{}/src/colours.json'.format(ROOT_PATH), 'r') as col:
      colours = json.load(col)
 for i in range(0,len(colours)):
     clrname=colours[i]["name"]
@@ -653,7 +655,7 @@ def kodiactions(phrase):
     elif 'set'.lower() in str(phrase).lower() and 'volume'.lower() in str(phrase).lower():
         for s in re.findall(r'\b\d+\b', phrase):
             kodi.Application.SetVolume({"volume": int(s)})
-            with open('/home/pi/.volume.json', 'w') as f:
+            with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
                    json.dump(int(s), f)
     elif 'toggle mute'.lower() in str(phrase).lower():
         status=mutevolstatus()
@@ -750,13 +752,13 @@ def fetchautoplaylist(url,numvideos):
 
 def loadsonglist():
     song_ids=[]
-    if os.path.isfile("/home/pi/songs.json"):
-        with open('/home/pi/songs.json','r') as input_file:
+    if os.path.isfile("{}/songs.json".format(USER_PATH)):
+        with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
             songs_list= json.load(input_file)
 ##            print(songs_list)
     else:
         songs_list= api.get_all_songs()
-        with open('/home/pi/songs.json', 'w') as output_file:
+        with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
             json.dump(songs_list, output_file)
     for i in range(0,len(songs_list)):
         song_ids.append(songs_list[i]['id'])
@@ -766,13 +768,13 @@ def loadsonglist():
 def loadartist(artistname):
     song_ids=[]
     artist=str(artistname)
-    if os.path.isfile("/home/pi/songs.json"):
-        with open('/home/pi/songs.json','r') as input_file:
+    if os.path.isfile("{}/songs.json".format(USER_PATH)):
+        with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
             songs_list= json.load(input_file)
 ##            print(songs_list)
     else:
         songs_list= api.get_all_songs()
-        with open('/home/pi/songs.json', 'w') as output_file:
+        with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
             json.dump(songs_list, output_file)
     for i in range(0,len(songs_list)):
         if artist.lower() in (songs_list[i]['albumArtist']).lower():
@@ -785,13 +787,13 @@ def loadartist(artistname):
 def loadalbum(albumname):
     song_ids=[]
     album=str(albumname)
-    if os.path.isfile("/home/pi/songs.json"):
-        with open('/home/pi/songs.json','r') as input_file:
+    if os.path.isfile("{}/songs.json".format(USER_PATH)):
+        with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
             songs_list= json.load(input_file)
 ##            print(songs_list)
     else:
         songs_list= api.get_all_songs()
-        with open('/home/pi/songs.json', 'w') as output_file:
+        with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
             json.dump(songs_list, output_file)
     for i in range(0,len(songs_list)):
         if album.lower() in (songs_list[i]['album']).lower():
@@ -803,12 +805,12 @@ def loadalbum(albumname):
 
 def loadplaylist(playlistnum):
     track_ids=[]
-    if os.path.isfile("/home/pi/playlist.json"):
-        with open('/home/pi/playlist.json','r') as input_file:
+    if os.path.isfile("{}/playlist.json".format(USER_PATH)):
+        with open('{}/playlist.json'.format(USER_PATH),'r') as input_file:
             playlistcontents= json.load(input_file)
     else:
         playlistcontents=api.get_all_user_playlist_contents()
-        with open('/home/pi/playlist.json', 'w') as output_file:
+        with open('{}/playlist.json'.format(USER_PATH), 'w') as output_file:
             json.dump(playlistcontents, output_file)
 ##        print(playlistcontents[0]['tracks'])
 
@@ -821,9 +823,9 @@ def loadplaylist(playlistnum):
 def refreshlists():
     playlist_list=api.get_all_user_playlist_contents()
     songs_list=api.get_all_songs()
-    with open('/home/pi/songs.json', 'w') as output_file:
+    with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
         json.dump(songs_list, output_file)
-    with open('/home/pi/playlist.json', 'w') as output_file:
+    with open('{}/playlist.json'.format(USER_PATH), 'w') as output_file:
         json.dump(playlist_list, output_file)
     say("Music list synchronised")
 
@@ -1162,7 +1164,7 @@ def getrecipe(item):
 #--------------------------------Start of Hue Control Functions------------------------------------------
 
 def hue_control(phrase,lightindex,lightaddress):
-    with open('/home/pi/GassistPi/src/diyHue/config.json', 'r') as config:
+    with open('{}/src/diyHue/config.json'.format(ROOT_PATH), 'r') as config:
          hueconfig = json.load(config)
     currentxval=hueconfig['lights'][lightindex]['state']['xy'][0]
     currentyval=hueconfig['lights'][lightindex]['state']['xy'][1]

@@ -6,7 +6,11 @@ from oauth2client.tools import argparser
 import yaml
 import random
 
-with open('/home/pi/GassistPi/src/config.yaml', 'r') as conf:
+
+ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
+USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
+
+with open('{}/src/config.yaml'.format(ROOT_PATH), 'r') as conf:
     configuration = yaml.load(conf)
 
 # API Key for YouTube and KS Search Engine
