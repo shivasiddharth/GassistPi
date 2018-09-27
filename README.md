@@ -7,11 +7,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 22-Sep-2018 Update:
-**Now stream music from Gaana.com and Deezer**        
-*******************************************************************************************************************************
 
-# Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
+# Features (Additional stuff that you can do):  
 **1.   Headless auto start on boot.**  
 **2.   Voice control of NodeMCU without IFTTT and MQTT.**  
 **3.   Radio streaming.**   
@@ -48,7 +45,6 @@
 ```
 sudo apt-get install git  
 git clone https://github.com/shivasiddharth/GassistPi -b 'Google_Assistant_Desktop'    
-
 ```
 
 **********************************************************************  
@@ -59,27 +55,31 @@ git clone https://github.com/shivasiddharth/GassistPi -b 'Google_Assistant_Deskt
 
 2. Place the credentials.json file in/home/pi directory **DO NOT RENAME**  
 
-3. Use the one-line installer for installing Google Assistant  
+3. Change directory (Replace _USER_NAME_ WITH YOUR Linux username)    
+```
+cd /home/_USER_NAME_  
+```
+
+4. Use the one-line installer for installing Google Assistant  
 	3.1 Make the installer Executable  
 
 	```
-	sudo chmod +x /home/pi/GassistPi/scripts/gassist-desktop.sh
-
+	sudo chmod +x ./GassistPi/scripts/gassist-desktop.sh
 	```
 
 	3.2 Execute the installer      
 	```
-	sudo  /home/pi/GassistPi/scripts/gassist-desktop.sh  	
+	sudo  ./GassistPi/scripts/gassist-desktop.sh  	
 
 	```
 
-4. Copy the google assistant authentication link from terminal and authorize using your google account  
+5. Copy the google assistant authentication link from terminal and authorize using your google account  
 
-5. Copy the authorization code from browser onto the terminal and press enter    
+6. Copy the authorization code from browser onto the terminal and press enter    
 
-6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
+7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
 
-7. After verifying the working of assistant, close and exit the terminal    
+8. After verifying the working of assistant, close and exit the terminal    
 
 
 *************************************************  
@@ -90,13 +90,13 @@ git clone https://github.com/shivasiddharth/GassistPi -b 'Google_Assistant_Deskt
 2. Make the service installer executable  
 
 ```
-sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
+sudo chmod +x ./GassistPi/scripts/service-installer.sh
 ```  
 
 3. Run the service installer  
 
 ```
-sudo /home/pi/GassistPi/scripts/service-installer.sh    
+sudo ./GassistPi/scripts/service-installer.sh    
 ```  
 
 4. Enable the service -   
@@ -115,13 +115,12 @@ sudo systemctl start gassistpi-desktop.service
 
 At any point of time, if you wish to manually start the assistant:
 
-Open a terminal and execute the following:
+Open a terminal and execute the following (Replace _USER_NAME_ with your Linux username):
 ```
-/home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py --device_model_id 'replace this with the model id'
+/home/pi/env/bin/python -u /home/_USER_NAME_/GassistPi/src/main.py --device_model_id 'replace this with the model id'
 
 ```
-
-Insert your Project Id and Model Id in quotes in the mentioned places
+Insert your Model Id in quotes in the mentioned place
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
