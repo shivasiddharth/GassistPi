@@ -151,25 +151,22 @@ speaker-test -t wav
 
 3. Use the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
-  4.0 Change directory (change _USER_NAME_ to your OS username)
-  ```
-  cd /home/_USER_NAME_   
-  ```
+4.0 Change directory (change _USER_NAME_ to your OS username)
+```
+cd /home/_USER_NAME_   
+```
 
-	4.1 Make the installers Executable  
+4.1 Make the installers Executable  
+```
+sudo chmod +x ./GassistPi/scripts/gassist-installer-pi3.sh
+sudo chmod +x ./GassistPi/scripts/gassist-installer-pi-zero.sh
+```
 
-	```
-	sudo chmod +x ./GassistPi/scripts/gassist-installer-pi3.sh
-	sudo chmod +x ./GassistPi/scripts/gassist-installer-pi-zero.sh
-
-	```
-
-	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
-	```
-	sudo  ./GassistPi/scripts/gassist-installer-pi3.sh  
-	sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh
-
-	```
+4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
+```
+sudo  ./GassistPi/scripts/gassist-installer-pi3.sh  
+sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh  
+```  
 
 5. Copy the google assistant authentication link from terminal and authorize using your google account  
 
