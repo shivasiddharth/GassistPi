@@ -17,8 +17,10 @@ except ImportError:
 
 audiosetup=''
 
-if os.path.isfile("/home/pi/audiosetup"):
-    with open('/home/pi/audiosetup') as f:
+USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
+
+if os.path.isfile("{}/audiosetup".format(USER_PATH)):
+    with open('{}/audiosetup'.format(USER_PATH)) as f:
         detected_audio_setup = f.readline().rstrip()
         print(detected_audio_setup)
         if (detected_audio_setup=='AIY-HAT' or detected_audio_setup=='CUSTOM-VOICE-HAT'):
@@ -133,7 +135,7 @@ class GoogleHomeLedPattern(object):
 
     def off(self):
         self.show([0] * 4 * 12)
-    
+
     def red(self):
         self.show([0,1,0,0] * 12)
 
