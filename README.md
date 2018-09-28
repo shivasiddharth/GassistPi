@@ -151,30 +151,31 @@ speaker-test -t wav
 
 3. Use the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
-4.0 Change directory (change _USER_NAME_ to your OS username)
+
+3.1 Change directory (change _USER_NAME_ to your OS username)
 ```
 cd /home/_USER_NAME_   
 ```
 
-4.1 Make the installers Executable  
+3.2 Make the installers Executable  
 ```
 sudo chmod +x ./GassistPi/scripts/gassist-installer-pi3.sh
 sudo chmod +x ./GassistPi/scripts/gassist-installer-pi-zero.sh
 ```
 
-4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
+3.3 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 ```
 sudo  ./GassistPi/scripts/gassist-installer-pi3.sh  
 sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh  
 ```  
 
-5. Copy the google assistant authentication link from terminal and authorize using your google account  
+4. Copy the google assistant authentication link from terminal and authorize using your google account  
 
-6. Copy the authorization code from browser onto the terminal and press enter    
+5. Copy the authorization code from browser onto the terminal and press enter    
 
-7. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
+6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
 
-8. After verifying the working of assistant, close and exit the terminal    
+7. After verifying the working of assistant, close and exit the terminal    
 
 
 *************************************************  
@@ -199,14 +200,14 @@ sudo chmod +x ./GassistPi/scripts/service-installer.sh
 sudo ./GassistPi/scripts/service-installer.sh    
 ```  
 
-5. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
+6. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable gassistpi-push-button.service
 ```  
 
-5. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
+7. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
 **Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
