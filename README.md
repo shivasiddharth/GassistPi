@@ -65,7 +65,10 @@ sudo apt-get update
 sudo apt-get install raspberrypi-kernel  
 ```
 
-2. Restart Pi  
+2. Restart Pi  and change directory (change _USER_NAME_ to your OS username)
+```
+cd /home/_USER_NAME_   
+```
 
 3. Choose the audio configuration according to your setup.   
 **The speaker-test command is used to initialize alsa, so please do not skip that.  
@@ -73,52 +76,55 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
 
   3.1. USB DAC or USB Sound CARD users,  
   ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
+  sudo chmod +x ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
+  sudo ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
   speaker-test  
   ```
 
   3.2. AIY-HAT users,  
   ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-  sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
+  sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
+  sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
   sudo reboot  
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
-  sudo /home/pi/GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
+  cd /home/_USER_NAME_  
+  sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
+  sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
   speaker-test  
   ```
 
   3.3. USB MIC AND HDMI users,  
   ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo reboot
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
+  sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
+  sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
+  sudo reboot  
+  cd /home/_USER_NAME_  
+  sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
+  sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   speaker-test  
   ```
 
   3.4. USB MIC AND AUDIO JACK users,  
   ```  
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-  sudo /home/pi/GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
+  sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
+  sudo ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
   speaker-test  
   ```
 
   3.5. CUSTOM VOICE HAT users,  
   ```
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
-  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
-  sudo reboot
-  sudo chmod +x /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  sudo /home/pi/GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
+  sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
+  sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
+  sudo reboot  
+  cd /home/_USER_NAME_  
+  sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
+  sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   speaker-test   
   ```
 
   3.6. RESPEAKER HAT users,  
   ```
   git clone https://github.com/shivasiddharth/seeed-voicecard
-  cd /home/pi/seeed-voicecard/  
+  cd ./seeed-voicecard/  
   sudo ./install.sh  
   sudo reboot   
   speaker-test     
@@ -141,22 +147,27 @@ speaker-test -t wav
 
 1. Follow the instructions [here](https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account) to Configure a Developer Project and Account Settings. Then follow this [guide](https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device) to register the device and obtain the credentials.json file.  
 
-2. Place the credentials.json file in/home/pi directory **DO NOT RENAME**  
+2. Place the credentials.json file in/home/_USER_NAME_ directory **DO NOT RENAME**  
 
 3. Use the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
+  4.0 Change directory (change _USER_NAME_ to your OS username)
+  ```
+  cd /home/_USER_NAME_   
+  ```
+
 	4.1 Make the installers Executable  
 
 	```
-	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi3.sh
-	sudo chmod +x /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo chmod +x ./GassistPi/scripts/gassist-installer-pi3.sh
+	sudo chmod +x ./GassistPi/scripts/gassist-installer-pi-zero.sh
 
 	```
 
 	4.2 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 	```
-	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi3.sh  
-	sudo  /home/pi/GassistPi/scripts/gassist-installer-pi-zero.sh
+	sudo  ./GassistPi/scripts/gassist-installer-pi3.sh  
+	sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh
 
 	```
 
@@ -172,21 +183,26 @@ speaker-test -t wav
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
 *************************************************  
-1. Open the service files in the /home/pi/GassistPi/systemd/ directory and add your project and model ids in the indicated places and save the file.
+1. Open the service files in the /GassistPi/systemd/ directory and add your project and model ids in the indicated places and save the file.
 
-2. Make the service installer executable  
+2. Change directory (change _USER_NAME_ to your OS username)
+```
+cd /home/_USER_NAME_   
+```
+
+3. Make the service installer executable  
 
 ```
-sudo chmod +x /home/pi/GassistPi/scripts/service-installer.sh
+sudo chmod +x ./GassistPi/scripts/service-installer.sh
 ```  
 
-3. Run the service installer  
+4. Run the service installer  
 
 ```
-sudo /home/pi/GassistPi/scripts/service-installer.sh    
+sudo ./GassistPi/scripts/service-installer.sh    
 ```  
 
-4. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
+5. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
@@ -209,13 +225,13 @@ At any point of time, if you wish to manually start the assistant:
 **Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
-/home/pi/env/bin/python -u /home/pi/GassistPi/src/main.py --device_model_id 'replace this with the model id'
+/home/_USER_NAME_/env/bin/python -u /home/_USER_NAME_/GassistPi/src/main.py --device_model_id 'replace this with the model id'
 
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
 Open a terminal and execute the following:
 ```
-/home/pi/env/bin/python -u /home/pi/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
+/home/_USER_NAME_/env/bin/python -u /home/_USER_NAME_/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
 
 ```
 Insert your Project Id and Model Id in quotes in the mentioned places
@@ -298,7 +314,7 @@ Hey Google, Change  _Name of your light_ to _desired color_ .
 1. You can choose to either Enable or Disable the custom wakeword activation in the config.yaml file.  
 2. In the config.yaml file, under Wakewords, change the **"Custom_Wakeword"** to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
 3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
-4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/home/pi/GassistPi/src/resources**  directory.
+4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/GassistPi/src/resources**  directory.
 5. Change the paths to the models in the config.yaml file.  
 6. To disable the default **"Ok Google"** hotword, set the **Ok_Google option to "Disabled"**.  
 7. Users using pushbutton.py or Pi Zero users have an option between using custom wakeword and GPIO trigerring. If custom wakeword is enabled, then GPIO trigger will not work. To enable GPIO triggering, set custom wakeword to 'Disabled'.    

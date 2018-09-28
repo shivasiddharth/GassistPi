@@ -15,6 +15,7 @@
 set -o errexit
 
 scripts_dir="$(dirname "${BASH_SOURCE[0]}")"
+GIT_DIR="$(realpath $(dirname ${BASH_SOURCE[0]})/..)"
 
 # make sure we're running as the owner of the checkout directory
 RUN_AS="$(ls -ld "$scripts_dir" | awk 'NR==1 {print $3}')"
@@ -31,22 +32,22 @@ read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
 read -r -p "Enter the modelid that was generated in the actions console: " modelid
 echo ""
-echo "Your Model-Id used for the project is: $modelid" >> /home/pi/modelid.txt
-cd /home/pi/
+echo "Your Model-Id used for the project is: $modelid" >> /home/${USER}/modelid.txt
+cd /home/${USER}/
 sudo apt-get update -y
 sudo apt-get install python-pip -y
 sudo apt-get install libjack-jackd2-dev -y
 sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
 sudo pip install pyaudio
 sudo apt-get install libatlas-base-dev -y
-sed 's/#.*//' /home/pi/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
+sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
 
 
 python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
 
-pip install -r /home/pi/GassistPi/Requirements/GassistPi-pip-requirements.txt
+pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 pip install google-assistant-library==1.0.0
 pip install google-assistant-grpc==0.2.0
 pip install google-assistant-sdk==0.5.0
