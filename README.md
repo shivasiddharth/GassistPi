@@ -149,7 +149,7 @@ speaker-test -t wav
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=-dMNtmp8z52M
 " target="_blank"><img src="http://img.youtube.com/vi/-dMNtmp8z52M/0.jpg"
-alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>    
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 2. Place the credentials.json file in/home/_USER_NAME_ directory **DO NOT RENAME**  
 
