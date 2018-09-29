@@ -5,6 +5,7 @@ from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
 import yaml
 import random
+import os
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 
