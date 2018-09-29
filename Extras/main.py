@@ -67,6 +67,8 @@ if Custom_Wakeword_Status=='Enabled':
 else:
     custom_wakeword=False
 
+models=['/home/pi/GassistPi/src/resources/alexa.umdl','/home/pi/GassistPi/src/resources/snowboy.umdl']
+
 class Myassistant():
 
     def __init__(self):
