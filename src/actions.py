@@ -297,7 +297,7 @@ def stop():
 
 #Parcel Tracking
 def track():
-    text=api.trackings.get(tracking=dict(slug=slug, tracking_number=number))
+    text=parcelapi.trackings.get(tracking=dict(slug=slug, tracking_number=number))
     numtrack=len(text['trackings'])
     print("Total Number of Parcels: " + str(numtrack))
     if numtrack==0:
