@@ -11,9 +11,9 @@ fi
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-asoundrc=/home/${USER}/.asoundrc
+asoundrc=/home/${SUDO_USER}/.asoundrc
 global_asoundrc=/etc/asound.conf
-audioconfig=/home/${USER}/audiosetup
+audioconfig=/home/${SUDO_USER}/audiosetup
 
 for rcfile in "$asoundrc" "$global_asoundrc"; do
   if [[ -f "$rcfile" ]] ; then
