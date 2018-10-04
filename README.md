@@ -642,7 +642,7 @@ http://worldradiomap.com/map/
 The default keyword for tracking parcel is **parcel**. For example, you can say **where is my parcel** or **track my parcel**.  
 
 Regsiter for a free account with Aftership at https://www.aftership.com gnereate an API number and add parcels to the tracking list.
-The generated API number should be added to the **config.yaml** at the indicated location. For a better understanding follow the attached youtube video.
+The generated API number should be added to the **actions.py** at the indicated location. For a better understanding follow the attached youtube video.
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=WOyYL46s-q0
 " target="_blank"><img src="http://img.youtube.com/vi/WOyYL46s-q0/0.jpg"
