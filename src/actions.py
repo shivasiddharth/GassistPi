@@ -202,19 +202,23 @@ def gaana_search(query):
         ).execute()
     return res
 
-
+#Word translator
+def trans(words,lang):
+    transword= translator.translate(words, dest=lang)
+    transword=transword.text
+    transword=transword.replace("Text, ",'',1)
+    transword=transword.strip()
+    print(transword)
+    return transword
 
 #Text to speech converter with translation
 def say(words):
-    words= translator.translate(words, dest=language)
-    words=words.text
-    words=words.replace("Text, ",'',1)
-    words=words.strip()
-    print(words)
-    tts = gTTS(text=words, lang=language)
+    newword=trans(words,language)
+    tts = gTTS(text=newword, lang=language)
     tts.save(ttsfilename)
     os.system("mpg123 "+ttsfilename)
     os.remove(ttsfilename)
+
 
 
 #Function to get HEX and RGB values for requested colour
