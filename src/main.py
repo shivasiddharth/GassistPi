@@ -469,7 +469,7 @@ class Myassistant():
                         for i in range(0,len(configuration['Domoticz']['Devices']['Name'])):
                             if str(configuration['Domoticz']['Devices']['Name'][i]).lower() in str(usrcmd).lower():
                                 assistant.stop_conversation()
-                                domoticz_control(i,str(usrcmd).lower(),configuration['Domoticz']['Devices']['Id'][i],configuration['Domoticz']['Devices']['Name'][i])
+                                domoticz_control(str(usrcmd).lower(),configuration['Domoticz']['Devices']['Id'][i],configuration['Domoticz']['Devices']['Name'][i])
                                 break
                     else:
                         say("Number of devices and the number of ids given in config file do not match")

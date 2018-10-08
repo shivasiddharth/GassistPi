@@ -1352,9 +1352,12 @@ def spotify_playlist_select(phrase):
 #----------------------End of Spotify functions---------------------------------
 
 #----------------------Start of Domoticz Control Functions----------------------
-def domoticz_control(i,query,index,devicename):
-    global hexcolour,bright
+def domoticz_control(query,index,devicename):
+    global hexcolour,bright,devorder
     try:
+        for j in range(0,len(domoticz_devices['result'])):
+            if domoticz_devices['result'][j]['idx']==index:
+                devorder=j
         if ' on ' in query or ' on' in query or 'on ' in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
             say('Turning on ' + devicename + ' .')
@@ -1365,19 +1368,19 @@ def domoticz_control(i,query,index,devicename):
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
             say('Toggling ' + devicename + ' .')
         if 'colour' in query:
-            if 'RGB' in domoticz_devices['result'][i]['SubType']:
+            if 'RGB' in domoticz_devices['result'][devorder]['SubType']:
                 rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
                 hexcolour=hexcolour.replace("#","",1)
                 hexcolour=hexcolour.strip()
                 print(hexcolour)
                 if bright=='':
-                    bright=str(domoticz_devices['result'][i]['Level'])
+                    bright=str(domoticz_devices['result'][devorder]['Level'])
                 devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false",verify=False)
                 say('Setting ' + devicename + ' to ' + colour + ' .')
             else:
                 say('The requested light is not a colour bulb')
         if 'brightness' in query:
-            if domoticz_devices['result'][i]['HaveDimmer']:
+            if domoticz_devices['result'][devorder]['HaveDimmer']:
                 if 'hundred' in query or 'hundred'.lower() in query or 'maximum' in query:
                     bright=str(100)
                 elif 'zero' in query or 'minimum' in query:
