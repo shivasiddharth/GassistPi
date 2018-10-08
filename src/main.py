@@ -511,7 +511,7 @@ class Myassistant():
                 if (custom_action_keyword['Keywords']['Pi_GPIO_control'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     Action(str(usrcmd).lower())
-                if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower():
+                if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower() and 'kodi' not in str(usrcmd).lower() and 'chromecast' not in str(usrcmd).lower():
                     assistant.stop_conversation()
                     vlcplayer.stop_vlc()
                     if 'autoplay'.lower() in str(usrcmd).lower():
