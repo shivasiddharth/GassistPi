@@ -581,16 +581,15 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 
 | Command Syntax (Hey Google, ...)                   | What it does                                                                 |
 |----------------------------------------------------|------------------------------------------------------------------------------|
-| **stream** I got you                               | Fetches Bebe Rexha's I Got You from YouTube                                  |
-| **autoplay** and **stream** I got you              | Fetch up to 10 results for **I got you** and play them  all                  |
-| **stream** I got you **playlist**                  | Search for a **playlist** and randomly pick a song                           |
-| **autoplay** and **stream** I got you **playlist** | Find the **playlist** and fetch up to 10 songs from it                       |
-| **stream** I got you **channel**                   | Find the **channel** and randomly play a song from it's **uploaded** playlist|
-| **autoplay** and **stream** bebe rexha **channel** | Find the **channel** and fetch up to 10 songs from it's **uploaded** playlist|
+| Play I got you from youtube                        | Fetches Bebe Rexha's I Got You from YouTube                                  |
+| Autoplay I got you from youtube                    | Fetch up to 10 results for **I got you** and play them  all                  |
+| Play I got you   playlist  from youtube            | Search for a **playlist** and randomly pick a song                           |
+| Autoplay  I got you playlist  from youtube         | Find the **playlist** and fetch up to 10 songs from it                       |
+| Play I got you channel from youtube                | Find the **channel** and randomly play a song from it's **uploaded** playlist|
+| Autoplay bebe rexha channel from youtube           | Find the **channel** and fetch up to 10 songs from it's **uploaded** playlist|
 
 
 **Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
-
 
 ************************************************
 ### **MUSIC STREAMING FROM Google Music**  

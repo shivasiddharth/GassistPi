@@ -439,7 +439,6 @@ class Myassistant():
             for event in events:
                 self.process_event(event)
                 usrcmd=event.args
-                usrcmd=trans(str(usrcmd),'en')
                 with open('{}/src/diyHue/config.json'.format(ROOT_PATH), 'r') as config:
                      hueconfig = json.load(config)
                 for i in range(1,len(hueconfig['lights'])+1):

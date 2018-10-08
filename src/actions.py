@@ -48,8 +48,15 @@ with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
 
 if configuration['Language']['Choice']=='en':
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
+elif configuration['Language']['Choice']=='it':
+    keywordfile= '{}/src/keywords_it.yaml'.format(ROOT_PATH)
+elif configuration['Language']['Choice']=='fr':
+    keywordfile= '{}/src/keywords_fr.yaml'.format(ROOT_PATH)
+else:
+    keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
 with open(keywordfile,'r') as conf:
     custom_action_keyword = yaml.load(conf)
+
 
 # Get devices list from domoticz server
 if configuration['Domoticz']['Domoticz_Control']=='Enabled':
@@ -504,10 +511,10 @@ def kodiartist(query):
 def singleplaykodi(query):
     kodi.Playlist.Clear(playlistid=0)
     i=0
-    idx=query.find('play')
+    idx=query.find(custom_action_keyword['Dict']['Play'])
     track=query[idx:]
     track=track.replace("'}", "",1)
-    track = track.replace('play','',1)
+    track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
     track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
     track=track.strip()
     say("Searching for your file")
@@ -639,10 +646,10 @@ def shufflekodi():
 def kodiactions(phrase):
     if 'youtube'.lower() in str(phrase).lower():
         query=str(phrase).lower()
-        idx=query.find('play')
+        idx=query.find(custom_action_keyword['Dict']['Play'])
         track=query[idx:]
         track=track.replace("'}", "",1)
-        track = track.replace('play','',1)
+        track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
         track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         if 'youtube'.lower() in track:
             track=track.replace('youtube','',1)
@@ -655,9 +662,9 @@ def kodiactions(phrase):
         kodi_youtube(track)
     elif 'what'.lower() in str(phrase).lower() and 'playing'.lower() in str(phrase).lower():
         whatisplaying()
-    elif 'play'.lower() in str(phrase).lower() and 'album'.lower() in str(phrase).lower():
+    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and 'album'.lower() in str(phrase).lower():
         albumretrieve(phrase)
-    elif 'play'.lower() in str(phrase).lower() and 'artist'.lower() in str(phrase).lower():
+    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and 'artist'.lower() in str(phrase).lower():
         query=str(phrase).lower()
         idx = query.find('artist')
         artist = query[idx:]
@@ -667,7 +674,7 @@ def kodiactions(phrase):
         artist = artist.strip()
         say("Searching for renditions")
         kodiartist(artist)
-    elif 'play'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
+    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         singleplaykodi(phrase)
     elif 'shuffle'.lower() in str(phrase).lower() and ('audio'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower() or 'music'.lower() in str(phrase).lower()):
         shufflekodi()
@@ -692,11 +699,11 @@ def kodiactions(phrase):
         elif 'off'.lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":False})
             print('Turning off shuffle')
-    elif 'play'.lower() in str(phrase).lower() and 'next'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
+    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and 'next'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
         kodi.Player.GoTo({"playerid":playid,"to":"next"})
-    elif 'play'.lower() in str(phrase).lower() and 'previous'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
+    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and 'previous'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
         players=kodi.Player.GetActivePlayers()
         playid=players["result"][0]["playerid"]
         kodi.Player.GoTo({"playerid":playid,"to":"previous"})
@@ -967,10 +974,11 @@ def YouTube_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find((custom_action_keyword['Keywords']['YouTube_music_stream'][0]))
+        idx=phrase.find('autoplay')
         track=phrase[idx:]
         track=track.replace("'}", "",1)
-        track = track.replace((custom_action_keyword['Keywords']['YouTube_music_stream'][0]),'',1)
+        track = track.replace('autoplay','',1)
+        track = track.replace(custom_action_keyword['Dict']['From_youtube'],'',1)
         track=track.strip()
         say("Getting autoplay links")
         print(track)
@@ -993,10 +1001,11 @@ def YouTube_No_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find((custom_action_keyword['Keywords']['YouTube_music_stream'][0]))
+        idx=phrase.find(custom_action_keyword['Dict']['Play'])
         track=phrase[idx:]
         track=track.replace("'}", "",1)
-        track = track.replace((custom_action_keyword['Keywords']['YouTube_music_stream'][0]),'',1)
+        track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
+        track = track.replace(custom_action_keyword['Dict']['From_youtube'],'',1)
         track=track.strip()
         say("Getting youtube link")
         print(track)
@@ -1024,10 +1033,10 @@ def chromecast_play_video(phrase):
     # Do not rename/change "TV" its a variable
     TV = pychromecast.Chromecast("192.168.1.13") #Change ip to match the ip-address of your Chromecast
     mc = TV.media_controller
-    idx=phrase.find('play')
+    idx=phrase.find(custom_action_keyword['Dict']['Play'])
     query=phrase[idx:]
     query=query.replace("'}", "",1)
-    query=query.replace('play','',1)
+    query=query.replace(custom_action_keyword['Dict']['Play'],'',1)
     query=query.replace('on chromecast','',1)
     query=query.strip()
     youtubelinks=youtube_search(query)
@@ -1321,11 +1330,11 @@ def scan_spotify_playlists():
 def spotify_playlist_select(phrase):
     trackslist=[]
     currenttrackid=0
-    idx=phrase.find('play')
+    idx=phrase.find(custom_action_keyword['Dict']['Play'])
     track=phrase[idx:]
     track=track.replace("'}", "",1)
-    track = track.replace('play','',1)
-    track = track.replace('from spotify','',1)
+    track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
+    track = track.replace('custom_action_keyword['Dict']['From_spotify']','',1)
     track=track.strip()
     say("Getting music links")
     print(track)
@@ -1420,10 +1429,10 @@ def getgaanaplaylistinfo(playlisturl):
 def gaana_playlist_select(phrase):
     trackslist=[]
     currenttrackid=0
-    idx=phrase.find('play')
+    idx=phrase.find(custom_action_keyword['Dict']['Play'])
     track=phrase[idx:]
     track=track.replace("'}", "",1)
-    track = track.replace('play','',1)
+    track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
     track = track.replace('from gaana.com','',1)
     track=track.strip()
     playlistnumreq=re.findall(r'\b\d+\b', track)
@@ -1459,10 +1468,10 @@ def deezer_playlist_select(phrase):
     trackslist=[]
     deezer_user_playlists=[]
     currenttrackid=0
-    idx=phrase.find('play')
+    idx=phrase.find(custom_action_keyword['Dict']['Play'])
     track=phrase[idx:]
     track=track.replace("'}", "",1)
-    track = track.replace('play','',1)
+    track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
     track = track.replace('from deezer','',1)
     track=track.strip()
     playlistnumreq=re.findall(r'\b\d+\b', track)
@@ -1499,7 +1508,7 @@ def deezer_playlist_select(phrase):
 
 #GPIO Device Control
 def Action(phrase):
-    if 'shut down' in phrase:
+    if 'shutdown' in phrase:
         say('Shutting down Raspberry Pi')
         time.sleep(10)
         os.system("sudo shutdown -h now")
@@ -1507,8 +1516,8 @@ def Action(phrase):
     if 'servo' in phrase:
         for s in re.findall(r'\b\d+\b', phrase):
             SetAngle(int(s))
-    if 'zero' in phrase:
-        SetAngle(0)
+        if 'zero' in phrase:
+            SetAngle(0)
     else:
         for num, name in enumerate(var):
             if name.lower() in phrase:
