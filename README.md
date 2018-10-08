@@ -294,7 +294,8 @@ Hey Google, Play _user-playlist-query_ from Gaana.com
 ************************************************
 As of today, you can control lights and switches only, more controls will be added in the future.  
 1. If you want to control devices with Domoticz, in the config.yaml file under **"Domoticz:"** change **"Domoticz_Control:"** from **"Disabled"** to **"Enabled"**.  
-2. Syntaxes:  
+2. List the device names and the ids that you want to control in the config.yaml file. The names should be the same as the ones in the domoticz server.    
+3. Syntaxes:  
 To On/Off/Toggle (The light name should be the same as the Hardware name in Domoticz):  
 Hey Google, Turn On/Turn Off/Toggle  _Name of your light_ .  
 To Change Brightness (between 0 and 100):  

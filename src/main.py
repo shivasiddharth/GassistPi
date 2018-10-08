@@ -465,11 +465,14 @@ class Myassistant():
                         say('Please check if the number of questions matches the number of answers')
 
                 if Domoticz_Device_Control==True and len(domoticz_devices['result'])>0:
-                    for i in range(0,len(domoticz_devices['result'])):
-                        if str(domoticz_devices['result'][i]['HardwareName']).lower() in str(usrcmd).lower():
-                            assistant.stop_conversation()
-                            domoticz_control(i,str(usrcmd).lower(),domoticz_devices['result'][i]['idx'],domoticz_devices['result'][i]['HardwareName'])
-                            break
+                    if len(configuration['Domoticz']['Devices']['Name'])==len(configuration['Domoticz']['Devices']['Id']):
+                        for i in range(0,len(configuration['Domoticz']['Devices']['Name'])):
+                            if str(configuration['Domoticz']['Devices']['Name'][i]).lower() in str(usrcmd).lower():
+                                assistant.stop_conversation()
+                                domoticz_control(i,str(usrcmd).lower(),configuration['Domoticz']['Devices']['Id'][i],configuration['Domoticz']['Devices']['Name'][i])
+                                break
+                    else:
+                        say("Number of devices and the number of ids given in config file do not match")
 
                 if (custom_action_keyword['Keywords']['Magic_mirror'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
