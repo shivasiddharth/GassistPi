@@ -66,3 +66,7 @@ Keywords:
     - 'gaana.com'
   Deezer_music_streaming:
     - 'deezer'
+Dict:
+  - 'to'
+  - 'from'
+  

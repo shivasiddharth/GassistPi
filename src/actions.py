@@ -46,7 +46,9 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
 
-with open('{}/src/keywords.yaml'.format(ROOT_PATH),'r') as conf:
+if configuration['Language']['Choice']=='en':
+    keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
+with open(keywordfile,'r') as conf:
     custom_action_keyword = yaml.load(conf)
 
 # Get devices list from domoticz server
@@ -165,20 +167,7 @@ quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 ##Speech and translator declarations
 ttsfilename="/tmp/say.mp3"
 translator = Translator()
-language='en'
-## Other language options:
-##'af'    : 'Afrikaans'         'sq' : 'Albanian'           'ar' : 'Arabic'      'hy'    : 'Armenian'
-##'bn'    : 'Bengali'           'ca' : 'Catalan'            'zh' : 'Chinese'     'zh-cn' : 'Chinese (China)'
-##'zh-tw' : 'Chinese (Taiwan)'  'hr' : 'Croatian'           'cs' : 'Czech'       'da'    : 'Danish'
-##'nl'    : 'Dutch'             'en' : 'English'            'eo' : 'Esperanto'   'fi'    : 'Finnish'
-##'fr'    : 'French'            'de' : 'German'             'el' : 'Greek'       'hi'    : 'Hindi'
-##'hu'    : 'Hungarian'         'is' : 'Icelandic'          'id' : 'Indonesian'  'it'    : 'Italian'
-##'ja'    : 'Japanese'          'km' : 'Khmer (Cambodian)'  'ko' : 'Korean'      'la'    : 'Latin'
-##'lv'    : 'Latvian'           'mk' : 'Macedonian'         'no' : 'Norwegian'   'pl'    : 'Polish'
-##'pt'    : 'Portuguese'        'ro' : 'Romanian'           'ru' : 'Russian'     'sr'    : 'Serbian'
-##'si'    : 'Sinhala'           'sk' : 'Slovak'             'es' : 'Spanish'     'sw'    : 'Swahili'
-##'sv'    : 'Swedish'           'ta' : 'Tamil'              'th' : 'Thai'        'tr'    : 'Turkish'
-##'uk'    : 'Ukrainian'         'vi' : 'Vietnamese'         'cy' : 'Welsh'
+language=configuration['Language']['Choice']
 
 
 #Function for google KS custom search engine
