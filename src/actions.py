@@ -1510,7 +1510,7 @@ def deezer_playlist_select(phrase):
 
 #GPIO Device Control
 def Action(phrase):
-    if 'shut down' in phrase:
+    if 'shutdown' in phrase:
         say('Shutting down Raspberry Pi')
         time.sleep(10)
         os.system("sudo shutdown -h now")
