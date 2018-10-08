@@ -1433,7 +1433,7 @@ def gaana_playlist_select(phrase):
     track=phrase[idx:]
     track=track.replace("'}", "",1)
     track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
-    track = track.replace('from gaana.com','',1)
+    track = track.replace(custom_action_keyword['Dict']['From_gaana'],'',1)
     track=track.strip()
     playlistnumreq=re.findall(r'\b\d+\b', track)
     if playlistnumreq !=[]:
@@ -1472,7 +1472,7 @@ def deezer_playlist_select(phrase):
     track=phrase[idx:]
     track=track.replace("'}", "",1)
     track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
-    track = track.replace('from deezer','',1)
+    track = track.replace(custom_action_keyword['Dict']['From_deezer'],'',1)
     track=track.strip()
     playlistnumreq=re.findall(r'\b\d+\b', track)
     if playlistnumreq !=[]:
