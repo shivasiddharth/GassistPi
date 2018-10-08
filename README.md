@@ -548,14 +548,14 @@ Hey Google, Set/change Music Volume to maximum/minimum
 
 Change Tracks:  
 Play Previous Track:  
-Hey google, play previous
-Hey google, play previous song
-Hey google, play previous track
-
-Play Next Track:  
-Hey google, play next
-Hey google, play next song
-Hey google, play next track
+Hey google, play previous  
+Hey google, play previous song  
+Hey google, play previous track  
+  
+Play Next Track:    
+Hey google, play next   
+Hey google, play next song   
+Hey google, play next track   
 
 
 ************************************************
