@@ -52,6 +52,8 @@ elif configuration['Language']['Choice']=='it':
     keywordfile= '{}/src/keywords_it.yaml'.format(ROOT_PATH)
 elif configuration['Language']['Choice']=='fr':
     keywordfile= '{}/src/keywords_fr.yaml'.format(ROOT_PATH)
+elif configuration['Language']['Choice']=='de':
+    keywordfile= '{}/src/keywords_de.yaml'.format(ROOT_PATH)
 else:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
 with open(keywordfile,'r') as conf:
