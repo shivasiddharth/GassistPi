@@ -1334,7 +1334,7 @@ def spotify_playlist_select(phrase):
     track=phrase[idx:]
     track=track.replace("'}", "",1)
     track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
-    track = track.replace('custom_action_keyword['Dict']['From_spotify']','',1)
+    track = track.replace(custom_action_keyword['Dict']['From_spotify'],'',1)
     track=track.strip()
     say("Getting music links")
     print(track)
