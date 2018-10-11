@@ -69,8 +69,13 @@ Keywords:
 
 #Do not change the Dict below
 Dict:
+  Album: 'album'
+  All_songs: 'tutte le canzoni'
+  Artist: 'artista'
+  Brightness: 'luminosità'
   By: 'di'
   Change: 'cambiare'
+  Colour: 'colore'
   Decrease: 'diminuire'
   Down:  'giù'
   From: 'da'
@@ -82,10 +87,10 @@ Dict:
   Increase: 'incrementare'
   Maximum: 'massimo'
   Minimum: 'minimo'
-  Off: 'off'
-  On: 'on'
+  Off: 'spente'
+  On: 'accese'
   Play: 'riprodurre'
   Reduce: 'reduce'
   Set: 'regolare'
-  To: 'to'
+  To: 'a'
   Up: 'in alto'

@@ -1,4 +1,4 @@
-# Copyright (C) 2017 Google Inc.
+custom_action_keyword['Dict']['Set']# Copyright (C) 2017 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -140,13 +140,13 @@ DEFAULT_GRPC_DEADLINE = 60 * 3 + 5
 
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip):
-    if 'on' in phrase:
+    if custom_action_keyword['Dict']['On'] in phrase:
         try:
             rq=requests.head("http://"+devip+"/cm?cmnd=Power%20on")
             say("Tunring on "+devname)
         except requests.exceptions.ConnectionError:
             say("Device not online")
-    elif 'off' in phrase:
+    elif custom_action_keyword['Dict']['Off'] in phrase:
         try:
             rq=requests.head("http://"+devip+"/cm?cmnd=Power%20off")
             say("Tunring off "+devname)
@@ -428,12 +428,12 @@ class SampleAssistant(object):
                         return continue_conversation
                     if (custom_action_keyword['Keywords']['VLC_music_volume'][0]).lower() in str(usrcmd).lower():
                         if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
-                            if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
-                                if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
+                            if (custom_action_keyword['Dict']['Set']).lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Change'].lower() in str(usrcmd).lower():
+                                if 'hundred'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Minimum'] in str(usrcmd).lower():
                                     settingvollevel=100
                                     with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                         json.dump(settingvollevel, vol)
-                                elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
+                                elif 'zero'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Minimum'] in str(usrcmd).lower():
                                     settingvollevel=0
                                     with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                         json.dump(settingvollevel, vol)
@@ -443,7 +443,7 @@ class SampleAssistant(object):
                                             json.dump(settingvollevel, vol)
                                 print('Setting volume to: '+str(settingvollevel))
                                 vlcplayer.set_vlc_volume(int(settingvollevel))
-                            elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                            elif custom_action_keyword['Dict']['Inccrease'].lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Decrease'].lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                 if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
                                     with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                                         oldvollevel = json.load(vol)
@@ -453,7 +453,7 @@ class SampleAssistant(object):
                                     oldvollevel=vlcplayer.get_vlc_volume
                                     for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                         oldvollevel=int(oldvollevel)
-                                if 'increase'.lower() in str(usrcmd).lower():
+                                if custom_action_keyword['Dict']['Inccrease'].lower() in str(usrcmd).lower():
                                     if any(char.isdigit() for char in str(usrcmd)):
                                         for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
                                             changevollevel=int(changevollevel)
@@ -471,7 +471,7 @@ class SampleAssistant(object):
                                         json.dump(settingvollevel, vol)
                                     print('Setting volume to: '+str(settingvollevel))
                                     vlcplayer.set_vlc_volume(int(settingvollevel))
-                                if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                                if custom_action_keyword['Dict']['Decrease'].lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                     if any(char.isdigit() for char in str(usrcmd)):
                                         for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
                                             changevollevel=int(changevollevel)

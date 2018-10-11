@@ -126,10 +126,10 @@ def checkvlcpaused():
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip,devportid):
     try:
-        if 'on' in phrase:
+        if custom_action_keyword['Dict']['On'] in phrase:
             rq=requests.head("http://"+devip+"/cm?cmnd=Power"+devportid+"%20on")
             say("Tunring on "+devname)
-        elif 'off' in phrase:
+        elif custom_action_keyword['Dict']['Off'] in phrase:
             rq=requests.head("http://"+devip+"/cm?cmnd=Power"+devportid+"%20off")
             say("Tunring off "+devname)
     except requests.exceptions.ConnectionError:
@@ -569,12 +569,12 @@ class Myassistant():
                 if (custom_action_keyword['Keywords']['VLC_music_volume'][0]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
-                        if 'set'.lower() in str(usrcmd).lower() or 'change'.lower() in str(usrcmd).lower():
-                            if 'hundred'.lower() in str(usrcmd).lower() or 'maximum' in str(usrcmd).lower():
+                        if (custom_action_keyword['Dict']['Set']).lower() in str(usrcmd).lower() or (custom_action_keyword['Dict']['Change']).lower() in str(usrcmd).lower():
+                            if 'hundred'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Maximum'] in str(usrcmd).lower():
                                 settingvollevel=100
                                 with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                     json.dump(settingvollevel, vol)
-                            elif 'zero'.lower() in str(usrcmd).lower() or 'minimum' in str(usrcmd).lower():
+                            elif 'zero'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Minimum'] in str(usrcmd).lower():
                                 settingvollevel=0
                                 with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                     json.dump(settingvollevel, vol)
@@ -584,7 +584,7 @@ class Myassistant():
                                         json.dump(settingvollevel, vol)
                             print('Setting volume to: '+str(settingvollevel))
                             vlcplayer.set_vlc_volume(int(settingvollevel))
-                        elif 'increase'.lower() in str(usrcmd).lower() or 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                        elif (custom_action_keyword['Dict']['Increase']).lower() in str(usrcmd).lower() or (custom_action_keyword['Dict']['Decrease']).lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                             if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
                                 with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                                     oldvollevel = json.load(vol)
@@ -594,7 +594,7 @@ class Myassistant():
                                 oldvollevel=vlcplayer.get_vlc_volume
                                 for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                     oldvollevel=int(oldvollevel)
-                            if 'increase'.lower() in str(usrcmd).lower():
+                            if (custom_action_keyword['Dict']['Increase']).lower() in str(usrcmd).lower():
                                 if any(char.isdigit() for char in str(usrcmd)):
                                     for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
                                         changevollevel=int(changevollevel)
@@ -612,7 +612,7 @@ class Myassistant():
                                     json.dump(settingvollevel, vol)
                                 print('Setting volume to: '+str(settingvollevel))
                                 vlcplayer.set_vlc_volume(int(settingvollevel))
-                            if 'decrease'.lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                            if (custom_action_keyword['Dict']['Decrease']).lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                 if any(char.isdigit() for char in str(usrcmd)):
                                     for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
                                         changevollevel=int(changevollevel)

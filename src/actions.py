@@ -223,9 +223,9 @@ def say(words):
 
 #Function to get HEX and RGB values for requested colour
 def getcolours(phrase):
-    usrclridx=idx=phrase.find("to")
+    usrclridx=idx=phrase.find(custom_action_keyword['Dict']['To'])
     usrclr=query=phrase[usrclridx:]
-    usrclr=usrclr.replace("to","",1)
+    usrclr=usrclr.replace(custom_action_keyword['Dict']['To'],"",1)
     usrclr=usrclr.replace("'}","",1)
     usrclr=usrclr.strip()
     usrclr=usrclr.replace(" ","",1)
@@ -276,10 +276,10 @@ def ESP(phrase):
     for num, name in enumerate(devname):
         if name.lower() in phrase:
             dev=devid[num]
-            if 'on' in phrase:
+            if custom_action_keyword['Dict']['On'] in phrase:
                 ctrl='=ON'
                 say("Turning On " + name)
-            elif 'off' in phrase:
+            elif custom_action_keyword['Dict']['Off'] in phrase:
                 ctrl='=OFF'
                 say("Turning Off " + name)
             rq = requests.head("https://"+ip + dev + ctrl)
@@ -666,14 +666,14 @@ def kodiactions(phrase):
         kodi_youtube(track)
     elif 'what'.lower() in str(phrase).lower() and 'playing'.lower() in str(phrase).lower():
         whatisplaying()
-    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and 'album'.lower() in str(phrase).lower():
+    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and (custom_action_keyword['Dict']['Album']).lower() in str(phrase).lower():
         albumretrieve(phrase)
-    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and 'artist'.lower() in str(phrase).lower():
+    elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and (custom_action_keyword['Dict']['Artist']).lower() in str(phrase).lower():
         query=str(phrase).lower()
-        idx = query.find('artist')
+        idx = query.find(custom_action_keyword['Dict']['Artist'])
         artist = query[idx:]
         artist = artist.replace("'}", "",1)
-        artist = artist.replace('artist','',1)
+        artist = artist.replace(custom_action_keyword['Dict']['Artist'],'',1)
         artist = artist.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         artist = artist.strip()
         say("Searching for renditions")
@@ -689,7 +689,7 @@ def kodiactions(phrase):
             kodi.Player.SetRepeat({"playerid": playid,"repeat": "one"})
         elif 'all'.lower() in str(phrase).lower():
             kodi.Player.SetRepeat({"playerid": playid,"repeat": "all"})
-        elif 'off'.lower() in str(phrase).lower() or 'disable'.lower() in str(phrase).lower() or 'none'.lower() in str(phrase).lower():
+        elif (custom_action_keyword['Dict']['Off']).lower() in str(phrase).lower() or 'disable'.lower() in str(phrase).lower() or 'none'.lower() in str(phrase).lower():
             kodi.Player.SetRepeat({"playerid": playid,"repeat": "off"})
     elif 'turn'.lower() in str(phrase).lower() and 'shuffle'.lower() in str(phrase).lower():
         players=kodi.Player.GetActivePlayers()
@@ -697,10 +697,10 @@ def kodiactions(phrase):
         cmd=str(phrase).lower()
         cmd=cmd.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         cmd=cmd.strip()
-        if 'on'.lower() in str(cmd).lower():
+        if (custom_action_keyword['Dict']['On']).lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":True})
             print('Turning on shuffle')
-        elif 'off'.lower() in str(cmd).lower():
+        elif (custom_action_keyword['Dict']['Off']).lower() in str(cmd).lower():
             kodi.Player.SetShuffle({"playerid": playid,"shuffle":False})
             print('Turning off shuffle')
     elif custom_action_keyword['Dict']['Play'].lower() in str(phrase).lower() and 'next'.lower() in str(phrase).lower() or ('audio'.lower() in str(phrase).lower() or 'video'.lower() in str(phrase).lower() or 'movie'.lower() in str(phrase).lower() or 'song'.lower() in str(phrase).lower() or 'track'.lower() in str(phrase).lower()):
@@ -724,7 +724,7 @@ def kodiactions(phrase):
                 kodi.Player.Seek({ "playerid": playid, "value": "smallforward" })
             else:
                 kodi.Player.Seek({ "playerid": playid, "value": "bigforward" })
-    elif 'set'.lower() in str(phrase).lower() and 'volume'.lower() in str(phrase).lower():
+    elif (custom_action_keyword['Dict']['Set']).lower() in str(phrase).lower() and 'volume'.lower() in str(phrase).lower():
         for s in re.findall(r'\b\d+\b', phrase):
             kodi.Application.SetVolume({"volume": int(s)})
             with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
@@ -926,14 +926,14 @@ def gmusicselect(phrase):
                 say("Unable to find songs matching your request")
 
 
-    if 'album'.lower() in phrase:
+    if (custom_action_keyword['Dict']['Album']).lower() in phrase:
         req=phrase
-        idx=(req).find('album')
+        idx=(req).find(custom_action_keyword['Dict']['Album'])
         album=req[idx:]
         album=album.replace("'}", "",1)
-        album = album.replace('album','',1)
-        if 'from'.lower() in req:
-            album = album.replace('from','',1)
+        album = album.replace(custom_action_keyword['Dict']['Album'],'',1)
+        if (custom_action_keyword['Dict']['From']).lower() in req:
+            album = album.replace(custom_action_keyword['Dict']['From'],'',1)
             album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         else:
             album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
@@ -947,14 +947,14 @@ def gmusicselect(phrase):
         else:
             say("Unable to find songs matching your request")
 
-    if 'artist'.lower() in phrase:
+    if (custom_action_keyword['Dict']['Artist']).lower() in phrase:
         req=phrase
-        idx=(req).find('artist')
+        idx=(req).find(custom_action_keyword['Dict']['Artist'])
         artist=req[idx:]
         artist=artist.replace("'}", "",1)
-        artist = artist.replace('artist','',1)
-        if 'from'.lower() in req:
-            artist = artist.replace('from','',1)
+        artist = artist.replace(custom_action_keyword['Dict']['Artist'],'',1)
+        if (custom_action_keyword['Dict']['From']).lower() in req:
+            artist = artist.replace(custom_action_keyword['Dict']['From'],'',1)
             artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
         else:
             artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
@@ -1246,10 +1246,10 @@ def hue_control(phrase,lightindex,lightaddress):
     currentct=hueconfig['lights'][lightindex]['state']['ct']
     huelightname=str(hueconfig['lights'][lightindex]['name'])
     try:
-        if 'on' in phrase:
+        if custom_action_keyword['Dict']['On'] in phrase:
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=true")
             say("Turning on "+huelightname)
-        if 'off' in phrase:
+        if custom_action_keyword['Dict']['Off'] in phrase:
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&on=false")
             say("Turning off "+huelightname)
         if 'çolor' in phrase:
@@ -1260,10 +1260,10 @@ def hue_control(phrase,lightindex,lightaddress):
             huereq=requests.head("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
             print("http://"+lightaddress+"/set?light="+lightindex+"&x="+str(xval)+"&y="+str(yval)+"&on=true")
             say("Setting "+huelightname+" to "+colour)
-        if 'brightness'.lower() in phrase:
-            if 'hundred'.lower() in phrase or 'maximum' in phrase:
+        if (custom_action_keyword['Dict']['Brightness']).lower() in phrase:
+            if 'hundred'.lower() in phrase or custom_action_keyword['Dict']['Maximum'] in phrase:
                 bright=100
-            elif 'zero'.lower() in phrase or 'minimum' in phrase:
+            elif 'zero'.lower() in phrase or custom_action_keyword['Dict']['Minimum'] in phrase:
                 bright=0
             else:
                 bright=re.findall('\d+', phrase)
@@ -1361,16 +1361,16 @@ def spotify_playlist_select(phrase):
 def domoticz_control(i,query,index,devicename):
     global hexcolour,bright
     try:
-        if ' on ' in query or ' on' in query or 'on ' in query:
+        if (' ' + custom_action_keyword['Dict']['On'] + ' ') in query or (' ' + custom_action_keyword['Dict']['On']) in query or (custom_action_keyword['Dict']['On'] + ' ') in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
             say('Turning on ' + devicename + ' .')
-        if 'off' in query:
+        if custom_action_keyword['Dict']['Off'] in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Off",verify=False)
             say('Turning off ' + devicename + ' .')
         if 'toggle' in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
             say('Toggling ' + devicename + ' .')
-        if 'colour' in query:
+        if custom_action_keyword['Dict']['Colour'] in query:
             if 'RGB' in domoticz_devices['result'][i]['SubType']:
                 rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
                 hexcolour=hexcolour.replace("#","",1)
@@ -1382,11 +1382,11 @@ def domoticz_control(i,query,index,devicename):
                 say('Setting ' + devicename + ' to ' + colour + ' .')
             else:
                 say('The requested light is not a colour bulb')
-        if 'brightness' in query:
+        if custom_action_keyword['Dict']['Brightness'] in query:
             if domoticz_devices['result'][i]['HaveDimmer']:
-                if 'hundred' in query or 'hundred'.lower() in query or 'maximum' in query:
+                if 'hundred' in query or 'hundred'.lower() in query or custom_action_keyword['Dict']['Maximum'] in query:
                     bright=str(100)
-                elif 'zero' in query or 'minimum' in query:
+                elif 'zero' in query or custom_action_keyword['Dict']['Minimum'] in query:
                     bright=str(0)
                 else:
                     bright=re.findall('\d+', query)
@@ -1526,9 +1526,9 @@ def Action(phrase):
         for num, name in enumerate(var):
             if name.lower() in phrase:
                 pinout=gpio[num]
-                if 'on' in phrase:
+                if custom_action_keyword['Dict']['On'] in phrase:
                     GPIO.output(pinout, 1)
                     say("Turning On " + name)
-                elif 'off' in phrase:
+                elif custom_action_keyword['Dict']['Off'] in phrase:
                     GPIO.output(pinout, 0)
                     say("Turning Off " + name)

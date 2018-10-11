@@ -69,8 +69,13 @@ Keywords:
 
 #Do not change the Dict below
 Dict:
+  Album: 'album'
+  All_songs: 'all the songs'
+  Artist: 'artist'
+  Brightness: 'brightness'
   By: 'by'
   Change: 'change'
+  Colour: 'colour'
   Decrease: 'decrease'
   Down:  'down'
   From: 'from'
