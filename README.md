@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 22-Sep-2018 Update:
-**Now stream music from Gaana.com and Deezer**        
+## 13-Oct-2018 Update:
+**Use custom actions in your native or Non-english languages. Non-English languages supported: French, Italian, German, Spanish        
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -40,6 +40,7 @@
 **27.  Control of lights added to Domoticz.**  
 **28.  Stream music from Gaana.com.**  
 **29.  Stream your playlist from Deezer.**    
+**30.  Custom actions in French, Italian, German and Spanish.  
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -242,6 +243,15 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 *******************************************************************
+### **CUSTOM ACTIONS IN Non-English Languages**    
+************************************************
+Languages supported: French, Italian, Spanish and German.  
+
+In the **config.yaml** file, under the **Languages and Choice** option set your desired language.   
+
+Use the Translated versions of the English syntaxes given for all the custom actions.  
+
+************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
 ************************************************
 **NOTE: As a roundabout approach, I have programmed the assistant to get the playlist details using Deezer API and then fetch those tracks from YouTube.**   
