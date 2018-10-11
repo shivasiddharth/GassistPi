@@ -41,16 +41,16 @@ Keywords:
   # Change tracks
   Track_change:
     Next:
-      - 'play next'
-      - 'play next track'
-      - 'play next song'
+      - 'spiele nächste'
+      - 'spiele nächste lied'
+      - 'spiele das nächste lied'
     Previous:
-      - 'play previous'
-      - 'play previous track'
-      - 'play previous song'
+      - 'spiele vorheriges'
+      - 'spiele vorheriges lied'
+      - 'spiele das vorheriges lied'
   #Control music/vlc volume
   VLC_music_volume:
-    - 'music volume'
+    - 'musik lautstärke'
   # Refresh music lists. Both the words given below should be present in the command issued.
   Music_index_refresh:
     - 'refresh'
@@ -70,22 +70,22 @@ Keywords:
 #Do not change the Dict below
 Dict:
   By: 'von'
-  Change: 'change'
-  Decrease: 'decrease'
-  Down:  'down'
+  Change: 'ändern'
+  Decrease: 'verringern'
+  Down:  'runter'
   From: 'von'
   From_deezer: 'von deezer'
   From_gaana: 'von gaana.com'
   From_google_music: 'von google music'
   From_spotify: 'von spotify'
   From_youtube: 'von youtube'
-  Increase: 'increase'
-  Maximum: 'maximum'
+  Increase: 'erhöhen'
+  Maximum: 'maximal'
   Minimum: 'minimum'
   Off: 'off'
   On: 'on'
   Play: 'spiele'
   Reduce: 'reduce'
-  Set: 'set'
+  Set: 'einstellen'
   To: 'to'
-  Up: 'up'
+  Up: 'rauf'
