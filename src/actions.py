@@ -1361,11 +1361,12 @@ def spotify_playlist_select(phrase):
 def domoticz_control(query,index,devicename):
     global hexcolour,bright,devorder
     try:
-        if (' ' + custom_action_keyword['Dict']['On'] + ' ') in query or (' ' + custom_action_keyword['Dict']['On']) in query or (custom_action_keyword['Dict']['On'] + ' ') in query:
         for j in range(0,len(domoticz_devices['result'])):
             if domoticz_devices['result'][j]['idx']==index:
                 devorder=j
                 break
+                
+        if (' ' + custom_action_keyword['Dict']['On'] + ' ') in query or (' ' + custom_action_keyword['Dict']['On']) in query or (custom_action_keyword['Dict']['On'] + ' ') in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
             say('Turning on ' + devicename + ' .')
         if custom_action_keyword['Dict']['Off'] in query:
