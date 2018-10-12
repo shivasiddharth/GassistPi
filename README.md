@@ -40,7 +40,7 @@
 **27.  Control of lights added to Domoticz.**  
 **28.  Stream music from Gaana.com.**  
 **29.  Stream your playlist from Deezer.**    
-**30.  Custom actions in French, Italian, German and Spanish.  
+**30.  Custom actions in French, Italian, German and Spanish.**    
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -243,7 +243,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 *******************************************************************
-### **CUSTOM ACTIONS IN Non-English Languages**    
+### **CUSTOM ACTIONS IN Non-English LANGUAGES**    
 ************************************************
 Languages supported: French, Italian, Spanish and German.  
 
