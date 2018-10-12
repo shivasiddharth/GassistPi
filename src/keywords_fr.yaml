@@ -1,0 +1,96 @@
+# Keywords are certain specific word/words that must be present in the user query/command to trigger the custom action.
+# Feel free to modify, but make sure that each custom action has unique keyword.
+# CHANGE THE WORD PRESENT WITHIN THE QUOTES ONLY. DO NOT ALTER OTHERS
+
+Keywords:
+  # Magic Mirror
+  Magic_mirror:
+    - 'magic mirror'
+  # Sending recipe to mobile devices
+  Recipe_pushbullet:
+    - 'ingredients'
+  # Kickstarter campaign tracking
+  Kickstarter_tracking:
+    - 'kickstarter'
+  # Pi power off, servo control and Pi GPIO control
+  Pi_GPIO_control:
+    - 'trigger'
+  # Stream songs from YouTube
+  YouTube_music_stream:
+    - 'youtube'
+  # Stop music and radio playback
+  Stop_music:
+    - 'stop'
+  # ESP control
+  ESP_control:
+    - 'wireless'
+  # Parcel tracking
+  Parcel_tracking:
+    - 'parcel'
+  # RSS feed playback
+  RSS:
+    - 'feed'
+    - 'quote'
+  # Kodi actions
+  Kodi_actions:
+    - 'on kodi'
+  # Music pause/resume
+  Pause_resume:
+    - 'pause music'
+    - 'resume music'
+  # Change tracks
+  Track_change:
+    Next:
+      - 'jouer suivant'
+      - 'jouer chanson suivant'
+      - 'jouer la chanson suivant'
+    Previous:
+      - 'jouer précédent'
+      - 'jouer chanson précédent'
+      - 'jouer la chanson précédent'
+  #Control music/vlc volume
+  VLC_music_volume:
+    - 'volume musique'
+  # Refresh music lists. Both the words given below should be present in the command issued.
+  Music_index_refresh:
+    - 'refresh'
+    - 'music'
+  # Streaming music from google music
+  Google_music_streaming:
+    - 'google music'
+  # Streaming music from spotify
+  Spotify_music_streaming:
+    - 'spotify'
+  # Streaming music from gaana
+  Gaana_music_streaming:
+    - 'gaana.com'
+  Deezer_music_streaming:
+    - 'deezer'
+
+#Do not change the Dict below
+Dict:
+  Album: 'album'
+  All_songs: 'toutes les chansons'
+  Artist: 'artiste'
+  Brightness: 'luminosité'
+  By: 'de'
+  Change: 'changer'
+  Colour: 'couleur'
+  Decrease: 'diminuer'
+  Down:  'en bas'
+  From: 'de'
+  From_deezer: 'de deezer'
+  From_gaana: 'de gaana.com'
+  From_google_music: 'de google music'
+  From_spotify: 'de spotify'
+  From_youtube: 'de youtube'
+  Increase: 'augmenter'
+  Maximum: 'maximum'
+  Minimum: 'minimum'
+  Off: 'éteinte'
+  On: 'allumée'
+  Play: 'jouer'
+  Reduce: 'reduce'
+  Set: 'ajuster'
+  To: 'à'
+  Up: 'en haut'

@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 22-Sep-2018 Update:
-**Now stream music from Gaana.com and Deezer**        
+## 12-Oct-2018 Update:
+**Use custom actions in your native or Non-english languages. Non-English languages supported: French, Italian, German, Spanish.**          
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -40,6 +40,7 @@
 **27.  Control of lights added to Domoticz.**  
 **28.  Stream music from Gaana.com.**  
 **29.  Stream your playlist from Deezer.**    
+**30.  Custom actions in French, Italian, German and Spanish.**    
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -242,6 +243,15 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 *******************************************************************
+### **CUSTOM ACTIONS IN Non-English LANGUAGES**    
+************************************************
+Languages supported: French, Italian, Spanish and German.  
+
+In the **config.yaml** file, under the **Languages and Choice** option set your desired language.   
+
+Use the Translated versions of the English syntaxes given for all the custom actions.  
+
+************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
 ************************************************
 **NOTE: As a roundabout approach, I have programmed the assistant to get the playlist details using Deezer API and then fetch those tracks from YouTube.**   
@@ -359,6 +369,10 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 ************************************************
 Credits for the [Emulated Hue](https://github.com/mariusmotea/diyHue) to [Marius Motea](https://github.com/mariusmotea).  
 
+First install the certificates:  
+sudo chmod +x /home/_USER_/GassistPi/src/diyHue/cert_installer.sh  
+sudo /home/_USER_/GassistPi/src/diyHue/cert_installer.sh  
+
 To set the emuated Hue to autostart on boot as a service, open a terminal and run the following:  
 ```
 sudo systemctl enable diyHue.service  
@@ -382,7 +396,14 @@ alt="Apple App Store Philips Hue App" width="200" height="80" border="1" /></a> 
 " target="_blank"><img src="https://drive.google.com/uc?id=1Qh6tdhcxZTRPOvkL1lptdbvdTiHRM7Vq"
 alt="Google Play Philips Hue App" width="200" height="80" border="1" /></a>
 
-Open the app, scan and add the emulated Hue lights.  
+#### **To pair the diyHue to the app:**    
+To pair a new device to diyHue, first head to http://{IP_ADDRESS}/hue/linkbutton.   
+The default username is **Hue** and password is **Hue**.   
+At this point you should open the Hue app on your phone and start searching for hubs.   
+To speed this up you can click the Help button and then enter the IP address of your diyHue device.   
+Once the bridge has been detected, click the green Set up button. At this point, the app will prompt you to press the link button on your Hue bridge.   
+To do so, click the Activate button on the web page you loaded at the start.
+The Hue app should now prompt you through the rest of the setup. For specific details on how to setup specific lights, browse the lights section in the navigation bar to the right.     
 
 **Command Syntax:**    
 **To turn lights on/off :** "Hey Google, Turn _Hue-Light-Name_ On/Off"    
@@ -582,16 +603,15 @@ Default keyword for playing music from **YouTube with autoplay** is **Autoplay a
 
 | Command Syntax (Hey Google, ...)                   | What it does                                                                 |
 |----------------------------------------------------|------------------------------------------------------------------------------|
-| **stream** I got you                               | Fetches Bebe Rexha's I Got You from YouTube                                  |
-| **autoplay** and **stream** I got you              | Fetch up to 10 results for **I got you** and play them  all                  |
-| **stream** I got you **playlist**                  | Search for a **playlist** and randomly pick a song                           |
-| **autoplay** and **stream** I got you **playlist** | Find the **playlist** and fetch up to 10 songs from it                       |
-| **stream** I got you **channel**                   | Find the **channel** and randomly play a song from it's **uploaded** playlist|
-| **autoplay** and **stream** bebe rexha **channel** | Find the **channel** and fetch up to 10 songs from it's **uploaded** playlist|
+| Play I got you from youtube                        | Fetches Bebe Rexha's I Got You from YouTube                                  |
+| Autoplay I got you from youtube                    | Fetch up to 10 results for **I got you** and play them  all                  |
+| Play I got you   playlist  from youtube            | Search for a **playlist** and randomly pick a song                           |
+| Autoplay  I got you playlist  from youtube         | Find the **playlist** and fetch up to 10 songs from it                       |
+| Play I got you channel from youtube                | Find the **channel** and randomly play a song from it's **uploaded** playlist|
+| Autoplay bebe rexha channel from youtube           | Find the **channel** and fetch up to 10 songs from it's **uploaded** playlist|
 
 
 **Due to the Pi Zero's limitations, users are advised to not use the Music streaming feature. Music streaming will send the CPU usage of Pi Zero into the orbit.**  
-
 
 ************************************************
 ### **MUSIC STREAMING FROM Google Music**  

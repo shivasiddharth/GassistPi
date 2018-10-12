@@ -112,6 +112,16 @@ Kodi:
     - music
     - playercontrols
 
+#Change you language. Default is english
+Language:
+  Choice: 'en'
+  Language options:
+     - 'en' #'English'
+     - 'fr' # 'French'
+     - 'de' # 'German'
+     - 'it' # 'Italian'
+     - 'es' # 'Spanish'
+
 # Enter your Magic Mirror IP
 Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
 
