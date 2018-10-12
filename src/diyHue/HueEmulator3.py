@@ -44,6 +44,7 @@ def getIpAddress():
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
 
+
 def pretty_json(data):
     return json.dumps(data, sort_keys=True,                  indent=4, separators=(',', ': '))
 
@@ -247,6 +248,7 @@ def loadConfig():  #load and configure alarm virtual light
 loadConfig()
 
 def saveConfig(filename="{}/src/diyHue/config.json".format(ROOT_PATH)):
+
     with open(cwd +'/config.json', 'w') as fp:
         json.dump(bridge_config, fp, sort_keys=True, indent=4, separators=(',', ': '))
     if docker:
@@ -746,6 +748,7 @@ def syncWithLights(): #update Hue Bridge lights states
                         bridge_config["lights"][light]["state"]["colormode"] = "hs"
                         bridge_config["lights"][light]["state"]["hue"] = light_data["hue"] * 180
                         bridge_config["lights"][light]["state"]["sat"] = int(light_data["saturation"] * 2.54)
+
                 elif bridge_config["lights_address"][light]["protocol"] == "domoticz": #domoticz protocol
                     light_data = json.loads(sendRequest("http://" + bridge_config["lights_address"][light]["ip"] + "/json.htm?type=devices&rid=" + bridge_config["lights_address"][light]["light_id"], "GET", "{}"))
                     if light_data["result"][0]["Status"] == "Off":
@@ -1075,6 +1078,7 @@ class S(BaseHTTPRequestHandler):
         # body. The HTTP body needs to be consumed and ignored in order to request be handle correctly.
         self.read_http_request_body()
 
+
         if self.path == '/' or self.path == '/index.html':
             self._set_headers()
             f = open(cwd + '/web-ui/index.html')
@@ -1100,6 +1104,7 @@ class S(BaseHTTPRequestHandler):
             self._set_headers()
             saveConfig()
             self._set_end_headers(bytes(json.dumps([{"success":{"configuration":"saved","filename":"{}/src/diyHue/config.json".format(ROOT_PATH)}}] ,separators=(',', ':')), "utf8"))
+
         elif self.path.startswith("/tradfri"): #setup Tradfri gateway
             self._set_headers()
             get_parameters = parse_qs(urlparse(self.path).query)
@@ -1326,6 +1331,7 @@ class S(BaseHTTPRequestHandler):
         logging.debug("in post method")
         logging.debug(self.path)
         self.data_string = self.read_http_request_body()
+
         if self.path == "/updater":
             logging.debug("check for updates")
             update_data = json.loads(sendRequest("http://raw.githubusercontent.com/mariusmotea/diyHue/master/BridgeEmulator/updater", "GET", "{}"))
@@ -1444,6 +1450,7 @@ class S(BaseHTTPRequestHandler):
                         if put_dictionary["stream"]["active"]:
                             logging.debug("start hue entertainment")
                             Popen([""{}/src/diyHue/entertainment-srv".format(ROOT_PATH)", "server_port=2100", "dtls=1", "psk_list=" + url_pices[2] + ",321c0c2ebfa7361e55491095b2f5f9db"])
+
                             sleep(0.2)
                             bridge_config["groups"][url_pices[4]]["stream"].update({"active": True, "owner": url_pices[2], "proxymode": "auto", "proxynode": "/bridge"})
                         else:
@@ -1460,7 +1467,9 @@ class S(BaseHTTPRequestHandler):
                         if "active" in put_dictionary:
                             if put_dictionary["active"]:
                                 logging.debug("start hue entertainment")
+
                                 Popen([""{}/src/diyHue/entertainment-srv".format(ROOT_PATH)", "server_port=2100", "dtls=1", "psk_list=" + url_pices[2] + ",321c0c2ebfa7361e55491095b2f5f9db"])
+
                                 sleep(0.2)
                                 bridge_config["groups"][url_pices[4]]["stream"].update({"active": True, "owner": url_pices[2], "proxymode": "auto", "proxynode": "/bridge"})
                             else:

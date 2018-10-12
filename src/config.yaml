@@ -29,6 +29,18 @@ Domoticz:
     - '192.168.0.10'
   Server_port:
     - '443'
+  Devices:
+    #The number of names and number of ids should be equal
+    #List the device names that you want to control
+    Name:
+      - 'Lamp1'
+      - 'Lamp2'
+      - 'Lamp3'
+    #Assign the device ids in the same order as the devices listed above
+    Id:
+      - '1'
+      - '2'
+      - '3'
 
 #ESP control declarations. Follow a similar pattern to add your own list.
 ESP:
