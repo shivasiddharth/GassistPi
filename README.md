@@ -368,6 +368,10 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 ************************************************
 Credits for the [Emulated Hue](https://github.com/mariusmotea/diyHue) to [Marius Motea](https://github.com/mariusmotea).  
 
+First install the certificates:  
+sudo chmod +x /home/_USER_/GassistPi/src/diyHue/cert_installer.sh  
+sudo /home/_USER_/GassistPi/src/diyHue/cert_installer.sh  
+
 To set the emuated Hue to autostart on boot as a service, open a terminal and run the following:  
 ```
 sudo systemctl enable diyHue.service  
@@ -391,7 +395,14 @@ alt="Apple App Store Philips Hue App" width="200" height="80" border="1" /></a> 
 " target="_blank"><img src="https://drive.google.com/uc?id=1Qh6tdhcxZTRPOvkL1lptdbvdTiHRM7Vq"
 alt="Google Play Philips Hue App" width="200" height="80" border="1" /></a>
 
-Open the app, scan and add the emulated Hue lights.  
+#### **To pair the diyHue to the app:**    
+To pair a new device to diyHue, first head to http://{IP_ADDRESS}/hue/linkbutton.   
+The default username is **Hue** and password is **Hue**.   
+At this point you should open the Hue app on your phone and start searching for hubs.   
+To speed this up you can click the Help button and then enter the IP address of your diyHue device.   
+Once the bridge has been detected, click the green Set up button. At this point, the app will prompt you to press the link button on your Hue bridge.   
+To do so, click the Activate button on the web page you loaded at the start.
+The Hue app should now prompt you through the rest of the setup. For specific details on how to setup specific lights, browse the lights section in the navigation bar to the right.     
 
 **Command Syntax:**    
 **To turn lights on/off :** "Hey Google, Turn _Hue-Light-Name_ On/Off"    
