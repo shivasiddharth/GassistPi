@@ -6,7 +6,7 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 13-Oct-2018 Update:
+## 12-Oct-2018 Update:
 **Use custom actions in your native or Non-english languages. Non-English languages supported: French, Italian, German, Spanish.**          
 *******************************************************************************************************************************
 
