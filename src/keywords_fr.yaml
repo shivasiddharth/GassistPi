@@ -36,25 +36,25 @@ Keywords:
     - 'on kodi'
   # Music pause/resume
   Pause_resume:
-    - 'pause music'
-    - 'resume music'
+    - 'pause'
+    - 'reprends'
   # Change tracks
   Track_change:
     Next:
-      - 'jouer suivant'
-      - 'jouer chanson suivant'
-      - 'jouer la chanson suivant'
+      - 'suivante'
+      - 'chanson suivante'
+      - 'joue la chanson suivante'
     Previous:
-      - 'jouer précédent'
-      - 'jouer chanson précédent'
-      - 'jouer la chanson précédent'
+      - 'précédente'
+      - 'chanson précédente'
+      - 'joue la chanson précédente'
   #Control music/vlc volume
   VLC_music_volume:
-    - 'volume musique'
+    - 'volume de la musique'
   # Refresh music lists. Both the words given below should be present in the command issued.
   Music_index_refresh:
-    - 'refresh'
-    - 'music'
+    - 'rafraichis'
+    - 'musique'
   # Streaming music from google music
   Google_music_streaming:
     - 'google music'
@@ -73,24 +73,24 @@ Dict:
   All_songs: 'toutes les chansons'
   Artist: 'artiste'
   Brightness: 'luminosité'
-  By: 'de'
-  Change: 'changer'
+  By: 'par'
+  Change: 'change'
   Colour: 'couleur'
-  Decrease: 'diminuer'
+  Decrease: 'baisse'
   Down:  'en bas'
   From: 'de'
-  From_deezer: 'de deezer'
-  From_gaana: 'de gaana.com'
-  From_google_music: 'de google music'
-  From_spotify: 'de spotify'
-  From_youtube: 'de youtube'
-  Increase: 'augmenter'
+  From_deezer: 'sur deezer'
+  From_gaana: 'sur gaana.com'
+  From_google_music: 'sur google music'
+  From_spotify: 'sur spotify'
+  From_youtube: 'sur youtube'
+  Increase: 'augmente'
   Maximum: 'maximum'
   Minimum: 'minimum'
   Off: 'éteinte'
   On: 'allumée'
-  Play: 'jouer'
-  Reduce: 'reduce'
-  Set: 'ajuster'
+  Play: 'joue'
+  Reduce: 'réduit'
+  Set: 'met'
   To: 'à'
   Up: 'en haut'
