@@ -121,6 +121,7 @@ Language:
      - 'de' # 'German'
      - 'it' # 'Italian'
      - 'es' # 'Spanish'
+     - 'nl' # 'Dutch'
 
 # Enter your Magic Mirror IP
 Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
