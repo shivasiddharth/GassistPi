@@ -44,24 +44,10 @@ Keywords:
       - 'speel volgende'
       - 'speel volgende nummer'
       - 'speel het volgende nummer'
-      - 'volgende spelen'
-      - 'volgende nummer spelen'
-      - 'het volgende nummer spelen'
-      - 'volgende afspelen'
-      - 'volgende nummer afspelen'
-      - 'het volgende nummer afspelen'
-
     Previous:
       - 'speel vorige'
       - 'speel vorige nummer'
       - 'speel het vorige nummer'
-      - 'vorige spelen'
-      - 'vorige nummer spelen'
-      - 'het vorige nummer spelen'
-      - 'vorige afspelen'
-      - 'vorige nummer afspelen'
-      - 'het vorige nummer afspelen'
-
   #Control music/vlc volume
   VLC_music_volume:
     - 'muziek volume'
