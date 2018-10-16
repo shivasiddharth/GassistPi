@@ -7,7 +7,7 @@
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
 ## 12-Oct-2018 Update:
-**Use custom actions in your native or Non-english languages. Non-English languages supported: French, Italian, German, Spanish.**          
+**Use custom actions in your native or Non-english languages. Non-English languages supported: French, Italian, German, Spanish and Dutch.**          
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
@@ -40,7 +40,7 @@
 **27.  Control of lights added to Domoticz.**  
 **28.  Stream music from Gaana.com.**  
 **29.  Stream your playlist from Deezer.**    
-**30.  Custom actions in French, Italian, German and Spanish.**    
+**30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 
 *******************************************************************************************************************************  
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
@@ -245,7 +245,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ### **CUSTOM ACTIONS IN Non-English LANGUAGES**    
 ************************************************
-Languages supported: French, Italian, Spanish and German.  
+Languages supported: French, Italian, Spanish, Dutch and German.  
 
 In the **config.yaml** file, under the **Languages and Choice** option set your desired language.   
 
