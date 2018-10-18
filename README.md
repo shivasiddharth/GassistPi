@@ -46,6 +46,8 @@
 **Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
 *******************************************************************************************************************************
 
+##NOTE: "${USER}" will automatically take your username. No need to change that. Just copy pasting the following commands on terminal will work.  
+
 *************************************************
 ## **FIRST STEP- CLONE the PROJECT on to Pi**   
 *************************************************
@@ -66,9 +68,9 @@ sudo apt-get update
 sudo apt-get install raspberrypi-kernel  
 ```
 
-2. Restart Pi  and change directory (change _USER_NAME_ to your OS username)
+2. Restart Pi  and change directory
 ```
-cd /home/_USER_NAME_   
+cd /home/${USER}/   
 ```
 
 3. Choose the audio configuration according to your setup.   
@@ -87,7 +89,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
   sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
   sudo reboot  
-  cd /home/_USER_NAME_  
+  cd /home/${USER}/  
   sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
   sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
   speaker-test  
@@ -98,7 +100,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
   sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
   sudo reboot  
-  cd /home/_USER_NAME_  
+  cd /home/${USER}/  
   sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
   speaker-test  
@@ -116,7 +118,7 @@ AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it 
   sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
   sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
   sudo reboot  
-  cd /home/_USER_NAME_  
+  cd /home/${USER}/  
   sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
   speaker-test   
@@ -153,14 +155,14 @@ speaker-test -t wav
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
-2. Place the credentials.json file in/home/_USER_NAME_ directory **DO NOT RENAME**  
+2. Place the credentials.json file in/home/${USER}/ directory **DO NOT RENAME**  
 
 3. Use the one-line installer for installing Google Assistant    
 **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
 
-3.1 Change directory (change _USER_NAME_ to your OS username)
+3.1 Change directory
 ```
-cd /home/_USER_NAME_   
+cd /home/${USER}/      
 ```
 
 3.2 Make the installers Executable  
@@ -189,9 +191,9 @@ sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh
 *************************************************  
 1. Open the service files in the /GassistPi/systemd/ directory and add your project and model ids in the indicated places and save the file.
 
-2. Change directory (change _USER_NAME_ to your OS username)
+2. Change directory
 ```
-cd /home/_USER_NAME_   
+cd /home/${USER}   
 ```
 
 3. Make the service installer executable  
@@ -229,13 +231,13 @@ At any point of time, if you wish to manually start the assistant:
 **Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
-/home/_USER_NAME_/env/bin/python -u /home/_USER_NAME_/GassistPi/src/main.py --device_model_id 'replace this with the model id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id'
 
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
 Open a terminal and execute the following:
 ```
-/home/_USER_NAME_/env/bin/python -u /home/_USER_NAME_/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
 
 ```
 Insert your Project Id and Model Id in quotes in the mentioned places
@@ -572,7 +574,7 @@ Play Previous Track:
 Hey google, play previous  
 Hey google, play previous song  
 Hey google, play previous track  
-  
+
 Play Next Track:    
 Hey google, play next   
 Hey google, play next song   
