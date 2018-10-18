@@ -26,14 +26,14 @@ Keywords:
     - 'wireless'
   # Parcel tracking
   Parcel_tracking:
-    - 'parcel'
+    - 'pacco'
   # RSS feed playback
   RSS:
     - 'feed'
     - 'quote'
   # Kodi actions
   Kodi_actions:
-    - 'on kodi'
+    - 'su kodi'
   # Music pause/resume
   Pause_resume:
     - 'pause music'
@@ -41,13 +41,13 @@ Keywords:
   # Change tracks
   Track_change:
     Next:
-      - 'riprodurre successivo'
-      - 'riprodurre canzone successivo'
-      - 'riprodurre la canzone successivo'
+      - 'riproduci successiva'
+      - 'riproduci canzone successiva'
+      - 'riproduci la canzone successiva'
     Previous:
-      - 'riprodurre precedente'
-      - 'riprodurre canzone precedente'
-      - 'riprodurre la canzone precedente'
+      - 'riproduci precedente'
+      - 'riproduci canzone precedente'
+      - 'riproduci la canzone precedente'
   #Control music/vlc volume
   VLC_music_volume:
     - 'volume musica'
@@ -74,9 +74,9 @@ Dict:
   Artist: 'artista'
   Brightness: 'luminosità'
   By: 'di'
-  Change: 'cambiare'
+  Change: 'cambia'
   Colour: 'colore'
-  Decrease: 'diminuire'
+  Decrease: 'diminuisci'
   Down:  'giù'
   From: 'da'
   From_deezer: 'da deezer'
@@ -89,8 +89,8 @@ Dict:
   Minimum: 'minimo'
   'Off': 'spente'
   'On': 'accese'
-  Play: 'riprodurre'
-  Reduce: 'reduce'
-  Set: 'regolare'
+  Play: 'riproduci'
+  Reduce: 'riduci'
+  Set: 'regola'
   To: 'a'
   Up: 'in alto'
