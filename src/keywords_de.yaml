@@ -8,13 +8,13 @@ Keywords:
     - 'magic mirror'
   # Sending recipe to mobile devices
   Recipe_pushbullet:
-    - 'ingredients'
+    - 'zutaten'
   # Kickstarter campaign tracking
   Kickstarter_tracking:
     - 'kickstarter'
   # Pi power off, servo control and Pi GPIO control
   Pi_GPIO_control:
-    - 'trigger'
+    - 'aktiviere'
   # Stream songs from YouTube
   YouTube_music_stream:
     - 'youtube'
@@ -23,41 +23,41 @@ Keywords:
     - 'stop'
   # ESP control
   ESP_control:
-    - 'wireless'
+    - 'kabellos'
   # Parcel tracking
   Parcel_tracking:
-    - 'parcel'
+    - 'paket'
   # RSS feed playback
   RSS:
     - 'feed'
     - 'quote'
   # Kodi actions
   Kodi_actions:
-    - 'on kodi'
+    - 'auf kodi'
   # Music pause/resume
   Pause_resume:
-    - 'pause music'
-    - 'resume music'
+    - 'pausiere die musik'
+    - 'setze die musik fort'
   # Change tracks
   Track_change:
     Next:
       - 'spiele nächste'
-      - 'spiele nächste lied'
+      - 'spiele nächstes lied'
       - 'spiele das nächste lied'
     Previous:
       - 'spiele vorheriges'
       - 'spiele vorheriges lied'
-      - 'spiele das vorheriges lied'
+      - 'spiele das vorherige lied'
   #Control music/vlc volume
   VLC_music_volume:
     - 'musik lautstärke'
   # Refresh music lists. Both the words given below should be present in the command issued.
   Music_index_refresh:
-    - 'refresh'
-    - 'music'
+    - 'aktualisiere'
+    - 'musik'
   # Streaming music from google music
   Google_music_streaming:
-    - 'google music'
+    - 'google musik'
   # Streaming music from spotify
   Spotify_music_streaming:
     - 'spotify'
@@ -90,7 +90,7 @@ Dict:
   'Off': 'aus'
   'On': 'an'
   Play: 'spiele'
-  Reduce: 'reduce'
+  Reduce: 'reduziere'
   Set: 'einstellen'
   To: 'zu'
   Up: 'rauf'
