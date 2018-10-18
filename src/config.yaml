@@ -127,17 +127,29 @@ Language:
 Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
 
 #Radio station declarations. Follow a similar pattern to add your own stations.
+#Google may not pickup the pronunciation of radio station names, hence 'Radio 1' etc is required.
 Radio_stations:
   stationnames:
     - 'Radio 1'
     - 'Radio 2'
     - 'Radio 3'
+    - 'Radio 4'
     - 'Radio 5'
+    - 'Radio 6'
   stationlinks:
-    - 'http://www.radiofeeds.co.uk/bbcradio2.pls'
-    - 'http://www.radiofeeds.co.uk/bbc6music.pls'
-    - 'http://c5icy.prod.playlists.ihrhls.com/1469_icy'
-    - 'http://playerservices.streamtheworld.com/api/livestream-redirect/ARNCITY.mp3'
+    - 'http://stream.100p.nl/100pctnl.mp3'
+    - 'http://stream.radiocorp.nl/100pnl_feest_mp3'
+    - 'http://playerservices.streamtheworld.com/api/livestream-redirect/SKYRADIO.mp3'
+    - 'https://stream.slam.nl/slam_mp3'
+    - 'http://icecast.omroep.nl/3fm-bb-mp3'
+    - 'http://playerservices.streamtheworld.com/api/livestream-redirect/VERONICA.mp3'
+  stationradio:
+    - '100% NL'
+    - '100% NL Party'
+    - 'Skyradio'
+    - 'Slam FM'
+    - '3 FM'
+    - 'Veronica'
 
 #Pi GPIO control declarations. Follow a similar pattern to add your own list of GPIOs
 Raspberrypi_GPIO_Control:

@@ -121,6 +121,7 @@ gpio = configuration['Gpios']['picontrol']
 #Number of station names and station links should be the same
 stnname=configuration['Radio_stations']['stationnames']
 stnlink=configuration['Radio_stations']['stationlinks']
+stnradio=configuration['Radio_stations']['stationradio']
 
 #IP Address of ESP
 ip=configuration['ESP']['IP']
@@ -268,8 +269,9 @@ def radio(phrase):
     for num, name in enumerate(stnname):
         if name.lower() in phrase:
             station=stnlink[num]
+            conv=stnradio[num]
             print (station)
-            say("Tuning into " + name)
+            say("Tuning into " + conv)
             vlcplayer.media_manager(station,'Radio')
             vlcplayer.media_player(station)
 
@@ -1367,7 +1369,7 @@ def domoticz_control(query,index,devicename):
             if domoticz_devices['result'][j]['idx']==index:
                 devorder=j
                 break
-                
+
         if (' ' + custom_action_keyword['Dict']['On'] + ' ') in query or (' ' + custom_action_keyword['Dict']['On']) in query or (custom_action_keyword['Dict']['On'] + ' ') in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
             say('Turning on ' + devicename + ' .')
