@@ -1,4 +1,4 @@
-RPi.GPIO>=0.6.3
+RPi.GPIO==0.6.3
 pyaudio>=0.2.11
 aftership>=0.2
 feedparser>=5.2.1
