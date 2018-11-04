@@ -372,8 +372,11 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 Credits for the [Emulated Hue](https://github.com/mariusmotea/diyHue) to [Marius Motea](https://github.com/mariusmotea).  
 
 First install the certificates:  
+```
 sudo chmod +x /home/${USER}/GassistPi/src/diyHue/installer.sh  
 sudo /home/${USER}/GassistPi/src/diyHue/installer.sh  
+```
+
 
 To set the emuated Hue to autostart on boot as a service, open a terminal and run the following:  
 ```
