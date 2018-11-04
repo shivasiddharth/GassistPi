@@ -12,9 +12,9 @@ then
 fi
 cd /tmp
 
-sudo pip install astral==1.6.1 -y
-sudo pip install ws4py==0.5.1 -y
-sudo pip install requests==2.19.1 -y
+sudo pip install astral==1.6.1
+sudo pip install ws4py==0.5.1
+sudo pip install requests==2.19.1
 
 mac=`cat /sys/class/net/$(ip route get 8.8.8.8 | sed -n 's/.* dev \([^ ]*\).*/\1/p')/address`
 curl https://raw.githubusercontent.com/mariusmotea/diyHue/9ceed19b4211aa85a90fac9ea6d45cfeb746c9dd/BridgeEmulator/openssl.conf -o openssl.conf
