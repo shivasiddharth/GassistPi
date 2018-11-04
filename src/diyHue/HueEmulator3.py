@@ -1449,7 +1449,7 @@ class S(BaseHTTPRequestHandler):
                     if "active" in put_dictionary["stream"]:
                         if put_dictionary["stream"]["active"]:
                             logging.debug("start hue entertainment")
-                            Popen(["{}/src/diyHue/entertainment-srv".format(ROOT_PATH)", "server_port=2100", "dtls=1", "psk_list=" + url_pices[2] + ",321c0c2ebfa7361e55491095b2f5f9db"])
+                            Popen(["{}/src/diyHue/entertainment-srv".format(ROOT_PATH), "server_port=2100", "dtls=1", "psk_list=" + url_pices[2] + ",321c0c2ebfa7361e55491095b2f5f9db"])
 
                             sleep(0.2)
                             bridge_config["groups"][url_pices[4]]["stream"].update({"active": True, "owner": url_pices[2], "proxymode": "auto", "proxynode": "/bridge"})
@@ -1468,7 +1468,7 @@ class S(BaseHTTPRequestHandler):
                             if put_dictionary["active"]:
                                 logging.debug("start hue entertainment")
 
-                                Popen([""{}/src/diyHue/entertainment-srv".format(ROOT_PATH)", "server_port=2100", "dtls=1", "psk_list=" + url_pices[2] + ",321c0c2ebfa7361e55491095b2f5f9db"])
+                                Popen(["{}/src/diyHue/entertainment-srv".format(ROOT_PATH), "server_port=2100", "dtls=1", "psk_list=" + url_pices[2] + ",321c0c2ebfa7361e55491095b2f5f9db"])
 
                                 sleep(0.2)
                                 bridge_config["groups"][url_pices[4]]["stream"].update({"active": True, "owner": url_pices[2], "proxymode": "auto", "proxynode": "/bridge"})
