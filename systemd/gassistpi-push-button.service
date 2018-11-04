@@ -4,15 +4,15 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-Environment=VIRTUAL_ENV=/home/__USER__/env
-Environment=PATH=/home/__USER__/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/home/__USER__/env/bin/python -u /home/__USER__/GassistPi/src/pushbutton.py --project-id 'project-id'  --device-model-id 'saved-model-id'
+Environment=VIRTUAL_ENV=/home/${USER}/env
+Environment=PATH=/home/${USER}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --project-id 'project-id'  --device-model-id 'saved-model-id'
 
-WorkingDirectory=/home/__USER__/
+WorkingDirectory=/home/${USER}/
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-User=__USER__
+User=${USER}
 
 [Install]
 WantedBy=multi-user.target
