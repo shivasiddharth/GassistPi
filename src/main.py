@@ -98,7 +98,10 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
-
+if configuration['Kodi']['control']=='Enabled':
+    kodicontrol=True
+else:
+    kodicontrol=False
 
 
 mutestopbutton=True
@@ -253,12 +256,13 @@ class Myassistant():
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             self.can_start_conversation = False
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            #Uncomment the following after starting the Kodi
-            #status=mutevolstatus()
-            #vollevel=status[1]
-            #with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
-                   #json.dump(vollevel, f)
-            #kodi.Application.SetVolume({"volume": 0})
+            if kodicontrol:
+                status=mutevolstatus()
+                vollevel=status[1]
+                with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
+                       json.dump(vollevel, f)
+                kodi.Application.SetVolume({"volume": 0})
+
             assistantindicator('listening')
             if vlcplayer.is_vlc_playing():
                 if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
@@ -274,10 +278,11 @@ class Myassistant():
         if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
             self.can_start_conversation = True
             assistantindicator('off')
-            #Uncomment the following after starting the Kodi
-            #with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
-                   #vollevel = json.load(f)
-                   #kodi.Application.SetVolume({"volume": vollevel})
+            if kodicontrol:
+                with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
+                       vollevel = json.load(f)
+                       kodi.Application.SetVolume({"volume": vollevel})
+
             if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("{}/.mute".format(USER_PATH))):
                   self.assistant.set_mic_mute(True)
             if os.path.isfile("{}/.mute".format(USER_PATH)):
@@ -306,10 +311,11 @@ class Myassistant():
                 self.assistant.set_mic_mute(True)
             if os.path.isfile("{}/.mute".format(USER_PATH)):
                 assistantindicator('mute')
-            #Uncomment the following after starting the Kodi
-            #with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
-                   #vollevel = json.load(f)
-                   #kodi.Application.SetVolume({"volume": vollevel})
+            if kodicontrol:
+                with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
+                       vollevel = json.load(f)
+                       kodi.Application.SetVolume({"volume": vollevel})
+
             if vlcplayer.is_vlc_playing():
                 with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                     oldvolume= json.load(vol)

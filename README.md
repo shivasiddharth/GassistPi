@@ -687,6 +687,9 @@ Do not mix the commands with **Play** as that has been associated with music str
 ************************************************  
 ### **KODI INTEGRATION**  
 ************************************************  
+### Enabling Kodi control    
+In the config.yaml, under kodi, change control option from **'Disabled'** to **'Enabled'**.  
+
 ### Adding YouTube API and Generating API Key
 The Kodi integration uses YouTube Data API v3  for getting video links. First step is to add the API to the project and create an API KEY.
 1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  

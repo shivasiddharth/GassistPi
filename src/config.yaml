@@ -91,6 +91,7 @@ Gpios:
 
 #KODI custom declarations change IP, music directory and video directory according to your device
 Kodi:
+  control: 'Disabled'
   ip: 192.168.88.226
   port: 8080
   username: kodi
