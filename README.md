@@ -196,13 +196,15 @@ sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh
 cd /home/${USER}   
 ```
 
-3. Make the service installer executable  
+3. Open the service files in "/GassistPi/systemd/" folder and change instances of ```__USER__``` to your Pi's username. Save the files.  
+
+4. Make the service installer executable  
 
 ```
 sudo chmod +x ./GassistPi/scripts/service-installer.sh
 ```  
 
-4. Run the service installer  
+5. Run the service installer  
 
 ```
 sudo ./GassistPi/scripts/service-installer.sh    

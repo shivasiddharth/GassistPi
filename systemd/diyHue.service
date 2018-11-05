@@ -5,13 +5,13 @@ After=network-online.target
 
 
 [Service]
-Environment=PATH=/home/${USER}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/usr/bin/python3 -u /home/${USER}/GassistPi/src/diyHue/HueEmulator3.py
-WorkingDirectory=/home/${USER}/
+Environment=PATH=/home/__USER__/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/usr/bin/python3 -u /home/__USER__/GassistPi/src/diyHue/HueEmulator3.py
+WorkingDirectory=/home/__USER__/
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-User=${USER}
+User=__USER__
 
 [Install]
 WantedBy=multi-user.target
