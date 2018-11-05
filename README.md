@@ -196,28 +196,26 @@ sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh
 cd /home/${USER}   
 ```
 
-3. Open the service files in "/GassistPi/systemd/" folder and change instances of ```__USER__``` to your Pi's username. Save the files.  
-
-4. Make the service installer executable  
+3. Make the service installer executable  
 
 ```
 sudo chmod +x ./GassistPi/scripts/service-installer.sh
 ```  
 
-5. Run the service installer  
+4. Run the service installer  
 
 ```
 sudo ./GassistPi/scripts/service-installer.sh    
 ```  
 
-6. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
+5. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
 **Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**  
 ```
 sudo systemctl enable gassistpi-ok-google.service  
 sudo systemctl enable gassistpi-push-button.service
 ```  
 
-7. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
+6. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
 **Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
 ```
 sudo systemctl start gassistpi-ok-google.service  
