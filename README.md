@@ -371,21 +371,9 @@ A custom Google search engine for [Kickstarter](https://www.kickstarter.com) has
 ************************************************
 Credits for the [Emulated Hue](https://github.com/mariusmotea/diyHue) to [Marius Motea](https://github.com/mariusmotea).  
 
-First install the certificates:  
-```
-sudo chmod +x /home/${USER}/GassistPi/src/diyHue/installer.sh  
-sudo /home/${USER}/GassistPi/src/diyHue/installer.sh  
-```
+Follow the guidelines given in the diyHue's Wiki to setup the Emulated Hue Service.  
 
-
-To set the emuated Hue to autostart on boot as a service, open a terminal and run the following:  
-```
-sudo systemctl enable diyHue.service  
-sudo systemctl start diyHue.service  
-
-```
-
-Download sketches for your NodeMCU/Wemos/ESP Devices from [here](https://github.com/shivasiddharth/diyHue/tree/master/Lights)
+Download sketches for your NodeMCU/Wemos/ESP Devices from [here](https://github.com/mariusmotea/diyHue/tree/master/Lights)
 
 After making suitable modifications and uploading the sketches to your device, open the device's webgui by entering the ip address in a browser. In that change the "Startup" value from "Last State" to "Off" as shown below.  
 

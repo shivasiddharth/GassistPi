@@ -1242,7 +1242,7 @@ def getrecipe(item):
 #--------------------------------Start of Hue Control Functions------------------------------------------
 
 def hue_control(phrase,lightindex,lightaddress):
-    with open('{}/src/diyHue/config.json'.format(ROOT_PATH), 'r') as config:
+    with open('/opt/hue-emulator/config.json', 'r') as config:
          hueconfig = json.load(config)
     currentxval=hueconfig['lights'][lightindex]['state']['xy'][0]
     currentyval=hueconfig['lights'][lightindex]['state']['xy'][1]
