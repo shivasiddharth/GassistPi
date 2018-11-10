@@ -445,16 +445,17 @@ class Myassistant():
             for event in events:
                 self.process_event(event)
                 usrcmd=event.args
-                with open('/opt/hue-emulator/config.json', 'r') as config:
-                     hueconfig = json.load(config)
-                for i in range(1,len(hueconfig['lights'])+1):
-                    try:
-                        if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
-                            assistant.stop_conversation()
-                            hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
-                            break
-                    except Keyerror:
-                        say('Unable to help, please check your config file')
+                if os.path.isfile('/opt/hue-emulator/config.json'):
+                    with open('/opt/hue-emulator/config.json', 'r') as config:
+                         hueconfig = json.load(config)
+                    for i in range(1,len(hueconfig['lights'])+1):
+                        try:
+                            if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                                assistant.stop_conversation()
+                                hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                                break
+                        except Keyerror:
+                            say('Unable to help, please check your config file')
 
                 for num, name in enumerate(tasmota_devicelist):
                     if name.lower() in str(usrcmd).lower():
