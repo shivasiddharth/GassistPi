@@ -41,8 +41,6 @@ sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
 sudo pip install pyaudio
 sudo apt-get install libatlas-base-dev -y
 
-sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/diyHue.service
-
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi-ok-google.service
 
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi-push-button.service
