@@ -439,7 +439,7 @@ class SampleAssistant(object):
                     if (custom_action_keyword['Keywords']['VLC_music_volume'][0]).lower() in str(usrcmd).lower():
                         if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
                             if (custom_action_keyword['Dict']['Set']).lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Change'].lower() in str(usrcmd).lower():
-                                if 'hundred'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Minimum'] in str(usrcmd).lower():
+                                if 'hundred'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Maximum'] in str(usrcmd).lower():
                                     settingvollevel=100
                                     with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                                         json.dump(settingvollevel, vol)
