@@ -453,7 +453,7 @@ class SampleAssistant(object):
                                             json.dump(settingvollevel, vol)
                                 print('Setting volume to: '+str(settingvollevel))
                                 vlcplayer.set_vlc_volume(int(settingvollevel))
-                            elif custom_action_keyword['Dict']['Inccrease'].lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Decrease'].lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                            elif custom_action_keyword['Dict']['Increase'].lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Decrease'].lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                 if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
                                     with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                                         oldvollevel = json.load(vol)
@@ -463,7 +463,7 @@ class SampleAssistant(object):
                                     oldvollevel=vlcplayer.get_vlc_volume
                                     for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                         oldvollevel=int(oldvollevel)
-                                if custom_action_keyword['Dict']['Inccrease'].lower() in str(usrcmd).lower():
+                                if custom_action_keyword['Dict']['Increase'].lower() in str(usrcmd).lower():
                                     if any(char.isdigit() for char in str(usrcmd)):
                                         for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
                                             changevollevel=int(changevollevel)
