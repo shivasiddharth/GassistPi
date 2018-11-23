@@ -1380,7 +1380,7 @@ def domoticz_control(query,index,devicename):
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
             say('Toggling ' + devicename + ' .')
         if custom_action_keyword['Dict']['Colour'] in query:
-            if 'RGB' in domoticz_devices['result'][i]['SubType']:
+            if 'RGB' in domoticz_devices['result'][devorder]['SubType']:
                 rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
                 hexcolour=hexcolour.replace("#","",1)
                 hexcolour=hexcolour.strip()
@@ -1392,7 +1392,7 @@ def domoticz_control(query,index,devicename):
             else:
                 say('The requested light is not a colour bulb')
         if custom_action_keyword['Dict']['Brightness'] in query:
-            if domoticz_devices['result'][i]['HaveDimmer']:
+            if domoticz_devices['result'][devorder]['HaveDimmer']:
                 if 'hundred' in query or 'hundred'.lower() in query or custom_action_keyword['Dict']['Maximum'] in query:
                     bright=str(100)
                 elif 'zero' in query or custom_action_keyword['Dict']['Minimum'] in query:
