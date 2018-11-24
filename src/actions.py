@@ -21,7 +21,11 @@ import requests
 import mediaplayer
 import os
 import os.path
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'No module named \'RPi\'':
+        GPIO = None
 import time
 import re
 import subprocess

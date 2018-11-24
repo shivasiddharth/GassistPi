@@ -16,7 +16,11 @@
 
 from __future__ import print_function
 from kodijson import Kodi, PLAYER_VIDEO
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'No module named \'RPi\'':
+        GPIO = None
 import argparse
 import json
 import os.path

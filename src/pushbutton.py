@@ -25,7 +25,11 @@ import pathlib2 as pathlib
 import sys
 import time
 import uuid
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'No module named \'RPi\'':
+        GPIO = None
 import argparse
 import subprocess
 import click

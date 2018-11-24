@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'No module named \'RPi\'':
+        GPIO = None
 import time
 import os
 from actions import configuration
