@@ -165,16 +165,14 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 cd /home/${USER}/      
 ```
 
-3.2 Make the installers Executable  
+3.2 Make the installer Executable  
 ```
-sudo chmod +x ./GassistPi/scripts/gassist-installer-pi3.sh
-sudo chmod +x ./GassistPi/scripts/gassist-installer-pi-zero.sh
+sudo chmod +x ./GassistPi/scripts/gassist-installer.sh
 ```
 
-3.3 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
+3.3 Execute the installer. **When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 ```
-sudo  ./GassistPi/scripts/gassist-installer-pi3.sh  
-sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh  
+sudo  ./GassistPi/scripts/gassist-installer.sh   
 ```  
 
 4. Copy the google assistant authentication link from terminal and authorize using your google account  
@@ -189,7 +187,7 @@ sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
 *************************************************  
-1. Open the service files in the /GassistPi/systemd/ directory and add your project and model ids in the indicated places and save the file.
+1. Open the service files in the /GassistPi/systemd/ directory and verify your project and model ids and save the file.
 
 2. Change directory
 ```
@@ -199,7 +197,7 @@ cd /home/${USER}
 3. Make the service installer executable  
 
 ```
-sudo chmod +x ./GassistPi/scripts/service-installer.sh
+sudo chmod +x ./GassistPi/scripts/service-installer.sh  
 ```  
 
 4. Run the service installer  
@@ -208,18 +206,14 @@ sudo chmod +x ./GassistPi/scripts/service-installer.sh
 sudo ./GassistPi/scripts/service-installer.sh    
 ```  
 
-5. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
-**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**  
+5. Enable the service    
 ```
-sudo systemctl enable gassistpi-ok-google.service  
-sudo systemctl enable gassistpi-push-button.service
+sudo systemctl enable gassistpi.service  
 ```  
 
-6. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
-**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
+6. Start the service     
 ```
-sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start gassistpi-push-button.service
+sudo systemctl start gassistpi.service  
 ```  
 
 **RESTART and ENJOY**  
