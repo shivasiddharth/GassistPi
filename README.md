@@ -273,7 +273,7 @@ This feature uses a YouTube Data API v3.
 Syntax:  
 1. To play the playlists added to your Deezer account:    
 Hey Google, Play playlist _playlist-number_ from Deezer   
-Example: Hey Google, Play playlist number 1 from Deezer   
+Example: Hey Google, Play playlist 1 from Deezer   
 
 ************************************************
 ### **MUSIC STREAMING FROM GAANA.COM**  
@@ -296,7 +296,7 @@ Syntaxes:
 **Note - It is necessary to Say the full "Gaana.com", otherwise the assistant will pick it up as Ghana (a country).**    
 1. To play the playlists added in config.yaml file:  
 Hey Google, Play playlist _playlist-number_ from Gaana.com   
-Example: Hey Google, Play playlist number 1 from Gaana.com   
+Example: Hey Google, Play playlist 1 from Gaana.com   
 
 2. To play other playlists:  
 Hey Google, Play _user-playlist-query_ from Gaana.com
