@@ -28,3 +28,4 @@ gcc
 bison
 libpcre3
 libpcre3-dev
+python3-lxml
