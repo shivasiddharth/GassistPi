@@ -34,6 +34,9 @@ read -r -p "Enter the modelid that was generated in the actions console: " model
 echo ""
 echo "Your Model-Id used for the project is: $modelid" >> /home/${USER}/modelid.txt
 
+sudo apt-get update -y
+sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
+sudo pip install pyaudio
 
 #Check OS Version
 if [[ $(cat /etc/os-release|grep "stretch") ]]; then
@@ -81,22 +84,26 @@ if [[ $board = "Others" ]];then
   echo ""
   echo "==========Installing Swig========="
   echo ""
-  sudo mkdir -p programs/libraries/ && cd programs/libraries
-  git clone https://github.com/swig/swig.git
-  cd swig
-  ./autogen.sh
-  ./configure
-  make
+  if [ ! -d /home/${USER}/programs/libraries/swig/ ]; then
+    sudo mkdir -p programs/libraries/ && cd programs/libraries
+    sudo git clone https://github.com/swig/swig.git
+  fi
+  cd /home/${USER}/programs/libraries/swig/
+  sudo ./autogen.sh
+  sudo ./configure
+  sudo make
   sudo make install
   echo ""
   echo "==========Compiling custom Snowboy Python3 wrapper=========="
   echo ""
   cd ~/programs
-  git clone https://github.com/Kitt-AI/snowboy.git && cd snowboy
-  cd swig/Python3
-  make
-  snowboyfile =./_snowboydetect.so
-  if [ -e "$snowboyfile" ]; then
+  if [ ! -d /home/${USER}/programs/snowboy/ ]; then
+    sudo git clone https://github.com/Kitt-AI/snowboy.git
+  fi
+  cd /home/${USER}/programs/snowboy/swig/Python3
+  sudo make
+
+  if [ -e /home/${USER}/programs/snowboy/swig/Python3/_snowboydetect.so ]; then
     echo "=========Copying Snowboy files to GassistPi directory=========="
     sudo \cp -f ./_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
     sudo \cp -f ./snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
@@ -105,26 +112,27 @@ if [[ $board = "Others" ]];then
   fi
 fi
 
-
 cd /home/${USER}/
-sudo apt-get update -y
-sudo apt-get install python-pip -y
-sudo apt-get install libjack-jackd2-dev -y
-sudo apt-get install portaudio19-dev libffi-dev libssl-dev -y
-sudo pip install pyaudio
-sudo apt-get install libatlas-base-dev -y
+echo ""
+echo ""
+echo "==========Changing particulars in service files=========="
 
 if [[ $devmodel = "armv7" ]];then
-	sed -i 's/__FILE_PATH__/"/home/__USER__/env/bin/python -u /home/__USER__/GassistPi/src/main.py --device_model_id 'saved-model-id'"/g' ${GIT_DIR}/systemd/gassistpi.service
+  echo ""
+  echo ""
+  echo "==========Changing particulars in service files for Ok-Google hotword=========="
+  sed -i '10d' ${GIT_DIR}/systemd/gassistpi.service
   sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
 else
-  sed -i 's/__FILE_PATH__/"/home/__USER__/env/bin/python -u /home/__USER__/GassistPi/src/pushbutton.py --project-id 'created-project-id'  --device-model-id 'saved-model-id'"/g' ${GIT_DIR}/systemd/gassistpi.service
+  echo ""
+  echo ""
+  echo "==========Changing particulars in service files for Pushbutton/Custom-wakeword=========="
+  sed -i '9d' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
   sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
 fi
 
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
-
-sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
 
 python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
