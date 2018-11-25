@@ -81,7 +81,7 @@ if [[ $board = "Others" ]];then
   echo ""
   echo "==========Installing Swig========="
   echo ""
-  sudo cd && mkdir -p programs/libraries/ && cd programs/libraries
+  sudo mkdir -p programs/libraries/ && cd programs/libraries
   git clone https://github.com/swig/swig.git
   cd swig
   ./autogen.sh
