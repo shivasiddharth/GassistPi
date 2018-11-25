@@ -472,9 +472,9 @@ class SampleAssistant(object):
                                     newvollevel= oldvollevel+ changevollevel
                                     print(newvollevel)
                                     if int(newvollevel)>100:
-                                        settingvollevel==100
+                                        settingvollevel=100
                                     elif int(newvollevel)<0:
-                                        settingvollevel==0
+                                        settingvollevel=0
                                     else:
                                         settingvollevel=newvollevel
                                     with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
@@ -490,9 +490,9 @@ class SampleAssistant(object):
                                     newvollevel= oldvollevel - changevollevel
                                     print(newvollevel)
                                     if int(newvollevel)>100:
-                                        settingvollevel==100
+                                        settingvollevel=100
                                     elif int(newvollevel)<0:
-                                        settingvollevel==0
+                                        settingvollevel=0
                                     else:
                                         settingvollevel=newvollevel
                                     with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
