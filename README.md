@@ -1,6 +1,6 @@
 
 
-# GassistPi -- Google Assistant for all Raspberry Pi Boards  
+# GassistPi -- Google Assistant for all Single Board Computers    
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
@@ -10,12 +10,12 @@
 **Use custom actions in your native or Non-english languages. Non-English languages supported: French, Italian, German, Spanish and Dutch.**          
 *******************************************************************************************************************************
 
-# Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
+# Features (All features are applicable to all boards, unless and otherwise mentioned):  
 **1.   Headless auto start on boot.**    
-**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
+**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards).**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
 **4.   Radio streaming.**  
-**5.   Voice control of servo connected to RPi GPIO.**  
+**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards).**    
 **6.   Safe shutdown RPi using voice command.**  
 **7.   Stream Music from YouTube.**  
 **8.   Indicator lights for assistant listening and speaking events.**  
@@ -43,7 +43,7 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 
 *******************************************************************************************************************************  
-**Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
+**Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
 ## NOTE: "${USER}" will automatically take your username. No need to change that. Just copy pasting the following commands on terminal will work.  
@@ -61,11 +61,10 @@ git clone https://github.com/shivasiddharth/GassistPi
 *************************************************  
 ## **INSTALL AUDIO CONFIG FILES**
 *************************************************  
-1. Update OS and Kernel    
+1. Update OS     
 
 ```
-sudo apt-get update  
-sudo apt-get install raspberrypi-kernel  
+sudo apt-get update
 ```
 
 2. Restart Pi  and change directory
@@ -73,7 +72,7 @@ sudo apt-get install raspberrypi-kernel
 cd /home/${USER}/   
 ```
 
-3. Choose the audio configuration according to your setup.   
+3. Choose the audio configuration according to your setup. Non-Raspberry Pi users, choose the USB-DAC option.    
 **The speaker-test command is used to initialize alsa, so please do not skip that.  
 AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.**  
 

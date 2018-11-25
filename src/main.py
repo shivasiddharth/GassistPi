@@ -65,8 +65,12 @@ from actions import spotify_playlist_select
 from actions import configuration
 from actions import custom_action_keyword
 from threading import Thread
-from indicator import assistantindicator
-from indicator import stoppushbutton
+if GPIO!=None:
+    from indicator import assistantindicator
+    from indicator import stoppushbutton
+    GPIOcontrol=True
+else:
+    GPIOcontrol=False
 from pathlib import Path
 from actions import Domoticz_Device_Control
 from actions import domoticz_control
@@ -164,7 +168,8 @@ class Myassistant():
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.t1 = Thread(target=self.start_detector)
-        self.t2 = Thread(target=self.pushbutton)
+        if GPIOcontrol:
+            self.t2 = Thread(target=self.pushbutton)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -201,28 +206,30 @@ class Myassistant():
         print("Create your own action for button triple press")
 
     def pushbutton(self):
-        while mutestopbutton:
-            if GPIO.event_detected(stoppushbutton):
-                GPIO.remove_event_detect(stoppushbutton)
-                now = time.time()
-                count = 1
-                GPIO.add_event_detect(stoppushbutton,GPIO.RISING)
-                while time.time() < now + 1:
-                     if GPIO.event_detected(stoppushbutton):
-                         count +=1
-                         time.sleep(.25)
-                if count == 2:
-                    self.buttonsinglepress()
+        if GPIOcontrol:
+            while mutestopbutton:
+                if GPIO.event_detected(stoppushbutton):
                     GPIO.remove_event_detect(stoppushbutton)
-                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
-                elif count == 3:
-                    self.buttondoublepress()
-                    GPIO.remove_event_detect(stoppushbutton)
-                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
-                elif count == 4:
-                    self.buttontriplepress()
-                    GPIO.remove_event_detect(stoppushbutton)
-                    GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                    now = time.time()
+                    count = 1
+                    GPIO.add_event_detect(stoppushbutton,GPIO.RISING)
+                    while time.time() < now + 1:
+                         if GPIO.event_detected(stoppushbutton):
+                             count +=1
+                             time.sleep(.25)
+                    if count == 2:
+                        self.buttonsinglepress()
+                        GPIO.remove_event_detect(stoppushbutton)
+                        GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                    elif count == 3:
+                        self.buttondoublepress()
+                        GPIO.remove_event_detect(stoppushbutton)
+                        GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+                    elif count == 4:
+                        self.buttontriplepress()
+                        GPIO.remove_event_detect(stoppushbutton)
+                        GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+
 
     def process_device_actions(self,event, device_id):
         if 'inputs' in event.args:
@@ -249,7 +256,8 @@ class Myassistant():
         print(event)
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
-            self.t2.start()
+            if GPIOcontrol:
+                self.t2.start()
             if os.path.isfile("{}/.mute".format(USER_PATH)):
                 assistantindicator('mute')
             if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("{}/.mute".format(USER_PATH))):
@@ -281,7 +289,8 @@ class Myassistant():
 
         if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
             self.can_start_conversation = True
-            assistantindicator('off')
+            if GPIOcontrol:
+                assistantindicator('off')
             if kodicontrol:
                 with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
                        vollevel = json.load(f)
@@ -290,31 +299,37 @@ class Myassistant():
             if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("{}/.mute".format(USER_PATH))):
                   self.assistant.set_mic_mute(True)
             if os.path.isfile("{}/.mute".format(USER_PATH)):
-                assistantindicator('mute')
+                if GPIOcontrol:
+                    assistantindicator('mute')
             if vlcplayer.is_vlc_playing():
                 with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                     oldvolume = json.load(vol)
                 vlcplayer.set_vlc_volume(int(oldvolume))
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-            assistantindicator('speaking')
+            if GPIOcontrol:
+                assistantindicator('speaking')
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
-            assistantindicator('off')
+            if GPIOcontrol:
+                assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-            assistantindicator('off')
+            if GPIOcontrol:
+                assistantindicator('off')
 
         print(event)
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
-            assistantindicator('off')
+            if GPIOcontrol:
+                assistantindicator('off')
             if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("{}/.mute".format(USER_PATH))):
                 self.assistant.set_mic_mute(True)
             if os.path.isfile("{}/.mute".format(USER_PATH)):
-                assistantindicator('mute')
+                if GPIOcontrol:
+                    assistantindicator('mute')
             if kodicontrol:
                 with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
                        vollevel = json.load(f)

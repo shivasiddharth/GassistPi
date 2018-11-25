@@ -76,6 +76,34 @@ else
   echo ""
 fi
 
+if [[ $board = "Others" ]];then
+  echo "==========Snowboy wrappers provied with the project are for Raspberry Pi boards. Custom snowboy wrappers need to be compiled for your board=========="
+  echo ""
+  echo "==========Installing Swig========="
+  echo ""
+  sudo cd && mkdir -p programs/libraries/ && cd programs/libraries
+  git clone https://github.com/swig/swig.git
+  cd swig
+  ./autogen.sh
+  ./configure
+  make
+  sudo make install
+  echo ""
+  echo "==========Compiling custom Snowboy Python3 wrapper=========="
+  echo ""
+  cd ~/programs
+  git clone https://github.com/Kitt-AI/snowboy.git && cd snowboy
+  cd swig/Python3
+  make
+  snowboyfile =./_snowboydetect.so
+  if [ -e "$snowboyfile" ]; then
+    echo "=========Copying Snowboy files to GassistPi directory=========="
+    sudo \cp -f ./_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
+    sudo \cp -f ./snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
+  else
+    echo "==========Something has gone wrong while compiling the wrappers. Try again or go through the errors above=========="
+  fi
+
 
 cd /home/${USER}/
 sudo apt-get update -y
