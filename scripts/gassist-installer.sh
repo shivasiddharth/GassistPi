@@ -103,6 +103,7 @@ if [[ $board = "Others" ]];then
   else
     echo "==========Something has gone wrong while compiling the wrappers. Try again or go through the errors above=========="
   fi
+fi
 
 
 cd /home/${USER}/
