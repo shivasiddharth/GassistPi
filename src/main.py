@@ -274,8 +274,8 @@ class Myassistant():
                 with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
                        json.dump(vollevel, f)
                 kodi.Application.SetVolume({"volume": 0})
-
-            assistantindicator('listening')
+            if GPIOcontrol:
+                assistantindicator('listening')
             if vlcplayer.is_vlc_playing():
                 if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
                     vlcplayer.set_vlc_volume(15)
