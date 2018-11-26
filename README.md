@@ -46,7 +46,7 @@
 #### Only OSes suported are:
 - Armbian Stretch    
 - Raspbian Stretch   
-     
+
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
@@ -76,65 +76,66 @@ sudo apt-get update
 cd /home/${USER}/   
 ```
 
-3. Choose the audio configuration according to your setup. Non-Raspberry Pi users, choose the USB-DAC option.    
-**The speaker-test command is used to initialize alsa, so please do not skip that.  
+3. Choose the audio configuration according to your setup.
+**Non-Raspberry Pi users, choose the USB-DAC option.    
+The speaker-test command is used to initialize alsa, so please do not skip that.  
 AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.**  
 
-  3.1. USB DAC or USB Sound CARD users,  
-  ```
-  sudo chmod +x ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
-  sudo ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
-  speaker-test  
-  ```
+3.1. USB DAC or USB Sound CARD users,  
+```
+sudo chmod +x ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
+sudo ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
+speaker-test  
+```
 
-  3.2. AIY-HAT users,  
-  ```
-  sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-  sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-  sudo reboot  
-  cd /home/${USER}/  
-  sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
-  sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
-  speaker-test  
-  ```
+3.2. AIY-HAT users,  
+```
+sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
+sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
+sudo reboot  
+cd /home/${USER}/  
+sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
+sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
+speaker-test  
+```
 
-  3.3. USB MIC AND HDMI users,  
-  ```
-  sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
-  sudo reboot  
-  cd /home/${USER}/  
-  sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
-  sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
-  speaker-test  
-  ```
+3.3. USB MIC AND HDMI users,  
+```
+sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
+sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
+sudo reboot  
+cd /home/${USER}/  
+sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
+sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
+speaker-test  
+```
 
-  3.4. USB MIC AND AUDIO JACK users,  
-  ```  
-  sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-  sudo ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-  speaker-test  
-  ```
+3.4. USB MIC AND AUDIO JACK users,  
+```  
+sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
+sudo ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
+speaker-test  
+```
 
-  3.5. CUSTOM VOICE HAT users,  
-  ```
-  sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
-  sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
-  sudo reboot  
-  cd /home/${USER}/  
-  sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-  speaker-test   
-  ```
+3.5. CUSTOM VOICE HAT users,  
+```
+sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
+sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
+sudo reboot  
+cd /home/${USER}/  
+sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
+sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
+speaker-test   
+```
 
-  3.6. RESPEAKER HAT users,  
-  ```
-  git clone https://github.com/shivasiddharth/seeed-voicecard
-  cd ./seeed-voicecard/  
-  sudo ./install.sh  
-  sudo reboot   
-  speaker-test     
-  ```  
+3.6. RESPEAKER HAT users,  
+```
+git clone https://github.com/shivasiddharth/seeed-voicecard
+cd ./seeed-voicecard/  
+sudo ./install.sh  
+sudo reboot   
+speaker-test     
+```  
 
 **Those using any other DACs or HATs install the cards as per the manufacturer's guide
  and then you can try using the USB-DAC config file after changing the hardware ids**        
@@ -161,7 +162,6 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 2. Place the credentials.json file in/home/${USER}/ directory **DO NOT RENAME**  
 
 3. Use the one-line installer for installing Google Assistant    
-**Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer.**  
 
 3.1 Change directory
 ```
@@ -737,7 +737,7 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 
 
 ************************************************  
-### **GOOGLE HOME LIKE NEOPIXEL INDICATOR**
+### **GOOGLE HOME LIKE NEOPIXEL INDICATOR FOR RASPBERRY PI BOARDS**
 ************************************************  
 1. Change the Pin numbers in the given sketch according to your board and upload it.  
 
@@ -773,11 +773,12 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | 'Yellow Orange' |  
 
 ************************************************  
-### **Sending voice messages from the phone to the raspberry**  
+### **SENDING VOICE MESSAGES FROM PHONE TO GOOGLE ASSISTANT ON SBCs**  
 ************************************************
-1. https://support.google.com/googlehome/answer/7531913.
+1. https://support.google.com/googlehome/answer/7531913.  
+
 ************************************************  
-### **LIST OF GPIOs USED**  
+### **LIST OF GPIOs USED IN RASPBERRY PI BOARDS**  
 ************************************************  
 | GPIO Number (BCM) | Purpose                                        |
 |-------------------|------------------------------------------------|
