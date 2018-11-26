@@ -43,14 +43,14 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 
 *******************************************************************************************************************************  
-#### Only OSes suported are:
+### Only OSes suported are:
 - Armbian Stretch    
 - Raspbian Stretch   
 
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
-## NOTE: "${USER}" will automatically take your username. No need to change that. Just copy pasting the following commands on terminal will work.  
+### NOTE: "${USER}" will automatically take your username. No need to change that. Just copy pasting the following commands on terminal will work.  
 
 *************************************************
 ## **FIRST STEP- CLONE the PROJECT on to Pi**   
