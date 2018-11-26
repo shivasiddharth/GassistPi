@@ -76,7 +76,7 @@ sudo apt-get update
 cd /home/${USER}/   
 ```
 
-3. Choose the audio configuration according to your setup.
+3. Choose the audio configuration according to your setup.   
 **Non-Raspberry Pi users, choose the USB-DAC option.    
 The speaker-test command is used to initialize alsa, so please do not skip that.  
 AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.**  
