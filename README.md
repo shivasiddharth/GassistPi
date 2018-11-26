@@ -43,9 +43,10 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 
 *******************************************************************************************************************************  
-### Only OSes suported are:
-- Armbian Stretch
-- Raspbian Stretch
+#### Only OSes suported are:
+- Armbian Stretch    
+- Raspbian Stretch   
+     
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
