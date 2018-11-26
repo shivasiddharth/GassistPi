@@ -35,7 +35,7 @@
 **22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
 **24.  Custom wakeword activation for all Pi boards.**      
-**25.  Mute microphones to prevent listening to Ok-Google hotword.**  
+**25.  Mute microphones to prevent listening to Ok-Google hotword (Only Raspberry Pi Boards).**  
 **26.  Create custom conversations.**  
 **27.  Control of lights added to Domoticz.**  
 **28.  Stream music from Gaana.com.**  
