@@ -25,7 +25,11 @@ import pathlib2 as pathlib
 import sys
 import time
 import uuid
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'No module named \'RPi\'':
+        GPIO = None
 import argparse
 import subprocess
 import click
@@ -64,8 +68,12 @@ from actions import custom_action_keyword
 import snowboydecoder
 import signal
 from threading import Thread
-from indicator import stoppushbutton
-from indicator import assistantindicator
+if GPIO!=None:
+    from indicator import assistantindicator
+    from indicator import stoppushbutton
+    GPIOcontrol=True
+else:
+    GPIOcontrol=False
 from actions import Domoticz_Device_Control
 from actions import domoticz_control
 from actions import domoticz_devices
@@ -110,13 +118,13 @@ else:
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
-#GPIO Declarations
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+if GPIOcontrol:
+    #GPIO Declarations
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    pushbuttontrigger=configuration['Gpios']['pushbutton_trigger'][0]
+    GPIO.setup(pushbuttontrigger, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
-pushbuttontrigger=configuration['Gpios']['pushbutton_trigger'][0]
-
-GPIO.setup(pushbuttontrigger, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 #Sonoff-Tasmota Declarations
 #Make sure that the device name assigned here does not overlap any of your smart device names in the google home app
@@ -163,6 +171,9 @@ def tasmota_control(phrase,devname,devip):
 #Check if custom wakeword has been enabled
 if configuration['Wakewords']['Custom_Wakeword']=='Enabled':
     custom_wakeword=True
+elif GPIOcontrol==False:
+    print("Pushbutton trigger is not configured. So forcing custom wakeword ON.")
+    custom_wakeword=True
 else:
     custom_wakeword=False
 
@@ -205,8 +216,9 @@ class SampleAssistant(object):
         self.device_id = device_id
         self.conversation_stream = conversation_stream
         self.display = display
-        self.t3 = Thread(target=self.stopbutton)
-        self.t3.start()
+        if GPIOcontrol:
+            self.t3 = Thread(target=self.stopbutton)
+            self.t3.start()
         # Opaque blob provided in AssistResponse that,
         # when provided in a follow-up AssistRequest,
         # gives the Assistant a context marker within the current state
@@ -226,11 +238,12 @@ class SampleAssistant(object):
         self.device_handler = device_handler
 
     def stopbutton(self):
-        while mediastopbutton:
-            time.sleep(0.25)
-            if not GPIO.input(stoppushbutton):
-                print('Stopped')
-                stop()
+        if GPIOcontrol:
+            while mediastopbutton:
+                time.sleep(0.25)
+                if not GPIO.input(stoppushbutton):
+                    print('Stopped')
+                    stop()
 
     def __enter__(self):
         return self
@@ -264,8 +277,8 @@ class SampleAssistant(object):
             with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
                    json.dump(vollevel, f)
             kodi.Application.SetVolume({"volume": 0})
-
-        assistantindicator('listening')
+        if GPIOcontrol:
+            assistantindicator('listening')
         if vlcplayer.is_vlc_playing():
             if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
                 vlcplayer.set_vlc_volume(15)
@@ -525,7 +538,8 @@ class SampleAssistant(object):
                         return continue_conversation
                     else:
                         continue
-                assistantindicator('speaking')
+                if GPIOcontrol:
+                    assistantindicator('speaking')
 
             if len(resp.audio_out.audio_data) > 0:
                 if not self.conversation_stream.playing:
@@ -543,10 +557,12 @@ class SampleAssistant(object):
                 self.conversation_stream.volume_percentage = volume_percentage
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
-                assistantindicator('listening')
+                if GPIOcontrol:
+                    assistantindicator('listening')
                 logging.info('Expecting follow-on query from user.')
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
-                assistantindicator('off')
+                if GPIOcontrol:
+                    assistantindicator('off')
                 if kodicontrol:
                     with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
                            vollevel = json.load(f)
@@ -575,7 +591,8 @@ class SampleAssistant(object):
         logging.info('Finished playing assistant response.')
         self.conversation_stream.stop_playback()
         return continue_conversation
-        assistantindicator('off')
+        if GPIOcontrol:
+            assistantindicator('off')
         if kodicontrol:
             with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
                    vollevel = json.load(f)

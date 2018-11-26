@@ -1,6 +1,6 @@
 
 
-# GassistPi -- Google Assistant for all Raspberry Pi Boards  
+# GassistPi -- Google Assistant for all Single Board Computers    
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
@@ -10,12 +10,12 @@
 **Use custom actions in your native or Non-english languages. Non-English languages supported: French, Italian, German, Spanish and Dutch.**          
 *******************************************************************************************************************************
 
-# Features (All features are applicable to all Pi boards, unless and otherwise mentioned):  
+# Features (All features are applicable to all boards, unless and otherwise mentioned):  
 **1.   Headless auto start on boot.**    
-**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK.**   
+**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards).**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
 **4.   Radio streaming.**  
-**5.   Voice control of servo connected to RPi GPIO.**  
+**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards).**    
 **6.   Safe shutdown RPi using voice command.**  
 **7.   Stream Music from YouTube.**  
 **8.   Indicator lights for assistant listening and speaking events.**  
@@ -43,7 +43,7 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 
 *******************************************************************************************************************************  
-**Google's AIY image has the environment in a different directory, which will not work with this project. So please use the Standard Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/)**  
+**Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
 ## NOTE: "${USER}" will automatically take your username. No need to change that. Just copy pasting the following commands on terminal will work.  
@@ -61,11 +61,10 @@ git clone https://github.com/shivasiddharth/GassistPi
 *************************************************  
 ## **INSTALL AUDIO CONFIG FILES**
 *************************************************  
-1. Update OS and Kernel    
+1. Update OS     
 
 ```
-sudo apt-get update  
-sudo apt-get install raspberrypi-kernel  
+sudo apt-get update
 ```
 
 2. Restart Pi  and change directory
@@ -73,7 +72,7 @@ sudo apt-get install raspberrypi-kernel
 cd /home/${USER}/   
 ```
 
-3. Choose the audio configuration according to your setup.   
+3. Choose the audio configuration according to your setup. Non-Raspberry Pi users, choose the USB-DAC option.    
 **The speaker-test command is used to initialize alsa, so please do not skip that.  
 AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.**  
 
@@ -165,16 +164,14 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 cd /home/${USER}/      
 ```
 
-3.2 Make the installers Executable  
+3.2 Make the installer Executable  
 ```
-sudo chmod +x ./GassistPi/scripts/gassist-installer-pi3.sh
-sudo chmod +x ./GassistPi/scripts/gassist-installer-pi-zero.sh
+sudo chmod +x ./GassistPi/scripts/gassist-installer.sh
 ```
 
-3.3 Execute the installers **Pi3 and Armv7 users use the "gassist-installer-pi3.sh" installer and Pi Zero, Pi A and Pi 1 B+ users use the "gassist-installer-pi-zero.sh" installer. When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
+3.3 Execute the installer. **When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 ```
-sudo  ./GassistPi/scripts/gassist-installer-pi3.sh  
-sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh  
+sudo  ./GassistPi/scripts/gassist-installer.sh   
 ```  
 
 4. Copy the google assistant authentication link from terminal and authorize using your google account  
@@ -189,7 +186,7 @@ sudo  ./GassistPi/scripts/gassist-installer-pi-zero.sh
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
 *************************************************  
-1. Open the service files in the /GassistPi/systemd/ directory and add your project and model ids in the indicated places and save the file.
+1. Open the service files in the /GassistPi/systemd/ directory and verify your project and model ids and save the file.
 
 2. Change directory
 ```
@@ -199,7 +196,7 @@ cd /home/${USER}
 3. Make the service installer executable  
 
 ```
-sudo chmod +x ./GassistPi/scripts/service-installer.sh
+sudo chmod +x ./GassistPi/scripts/service-installer.sh  
 ```  
 
 4. Run the service installer  
@@ -208,18 +205,14 @@ sudo chmod +x ./GassistPi/scripts/service-installer.sh
 sudo ./GassistPi/scripts/service-installer.sh    
 ```  
 
-5. Enable the services - **Pi3 and Armv7 users, enable the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, enable "gassistpi-push-button.service"**          
-**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**  
+5. Enable the service    
 ```
-sudo systemctl enable gassistpi-ok-google.service  
-sudo systemctl enable gassistpi-push-button.service
+sudo systemctl enable gassistpi.service  
 ```  
 
-6. Start the service - **Pi3 and Armv7 users, start the "gassistpi-ok-google.service" and Pi Zero, Pi A and Pi 1 B+ users, start "gassistpi-push-button.service"**          
-**Previously a service was dedicated for stopbutton that stops music/radio etc. Now, its being run in a thread along with the assistant so you will not find the service.**   
+6. Start the service     
 ```
-sudo systemctl start gassistpi-ok-google.service  
-sudo systemctl start gassistpi-push-button.service
+sudo systemctl start gassistpi.service  
 ```  
 
 **RESTART and ENJOY**  

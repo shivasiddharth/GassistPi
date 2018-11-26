@@ -21,7 +21,11 @@ import requests
 import mediaplayer
 import os
 import os.path
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except Exception as e:
+    if str(e) == 'No module named \'RPi\'':
+        GPIO = None
 import time
 import re
 import subprocess
@@ -111,12 +115,29 @@ videodirectory=configuration['Kodi']['videodirectory']
 windowcmd=configuration['Kodi']['windowcmd']
 window=configuration['Kodi']['window']
 
+if GPIO!=None:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    #Number of entities in 'var' and 'PINS' should be the same
+    var = configuration['Raspberrypi_GPIO_Control']['lightnames']
+    gpio = configuration['Gpios']['picontrol']
+    for pin in gpio:
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin, 0)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-#Number of entities in 'var' and 'PINS' should be the same
-var = configuration['Raspberrypi_GPIO_Control']['lightnames']
-gpio = configuration['Gpios']['picontrol']
+    #Servo pin declaration
+    servopin=configuration['Gpios']['servo'][0]
+    GPIO.setup(servopin, GPIO.OUT)
+    pwm=GPIO.PWM(servopin, 50)
+    pwm.start(0)
+
+    #Stopbutton
+    stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
+    GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIOcontrol=True
+else:
+    GPIOcontrol=False
+
 
 #Number of station names and station links should be the same
 stnname=configuration['Radio_stations']['stationnames']
@@ -130,19 +151,6 @@ ip=configuration['ESP']['IP']
 devname=configuration['ESP']['devicename']
 devid=configuration['ESP']['deviceid']
 
-for pin in gpio:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, 0)
-
-#Servo pin declaration
-servopin=configuration['Gpios']['servo'][0]
-GPIO.setup(servopin, GPIO.OUT)
-pwm=GPIO.PWM(servopin, 50)
-pwm.start(0)
-
-#Stopbutton
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
-GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 playshell = None
 
 #Initialize colour list
@@ -291,13 +299,17 @@ def ESP(phrase):
 
 #Stepper Motor control
 def SetAngle(angle):
-    duty = angle/18 + 2
-    GPIO.output(servopin, True)
-    say("Moving motor by " + str(angle) + " degrees")
-    pwm.ChangeDutyCycle(duty)
-    time.sleep(1)
-    pwm.ChangeDutyCycle(0)
-    GPIO.output(servopin, False)
+    if GPIOcontrol:
+        duty = angle/18 + 2
+        GPIO.output(servopin, True)
+        say("Moving motor by " + str(angle) + " degrees")
+        pwm.ChangeDutyCycle(duty)
+        time.sleep(1)
+        pwm.ChangeDutyCycle(0)
+        GPIO.output(servopin, False)
+    else:
+        say("GPIO controls, is not supported for your device.")
+
 
 
 def stop():
@@ -345,21 +357,24 @@ def feed(phrase):
         numfeeds=feedlength
     title=feed['feed']['title']
     say(title)
-    #To stop the feed, press and hold stop button
-    while GPIO.input(stoppushbutton):
-        for x in range(0,numfeeds):
-            content=feed['entries'][x]['title']
-            print(content)
-            say(content)
-            summary=feed['entries'][x]['summary']
-            print(summary)
-            say(summary)
-            if not GPIO.input(stoppushbutton):
-              break
-        if x == numfeeds-1:
-            break
-        else:
-            continue
+    if GPIOcontrol:
+        #To stop the feed, press and hold stop button
+        while GPIO.input(stoppushbutton):
+            for x in range(0,numfeeds):
+                content=feed['entries'][x]['title']
+                print(content)
+                say(content)
+                summary=feed['entries'][x]['summary']
+                print(summary)
+                say(summary)
+                if not GPIO.input(stoppushbutton):
+                  break
+            if x == numfeeds-1:
+                break
+            else:
+                continue
+    else:
+        print("GPIO controls, is not supported for your device. You need to wait for feeds to automatically stop")
 
 
 
@@ -1532,12 +1547,15 @@ def Action(phrase):
         if 'zero' in phrase:
             SetAngle(0)
     else:
-        for num, name in enumerate(var):
-            if name.lower() in phrase:
-                pinout=gpio[num]
-                if custom_action_keyword['Dict']['On'] in phrase:
-                    GPIO.output(pinout, 1)
-                    say("Turning On " + name)
-                elif custom_action_keyword['Dict']['Off'] in phrase:
-                    GPIO.output(pinout, 0)
-                    say("Turning Off " + name)
+        if GPIOcontrol:
+            for num, name in enumerate(var):
+                if name.lower() in phrase:
+                    pinout=gpio[num]
+                    if custom_action_keyword['Dict']['On'] in phrase:
+                        GPIO.output(pinout, 1)
+                        say("Turning On " + name)
+                    elif custom_action_keyword['Dict']['Off'] in phrase:
+                        GPIO.output(pinout, 0)
+                        say("Turning Off " + name)
+        else:
+            say("GPIO controls, is not supported for your device.")
