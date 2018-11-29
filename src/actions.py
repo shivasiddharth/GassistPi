@@ -1325,17 +1325,16 @@ def scan_spotify_playlists():
         # print("")
         # print("")
         for playlist in playlists['items']:
-            if playlist['owner']['id'] == username:
-                # print (playlist['name'])
-                playlist_name=playlist['name']
-                # print("")
-                # print("")
-    ##            print ('  total tracks', playlist['tracks']['total'])
-    ##            print("")
-    ##            print("")
-                results = sp.user_playlist(username, playlist['id'],fields="tracks,next")
-                tracks = results['tracks']
-                spotify_tracks_list=show_spotify_track_names(tracks)
+            # print (playlist['name'])
+            playlist_name=playlist['name']
+            # print("")
+            # print("")
+##            print ('  total tracks', playlist['tracks']['total'])
+##            print("")
+##            print("")
+            results = sp.user_playlist(playlist['owner']['id'], playlist['id'],fields="tracks,next")
+            tracks = results['tracks']
+            spotify_tracks_list=show_spotify_track_names(tracks)                
             playlistdetails.append(i)
             playlistdetails.append(playlist_name)
             playlistdetails.append(spotify_tracks_list)
