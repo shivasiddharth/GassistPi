@@ -10,7 +10,6 @@ from oauth2client.tools import argparser
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 import spotipy.oauth2 as oauth2
-from googletrans import Translator
 from pushbullet import Pushbullet
 from mediaplayer import api
 from youtube_search_engine import google_cloud_api_key
@@ -26,6 +25,7 @@ try:
 except Exception as e:
     if str(e) == 'No module named \'RPi\'':
         GPIO = None
+import goslate
 import time
 import re
 import subprocess
@@ -215,10 +215,8 @@ def gaana_search(query):
 
 #Word translator
 def trans(words,lang):
-    transword= translator.translate(words, dest=lang)
-    transword=transword.text
-    transword=transword.replace("Text, ",'',1)
-    transword=transword.strip()
+    translator = goslate.Goslate()
+    transword= translator.translate(words, lang)    
     print(transword)
     return transword
 
@@ -1334,7 +1332,7 @@ def scan_spotify_playlists():
 ##            print("")
             results = sp.user_playlist(playlist['owner']['id'], playlist['id'],fields="tracks,next")
             tracks = results['tracks']
-            spotify_tracks_list=show_spotify_track_names(tracks)                
+            spotify_tracks_list=show_spotify_track_names(tracks)
             playlistdetails.append(i)
             playlistdetails.append(playlist_name)
             playlistdetails.append(spotify_tracks_list)
