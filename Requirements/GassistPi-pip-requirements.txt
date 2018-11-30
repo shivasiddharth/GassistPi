@@ -20,4 +20,4 @@ spidev>=3.2
 gpiozero>=1.4.1
 numpy>=1.15.1
 pycryptodomex==3.7.0
-goslate==1.5.1
+git+https://github.com/shivasiddharth/py-googletrans.git

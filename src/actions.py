@@ -14,6 +14,7 @@ from pushbullet import Pushbullet
 from mediaplayer import api
 from youtube_search_engine import google_cloud_api_key
 from gtts import gTTS
+from googletrans import Translator
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
 import requests
@@ -25,7 +26,6 @@ try:
 except Exception as e:
     if str(e) == 'No module named \'RPi\'':
         GPIO = None
-import goslate
 import time
 import re
 import subprocess
@@ -215,8 +215,10 @@ def gaana_search(query):
 
 #Word translator
 def trans(words,lang):
-    translator = goslate.Goslate()
-    transword= translator.translate(words, lang)    
+    transword= translator.translate(words, dest=lang)
+    transword=transword.text
+    transword=transword.replace("Text, ",'',1)
+    transword=transword.strip()    
     print(transword)
     return transword
 
