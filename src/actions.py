@@ -188,7 +188,7 @@ quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 
 ##Speech and translator declarations
 ttsfilename="/tmp/say.mp3"
-
+translator = Translator()
 language=configuration['Language']['Choice']
 
 
