@@ -110,7 +110,7 @@ except (SystemError, ImportError):
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
-if configuration['Kodi']['control']=='Enabled':
+if configuration['Kodi']['Kodi_Control']=='Enabled':
     kodicontrol=True
 else:
     kodicontrol=False

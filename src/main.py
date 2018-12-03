@@ -106,7 +106,7 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 # Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
-if configuration['Kodi']['control']=='Enabled':
+if configuration['Kodi']['Kodi_Control']=='Enabled':
     kodicontrol=True
 else:
     kodicontrol=False
@@ -567,7 +567,7 @@ class Myassistant():
                 if (custom_action_keyword['Keywords']['RSS'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][1]).lower() in str(usrcmd).lower():
                     assistant.stop_conversation()
                     feed(str(usrcmd).lower())
-                if configuration['Kodi']['Kodi_Control']=='Enabled':
+                if kodicontrol:
                     if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
                         kodiactions(str(usrcmd).lower())
@@ -692,7 +692,7 @@ class Myassistant():
                     if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
                         assistant.stop_conversation()
                         vlcplayer.stop_vlc()
-                        deezer_playlist_select(str(usrcmd).lower())                
+                        deezer_playlist_select(str(usrcmd).lower())
 
         if custom_wakeword:
             self.detector.terminate()
