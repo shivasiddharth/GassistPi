@@ -244,7 +244,7 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ### **CUSTOM ACTIONS IN Non-English LANGUAGES**    
 ************************************************
-Languages supported: French, Italian, Spanish, Dutch and German.  
+Languages supported: French, Italian, Spanish, Dutch, German and Swedish.  
 
 In the **config.yaml** file, under the **Languages and Choice** option set your desired language.   
 
