@@ -296,7 +296,7 @@ def ESP(phrase):
             elif custom_action_keyword['Dict']['Off'] in phrase:
                 ctrl='=OFF'
                 say("Turning Off " + name)
-            rq = requests.head("https://"+ip + dev + ctrl)
+            rq = requests.head("https://"+ip + dev + ctrl,verify=False)
 
 
 #Stepper Motor control
