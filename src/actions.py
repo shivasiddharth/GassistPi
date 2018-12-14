@@ -13,11 +13,11 @@ import spotipy.oauth2 as oauth2
 from pushbullet import Pushbullet
 from mediaplayer import api
 from youtube_search_engine import google_cloud_api_key
-from gtts import gTTS
 from googletrans import Translator
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
 import requests
+import pyttsx3
 import mediaplayer
 import os
 import os.path
@@ -189,10 +189,11 @@ sportsnews = "http://feeds.feedburner.com/ndtvsports-latest"
 quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 
 ##Speech and translator declarations
-ttsfilename="/tmp/say.mp3"
-translator = Translator()
 language=configuration['Language']['Choice']
-
+if configuration['Voice_Custom_Actions']=='Male':
+    gender='+m1'
+else:
+    gender='+f1'
 
 #Function for google KS custom search engine
 def kickstrater_search(query):
@@ -220,19 +221,17 @@ def trans(words,lang):
     transword= translator.translate(words, dest=lang)
     transword=transword.text
     transword=transword.replace("Text, ",'',1)
-    transword=transword.strip()    
+    transword=transword.strip()
     print(transword)
     return transword
 
 #Text to speech converter with translation
 def say(words):
-    newword=trans(words,language)
-    tts = gTTS(text=newword, lang=language)
-    tts.save(ttsfilename)
-    os.system("mpg123 "+ttsfilename)
-    os.remove(ttsfilename)
-
-
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)
+    engine.setProperty('voice', language+gender)
+    engine.say(words)
+    engine.runAndWait()
 
 #Function to get HEX and RGB values for requested colour
 def getcolours(phrase):
