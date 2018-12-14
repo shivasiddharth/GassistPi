@@ -242,6 +242,11 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
 *******************************************************************
+### TOGGLING MAJOR CUSTOM ACTIONS ON or OFF
+*******************************************************************
+Major custom actions have been provided with a control key or switch in the config.yaml.    
+Set it to "Enabled" to enable the custom actions and set it to "Disabled" to disable them.    
+
 ### **CUSTOM ACTIONS IN Non-English LANGUAGES**    
 ************************************************
 Languages supported: French, Italian, Spanish, Dutch and German.  
