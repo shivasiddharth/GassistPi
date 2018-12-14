@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 26-Nov-2018 Update:
-**GassistPi has been ported to work with Pi as well as other SBCs running Armbian Stretch.**          
+## 14-Dec-2018 Update:
+**Added a switch for major custom actions and users can toggle between male and female voice for the custom generated text.**          
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all boards, unless and otherwise mentioned):  
