@@ -1,0 +1,96 @@
+# Keywords are certain specific word/words that must be present in the user query/command to trigger the custom action.
+# Feel free to modify, but make sure that each custom action has unique keyword.
+# CHANGE THE WORD PRESENT WITHIN THE QUOTES ONLY. DO NOT ALTER OTHERS
+
+Keywords:
+  # Magic Mirror
+  Magic_mirror:
+    - 'magic mirror'
+  # Sending recipe to mobile devices
+  Recipe_pushbullet:
+    - 'ingredienser'
+  # Kickstarter campaign tracking
+  Kickstarter_tracking:
+    - 'kickstarter'
+  # Pi power off, servo control and Pi GPIO control
+  Pi_GPIO_control:
+    - 'trigga'
+  # Stream songs from YouTube
+  YouTube_music_stream:
+    - 'youtube'
+  # Stop music and radio playback
+  Stop_music:
+    - 'stoppa'
+  # ESP control
+  ESP_control:
+    - 'wireless'
+  # Parcel tracking
+  Parcel_tracking:
+    - 'parcel'
+  # RSS feed playback
+  RSS:
+    - 'feed'
+    - 'quote'
+  # Kodi actions
+  Kodi_actions:
+    - 'på kodi'
+  # Music pause/resume
+  Pause_resume:
+    - 'pausa musiken'
+    - 'återuppta musiken'
+  # Change tracks
+  Track_change:
+    Next:
+      - 'spela nästa'
+      - 'spela nästa låt'
+      - 'spela nästa sång'
+    Previous:
+      - 'spela föregående'
+      - 'spela föregående låt'
+      - 'spela föregående sång'
+  #Control music/vlc volume
+  VLC_music_volume:
+    - 'musik volymen'
+  # Refresh music lists. Both the words given below should be present in the command issued.
+  Music_index_refresh:
+    - 'refresh'
+    - 'music'
+  # Streaming music from google music
+  Google_music_streaming:
+    - 'google music'
+  # Streaming music from spotify
+  Spotify_music_streaming:
+    - 'spotify'
+  # Streaming music from gaana
+  Gaana_music_streaming:
+    - 'gaana.com'
+  Deezer_music_streaming:
+    - 'deezer'
+
+#Do not change the Dict below
+Dict:
+  Album: 'album'
+  All_songs: 'alla låtar'
+  Artist: 'artist'
+  Brightness: 'brightness'
+  By: 'av'
+  Change: 'byt'
+  Colour: 'färg'
+  Decrease: 'minska'
+  Down:  'ner'
+  From: 'från'
+  From_deezer: 'från deezer'
+  From_gaana: 'från gaana.com'
+  From_google_music: 'från google music'
+  From_spotify: 'från spotify'
+  From_youtube: 'från youtube'
+  Increase: 'höj'
+  Maximum: 'max'
+  Minimum: 'min'
+  'Off': 'av'
+  'On': 'på'
+  Play: 'spela'
+  Reduce: 'reducera'
+  Set: 'sätt'
+  To: 'till'
+  Up: 'upp'

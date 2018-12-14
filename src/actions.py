@@ -62,6 +62,8 @@ elif configuration['Language']['Choice']=='es':
     keywordfile= '{}/src/keywords_es.yaml'.format(ROOT_PATH)
 elif configuration['Language']['Choice']=='nl':
     keywordfile= '{}/src/keywords_nl.yaml'.format(ROOT_PATH)
+elif configuration['Language']['Choice']=='sv':
+    keywordfile= '{}/src/keywords_sv.yaml'.format(ROOT_PATH)
 else:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
 with open(keywordfile,'r') as conf:
@@ -293,7 +295,7 @@ def ESP(phrase):
             elif custom_action_keyword['Dict']['Off'] in phrase:
                 ctrl='=OFF'
                 say("Turning Off " + name)
-            rq = requests.head("https://"+ip + dev + ctrl)
+            rq = requests.head("http://"+ip + dev + ctrl)
 
 
 #Stepper Motor control
