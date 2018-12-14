@@ -323,32 +323,34 @@ class SampleAssistant(object):
                     usrcmd=usrcmd.replace('"','',1)
                     usrcmd=usrcmd.strip()
                     print(str(usrcmd))
-                    if os.path.isfile('/opt/hue-emulator/config.json'):
-                        with open('/opt/hue-emulator/config.json', 'r') as config:
-                             hueconfig = json.load(config)
-                        for i in range(1,len(hueconfig['lights'])+1):
+                    if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
+                        if os.path.isfile('/opt/hue-emulator/config.json'):
+                            with open('/opt/hue-emulator/config.json', 'r') as config:
+                                 hueconfig = json.load(config)
+                            for i in range(1,len(hueconfig['lights'])+1):
+                                try:
+                                    if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                                        hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                                        return continue_conversation
+                                        break
+                                except Keyerror:
+                                    say('Unable to help, please check your config file')
+                    if configuration['Tasmota_devicelist']['Tasmota_Control']=='Enabled':
+                        for num, name in enumerate(tasmota_devicelist):
+                            if name.lower() in str(usrcmd).lower():
+                                tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
+                                return continue_conversation
+                                break
+                    if configuration['Conversation']['Conversation_Control']=='Enabled':
+                        for i in range(1,numques+1):
                             try:
-                                if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
-                                    hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                                if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
+                                    selectedans=random.sample(configuration['Conversation']['answer'][i],1)
+                                    say(selectedans[0])
                                     return continue_conversation
                                     break
                             except Keyerror:
-                                say('Unable to help, please check your config file')
-
-                    for num, name in enumerate(tasmota_devicelist):
-                        if name.lower() in str(usrcmd).lower():
-                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num])
-                            return continue_conversation
-                            break
-                    for i in range(1,numques+1):
-                        try:
-                            if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
-                                selectedans=random.sample(configuration['Conversation']['answer'][i],1)
-                                say(selectedans[0])
-                                return continue_conversation
-                                break
-                        except Keyerror:
-                            say('Please check if the number of questions matches the number of answers')
+                                say('Please check if the number of questions matches the number of answers')
                     if Domoticz_Device_Control==True and len(domoticz_devices['result'])>0:
                         for i in range(0,len(domoticz_devices['result'])):
                             if str(domoticz_devices['result'][i]['HardwareName']).lower() in str(usrcmd).lower():
@@ -391,33 +393,39 @@ class SampleAssistant(object):
                     if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
                         kickstarter_tracker(str(usrcmd).lower())
                         return continue_conversation
-                    if (custom_action_keyword['Keywords']['Pi_GPIO_control'][0]).lower() in str(usrcmd).lower():
-                        Action(str(usrcmd).lower())
-                        return continue_conversation
-                    if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower():
-                        vlcplayer.stop_vlc()
-                        if 'autoplay'.lower() in str(usrcmd).lower():
-                            YouTube_Autoplay(str(usrcmd).lower())
-                        else:
-                            YouTube_No_Autoplay(str(usrcmd).lower())
-                        return continue_conversation
+                    if configuration['Raspberrypi_GPIO_Control']['GPIO_Control']=='Enabled':
+                        if (custom_action_keyword['Keywords']['Pi_GPIO_control'][0]).lower() in str(usrcmd).lower():
+                            Action(str(usrcmd).lower())
+                            return continue_conversation
+                    if configuration['YouTube']['YouTube_Control']=='Enabled':
+                        if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower():
+                            vlcplayer.stop_vlc()
+                            if 'autoplay'.lower() in str(usrcmd).lower():
+                                YouTube_Autoplay(str(usrcmd).lower())
+                            else:
+                                YouTube_No_Autoplay(str(usrcmd).lower())
+                            return continue_conversation
                     if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
                         stop()
-                    if 'radio'.lower() in str(usrcmd).lower():
-                        radio(str(usrcmd).lower())
-                        return continue_conversation
-                    if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
-                        ESP(str(usrcmd).lower())
-                        return continue_conversation
+                    if configuration['Radio_stations']['Radio_Control']=='Enabled':
+                        if 'radio'.lower() in str(usrcmd).lower():
+                            radio(str(usrcmd).lower())
+                            return continue_conversation
+                    if configuration['ESP']['ESP_Control']=='Enabled':
+                        if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
+                            ESP(str(usrcmd).lower())
+                            return continue_conversation
+
                     if (custom_action_keyword['Keywords']['Parcel_tracking'][0]).lower() in str(usrcmd).lower():
                         track()
                         return continue_conversation
                     if (custom_action_keyword['Keywords']['RSS'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][1]).lower() in str(usrcmd).lower():
                         feed(str(usrcmd).lower())
                         return continue_conversation
-                    if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
-                        kodiactions(str(usrcmd).lower())
-                        return continue_conversation
+                    if kodicontrol:
+                        if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
+                            kodiactions(str(usrcmd).lower())
+                            return continue_conversation
                     # Google Assistant now comes built in with chromecast control, so custom function has been commented
                     # if 'chromecast'.lower() in str(usrcmd).lower():
                     #     if 'play'.lower() in str(usrcmd).lower():
@@ -520,22 +528,26 @@ class SampleAssistant(object):
                     if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
                         refreshlists()
                         return continue_conversation
-                    if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        vlcplayer.stop_vlc()
-                        gmusicselect(str(usrcmd).lower())
-                        return continue_conversation
-                    if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        vlcplayer.stop_vlc()
-                        spotify_playlist_select(str(usrcmd).lower())
-                        return continue_conversation
-                    if (custom_action_keyword['Keywords']['Gaana_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        vlcplayer.stop_vlc()
-                        gaana_playlist_select(str(usrcmd).lower())
-                        return continue_conversation
-                    if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        vlcplayer.stop_vlc()
-                        deezer_playlist_select(str(usrcmd).lower())
-                        return continue_conversation
+                    if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
+                        if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
+                            vlcplayer.stop_vlc()
+                            gmusicselect(str(usrcmd).lower())
+                            return continue_conversation
+                    if configuration['Spotify']['Spotify_Control']=='Enabled':
+                        if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
+                            vlcplayer.stop_vlc()
+                            spotify_playlist_select(str(usrcmd).lower())
+                            return continue_conversation
+                    if configuration['Gaana']['Gaana_Control']=='Enabled':
+                        if (custom_action_keyword['Keywords']['Gaana_music_streaming'][0]).lower() in str(usrcmd).lower():
+                            vlcplayer.stop_vlc()
+                            gaana_playlist_select(str(usrcmd).lower())
+                            return continue_conversation
+                    if configuration['Deezer']['Deezer_Control']=='Enabled':
+                        if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
+                            vlcplayer.stop_vlc()
+                            deezer_playlist_select(str(usrcmd).lower())
+                            return continue_conversation                   
                     else:
                         continue
                 if GPIOcontrol:

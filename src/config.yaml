@@ -190,6 +190,10 @@ Tasmota_devicelist:
     - '1'
     - '1'
 
+#Voice for the "SAY" function or text to speech. Set it to 'Female' or 'Male' depending on your preference.
+#Note: This does not change Google's voice. this is only for the speech generated within custom actions.
+Voice_Custom_Actions: 'Female'
+
 #Custom wakeword On/Off.
 #To enable custom wakeword, change status to Enabled and restart the assistant.
 Wakewords:

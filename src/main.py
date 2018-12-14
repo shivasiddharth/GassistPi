@@ -208,6 +208,7 @@ class Myassistant():
     def pushbutton(self):
         if GPIOcontrol:
             while mutestopbutton:
+                time.sleep(.1)
                 if GPIO.event_detected(stoppushbutton):
                     GPIO.remove_event_detect(stoppushbutton)
                     now = time.time()
