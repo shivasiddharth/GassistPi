@@ -282,7 +282,16 @@ class SampleAssistant(object):
             assistantindicator('listening')
         if vlcplayer.is_vlc_playing():
             if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
-                vlcplayer.set_vlc_volume(15)
+                try:
+                    with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
+                        volume = json.load(vol)
+                    vlcplayer.set_vlc_volume(15)
+                except json.decoder.JSONDecodeError:
+                    currentvolume=vlcplayer.get_vlc_volume()
+                    print(currentvolume)
+                    with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
+                       json.dump(currentvolume, vol)
+                    vlcplayer.set_vlc_volume(15)
             else:
                 currentvolume=vlcplayer.get_vlc_volume()
                 print(currentvolume)
@@ -477,9 +486,14 @@ class SampleAssistant(object):
                                 vlcplayer.set_vlc_volume(int(settingvollevel))
                             elif custom_action_keyword['Dict']['Increase'].lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Decrease'].lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
                                 if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
-                                    with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
-                                        oldvollevel = json.load(vol)
-                                        for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
+                                    try:
+                                        with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
+                                            oldvollevel = json.load(vol)
+                                            for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
+                                                oldvollevel=int(oldvollevel)
+                                    except json.decoder.JSONDecodeError:
+                                        oldvollevel=vlcplayer.get_vlc_volume
+                                        for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
                                             oldvollevel=int(oldvollevel)
                                 else:
                                     oldvollevel=vlcplayer.get_vlc_volume
