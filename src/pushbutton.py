@@ -79,6 +79,7 @@ from actions import domoticz_control
 from actions import domoticz_devices
 from actions import gaana_playlist_select
 from actions import deezer_playlist_select
+from actions import gender
 
 from google.assistant.embedded.v1alpha2 import (
     embedded_assistant_pb2,
@@ -547,7 +548,7 @@ class SampleAssistant(object):
                         if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
                             vlcplayer.stop_vlc()
                             deezer_playlist_select(str(usrcmd).lower())
-                            return continue_conversation                   
+                            return continue_conversation
                     else:
                         continue
                 if GPIOcontrol:
@@ -745,7 +746,10 @@ def main(api_endpoint, credentials, project_id,
 
         $ python -m googlesamples.assistant -i <input file> -o <output file>
     """
-    subprocess.Popen(["aplay", "{}/sample-audio-files/Startup.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if gender=='Male':
+        subprocess.Popen(["aplay", "{}/sample-audio-files/Startup-Male.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    else:
+        subprocess.Popen(["aplay", "{}/sample-audio-files/Startup-Female.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Setup logging.
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
 

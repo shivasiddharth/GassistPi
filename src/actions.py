@@ -16,8 +16,8 @@ from youtube_search_engine import google_cloud_api_key
 from googletrans import Translator
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
+from gtts import gTTS
 import requests
-import pyttsx3
 import mediaplayer
 import os
 import os.path
@@ -190,11 +190,18 @@ quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 
 ##Speech and translator declarations
 translator = Translator()
+femalettsfilename="/tmp/female-say.mp3"
+malettsfilename="/tmp/male-say.wav"
 language=configuration['Language']['Choice']
-if configuration['Voice_Custom_Actions']=='Male':
-    gender='+m1'
+gender=''
+if configuration['Voice_Custom_Actions']=='Male' and language=='en':
+    gender='Male'
+elif language=='it':
+    gender='Male'
+elif configuration['Voice_Custom_Actions']=='Male' and language!='en':
+    gender='Female'
 else:
-    gender='+f1'
+    gender='Female'
 
 #Function for google KS custom search engine
 def kickstrater_search(query):
@@ -228,11 +235,17 @@ def trans(words,lang):
 
 #Text to speech converter with translation
 def say(words):
-    engine = pyttsx3.init()
-    engine.setProperty('rate', 150)
-    engine.setProperty('voice', language+gender)
-    engine.say(words)
-    engine.runAndWait()
+    newword=trans(words,language)
+    tts = gTTS(text=newword, lang=language)
+    tts.save(femalettsfilename)
+    if gender=='Male':
+        os.system('sox ' + femalettsfilename + ' ' + malettsfilename + ' pitch -450')
+        os.remove(femalettsfilename)
+        os.system('aplay ' + malettsfilename)
+        os.remove(malettsfilename)
+    else:
+        os.system("mpg123 "+femalettsfilename)
+        os.remove(femalettsfilename)
 
 #Function to get HEX and RGB values for requested colour
 def getcolours(phrase):

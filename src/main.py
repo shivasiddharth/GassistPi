@@ -77,6 +77,7 @@ from actions import domoticz_control
 from actions import domoticz_devices
 from actions import gaana_playlist_select
 from actions import deezer_playlist_select
+from actions import gender
 
 try:
     FileNotFoundError
@@ -187,7 +188,10 @@ class Myassistant():
                 self.assistant.set_mic_mute(False)
             # if custom_wakeword:
             #     self.t1.start()
-            subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-On.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if gender=='Male':
+                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-On-Male.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            else:
+                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-On-Female.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("Turning on the microphone")
         else:
             open('{}/.mute'.format(USER_PATH), 'a').close()
@@ -195,7 +199,10 @@ class Myassistant():
             self.assistant.set_mic_mute(True)
             # if custom_wakeword:
             #     self.thread_end(t1)
-            subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-Off.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if gender=='Male':
+                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-Off-Male.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            else:
+                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-Off-Female.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("Turning off the microphone")
 
     def buttondoublepress(self):
@@ -441,7 +448,10 @@ class Myassistant():
         device_model_id = args.device_model_id or device_model_id
         with Assistant(credentials, device_model_id) as assistant:
             self.assistant = assistant
-            subprocess.Popen(["aplay", "{}/sample-audio-files/Startup.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if gender=='Male':
+                subprocess.Popen(["aplay", "{}/sample-audio-files/Startup-Male.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            else:
+                subprocess.Popen(["aplay", "{}/sample-audio-files/Startup-Female.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             events = assistant.start()
             device_id = assistant.device_id
             print('device_model_id:', device_model_id)
