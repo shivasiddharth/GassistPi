@@ -189,6 +189,7 @@ sportsnews = "http://feeds.feedburner.com/ndtvsports-latest"
 quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 
 ##Speech and translator declarations
+translator = Translator()
 language=configuration['Language']['Choice']
 if configuration['Voice_Custom_Actions']=='Male':
     gender='+m1'
