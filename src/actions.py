@@ -16,6 +16,7 @@ from youtube_search_engine import google_cloud_api_key
 from googletrans import Translator
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
+from langdetect import detect
 from gtts import gTTS
 import requests
 import mediaplayer
@@ -224,9 +225,21 @@ def gaana_search(query):
         ).execute()
     return res
 
+#Language detector
+def lang_detect(text):
+    languages=[]
+    splittext=text.split()
+    for word in splittext:
+        lang=detect(word)
+        languages.append(lang)
+    detected_language=(max(set(languages), key = languages.count))
+    #print(detected_language)
+    return detected_language
+
 #Word translator
 def trans(words,lang):
-    transword= translator.translate(words, dest=lang)
+    srclang=lang_detect(words)
+    transword= translator.translate(words, dest=lang, src=srclang)
     transword=transword.text
     transword=transword.replace("Text, ",'',1)
     transword=transword.strip()
