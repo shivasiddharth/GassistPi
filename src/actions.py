@@ -230,6 +230,8 @@ def lang_detect(text):
     languages=[]
     splittext=text.split()
     for word in splittext:
+        if re.findall(r'\b\d+\b', word):
+            continue
         lang=detect(word)
         languages.append(lang)
     detected_language=(max(set(languages), key = languages.count))

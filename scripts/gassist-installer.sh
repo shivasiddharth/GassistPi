@@ -145,14 +145,14 @@ if [[ $board = "Raspberry" ]];then
 fi
 
 if [[ $devmodel = "armv7" ]];then
-	pip install google-assistant-library==1.0.0
+	pip install google-assistant-library==1.0.1
 else
   pip install --upgrade --no-binary :all: grpcio
 fi
 
-pip install google-assistant-grpc==0.2.0
-pip install google-assistant-sdk==0.5.0
-pip install google-assistant-sdk[samples]==0.5.0
+pip install google-assistant-grpc==0.2.1
+pip install google-assistant-sdk==0.5.1
+pip install google-assistant-sdk[samples]==0.5.1
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
