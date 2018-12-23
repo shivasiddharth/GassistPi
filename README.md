@@ -609,10 +609,10 @@ Music streaming has been enabled for both OK-Google and Custom hotwords/wakeword
 ************************************************
 The music streaming from Google Music uses [Gmusicapi](https://unofficial-google-music-api.readthedocs.io/en/latest/).
 
-Enter your Google userid and password in the **config.yaml** file. If you are using a two-step authentication or two-factor authentication, generate and use an app specific password.
-
-### Getting app specific password:
-Refer to this page on google help - https://support.google.com/accounts/answer/185833?hl=en
+Run the Google Music Authenticator once using:    
+```
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/gmusicauth.py
+```
 
 ### What you can do:
 Play all your songs in loop using the syntax: **"Hey Google, Play all the songs from Google Music"**

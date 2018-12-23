@@ -72,10 +72,6 @@ Gaana:
 #Enter your Google Login Credentials
 Gmusicapi:
   Gmusic_Control: 'Enabled'
-  #If you are using two-step authentication, use app specific password. For guidelines, go through README
-  email: 'ENTER_YOUR_EMAIL_HERE'
-  password: 'ENETER_YOUR_PASSWORD'
-  deviceid: Mobileclient.FROM_MAC_ADDRESS
 
 #API Key for YouTube and Kickstarter Search Engine
 Google_cloud_api_key: ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE

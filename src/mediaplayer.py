@@ -17,8 +17,7 @@ with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
 
 api = Mobileclient()
-#If you are using two-step authentication, use app specific password. For guidelines, go through README
-logged_in = api.login(configuration['Gmusicapi']['email'],configuration['Gmusicapi']['password'] , configuration['Gmusicapi']['deviceid'])
+logged_in=api.oauth_login(Mobileclient.FROM_MAC_ADDRESS)
 
 
 class vlcplayer():
