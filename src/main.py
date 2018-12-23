@@ -41,6 +41,7 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
+import paho.mqtt.client as mqtt
 from actions import say
 from actions import trans
 from actions import Action
@@ -171,6 +172,8 @@ class Myassistant():
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
+        if configuration['MQTT']['MQTT_Control']=='Enabled':
+            self.t3 = Thread(target=self.mqtt_start)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -272,6 +275,8 @@ class Myassistant():
                 self.assistant.set_mic_mute(True)
             if custom_wakeword:
                 self.t1.start()
+            if configuration['MQTT']['MQTT_Control']=='Enabled':
+                self.t3.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             self.can_start_conversation = False
@@ -402,6 +407,24 @@ class Myassistant():
         self.detector.start(detected_callback=self.callbacks,
             interrupt_check=self.interrupt_callback,
             sleep_time=0.03)
+
+    def on_connect(self, client, userdata, flags, rc):
+        print("Connected with result code "+str(rc))
+        client.subscribe(configuration['MQTT']['TOPIC'])
+
+    def on_message(self, client, userdata, msg):
+        if self.can_start_conversation == True:
+            print("Message from MQTT: "+str(msg.payload))
+            custom_query=str(msg.payload)[1:]
+            self.assistant.send_text_query(custom_query)
+
+    def mqtt_start(self):
+        client = mqtt.Client()
+        client.on_connect = self.on_connect
+        client.on_message = self.on_message
+        client.username_pw_set(configuration['MQTT']['UNAME'], configuration['MQTT']['PSWRD'])
+        client.connect(configuration['MQTT']['IP'], 1883, 60)
+        client.loop_forever()
 
     def main(self):
         parser = argparse.ArgumentParser(

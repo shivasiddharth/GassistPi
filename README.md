@@ -41,6 +41,7 @@
 **28.  Stream music from Gaana.com.**  
 **29.  Stream your playlist from Deezer.**    
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
+**31.  Send commands over MQTT to the Google Assistant.**  
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -246,14 +247,22 @@ Insert your Project Id and Model Id in quotes in the mentioned places
 *******************************************************************
 Major custom actions have been provided with a control key or switch in the config.yaml.    
 Set it to "Enabled" to enable the custom actions and set it to "Disabled" to disable them.    
-
+************************************************   
 ### **CUSTOM ACTIONS IN Non-English LANGUAGES**    
-************************************************
+************************************************     
 Languages supported: French, Italian, Spanish, Dutch, German and Swedish.  
 
 In the **config.yaml** file, under the **Languages and Choice** option set your desired language.   
 
 Use the Translated versions of the English syntaxes given for all the custom actions.  
+
+************************************************
+### **SEND COMMANDS/QUERIES TO GOOGLE ASSISTANT OVER MQTT**     
+************************************************   
+1. Set up your desired MQTT broker.  
+2. Enter the MQTT broker credentials and subscription topic in the provided config.yaml file.  
+3. Set the MQTT_Control to **Enabled**.  
+4. Now, you can send queries or commands to google assistant over MQTT.  
 
 ************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
