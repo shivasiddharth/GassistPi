@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 23-Dec-2018 Update:
-**Updated the project to the latest SDK version.**          
+## 28-Dec-2018 Update:
+**Send commands over MQTT**             
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all boards, unless and otherwise mentioned):  
