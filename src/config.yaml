@@ -133,6 +133,14 @@ Language:
 # Enter your Magic Mirror IP
 Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
 
+#MQTT credentials
+MQTT:
+  MQTT_Control: 'Disabled'
+  IP: 'Enter your MQTT IP ADDRESS here'
+  UNAME: 'Enter your MQTT USERNAME here'
+  PSWRD: 'Enter your MQTT PASSWORD here'
+  TOPIC: 'ENTER your MQTT TOPIC here'
+
 #Radio station declarations. Follow a similar pattern to add your own stations.
 #Google may not pickup the pronunciation of radio station names, hence 'Radio 1' etc is required.
 Radio_stations:
