@@ -416,7 +416,7 @@ class Myassistant():
         if self.can_start_conversation == True:
             print("Message from MQTT: "+str(msg.payload))
             custom_query=str(msg.payload)[1:]
-            custom_command(custom_query,'MQTT')
+            self.custom_command(custom_query,'MQTT')
 
     def mqtt_start(self):
         client = mqtt.Client()
@@ -426,7 +426,7 @@ class Myassistant():
         client.connect(configuration['MQTT']['IP'], 1883, 60)
         client.loop_forever()
 
-    def custom_command(usrcmd,source):
+    def custom_command(self,usrcmd,source):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
             if os.path.isfile('/opt/hue-emulator/config.json'):
                 with open('/opt/hue-emulator/config.json', 'r') as config:
@@ -754,7 +754,7 @@ class Myassistant():
                     assistant.send_text_query(args.query)
                 self.process_event(event)
                 usrcmd=event.args
-                custom_command(usrcmd,'GA')
+                self.custom_command(usrcmd,'GA')
 
         if custom_wakeword:
             self.detector.terminate()
