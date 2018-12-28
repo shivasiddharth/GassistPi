@@ -267,7 +267,8 @@ def getcolours(phrase):
     usrclridx=idx=phrase.find(custom_action_keyword['Dict']['To'])
     usrclr=query=phrase[usrclridx:]
     usrclr=usrclr.replace(custom_action_keyword['Dict']['To'],"",1)
-    usrclr=usrclr.replace("'}","",1)
+    usrclr=usrclr.replace("'","",1)
+    usrclr=usrclr.replace("}","",1)
     usrclr=usrclr.strip()
     usrclr=usrclr.replace(" ","",1)
     usrclr=usrclr.lower()
@@ -566,7 +567,8 @@ def singleplaykodi(query):
     i=0
     idx=query.find(custom_action_keyword['Dict']['Play'])
     track=query[idx:]
-    track=track.replace("'}", "",1)
+    track=track.replace("}", "",1)
+    track=track.replace("'", "",1)
     track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
     track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
     track=track.strip()
@@ -701,7 +703,8 @@ def kodiactions(phrase):
         query=str(phrase).lower()
         idx=query.find(custom_action_keyword['Dict']['Play'])
         track=query[idx:]
-        track=track.replace("'}", "",1)
+        track=track.replace("}", "",1)
+        track=track.replace("'", "",1)
         track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
         track = track.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         if 'youtube'.lower() in track:
@@ -721,7 +724,8 @@ def kodiactions(phrase):
         query=str(phrase).lower()
         idx = query.find(custom_action_keyword['Dict']['Artist'])
         artist = query[idx:]
-        artist = artist.replace("'}", "",1)
+        artist = artist.replace("'", "",1)
+        artist = artist.replace("}", "",1)
         artist = artist.replace(custom_action_keyword['Dict']['Artist'],'',1)
         artist = artist.replace((custom_action_keyword['Keywords']['Kodi_actions'][0]),'',1)
         artist = artist.strip()
@@ -977,15 +981,11 @@ def gmusicselect(phrase):
 
     if (custom_action_keyword['Dict']['Album']).lower() in phrase:
         req=phrase
-        idx=(req).find(custom_action_keyword['Dict']['Album'])
-        album=req[idx:]
-        album=album.replace("'}", "",1)
+        idx1=req.find(custom_action_keyword['Dict']['Album'])
+        idx2=req.find(custom_action_keyword['Dict']['From_google_music'])
+        album=req[idx1:idx2]
         album = album.replace(custom_action_keyword['Dict']['Album'],'',1)
-        if (custom_action_keyword['Dict']['From']).lower() in req:
-            album = album.replace(custom_action_keyword['Dict']['From'],'',1)
-            album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
-        else:
-            album = album.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
+        album = album.replace(custom_action_keyword['Dict']['From_google_music'],'',1)
         album=album.strip()
         print(album)
         say("Looking for songs from the album")
@@ -998,15 +998,11 @@ def gmusicselect(phrase):
 
     if (custom_action_keyword['Dict']['Artist']).lower() in phrase:
         req=phrase
-        idx=(req).find(custom_action_keyword['Dict']['Artist'])
-        artist=req[idx:]
-        artist=artist.replace("'}", "",1)
+        idx1=req.find(custom_action_keyword['Dict']['Artist'])
+        idx2=req.find(custom_action_keyword['Dict']['From_google_music'])
+        artist=req[idx1:idx2]
         artist = artist.replace(custom_action_keyword['Dict']['Artist'],'',1)
-        if (custom_action_keyword['Dict']['From']).lower() in req:
-            artist = artist.replace(custom_action_keyword['Dict']['From'],'',1)
-            artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
-        else:
-            artist = artist.replace((custom_action_keyword['Keywords']['Google_music_streaming'][0]),'',1)
+        artist = artist.replace(custom_action_keyword['Dict']['From_google_music'],'',1)
         artist=artist.strip()
         print(artist)
         say("Looking for songs rendered by the artist")
@@ -1027,9 +1023,9 @@ def YouTube_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find('autoplay')
-        track=phrase[idx:]
-        track=track.replace("'}", "",1)
+        idx1=phrase.find('autoplay')
+        idx2=phrase.find(custom_action_keyword['Dict']['From_youtube'])
+        track=phrase[idx1:idx2]
         track = track.replace('autoplay','',1)
         track = track.replace(custom_action_keyword['Dict']['From_youtube'],'',1)
         track=track.strip()
@@ -1054,9 +1050,9 @@ def YouTube_No_Autoplay(phrase):
     try:
         urllist=[]
         currenttrackid=0
-        idx=phrase.find(custom_action_keyword['Dict']['Play'])
-        track=phrase[idx:]
-        track=track.replace("'}", "",1)
+        idx1=phrase.find(custom_action_keyword['Dict']['Play'])
+        idx2=phrase.find(custom_action_keyword['Dict']['From_youtube'])
+        track=phrase[idx1:idx2]
         track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
         track = track.replace(custom_action_keyword['Dict']['From_youtube'],'',1)
         track=track.strip()
@@ -1086,9 +1082,9 @@ def chromecast_play_video(phrase):
     # Do not rename/change "TV" its a variable
     TV = pychromecast.Chromecast("192.168.1.13") #Change ip to match the ip-address of your Chromecast
     mc = TV.media_controller
-    idx=phrase.find(custom_action_keyword['Dict']['Play'])
-    query=phrase[idx:]
-    query=query.replace("'}", "",1)
+    idx1=phrase.find(custom_action_keyword['Dict']['Play'])
+    idx2=phrase.find('on chromecast')
+    query=phrase[idx1:idx2]
     query=query.replace(custom_action_keyword['Dict']['Play'],'',1)
     query=query.replace('on chromecast','',1)
     query=query.strip()
@@ -1382,9 +1378,9 @@ def scan_spotify_playlists():
 def spotify_playlist_select(phrase):
     trackslist=[]
     currenttrackid=0
-    idx=phrase.find(custom_action_keyword['Dict']['Play'])
-    track=phrase[idx:]
-    track=track.replace("'}", "",1)
+    idx1=phrase.find(custom_action_keyword['Dict']['Play'])
+    idx2=phrase.find(custom_action_keyword['Dict']['From_spotify'])
+    track=phrase[idx1:idx2]
     track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
     track = track.replace(custom_action_keyword['Dict']['From_spotify'],'',1)
     track=track.strip()
@@ -1416,13 +1412,13 @@ def domoticz_control(query,index,devicename):
 
         if (' ' + custom_action_keyword['Dict']['On'] + ' ') in query or (' ' + custom_action_keyword['Dict']['On']) in query or (custom_action_keyword['Dict']['On'] + ' ') in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
-            say('Turning on ' + devicename + ' .')
+            say('Turning on ' + devicename )
         if custom_action_keyword['Dict']['Off'] in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Off",verify=False)
-            say('Turning off ' + devicename + ' .')
+            say('Turning off ' + devicename )
         if 'toggle' in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
-            say('Toggling ' + devicename + ' .')
+            say('Toggling ' + devicename )
         if custom_action_keyword['Dict']['Colour'] in query:
             if 'RGB' in domoticz_devices['result'][devorder]['SubType']:
                 rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
@@ -1432,7 +1428,7 @@ def domoticz_control(query,index,devicename):
                 if bright=='':
                     bright=str(domoticz_devices['result'][devorder]['Level'])
                 devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false",verify=False)
-                say('Setting ' + devicename + ' to ' + colour + ' .')
+                say('Setting ' + devicename + ' to ' + colour )
             else:
                 say('The requested light is not a colour bulb')
         if custom_action_keyword['Dict']['Brightness'] in query:
@@ -1486,9 +1482,9 @@ def getgaanaplaylistinfo(playlisturl):
 def gaana_playlist_select(phrase):
     trackslist=[]
     currenttrackid=0
-    idx=phrase.find(custom_action_keyword['Dict']['Play'])
-    track=phrase[idx:]
-    track=track.replace("'}", "",1)
+    idx1=phrase.find(custom_action_keyword['Dict']['Play'])
+    idx2=phrase.find(custom_action_keyword['Dict']['From_gaana'])
+    track=phrase[idx1:idx2]
     track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
     track = track.replace(custom_action_keyword['Dict']['From_gaana'],'',1)
     track=track.strip()
@@ -1525,9 +1521,9 @@ def deezer_playlist_select(phrase):
     trackslist=[]
     deezer_user_playlists=[]
     currenttrackid=0
-    idx=phrase.find(custom_action_keyword['Dict']['Play'])
-    track=phrase[idx:]
-    track=track.replace("'}", "",1)
+    idx1=phrase.find(custom_action_keyword['Dict']['Play'])
+    idx2=phrase.find(custom_action_keyword['Dict']['From_deezer'])
+    track=phrase[idx1:idx2]
     track = track.replace(custom_action_keyword['Dict']['Play'],'',1)
     track = track.replace(custom_action_keyword['Dict']['From_deezer'],'',1)
     track=track.strip()
