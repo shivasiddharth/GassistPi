@@ -416,7 +416,7 @@ class Myassistant():
         if self.can_start_conversation == True:
             print("Message from MQTT: "+str(msg.payload))
             custom_query=str(msg.payload)[1:]
-            self.assistant.send_text_query(custom_query)
+            custom_command(custom_query,'MQTT')
 
     def mqtt_start(self):
         client = mqtt.Client()
@@ -425,6 +425,245 @@ class Myassistant():
         client.username_pw_set(configuration['MQTT']['UNAME'], configuration['MQTT']['PSWRD'])
         client.connect(configuration['MQTT']['IP'], 1883, 60)
         client.loop_forever()
+
+    def custom_command(usrcmd,source):
+        if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
+            if os.path.isfile('/opt/hue-emulator/config.json'):
+                with open('/opt/hue-emulator/config.json', 'r') as config:
+                     hueconfig = json.load(config)
+                for i in range(1,len(hueconfig['lights'])+1):
+                    try:
+                        if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
+                            assistant.stop_conversation()
+                            hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
+                            break
+                    except Keyerror:
+                        say('Unable to help, please check your config file')
+        if configuration['Tasmota_devicelist']['Tasmota_Control']=='Enabled':
+            for num, name in enumerate(tasmota_devicelist):
+                if name.lower() in str(usrcmd).lower():
+                    assistant.stop_conversation()
+                    tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num],tasmota_deviceportid[num])
+                    break
+        if configuration['Conversation']['Conversation_Control']=='Enabled':
+            for i in range(1,numques+1):
+                try:
+                    if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        selectedans=random.sample(configuration['Conversation']['answer'][i],1)
+                        say(selectedans[0])
+                        break
+                except Keyerror:
+                    say('Please check if the number of questions matches the number of answers')
+
+        if Domoticz_Device_Control==True and len(domoticz_devices['result'])>0:
+            if len(configuration['Domoticz']['Devices']['Name'])==len(configuration['Domoticz']['Devices']['Id']):
+                for i in range(0,len(configuration['Domoticz']['Devices']['Name'])):
+                    if str(configuration['Domoticz']['Devices']['Name'][i]).lower() in str(usrcmd).lower():
+                        assistant.stop_conversation()
+                        domoticz_control(str(usrcmd).lower(),configuration['Domoticz']['Devices']['Id'][i],configuration['Domoticz']['Devices']['Name'][i])
+                        break
+            else:
+                say("Number of devices and the number of ids given in config file do not match")
+
+        if (custom_action_keyword['Keywords']['Magic_mirror'][0]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            try:
+                mmmcommand=str(usrcmd).lower()
+                if 'weather'.lower() in mmmcommand:
+                    if 'show'.lower() in mmmcommand:
+                        mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_2_currentweather")
+                        mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_3_currentweather")
+                    if 'hide'.lower() in mmmcommand:
+                        mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_2_currentweather")
+                        mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_3_currentweather")
+                if 'power off'.lower() in mmmcommand:
+                    mmreq=requests.get("http://"+mmmip+":8080/remote?action=SHUTDOWN")
+                if 'reboot'.lower() in mmmcommand:
+                    mmreq=requests.get("http://"+mmmip+":8080/remote?action=REBOOT")
+                if 'restart'.lower() in mmmcommand:
+                    mmreq=requests.get("http://"+mmmip+":8080/remote?action=RESTART")
+                if 'display on'.lower() in mmmcommand:
+                    mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITORON")
+                if 'display off'.lower() in mmmcommand:
+                    mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
+            except requests.exceptions.ConnectionError:
+                say("Magic mirror not online")
+        if (custom_action_keyword['Keywords']['Recipe_pushbullet'][0]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            ingrequest=str(usrcmd).lower()
+            ingredientsidx=ingrequest.find('for')
+            ingrequest=ingrequest[ingredientsidx:]
+            ingrequest=ingrequest.replace('for',"",1)
+            ingrequest=ingrequest.replace("'}","",1)
+            ingrequest=ingrequest.strip()
+            ingrequest=ingrequest.replace(" ","%20",1)
+            getrecipe(ingrequest)
+        if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            kickstarter_tracker(str(usrcmd).lower())
+        if configuration['Raspberrypi_GPIO_Control']['GPIO_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Pi_GPIO_control'][0]).lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                Action(str(usrcmd).lower())
+        if configuration['YouTube']['YouTube_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower() and 'kodi' not in str(usrcmd).lower() and 'chromecast' not in str(usrcmd).lower():
+                assistant.stop_conversation()
+                vlcplayer.stop_vlc()
+                if 'autoplay'.lower() in str(usrcmd).lower():
+                    YouTube_Autoplay(str(usrcmd).lower())
+                else:
+                    YouTube_No_Autoplay(str(usrcmd).lower())
+        if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
+            stop()
+        if configuration['Radio_stations']['Radio_Control']=='Enabled':
+            if 'radio'.lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                radio(str(usrcmd).lower())
+        if configuration['ESP']['ESP_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                ESP(str(usrcmd).lower())
+        if (custom_action_keyword['Keywords']['Parcel_tracking'][0]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            track()
+        if (custom_action_keyword['Keywords']['RSS'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][1]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            feed(str(usrcmd).lower())
+        if kodicontrol:
+            if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                kodiactions(str(usrcmd).lower())
+        # Google Assistant now comes built in with chromecast control, so custom function has been commented
+        # if 'chromecast'.lower() in str(usrcmd).lower():
+        #     assistant.stop_conversation()
+        #     if 'play'.lower() in str(usrcmd).lower():
+        #         chromecast_play_video(str(usrcmd).lower())
+        #     else:
+        #         chromecast_control(usrcmd)
+        if (custom_action_keyword['Keywords']['Pause_resume'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Pause_resume'][1]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            if vlcplayer.is_vlc_playing():
+                if (custom_action_keyword['Keywords']['Pause_resume'][0]).lower() in str(usrcmd).lower():
+                    vlcplayer.pause_vlc()
+            if checkvlcpaused():
+                if (custom_action_keyword['Keywords']['Pause_resume'][1]).lower() in str(usrcmd).lower():
+                    vlcplayer.play_vlc()
+            elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
+                say("Sorry nothing is playing right now")
+        if (custom_action_keyword['Keywords']['Track_change']['Next'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Next'][1]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Next'][2]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
+                vlcplayer.stop_vlc()
+                vlcplayer.change_media_next()
+            elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
+                say("Sorry nothing is playing right now")
+        if (custom_action_keyword['Keywords']['Track_change']['Previous'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Previous'][1]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Previous'][2]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
+                vlcplayer.stop_vlc()
+                vlcplayer.change_media_previous()
+            elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
+                say("Sorry nothing is playing right now")
+        if (custom_action_keyword['Keywords']['VLC_music_volume'][0]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
+                if (custom_action_keyword['Dict']['Set']).lower() in str(usrcmd).lower() or (custom_action_keyword['Dict']['Change']).lower() in str(usrcmd).lower():
+                    if 'hundred'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Maximum'] in str(usrcmd).lower():
+                        settingvollevel=100
+                        with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
+                            json.dump(settingvollevel, vol)
+                    elif 'zero'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Minimum'] in str(usrcmd).lower():
+                        settingvollevel=0
+                        with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
+                            json.dump(settingvollevel, vol)
+                    else:
+                        for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
+                            with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
+                                json.dump(settingvollevel, vol)
+                    print('Setting volume to: '+str(settingvollevel))
+                    vlcplayer.set_vlc_volume(int(settingvollevel))
+                elif (custom_action_keyword['Dict']['Increase']).lower() in str(usrcmd).lower() or (custom_action_keyword['Dict']['Decrease']).lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                    if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
+                        try:
+                            with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
+                                oldvollevel = json.load(vol)
+                                for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
+                                    oldvollevel=int(oldvollevel)
+                        except json.decoder.JSONDecodeError:
+                            oldvollevel=vlcplayer.get_vlc_volume
+                            for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                                oldvollevel=int(oldvollevel)
+                    else:
+                        oldvollevel=vlcplayer.get_vlc_volume
+                        for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
+                            oldvollevel=int(oldvollevel)
+                    if (custom_action_keyword['Dict']['Increase']).lower() in str(usrcmd).lower():
+                        if any(char.isdigit() for char in str(usrcmd)):
+                            for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                changevollevel=int(changevollevel)
+                        else:
+                            changevollevel=10
+                        newvollevel= oldvollevel+ changevollevel
+                        print(newvollevel)
+                        if int(newvollevel)>100:
+                            settingvollevel=100
+                        elif int(newvollevel)<0:
+                            settingvollevel=0
+                        else:
+                            settingvollevel=newvollevel
+                        with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
+                            json.dump(settingvollevel, vol)
+                        print('Setting volume to: '+str(settingvollevel))
+                        vlcplayer.set_vlc_volume(int(settingvollevel))
+                    if (custom_action_keyword['Dict']['Decrease']).lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
+                        if any(char.isdigit() for char in str(usrcmd)):
+                            for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
+                                changevollevel=int(changevollevel)
+                        else:
+                            changevollevel=10
+                        newvollevel= oldvollevel - changevollevel
+                        print(newvollevel)
+                        if int(newvollevel)>100:
+                            settingvollevel=100
+                        elif int(newvollevel)<0:
+                            settingvollevel=0
+                        else:
+                            settingvollevel=newvollevel
+                        with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
+                            json.dump(settingvollevel, vol)
+                        print('Setting volume to: '+str(settingvollevel))
+                        vlcplayer.set_vlc_volume(int(settingvollevel))
+                else:
+                    say("Sorry I could not help you")
+            else:
+                say("Sorry nothing is playing right now")
+        if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
+            assistant.stop_conversation()
+            refreshlists()
+        if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                vlcplayer.stop_vlc()
+                gmusicselect(str(usrcmd).lower())
+        if configuration['Spotify']['Spotify_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                vlcplayer.stop_vlc()
+                spotify_playlist_select(str(usrcmd).lower())
+        if configuration['Gaana']['Gaana_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Gaana_music_streaming'][0]).lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                vlcplayer.stop_vlc()
+                gaana_playlist_select(str(usrcmd).lower())
+        if configuration['Deezer']['Deezer_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
+                assistant.stop_conversation()
+                vlcplayer.stop_vlc()
+                deezer_playlist_select(str(usrcmd).lower())
+        else:
+           if source=='MQTT':
+               self.assistant.send_text_query(custom_query)
 
     def main(self):
         parser = argparse.ArgumentParser(
@@ -515,240 +754,7 @@ class Myassistant():
                     assistant.send_text_query(args.query)
                 self.process_event(event)
                 usrcmd=event.args
-                if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
-                    if os.path.isfile('/opt/hue-emulator/config.json'):
-                        with open('/opt/hue-emulator/config.json', 'r') as config:
-                             hueconfig = json.load(config)
-                        for i in range(1,len(hueconfig['lights'])+1):
-                            try:
-                                if str(hueconfig['lights'][str(i)]['name']).lower() in str(usrcmd).lower():
-                                    assistant.stop_conversation()
-                                    hue_control(str(usrcmd).lower(),str(i),str(hueconfig['lights_address'][str(i)]['ip']))
-                                    break
-                            except Keyerror:
-                                say('Unable to help, please check your config file')
-                if configuration['Tasmota_devicelist']['Tasmota_Control']=='Enabled':
-                    for num, name in enumerate(tasmota_devicelist):
-                        if name.lower() in str(usrcmd).lower():
-                            assistant.stop_conversation()
-                            tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num],tasmota_deviceportid[num])
-                            break
-                if configuration['Conversation']['Conversation_Control']=='Enabled':
-                    for i in range(1,numques+1):
-                        try:
-                            if str(configuration['Conversation']['question'][i][0]).lower() in str(usrcmd).lower():
-                                assistant.stop_conversation()
-                                selectedans=random.sample(configuration['Conversation']['answer'][i],1)
-                                say(selectedans[0])
-                                break
-                        except Keyerror:
-                            say('Please check if the number of questions matches the number of answers')
-
-                if Domoticz_Device_Control==True and len(domoticz_devices['result'])>0:
-                    if len(configuration['Domoticz']['Devices']['Name'])==len(configuration['Domoticz']['Devices']['Id']):
-                        for i in range(0,len(configuration['Domoticz']['Devices']['Name'])):
-                            if str(configuration['Domoticz']['Devices']['Name'][i]).lower() in str(usrcmd).lower():
-                                assistant.stop_conversation()
-                                domoticz_control(str(usrcmd).lower(),configuration['Domoticz']['Devices']['Id'][i],configuration['Domoticz']['Devices']['Name'][i])
-                                break
-                    else:
-                        say("Number of devices and the number of ids given in config file do not match")
-
-                if (custom_action_keyword['Keywords']['Magic_mirror'][0]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    try:
-                        mmmcommand=str(usrcmd).lower()
-                        if 'weather'.lower() in mmmcommand:
-                            if 'show'.lower() in mmmcommand:
-                                mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_2_currentweather")
-                                mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=SHOW&module=module_3_currentweather")
-                            if 'hide'.lower() in mmmcommand:
-                                mmreq_one=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_2_currentweather")
-                                mmreq_two=requests.get("http://"+mmmip+":8080/remote?action=HIDE&module=module_3_currentweather")
-                        if 'power off'.lower() in mmmcommand:
-                            mmreq=requests.get("http://"+mmmip+":8080/remote?action=SHUTDOWN")
-                        if 'reboot'.lower() in mmmcommand:
-                            mmreq=requests.get("http://"+mmmip+":8080/remote?action=REBOOT")
-                        if 'restart'.lower() in mmmcommand:
-                            mmreq=requests.get("http://"+mmmip+":8080/remote?action=RESTART")
-                        if 'display on'.lower() in mmmcommand:
-                            mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITORON")
-                        if 'display off'.lower() in mmmcommand:
-                            mmreq=requests.get("http://"+mmmip+":8080/remote?action=MONITOROFF")
-                    except requests.exceptions.ConnectionError:
-                        say("Magic mirror not online")
-                if (custom_action_keyword['Keywords']['Recipe_pushbullet'][0]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    ingrequest=str(usrcmd).lower()
-                    ingredientsidx=ingrequest.find('for')
-                    ingrequest=ingrequest[ingredientsidx:]
-                    ingrequest=ingrequest.replace('for',"",1)
-                    ingrequest=ingrequest.replace("'}","",1)
-                    ingrequest=ingrequest.strip()
-                    ingrequest=ingrequest.replace(" ","%20",1)
-                    getrecipe(ingrequest)
-                if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    kickstarter_tracker(str(usrcmd).lower())
-                if configuration['Raspberrypi_GPIO_Control']['GPIO_Control']=='Enabled':
-                    if (custom_action_keyword['Keywords']['Pi_GPIO_control'][0]).lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        Action(str(usrcmd).lower())
-                if configuration['YouTube']['YouTube_Control']=='Enabled':
-                    if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower() and 'kodi' not in str(usrcmd).lower() and 'chromecast' not in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        vlcplayer.stop_vlc()
-                        if 'autoplay'.lower() in str(usrcmd).lower():
-                            YouTube_Autoplay(str(usrcmd).lower())
-                        else:
-                            YouTube_No_Autoplay(str(usrcmd).lower())
-                if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
-                    stop()
-                if configuration['Radio_stations']['Radio_Control']=='Enabled':
-                    if 'radio'.lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        radio(str(usrcmd).lower())
-                if configuration['ESP']['ESP_Control']=='Enabled':
-                    if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        ESP(str(usrcmd).lower())
-                if (custom_action_keyword['Keywords']['Parcel_tracking'][0]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    track()
-                if (custom_action_keyword['Keywords']['RSS'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['RSS'][1]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    feed(str(usrcmd).lower())
-                if kodicontrol:
-                    if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        kodiactions(str(usrcmd).lower())
-                # Google Assistant now comes built in with chromecast control, so custom function has been commented
-                # if 'chromecast'.lower() in str(usrcmd).lower():
-                #     assistant.stop_conversation()
-                #     if 'play'.lower() in str(usrcmd).lower():
-                #         chromecast_play_video(str(usrcmd).lower())
-                #     else:
-                #         chromecast_control(usrcmd)
-                if (custom_action_keyword['Keywords']['Pause_resume'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Pause_resume'][1]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    if vlcplayer.is_vlc_playing():
-                        if (custom_action_keyword['Keywords']['Pause_resume'][0]).lower() in str(usrcmd).lower():
-                            vlcplayer.pause_vlc()
-                    if checkvlcpaused():
-                        if (custom_action_keyword['Keywords']['Pause_resume'][1]).lower() in str(usrcmd).lower():
-                            vlcplayer.play_vlc()
-                    elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
-                        say("Sorry nothing is playing right now")
-                if (custom_action_keyword['Keywords']['Track_change']['Next'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Next'][1]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Next'][2]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
-                        vlcplayer.stop_vlc()
-                        vlcplayer.change_media_next()
-                    elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
-                        say("Sorry nothing is playing right now")
-                if (custom_action_keyword['Keywords']['Track_change']['Previous'][0]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Previous'][1]).lower() in str(usrcmd).lower() or (custom_action_keyword['Keywords']['Track_change']['Previous'][2]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    if vlcplayer.is_vlc_playing() or checkvlcpaused()==True:
-                        vlcplayer.stop_vlc()
-                        vlcplayer.change_media_previous()
-                    elif vlcplayer.is_vlc_playing()==False and checkvlcpaused()==False:
-                        say("Sorry nothing is playing right now")
-                if (custom_action_keyword['Keywords']['VLC_music_volume'][0]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    if vlcplayer.is_vlc_playing()==True or checkvlcpaused()==True:
-                        if (custom_action_keyword['Dict']['Set']).lower() in str(usrcmd).lower() or (custom_action_keyword['Dict']['Change']).lower() in str(usrcmd).lower():
-                            if 'hundred'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Maximum'] in str(usrcmd).lower():
-                                settingvollevel=100
-                                with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                            elif 'zero'.lower() in str(usrcmd).lower() or custom_action_keyword['Dict']['Minimum'] in str(usrcmd).lower():
-                                settingvollevel=0
-                                with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                            else:
-                                for settingvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(usrcmd)):
-                                    with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
-                                        json.dump(settingvollevel, vol)
-                            print('Setting volume to: '+str(settingvollevel))
-                            vlcplayer.set_vlc_volume(int(settingvollevel))
-                        elif (custom_action_keyword['Dict']['Increase']).lower() in str(usrcmd).lower() or (custom_action_keyword['Dict']['Decrease']).lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                            if os.path.isfile("{}/.mediavolume.json".format(USER_PATH)):
-                                try:
-                                    with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
-                                        oldvollevel = json.load(vol)
-                                        for oldvollevel in re.findall(r'\b\d+\b', str(oldvollevel)):
-                                            oldvollevel=int(oldvollevel)
-                                except json.decoder.JSONDecodeError:
-                                    oldvollevel=vlcplayer.get_vlc_volume
-                                    for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                                        oldvollevel=int(oldvollevel)
-                            else:
-                                oldvollevel=vlcplayer.get_vlc_volume
-                                for oldvollevel in re.findall(r"[-+]?\d*\.\d+|\d+", str(output)):
-                                    oldvollevel=int(oldvollevel)
-                            if (custom_action_keyword['Dict']['Increase']).lower() in str(usrcmd).lower():
-                                if any(char.isdigit() for char in str(usrcmd)):
-                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
-                                        changevollevel=int(changevollevel)
-                                else:
-                                    changevollevel=10
-                                newvollevel= oldvollevel+ changevollevel
-                                print(newvollevel)
-                                if int(newvollevel)>100:
-                                    settingvollevel=100
-                                elif int(newvollevel)<0:
-                                    settingvollevel=0
-                                else:
-                                    settingvollevel=newvollevel
-                                with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                print('Setting volume to: '+str(settingvollevel))
-                                vlcplayer.set_vlc_volume(int(settingvollevel))
-                            if (custom_action_keyword['Dict']['Decrease']).lower() in str(usrcmd).lower() or 'reduce'.lower() in str(usrcmd).lower():
-                                if any(char.isdigit() for char in str(usrcmd)):
-                                    for changevollevel in re.findall(r'\b\d+\b', str(usrcmd)):
-                                        changevollevel=int(changevollevel)
-                                else:
-                                    changevollevel=10
-                                newvollevel= oldvollevel - changevollevel
-                                print(newvollevel)
-                                if int(newvollevel)>100:
-                                    settingvollevel=100
-                                elif int(newvollevel)<0:
-                                    settingvollevel=0
-                                else:
-                                    settingvollevel=newvollevel
-                                with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
-                                    json.dump(settingvollevel, vol)
-                                print('Setting volume to: '+str(settingvollevel))
-                                vlcplayer.set_vlc_volume(int(settingvollevel))
-                        else:
-                            say("Sorry I could not help you")
-                    else:
-                        say("Sorry nothing is playing right now")
-                if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
-                    assistant.stop_conversation()
-                    refreshlists()
-                if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
-                    if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        vlcplayer.stop_vlc()
-                        gmusicselect(str(usrcmd).lower())
-                if configuration['Spotify']['Spotify_Control']=='Enabled':
-                    if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        vlcplayer.stop_vlc()
-                        spotify_playlist_select(str(usrcmd).lower())
-                if configuration['Gaana']['Gaana_Control']=='Enabled':
-                    if (custom_action_keyword['Keywords']['Gaana_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        vlcplayer.stop_vlc()
-                        gaana_playlist_select(str(usrcmd).lower())
-                if configuration['Deezer']['Deezer_Control']=='Enabled':
-                    if (custom_action_keyword['Keywords']['Deezer_music_streaming'][0]).lower() in str(usrcmd).lower():
-                        assistant.stop_conversation()
-                        vlcplayer.stop_vlc()
-                        deezer_playlist_select(str(usrcmd).lower())
+                custom_command(usrcmd,'GA')
 
         if custom_wakeword:
             self.detector.terminate()
