@@ -1412,13 +1412,13 @@ def domoticz_control(query,index,devicename):
 
         if (' ' + custom_action_keyword['Dict']['On'] + ' ') in query or (' ' + custom_action_keyword['Dict']['On']) in query or (custom_action_keyword['Dict']['On'] + ' ') in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=On",verify=False)
-            say('Turning on ' + devicename + ' .')
+            say('Turning on ' + devicename )
         if custom_action_keyword['Dict']['Off'] in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Off",verify=False)
-            say('Turning off ' + devicename + ' .')
+            say('Turning off ' + devicename )
         if 'toggle' in query:
             devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=switchlight&idx=" + index + "&switchcmd=Toggle",verify=False)
-            say('Toggling ' + devicename + ' .')
+            say('Toggling ' + devicename )
         if custom_action_keyword['Dict']['Colour'] in query:
             if 'RGB' in domoticz_devices['result'][devorder]['SubType']:
                 rcolour,gcolour,bcolour,hexcolour,colour=getcolours(query)
@@ -1428,7 +1428,7 @@ def domoticz_control(query,index,devicename):
                 if bright=='':
                     bright=str(domoticz_devices['result'][devorder]['Level'])
                 devreq=requests.head("https://" + configuration['Domoticz']['Server_IP'][0] + ":" + configuration['Domoticz']['Server_port'][0] + "/json.htm?type=command&param=setcolbrightnessvalue&idx=" + index + "&hex=" + hexcolour + "&brightness=" + bright + "&iswhite=false",verify=False)
-                say('Setting ' + devicename + ' to ' + colour + ' .')
+                say('Setting ' + devicename + ' to ' + colour )
             else:
                 say('The requested light is not a colour bulb')
         if custom_action_keyword['Dict']['Brightness'] in query:
