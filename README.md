@@ -41,7 +41,7 @@
 **28.  Stream music from Gaana.com.**  
 **29.  Stream your playlist from Deezer.**    
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
-**31.  Send commands over MQTT to the Google Assistant.**  
+**31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -260,7 +260,7 @@ Use the Translated versions of the English syntaxes given for all the custom act
 ### **SEND COMMANDS/QUERIES TO GOOGLE ASSISTANT OVER MQTT**     
 ************************************************   
 1. Set up your desired MQTT broker. If you are setting up Raspberry Pi as a MQTT broker, follow the guide below.  
-   
+
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=Ce2Djxx9shU
 " target="_blank"><img src="http://img.youtube.com/vi/Ce2Djxx9shU/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>   
@@ -268,6 +268,13 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 2. Enter the MQTT broker credentials and subscription topic in the provided config.yaml file.  
 3. Set the MQTT_Control to **Enabled**.  
 4. Now, you can send queries or commands to google assistant over MQTT.  
+5. If you are sending a command for custom actions, prefix "custom" in the payload.  
+   Eg: "custom play god's plan from youtube"  
+       "custom Turn on __Domoticz device name__"   
+       "custom play all the songs from google music"  
+6. If you are sending a command to be processed by google assistant, there is no need to prefix "custom".  
+   Eg: "what is the time"   
+       "what can you do for me"      
 
 ************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
