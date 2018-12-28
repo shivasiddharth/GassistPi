@@ -279,8 +279,8 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 For more details on the how to use this feature, refer to the video below:   
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=oemsmrdhNP8 
-" target="_blank"><img src="http://img.youtube.com/vi/oemsmrdhNP8 /0.jpg
-"alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>     
+" target="_blank"><img src="http://img.youtube.com/vi/oemsmrdhNP8 /0.jpg"
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>     
 ************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
 ************************************************
