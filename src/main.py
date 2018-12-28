@@ -415,8 +415,14 @@ class Myassistant():
     def on_message(self, client, userdata, msg):
         if self.can_start_conversation == True:
             print("Message from MQTT: "+str(msg.payload))
-            custom_query=str(msg.payload)[1:]
-            self.custom_command(custom_query,'MQTT')
+            mqtt_query=str(msg.payload)[1:]
+            if 'custom' in mqtt_query:
+                mqtt_queryidx=mqtt_query.find('for')
+                mqtt_query=mqtt_query[mqtt_queryidx:]
+                mqtt_query=mqtt_query.replace('for',"",1)
+                self.custom_command(mqtt_query)
+            else:
+                self.assistant.send_text_query(mqtt_query)
 
     def mqtt_start(self):
         client = mqtt.Client()
@@ -426,8 +432,7 @@ class Myassistant():
         client.connect(configuration['MQTT']['IP'], 1883, 60)
         client.loop_forever()
 
-    def custom_command(self,usrcmd,source):
-        print(usrcmd)
+    def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
             if os.path.isfile('/opt/hue-emulator/config.json'):
                 with open('/opt/hue-emulator/config.json', 'r') as config:
@@ -662,9 +667,7 @@ class Myassistant():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
                 deezer_playlist_select(str(usrcmd).lower())
-        else:
-           if source=='MQTT':
-               self.assistant.send_text_query(custom_query)
+
 
     def main(self):
         parser = argparse.ArgumentParser(
@@ -755,7 +758,7 @@ class Myassistant():
                     assistant.send_text_query(args.query)
                 self.process_event(event)
                 usrcmd=event.args
-                self.custom_command(usrcmd,'GA')
+                self.custom_command(usrcmd)
 
         if custom_wakeword:
             self.detector.terminate()
