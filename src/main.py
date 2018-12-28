@@ -416,10 +416,12 @@ class Myassistant():
         if self.can_start_conversation == True:
             print("Message from MQTT: "+str(msg.payload))
             mqtt_query=str(msg.payload)[1:]
-            if 'custom' in mqtt_query:
-                mqtt_queryidx=mqtt_query.find('for')
+            if 'custom' in mqtt_query.lower():
+                mqtt_query=mqtt_query.lower()
+                mqtt_queryidx=mqtt_query.find('custom')
                 mqtt_query=mqtt_query[mqtt_queryidx:]
-                mqtt_query=mqtt_query.replace('for',"",1)
+                mqtt_query=mqtt_query.replace('custom',"",1)
+                mqtt_query=mqtt_query.strip()
                 self.custom_command(mqtt_query)
             else:
                 self.assistant.send_text_query(mqtt_query)
