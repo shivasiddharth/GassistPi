@@ -275,7 +275,12 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 6. If you are sending a command to be processed by google assistant, there is no need to prefix "custom".  
    Eg: "what is the time"   
        "what can you do for me"      
+       
+For more details on the how to use this feature, refer to the video below:   
 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=oemsmrdhNP8 
+" target="_blank"><img src="http://img.youtube.com/vi/oemsmrdhNP8 /0.jpg
+"alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>     
 ************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
 ************************************************
