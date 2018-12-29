@@ -83,6 +83,8 @@ Gpios:
   assistant_indicators:
     - 05
     - 06
+  ir:
+    - 17
   picontrol:
     - 12
     - 13
@@ -94,6 +96,14 @@ Gpios:
   stopbutton_music_AIY_pushbutton:
     - 23
 
+#Preset commands/requests using IR remote/receiver
+IR:
+  IR_Control: 'Disabled'
+  Codes:
+    - 58016
+  Commands:
+    - "What is the time"
+  
 #KODI custom declarations change IP, music directory and video directory according to your device
 Kodi:
   Kodi_Control: 'Disabled'

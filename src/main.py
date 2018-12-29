@@ -69,6 +69,7 @@ from threading import Thread
 if GPIO!=None:
     from indicator import assistantindicator
     from indicator import stoppushbutton
+    from indicator import irreceiver
     GPIOcontrol=True
 else:
     GPIOcontrol=False
@@ -79,6 +80,7 @@ from actions import domoticz_devices
 from actions import gaana_playlist_select
 from actions import deezer_playlist_select
 from actions import gender
+from actions import on_ir_receive
 
 try:
     FileNotFoundError
@@ -174,6 +176,8 @@ class Myassistant():
             self.t2 = Thread(target=self.pushbutton)
         if configuration['MQTT']['MQTT_Control']=='Enabled':
             self.t3 = Thread(target=self.mqtt_start)
+        if irreceiver!=None:
+            self.t4 = Thread(target=self.ircommands)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -278,6 +282,8 @@ class Myassistant():
                 self.t1.start()
             if configuration['MQTT']['MQTT_Control']=='Enabled':
                 self.t3.start()
+            if irreceiver!=None:
+                self.t4.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             self.can_start_conversation = False
@@ -431,6 +437,24 @@ class Myassistant():
         client.username_pw_set(configuration['MQTT']['UNAME'], configuration['MQTT']['PSWRD'])
         client.connect(configuration['MQTT']['IP'], 1883, 60)
         client.loop_forever()
+
+    def ircommands(self):
+        if irreceiver!=None:
+            try:
+                print("IR Sensor Started")
+                while True:
+                    time.sleep(.1)
+                    print("Listening for IR Signal on GPIO 18")
+                    GPIO.wait_for_edge(irreceiver, GPIO.FALLING)
+                    code = on_ir_receive(irreceiver)
+                    if code:
+                        print(str(code))
+            except KeyboardInterrupt:
+                pass
+            except RuntimeError:
+                pass
+            print("Stopping IR Sensor")
+
 
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
