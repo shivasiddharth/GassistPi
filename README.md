@@ -275,7 +275,7 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 6. If you are sending a command to be processed by google assistant, there is no need to prefix "custom".  
    Eg: "what is the time"   
        "what can you do for me"      
-       
+
 For more details on the how to use this feature, refer to the video below:   
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=oemsmrdhNP8
@@ -638,7 +638,7 @@ The music streaming from Google Music uses [Gmusicapi](https://unofficial-google
 
 Run the Google Music Authenticator once using:    
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/gmusicauth.py
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/Extras/gmusicauth.py
 ```
 
 ### What you can do:
@@ -815,6 +815,7 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | 05 and 06         | Google assistant listening and responding      |  
 | 22                | Pushbutton trigger for gRPC API. Connect a pushbutton between GPIO 22 and GRND for manually triggering                     |  
 | 12,13,24          | Voice control of devices connected to GPIO     |  
-| 27                | Voice control of servo                         |  
+| 27                | Voice control of servo                         |
+| 17                | IR Sensor for preset commands                         |     
 
 **Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**          
