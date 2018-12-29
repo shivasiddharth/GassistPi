@@ -265,6 +265,7 @@ class Myassistant():
             event(event.Event): The current event to process.
         """
         print(event)
+        print()
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
             if GPIOcontrol:
@@ -307,7 +308,6 @@ class Myassistant():
                     with open('{}/.mediavolume.json'.format(USER_PATH), 'w') as vol:
                        json.dump(currentvolume, vol)
                     vlcplayer.set_vlc_volume(15)
-            print()
 
         if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
             self.can_start_conversation = True
@@ -340,7 +340,6 @@ class Myassistant():
             if GPIOcontrol:
                 assistantindicator('off')
 
-        print(event)
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
@@ -361,7 +360,6 @@ class Myassistant():
                 with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
                     oldvolume= json.load(vol)
                 vlcplayer.set_vlc_volume(int(oldvolume))
-            print()
 
         if event.type == EventType.ON_DEVICE_ACTION:
             for command, params in event.actions:
