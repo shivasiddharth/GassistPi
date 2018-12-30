@@ -262,7 +262,7 @@ Use the Translated versions of the English syntaxes given for all the custom act
 1. Connect the IR Receiver according to the wiring diagram given below. The diagram given is for GPIO 17, if you are using another GPIO, please make the suitable changes to the connection.  
 
 <img src="https://drive.google.com/uc?id=1NXd0bvsoBNevY7oh9IeTRfBZ_MWla2Iy"
-width="450" height="200" border="1" />   
+width="600" height="400" border="1" />   
 
 2. Run the sample IR receiver script to get the codes for your desired buttons.  
 ```   
