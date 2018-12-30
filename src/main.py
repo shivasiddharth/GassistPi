@@ -448,7 +448,14 @@ class Myassistant():
                     GPIO.wait_for_edge(irreceiver, GPIO.FALLING)
                     code = on_ir_receive(irreceiver)
                     if code:
-                        print(str(code))
+                        if self.can_start_conversation == True:
+                            for codenum, usercode in enumerate(configuration['IR']['Codes']):
+                                if usercode==code:
+                                    if 'custom' in configuration['IR']['Commands'][codenum]:
+                                        self.custom_command(configuration['IR']['Commands'][codenum])
+                                    else:
+                                        self.assistant.send_text_query(configuration['IR']['Commands'][codenum])
+                                    break                        
             except KeyboardInterrupt:
                 pass
             except RuntimeError:
