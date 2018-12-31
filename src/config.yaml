@@ -104,8 +104,8 @@ IR:
     - 58072
     - 58064
   Commands:
-    - "Set a timer"
-    - "custom stop"
+    - "Start conversation"
+    - "custom stop" #Custom command stop
     - "what is the time in London"
 
 #KODI custom declarations change IP, music directory and video directory according to your device
