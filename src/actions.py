@@ -1562,9 +1562,9 @@ def deezer_playlist_select(phrase):
 #-----------------------Start of functions for IR code--------------------------
 
 def binary_aquire(pin, duration):
-    t0 = time()
+    t0 = time.time()
     results = []
-    while (time() - t0) < duration:
+    while (time.time() - t0) < duration:
         results.append(GPIO.input(pin))
     return results
 

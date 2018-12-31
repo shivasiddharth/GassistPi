@@ -444,7 +444,7 @@ class Myassistant():
                 print("IR Sensor Started")
                 while True:
                     time.sleep(.1)
-                    print("Listening for IR Signal on GPIO 18")
+                    #print("Listening for IR Signal on GPIO "+irreceiver)
                     GPIO.wait_for_edge(irreceiver, GPIO.FALLING)
                     code = on_ir_receive(irreceiver)
                     if code:
@@ -455,7 +455,7 @@ class Myassistant():
                                         self.custom_command(configuration['IR']['Commands'][codenum])
                                     else:
                                         self.assistant.send_text_query(configuration['IR']['Commands'][codenum])
-                                    break                        
+                                    break
             except KeyboardInterrupt:
                 pass
             except RuntimeError:

@@ -100,10 +100,14 @@ Gpios:
 IR:
   IR_Control: 'Disabled'
   Codes:
-    - 58016
+    - 58056
+    - 58072
+    - 58064
   Commands:
-    - "What is the time"
-  
+    - "Set a timer"
+    - "custom stop"
+    - "what is the time in London"
+
 #KODI custom declarations change IP, music directory and video directory according to your device
 Kodi:
   Kodi_Control: 'Disabled'
