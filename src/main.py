@@ -455,6 +455,8 @@ class Myassistant():
                                         self.custom_command((configuration['IR']['Commands'][codenum]).lower())
                                     elif 'start conversation' in (configuration['IR']['Commands'][codenum]).lower():
                                         self.assistant.start_conversation()
+                                    elif 'mute' in (configuration['IR']['Commands'][codenum]).lower():
+                                        self.buttonsinglepress()
                                     else:
                                         self.assistant.send_text_query(configuration['IR']['Commands'][codenum])
                                     break
