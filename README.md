@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 28-Dec-2018 Update:
-**Send commands over MQTT**             
+## 31-Dec-2018 Update:
+**Use IR remote to control assistant.**               
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all boards, unless and otherwise mentioned):  
@@ -276,7 +276,7 @@ python /home/${USER}/GassistPi/Extras/IR-Sensor.py
 5. If you are sending a command to be processed by google assistant, there is no need to prefix **custom**.  
    Eg: "what is the time"   
        "what can you do for me"   
-       
+
 ************************************************
 ### **SEND COMMANDS/QUERIES TO GOOGLE ASSISTANT OVER MQTT**     
 ************************************************   
