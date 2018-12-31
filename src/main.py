@@ -453,7 +453,7 @@ class Myassistant():
                                 if usercode==code:
                                     if 'custom' in (configuration['IR']['Commands'][codenum]).lower():
                                         self.custom_command((configuration['IR']['Commands'][codenum]).lower())
-                                    if 'start conversation' in (configuration['IR']['Commands'][codenum]).lower():
+                                    elif 'start conversation' in (configuration['IR']['Commands'][codenum]).lower():
                                         self.assistant.start_conversation()
                                     elif 'mute' in (configuration['IR']['Commands'][codenum]).lower():
                                         self.buttonsinglepress()
