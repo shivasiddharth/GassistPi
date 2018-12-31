@@ -453,8 +453,7 @@ class Myassistant():
                                 if usercode==code:
                                     if 'custom' in (configuration['IR']['Commands'][codenum]).lower():
                                         self.custom_command((configuration['IR']['Commands'][codenum]).lower())
-                                    elif:
-                                        'start conversation' in (configuration['IR']['Commands'][codenum]).lower():
+                                    elif 'start conversation' in (configuration['IR']['Commands'][codenum]).lower():
                                         self.assistant.start_conversation()
                                     else:
                                         self.assistant.send_text_query(configuration['IR']['Commands'][codenum])
