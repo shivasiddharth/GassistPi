@@ -61,7 +61,7 @@ GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
 #IR receiver
 if ircontrol:
     irreceiver=configuration['Gpios']['ir'][0]
-    GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(irreceiver, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 else:
     irreceiver=None
 
