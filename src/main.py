@@ -451,8 +451,11 @@ class Myassistant():
                         if self.can_start_conversation == True:
                             for codenum, usercode in enumerate(configuration['IR']['Codes']):
                                 if usercode==code:
-                                    if 'custom' in configuration['IR']['Commands'][codenum]:
-                                        self.custom_command(configuration['IR']['Commands'][codenum])
+                                    if 'custom' in (configuration['IR']['Commands'][codenum]).lower():
+                                        self.custom_command((configuration['IR']['Commands'][codenum]).lower())
+                                    elif:
+                                        'start conversation' in (configuration['IR']['Commands'][codenum]).lower():
+                                        self.assistant.start_conversation()
                                     else:
                                         self.assistant.send_text_query(configuration['IR']['Commands'][codenum])
                                     break
@@ -461,7 +464,6 @@ class Myassistant():
             except RuntimeError:
                 pass
             print("Stopping IR Sensor")
-
 
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
