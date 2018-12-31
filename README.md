@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 28-Dec-2018 Update:
-**Send commands over MQTT**             
+## 31-Dec-2018 Update:
+**Use IR remote to control assistant.**               
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all boards, unless and otherwise mentioned):  
@@ -257,6 +257,27 @@ In the **config.yaml** file, under the **Languages and Choice** option set your 
 Use the Translated versions of the English syntaxes given for all the custom actions.  
 
 ************************************************
+### **CONTROL ASSISTANT/SEND PRESET COMMANDS USING IR REMOTE**     
+************************************************   
+1. Connect the IR Receiver according to the wiring diagram given below. The diagram given is for GPIO 17, if you are using another GPIO, please make the suitable changes to the connection.  
+
+<img src="https://drive.google.com/uc?id=1NXd0bvsoBNevY7oh9IeTRfBZ_MWla2Iy"
+width="600" height="400" border="1" />   
+
+2. Run the sample IR receiver script to get the codes for your desired buttons.  
+```   
+python /home/${USER}/GassistPi/Extras/IR-Sensor.py   
+```  
+3. In the **config.yaml** under IR, list your codes and corresponding queries/actions. The number of queries should match the number of codes listed.  
+4. If you want to execute the custom actions like Spotify, YouTube playback, Domoticz Control etc, prefix the word **custom**.  
+   Eg: "custom play god's plan from youtube"  
+       "custom Turn on __Domoticz device name__"   
+       "custom play all the songs from google music"  
+5. If you are sending a command to be processed by google assistant, there is no need to prefix **custom**.  
+   Eg: "what is the time"   
+       "what can you do for me"   
+
+************************************************
 ### **SEND COMMANDS/QUERIES TO GOOGLE ASSISTANT OVER MQTT**     
 ************************************************   
 1. Set up your desired MQTT broker. If you are setting up Raspberry Pi as a MQTT broker, follow the guide below.  
@@ -268,14 +289,14 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 2. Enter the MQTT broker credentials and subscription topic in the provided config.yaml file.  
 3. Set the MQTT_Control to **Enabled**.  
 4. Now, you can send queries or commands to google assistant over MQTT.  
-5. If you are sending a command for custom actions, prefix "custom" in the payload.  
+5. If you are sending a command for custom actions, prefix **custom** in the payload.  
    Eg: "custom play god's plan from youtube"  
        "custom Turn on __Domoticz device name__"   
        "custom play all the songs from google music"  
-6. If you are sending a command to be processed by google assistant, there is no need to prefix "custom".  
+6. If you are sending a command to be processed by google assistant, there is no need to prefix **custom**.  
    Eg: "what is the time"   
        "what can you do for me"      
-       
+
 For more details on the how to use this feature, refer to the video below:   
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=oemsmrdhNP8
@@ -638,7 +659,7 @@ The music streaming from Google Music uses [Gmusicapi](https://unofficial-google
 
 Run the Google Music Authenticator once using:    
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/gmusicauth.py
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/Extras/gmusicauth.py
 ```
 
 ### What you can do:
@@ -815,6 +836,7 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | 05 and 06         | Google assistant listening and responding      |  
 | 22                | Pushbutton trigger for gRPC API. Connect a pushbutton between GPIO 22 and GRND for manually triggering                     |  
 | 12,13,24          | Voice control of devices connected to GPIO     |  
-| 27                | Voice control of servo                         |  
+| 27                | Voice control of servo                         |
+| 17                | IR Sensor for preset commands                         |     
 
 **Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**          

@@ -40,6 +40,10 @@ if os.path.isfile("{}/audiosetup".format(USER_PATH)):
 else:
     audiosetup='GEN'
 
+if configuration['IR']['IR_Control']=='Enabled':
+    ircontrol=True
+else:
+    ircontrol=False
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -53,6 +57,13 @@ speakingindicator=configuration['Gpios']['assistant_indicators'][1]
 stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
 GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
+
+#IR receiver
+if ircontrol:
+    irreceiver=configuration['Gpios']['ir'][0]
+    GPIO.setup(irreceiver, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+else:
+    irreceiver=None
 
 if (audiosetup=='AIY'):
     GPIO.setup(aiyindicator, GPIO.OUT)
