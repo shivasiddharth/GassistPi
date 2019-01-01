@@ -42,7 +42,7 @@
 **29.  Stream your playlist from Deezer.**    
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
-**32.  Control Assistant using IR Remote.**  
+**32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**  
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -278,6 +278,12 @@ python /home/${USER}/GassistPi/Extras/IR-Sensor.py
    Eg: "what is the time"   
        "what can you do for me"   
 
+Video for reference:  
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=LlbcjkRuQZk
+" target="_blank"><img src="http://img.youtube.com/vi/LlbcjkRuQZk/0.jpg"
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>   
+   
 ************************************************
 ### **SEND COMMANDS/QUERIES TO GOOGLE ASSISTANT OVER MQTT**     
 ************************************************   
