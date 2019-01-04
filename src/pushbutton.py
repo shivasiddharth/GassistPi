@@ -273,11 +273,14 @@ class SampleAssistant(object):
         subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.conversation_stream.start_recording()
         if kodicontrol:
-            status=mutevolstatus()
-            vollevel=status[1]
-            with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
-                   json.dump(vollevel, f)
-            kodi.Application.SetVolume({"volume": 0})
+            try:
+                status=mutevolstatus()
+                vollevel=status[1]
+                with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
+                       json.dump(vollevel, f)
+                kodi.Application.SetVolume({"volume": 0})
+            except requests.exceptions.ConnectionError:
+                print("Kodi TV box not online")
         if GPIOcontrol:
             assistantindicator('listening')
         if vlcplayer.is_vlc_playing():
@@ -433,9 +436,12 @@ class SampleAssistant(object):
                         feed(str(usrcmd).lower())
                         return continue_conversation
                     if kodicontrol:
-                        if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
-                            kodiactions(str(usrcmd).lower())
-                            return continue_conversation
+                        try:
+                            if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
+                                kodiactions(str(usrcmd).lower())
+                        except requests.exceptions.ConnectionError:
+                            say("Kodi TV box not online")
+                        return continue_conversation
                     # Google Assistant now comes built in with chromecast control, so custom function has been commented
                     # if 'chromecast'.lower() in str(usrcmd).lower():
                     #     if 'play'.lower() in str(usrcmd).lower():
@@ -591,9 +597,12 @@ class SampleAssistant(object):
                 if GPIOcontrol:
                     assistantindicator('off')
                 if kodicontrol:
-                    with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
-                           vollevel = json.load(f)
-                           kodi.Application.SetVolume({"volume": vollevel})
+                    try:
+                        with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
+                            vollevel = json.load(f)
+                            kodi.Application.SetVolume({"volume": vollevel})
+                    except requests.exceptions.ConnectionError:
+                        print("Kodi TV box not online")
 
                 if vlcplayer.is_vlc_playing():
                     with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
@@ -621,9 +630,12 @@ class SampleAssistant(object):
         if GPIOcontrol:
             assistantindicator('off')
         if kodicontrol:
-            with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
-                   vollevel = json.load(f)
-                   kodi.Application.SetVolume({"volume": vollevel})
+            try:
+                with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
+                    vollevel = json.load(f)
+                    kodi.Application.SetVolume({"volume": vollevel})
+            except requests.exceptions.ConnectionError:
+                print("Kodi TV box not online")
 
         if vlcplayer.is_vlc_playing():
             with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:

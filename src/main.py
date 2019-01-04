@@ -289,11 +289,15 @@ class Myassistant():
             self.can_start_conversation = False
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if kodicontrol:
-                status=mutevolstatus()
-                vollevel=status[1]
-                with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
-                       json.dump(vollevel, f)
-                kodi.Application.SetVolume({"volume": 0})
+                try:
+                    status=mutevolstatus()
+                    vollevel=status[1]
+                    with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
+                           json.dump(vollevel, f)
+                    kodi.Application.SetVolume({"volume": 0})
+                except requests.exceptions.ConnectionError:
+                    print("Kodi TV box not online")
+
             if GPIOcontrol:
                 assistantindicator('listening')
             if vlcplayer.is_vlc_playing():
@@ -320,9 +324,12 @@ class Myassistant():
             if GPIOcontrol:
                 assistantindicator('off')
             if kodicontrol:
-                with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
-                       vollevel = json.load(f)
-                       kodi.Application.SetVolume({"volume": vollevel})
+                try:
+                    with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
+                           vollevel = json.load(f)
+                           kodi.Application.SetVolume({"volume": vollevel})
+                except requests.exceptions.ConnectionError:
+                    print("Kodi TV box not online")
 
             if (configuration['Wakewords']['Ok_Google']=='Disabled' or os.path.isfile("{}/.mute".format(USER_PATH))):
                   self.assistant.set_mic_mute(True)
@@ -358,9 +365,12 @@ class Myassistant():
                 if GPIOcontrol:
                     assistantindicator('mute')
             if kodicontrol:
-                with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
-                       vollevel = json.load(f)
-                       kodi.Application.SetVolume({"volume": vollevel})
+                try:
+                    with open('{}/.volume.json'.format(USER_PATH), 'r') as f:
+                        vollevel = json.load(f)
+                        kodi.Application.SetVolume({"volume": vollevel})
+                except requests.exceptions.ConnectionError:
+                    print("Kodi TV box not online")
 
             if vlcplayer.is_vlc_playing():
                 with open('{}/.mediavolume.json'.format(USER_PATH), 'r') as vol:
@@ -571,9 +581,12 @@ class Myassistant():
             self.assistant.stop_conversation()
             feed(str(usrcmd).lower())
         if kodicontrol:
-            if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
-                self.assistant.stop_conversation()
-                kodiactions(str(usrcmd).lower())
+            try:
+                if (custom_action_keyword['Keywords']['Kodi_actions'][0]).lower() in str(usrcmd).lower():
+                    self.assistant.stop_conversation()
+                    kodiactions(str(usrcmd).lower())
+            except requests.exceptions.ConnectionError:
+                say("Kodi TV box not online")            
         # Google Assistant now comes built in with chromecast control, so custom function has been commented
         # if 'chromecast'.lower() in str(usrcmd).lower():
         #     self.assistant.stop_conversation()
