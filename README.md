@@ -737,7 +737,7 @@ The Kodi integration uses YouTube Data API v3  for getting video links. First st
 2. Select your project from the list.  
 3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
 4. Move your mouse pointer over "API and services" and choose "credentials".
-5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the actions.py script at the indicated location.  
+5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the config.yaml at the indicated location.  
 6. "From the API and services" option, select library and in the search bar type youtube, select "YouTube Data API v3" API and click on "ENABLE".
 7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.  
 
