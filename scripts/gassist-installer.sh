@@ -35,6 +35,7 @@ echo ""
 echo "Your Model-Id used for the project is: $modelid" >> /home/${USER}/modelid.txt
 
 sudo apt-get update -y
+sudo apt-get dist-upgrade -y
 sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
 sudo pip install pyaudio
 
