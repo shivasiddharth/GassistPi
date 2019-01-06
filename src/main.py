@@ -72,6 +72,7 @@ if GPIO!=None:
     from indicator import irreceiver
     GPIOcontrol=True
 else:
+    irreceiver=None
     GPIOcontrol=False
 from pathlib import Path
 from actions import Domoticz_Device_Control
@@ -295,6 +296,7 @@ class Myassistant():
                     with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
                            json.dump(vollevel, f)
                     kodi.Application.SetVolume({"volume": 0})
+                    kodi.GUI.ShowNotification({"title": "", "message": ".....Listening.....", "image": "{}/GoogleAssistantImages/GoogleAssistantBarsTransparent.gif".format(ROOT_PATH)})
                 except requests.exceptions.ConnectionError:
                     print("Kodi TV box not online")
 
@@ -352,7 +354,20 @@ class Myassistant():
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
             if GPIOcontrol:
                 assistantindicator('off')
+            if kodicontrol:
+                try:
+                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                except requests.exceptions.ConnectionError:
+                    print("Kodi TV box not online")
 
+        if event.type == EventType.ON_RENDER_RESPONSE:
+            if GPIOcontrol:
+                assistantindicator('off')
+            if kodicontrol:
+                try:
+                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantTransparent.gif".format(ROOT_PATH),"displaytime": 20000})
+                except requests.exceptions.ConnectionError:
+                    print("Kodi TV box not online")
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
@@ -586,7 +601,7 @@ class Myassistant():
                     self.assistant.stop_conversation()
                     kodiactions(str(usrcmd).lower())
             except requests.exceptions.ConnectionError:
-                say("Kodi TV box not online")            
+                say("Kodi TV box not online")
         # Google Assistant now comes built in with chromecast control, so custom function has been commented
         # if 'chromecast'.lower() in str(usrcmd).lower():
         #     self.assistant.stop_conversation()

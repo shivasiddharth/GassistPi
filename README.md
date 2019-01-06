@@ -6,16 +6,16 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 31-Dec-2018 Update:
-**Use IR remote to control assistant.**               
+## 06-Jan-2019 Update:
+**Support for installation on OSMC.**               
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all boards, unless and otherwise mentioned):  
 **1.   Headless auto start on boot.**    
-**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards).**   
+**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards - non OSMC).**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
 **4.   Radio streaming.**  
-**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards).**    
+**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards - non OSMC).**    
 **6.   Safe shutdown RPi using voice command.**  
 **7.   Stream Music from YouTube.**  
 **8.   Indicator lights for assistant listening and speaking events.**  
@@ -35,7 +35,7 @@
 **22.  Sending voice messages from the phone to the raspberry.**  
 **23.  Play your Spotify playlist.**  
 **24.  Custom wakeword activation for all Pi boards.**      
-**25.  Mute microphones to prevent listening to Ok-Google hotword (Only Raspberry Pi Boards).**  
+**25.  Mute microphones to prevent listening to Ok-Google hotword (Only Raspberry Pi Boards - non OSMC).**  
 **26.  Create custom conversations.**  
 **27.  Control of lights added to Domoticz.**  
 **28.  Stream music from Gaana.com.**  
@@ -48,6 +48,7 @@
 ### Only OSes suported are:
 - Armbian Stretch    
 - Raspbian Stretch   
+- OSMC Stretch   
 
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
@@ -283,7 +284,7 @@ Video for reference:
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=LlbcjkRuQZk
 " target="_blank"><img src="http://img.youtube.com/vi/LlbcjkRuQZk/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>   
-   
+
 ************************************************
 ### **SEND COMMANDS/QUERIES TO GOOGLE ASSISTANT OVER MQTT**     
 ************************************************   
@@ -751,7 +752,7 @@ The webserver is disabled by default and has to be manually enabled by the user.
 For Kodi to play the YouTube video, you need to add and enable the YouTube Plugin on Kodi.  
 
 ### Command Sytanxes for Kodi Control  
-      
+
 | Command Syntax    | What it does                                        |
 |-------------------|------------------------------------------------|
 | Hey Google, Shuffle my songs on kodi               | Shuffles all the songs added to the kodi library      |

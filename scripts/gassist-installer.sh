@@ -39,18 +39,58 @@ sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs 
 sudo pip install pyaudio
 
 #Check OS Version
-if [[ $(cat /etc/os-release|grep "stretch") ]]; then
-	osversion="Stretch"
-  echo ""
-  echo "===========You are running the installer on Stretch=========="
-  echo ""
-else
-	osversion="Others"
-  echo ""
-  echo "===========You are advised to use the Stretch version of the OS=========="
-  echo "===========Exiting the installer=========="
-  echo ""
-  exit 1
+echo ""
+echo "===========================Checking OS Compatability========================="
+echo ""
+if [[ $(cat /etc/os-release|grep "raspbian") ]]; then
+  if [[ $(cat /etc/os-release|grep "stretch") ]]; then
+    osversion="Raspbian Stretch"
+    echo ""
+    echo "===========You are running the installer on Stretch=========="
+    echo ""
+  else
+    osversion="Other Raspbian"
+    echo ""
+    echo "===========You are advised to use the Stretch version of the OS=========="
+    echo "===========Exiting the installer=========="
+    echo ""
+    exit 1
+  fi
+elif [[ $(cat /etc/os-release|grep "armbian") ]]; then
+  if [[ $(cat /etc/os-release|grep "stretch") ]]; then
+    osversion="Armbian Stretch"
+    echo ""
+    echo "===========You are running the installer on Stretch=========="
+    echo ""
+  else
+    osversion="Other Armbian"
+    echo ""
+    echo "===========You are advised to use the Stretch version of the OS=========="
+    echo "===========Exiting the installer=========="
+    echo ""
+    exit 1
+  fi
+elif [[ $(cat /etc/os-release|grep "osmc") ]]; then
+  osmcversion=$(grep VERSION_ID /etc/os-release)
+  osmcversion=${osmcversion//VERSION_ID=/""}
+  osmcversion=${osmcversion//'"'/""}
+  osmcversion=${osmcversion//./-}
+  osmcversiondate=$(date -d $osmcversion +%s)
+  export LC_ALL=C.UTF-8
+  export LANG=C.UTF-8
+  if (($osmcversiondate > 1512086400)); then
+    osversion="OSMC Stretch"
+    echo ""
+    echo "===========You are running the installer on Stretch=========="
+    echo ""
+  else
+    osversion="Other OSMC"
+    echo ""
+    echo "===========You are advised to use the Stretch version of the OS=========="
+    echo "===========Exiting the installer=========="
+    echo ""
+    exit 1
+  fi
 fi
 
 #Check CPU architecture
@@ -79,8 +119,8 @@ else
   echo ""
 fi
 
-if [[ $board = "Others" ]];then
-  echo "==========Snowboy wrappers provied with the project are for Raspberry Pi boards. Custom snowboy wrappers need to be compiled for your board=========="
+if [[ $osversion != "Raspbian Stretch" ]];then
+  echo "==========Snowboy wrappers provied with the project are for Raspberry Pi boards running Raspbian Stretch. Custom snowboy wrappers need to be compiled for your setup=========="
   echo ""
   echo "==========Installing Swig========="
   echo ""
@@ -140,7 +180,7 @@ source env/bin/activate
 
 pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
-if [[ $board = "Raspberry" ]];then
+if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
 	pip install RPi.GPIO==0.6.3
 fi
 
