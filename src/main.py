@@ -296,7 +296,7 @@ class Myassistant():
                     with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
                            json.dump(vollevel, f)
                     kodi.Application.SetVolume({"volume": 0})
-                    kodi.GUI.ShowNotification({"message": ".....Listening.....", "image": "{}/GoogleAssistantImages/GoogleAssistantBarsTransparent.gif".format(ROOT_PATH)})
+                    kodi.GUI.ShowNotification({"title": "", "message": ".....Listening.....", "image": "{}/GoogleAssistantImages/GoogleAssistantBarsTransparent.gif".format(ROOT_PATH)})
                 except requests.exceptions.ConnectionError:
                     print("Kodi TV box not online")
 
@@ -356,7 +356,7 @@ class Myassistant():
                 assistantindicator('off')
             if kodicontrol:
                 try:
-                    kodi.GUI.ShowNotification({"message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
                 except requests.exceptions.ConnectionError:
                     print("Kodi TV box not online")
 
@@ -365,7 +365,7 @@ class Myassistant():
                 assistantindicator('off')
             if kodicontrol:
                 try:
-                    kodi.GUI.ShowNotification({"message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantTransparent.gif".format(ROOT_PATH),"displaytime": 20000})
+                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantTransparent.gif".format(ROOT_PATH),"displaytime": 20000})
                 except requests.exceptions.ConnectionError:
                     print("Kodi TV box not online")
 
