@@ -247,7 +247,7 @@ def gaana_search(query):
 
 #gTTS
 def gttssay(phrase,saylang):
-    tts = gTTS(text=newword, lang=saylang)
+    tts = gTTS(text=phrase, lang=saylang)
     tts.save(femalettsfilename)
     if gender=='Male':
         os.system('sox ' + femalettsfilename + ' ' + malettsfilename + ' pitch -450')
