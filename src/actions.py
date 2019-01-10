@@ -40,6 +40,9 @@ import spotipy
 import pprint
 import yaml
 
+ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
+USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
+
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
 
@@ -65,9 +68,6 @@ domoticz_devices=''
 Domoticz_Device_Control=False
 bright=''
 hexcolour=''
-
-ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
-USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
 if 'en' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
