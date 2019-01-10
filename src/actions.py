@@ -50,7 +50,7 @@ TTSChoice=''
 if configuration['TextToSpeech']['Choice']=="Google Cloud":
     if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
         if configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path']!="ENTER THE PATH TO YOUR TTS CREDENTIALS FILE HERE":
-            os.system("export GOOGLE_APPLICATION_CREDENTIALS="+configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path'])
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path']
             TTSChoice='GoogleCloud'
             # Instantiates a client
             client = texttospeech.TextToSpeechClient()
