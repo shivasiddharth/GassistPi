@@ -6,8 +6,8 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 06-Jan-2019 Update:
-**Support for installation on OSMC.**               
+## 10-Jan-2019 Update:
+**Added Google Cloud Text to Speech Conversion For A More Natural Custom Text Voice Outs**               
 *******************************************************************************************************************************
 
 # Features (All features are applicable to all boards, unless and otherwise mentioned):  
