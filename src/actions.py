@@ -16,7 +16,7 @@ from youtube_search_engine import google_cloud_api_key
 from googletrans import Translator
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
-from langdetect import detect
+from google.cloud import texttospeech
 from gtts import gTTS
 import requests
 import mediaplayer
@@ -40,6 +40,27 @@ import spotipy
 import pprint
 import yaml
 
+with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
+    configuration = yaml.load(conf)
+
+TTSChoice=''
+if configuration['TextToSpeech']['Choice']=="Google Cloud":
+    if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
+        if configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path']!="ENTER THE PATH TO YOUR TTS CREDENTIALS FILE HERE":
+            os.system("export GOOGLE_APPLICATION_CREDENTIALS="+configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path'])
+            TTSChoice='GoogleCloud'
+            # Instantiates a client
+            client = texttospeech.TextToSpeechClient()
+        else:
+            print("Set the path to your Google cloud text to speech credentials in the config.yaml file. Using gTTS for now.....")
+            TTSChoice='GTTS'
+    else:
+        TTSChoice='GoogleCloud'
+        # Instantiates a client
+        client = texttospeech.TextToSpeechClient()
+else:
+    TTSChoice='GTTS'
+
 domoticz_devices=''
 Domoticz_Device_Control=False
 bright=''
@@ -48,22 +69,19 @@ hexcolour=''
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
-with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
-    configuration = yaml.load(conf)
-
-if configuration['Language']['Choice']=='en':
+if 'en' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
-elif configuration['Language']['Choice']=='it':
+elif 'it' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_it.yaml'.format(ROOT_PATH)
-elif configuration['Language']['Choice']=='fr':
+elif 'fr' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_fr.yaml'.format(ROOT_PATH)
-elif configuration['Language']['Choice']=='de':
+elif 'de' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_de.yaml'.format(ROOT_PATH)
 elif configuration['Language']['Choice']=='es':
     keywordfile= '{}/src/keywords_es.yaml'.format(ROOT_PATH)
-elif configuration['Language']['Choice']=='nl':
+elif 'nl' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_nl.yaml'.format(ROOT_PATH)
-elif configuration['Language']['Choice']=='sv':
+elif 'sv' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_sv.yaml'.format(ROOT_PATH)
 else:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
@@ -193,13 +211,15 @@ quote = "http://feeds.feedburner.com/brainyquote/QUOTEBR"
 translator = Translator()
 femalettsfilename="/tmp/female-say.mp3"
 malettsfilename="/tmp/male-say.wav"
+ttsfilename="/tmp/gcloud.mp3"
 language=configuration['Language']['Choice']
+translanguage=language.split('-')[0]
 gender=''
-if configuration['Voice_Custom_Actions']=='Male' and language=='en':
+if configuration['Voice_Custom_Actions']=='Male' and translanguage=='en':
     gender='Male'
-elif language=='it':
+elif translanguage=='it':
     gender='Male'
-elif configuration['Voice_Custom_Actions']=='Male' and language!='en':
+elif configuration['Voice_Custom_Actions']=='Male' and translanguage!='en':
     gender='Female'
 else:
     gender='Female'
@@ -225,33 +245,9 @@ def gaana_search(query):
         ).execute()
     return res
 
-#Language detector
-def lang_detect(text):
-    languages=[]
-    splittext=text.split()
-    for word in splittext:
-        if re.findall(r'\b\d+\b', word):
-            continue
-        lang=detect(word)
-        languages.append(lang)
-    detected_language=(max(set(languages), key = languages.count))
-    #print(detected_language)
-    return detected_language
-
-#Word translator
-def trans(words,lang):
-    srclang=lang_detect(words)
-    transword= translator.translate(words, dest=lang, src=srclang)
-    transword=transword.text
-    transword=transword.replace("Text, ",'',1)
-    transword=transword.strip()
-    print(transword)
-    return transword
-
-#Text to speech converter with translation
-def say(words):
-    newword=trans(words,language)
-    tts = gTTS(text=newword, lang=language)
+#gTTS
+def gttssay(phrase,saylang):
+    tts = gTTS(text=newword, lang=saylang)
     tts.save(femalettsfilename)
     if gender=='Male':
         os.system('sox ' + femalettsfilename + ' ' + malettsfilename + ' pitch -450')
@@ -261,6 +257,60 @@ def say(words):
     else:
         os.system("mpg123 "+femalettsfilename)
         os.remove(femalettsfilename)
+
+#Google Cloud Text to Speech
+def gcloudsay(phrase,lang):
+    try:
+        if gender=='Male':
+            gcloudgender=texttospeech.enums.SsmlVoiceGender.MALE
+        else:
+            gcloudgender=texttospeech.enums.SsmlVoiceGender.FEMALE
+
+        synthesis_input = texttospeech.types.SynthesisInput(text=phrase)
+        voice = texttospeech.types.VoiceSelectionParams(
+            language_code=lang,
+            ssml_gender=gcloudgender)
+        audio_config = texttospeech.types.AudioConfig(
+            audio_encoding=texttospeech.enums.AudioEncoding.MP3)
+        response = client.synthesize_speech(synthesis_input, voice, audio_config)
+        with open(ttsfilename, 'wb') as out:
+            out.write(response.audio_content)
+        if gender=='Male' and lang=='it-IT':
+            os.system('sox ' + ttsfilename + ' ' + malettsfilename + ' pitch -450')
+            os.remove(ttsfilename)
+            os.system('aplay ' + malettsfilename)
+            os.remove(malettsfilename)
+        else:
+            os.system("mpg123 "+ttsfilename)
+            os.remove(ttsfilename)
+    except google.api_core.exceptions.ResourceExhausted:
+        print("Google cloud text to speech quota exhausted. Using GTTS. Make sure to change the choice in config.yaml")
+        gttssay(phrase,lang)
+
+#Word translator
+def trans(words,destlang,srclang):
+    transword= translator.translate(words, dest=destlang, src=srclang)
+    transword=transword.text
+    transword=transword.replace("Text, ",'',1)
+    transword=transword.strip()
+    print(transword)
+    return transword
+
+#Text to speech converter with translation
+def say(words,sourcelang=None):
+    if sourcelang=='None':
+        sourcelanguage='en'
+    else:
+        sourcelanguage=sourcelang
+    if sourcelanguage!=translanguage:
+        sayword=trans(words,translanguage,sourcelanguage)
+    else:
+        sayword=words
+    if TTSChoice=='GoogleCloud':
+        gcloudsay(sayword,language)
+    elif TTSChoice=='GTTS':
+        gttssay(sayword,translanguage)
+
 
 #Function to get HEX and RGB values for requested colour
 def getcolours(phrase):

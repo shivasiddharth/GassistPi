@@ -259,6 +259,21 @@ In the **config.yaml** file, under the **Languages and Choice** option set your 
 Use the Translated versions of the English syntaxes given for all the custom actions.  
 
 ************************************************
+### **USING GOOGLE CLOUD TEXT TO SPEECH**   
+************************************************
+**NOTE: GOOGLE CLOUD TEXT TO SPEECH HAS A LIMITED USAGE ACCESS. ONCE THE QUOTA IS EXHAUSTED, THE PROJECT WILL AUTOMATICALLY SWITCH TO gTTS**  
+
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. "From the API and services" option, select library and in the search bar type **text**, select "Cloud Text-to-Speech API" and click on "ENABLE".
+5. In the API window, click on "Credentials" and then on "+ Create Credential".  
+6. In the "Add credentials to your project" window, in step-1 under "Which API are you using?" drop down choose "Cloud Text-to-Speech API" and down below choose "No, I’m not using them". Then click on "What credentials do I need?"
+7. In step-2 give your service acount a name and on the right in the "Role" drop down choose Project-->Owner and under "Key Type" select "JSON" and click "Continue".  
+8. Copy the downloaded key and place it /home/pi/ directory **DO NOT RENAME**.   
+9. Enter the path to the Key along with the key name Eg: /home/pi/xxxx.json  in the config.yaml file in the "Google_Cloud_TTS_Credentials_Path" field.  
+
+************************************************
 ### **CONTROL ASSISTANT/SEND PRESET COMMANDS USING IR REMOTE**     
 ************************************************   
 1. Connect the IR Receiver according to the wiring diagram given below. The diagram given is for GPIO 17, if you are using another GPIO, please make the suitable changes to the connection.  

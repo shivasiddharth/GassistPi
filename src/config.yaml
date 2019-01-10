@@ -134,15 +134,16 @@ Kodi:
 
 #Change you language. Default is english
 Language:
-  Choice: 'en'
+  Choice: 'en-US'
   Language options:
-     - 'en' #'English'
-     - 'fr' # 'French'
-     - 'de' # 'German'
-     - 'it' # 'Italian'
-     - 'es' # 'Spanish'
-     - 'nl' # 'Dutch'
-     - 'sv' # 'Swedish'
+     - 'en-US' #'English'US
+     - 'en-GB' #English GB
+     - 'fr-FR' # 'French'
+     - 'de-DE' # 'German'
+     - 'it-IT' # 'Italian'
+     - 'es-ES' # 'Spanish'
+     - 'nl-NL' # 'Dutch'
+     - 'sv-SE' # 'Swedish'
 
 # Enter your Magic Mirror IP
 Mmmip: 'ENTER_YOUR_MAGIC_MIRROR_IP'
@@ -209,9 +210,16 @@ Tasmota_devicelist:
     - '1'
     - '1'
 
-#Voice for the "SAY" function or text to speech. Set it to 'Female' or 'Male' depending on your preference.
-#Note: This does not change Google's voice. this is only for the speech generated within custom actions.
-Voice_Custom_Actions: 'Female'
+#Text to speech conversation
+TextToSpeech:
+  # Set the choice to:
+  # 1. "gTTS" for quotaless text to speech conversion
+  # 2. "Google Cloud" for Google Cloud text to sppech conversion. Free limit 4 Million Characters/month
+  Choice: 'gTTS'
+  Google_Cloud_TTS_Credentials_Path: "ENTER THE PATH TO YOUR TTS CREDENTIALS FILE HERE"
+  #Voice for the "SAY" function or text to speech. Set it to 'Female' or 'Male' depending on your preference.
+  #Note: This does not change Google's voice. this is only for the speech generated within custom actions.
+  Voice_Gender: 'Female'
 
 #Custom wakeword On/Off.
 #To enable custom wakeword, change status to Enabled and restart the assistant.
