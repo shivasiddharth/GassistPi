@@ -215,11 +215,11 @@ ttsfilename="/tmp/gcloud.mp3"
 language=configuration['Language']['Choice']
 translanguage=language.split('-')[0]
 gender=''
-if configuration['Voice_Custom_Actions']=='Male' and translanguage=='en':
+if configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage=='en':
     gender='Male'
 elif translanguage=='it':
     gender='Male'
-elif configuration['Voice_Custom_Actions']=='Male' and translanguage!='en':
+elif configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage!='en':
     gender='Female'
 else:
     gender='Female'
