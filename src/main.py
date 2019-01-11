@@ -104,6 +104,9 @@ logger=logging.getLogger(__name__)
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
+if configuration['Google_cloud_api_key']=='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE':
+    say("warning, enter the youtube key in the file config.yaml")
+
 #Login with default kodi/kodi credentials
 #kodi = Kodi("http://localhost:8080/jsonrpc")
 
