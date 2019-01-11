@@ -97,9 +97,13 @@ WARNING_NOT_REGISTERED = """
     https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device
 """
 
-logging.basicConfig(filename='/tmp/GassistPi.log', level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.root.handlers = []
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG , filename='/tmp/GassistPi.log')
+console = logging.StreamHandler()
+console.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s')
+console.setFormatter(formatter)
+logging.getLogger("").addHandler(console)
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
