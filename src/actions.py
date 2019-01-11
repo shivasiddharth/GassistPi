@@ -298,7 +298,7 @@ def trans(words,destlang,srclang):
 
 #Text to speech converter with translation
 def say(words,sourcelang=None):
-    if sourcelang=='None':
+    if sourcelang==None:
         sourcelanguage='en'
     else:
         sourcelanguage=sourcelang
