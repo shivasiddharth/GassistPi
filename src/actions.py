@@ -40,6 +40,9 @@ import spotipy
 import pprint
 import yaml
 
+ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
+USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
+
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
 
@@ -47,7 +50,7 @@ TTSChoice=''
 if configuration['TextToSpeech']['Choice']=="Google Cloud":
     if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
         if configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path']!="ENTER THE PATH TO YOUR TTS CREDENTIALS FILE HERE":
-            os.system("export GOOGLE_APPLICATION_CREDENTIALS="+configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path'])
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path']
             TTSChoice='GoogleCloud'
             # Instantiates a client
             client = texttospeech.TextToSpeechClient()
@@ -66,9 +69,6 @@ Domoticz_Device_Control=False
 bright=''
 hexcolour=''
 
-ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
-USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
-
 if 'en' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
 elif 'it' in configuration['Language']['Choice']:
@@ -77,7 +77,7 @@ elif 'fr' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_fr.yaml'.format(ROOT_PATH)
 elif 'de' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_de.yaml'.format(ROOT_PATH)
-elif configuration['Language']['Choice']=='es':
+elif 'es' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_es.yaml'.format(ROOT_PATH)
 elif 'nl' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_nl.yaml'.format(ROOT_PATH)
@@ -247,7 +247,7 @@ def gaana_search(query):
 
 #gTTS
 def gttssay(phrase,saylang):
-    tts = gTTS(text=newword, lang=saylang)
+    tts = gTTS(text=phrase, lang=saylang)
     tts.save(femalettsfilename)
     if gender=='Male':
         os.system('sox ' + femalettsfilename + ' ' + malettsfilename + ' pitch -450')
@@ -298,7 +298,7 @@ def trans(words,destlang,srclang):
 
 #Text to speech converter with translation
 def say(words,sourcelang=None):
-    if sourcelang=='None':
+    if sourcelang==None:
         sourcelanguage='en'
     else:
         sourcelanguage=sourcelang
