@@ -449,8 +449,8 @@ class Myassistant():
 
     def on_message(self, client, userdata, msg):
         if self.can_start_conversation == True:
-            print("Message from MQTT: "+str(msg.payload))
-            mqtt_query=str(msg.payload)[1:]
+            print("Message from MQTT: "+str(msg.payload.decode('utf-8')))
+            mqtt_query=str(msg.payload.decode('utf-8'))
             if 'custom' in mqtt_query.lower():
                 mqtt_query=mqtt_query.lower()
                 mqtt_queryidx=mqtt_query.find('custom')
