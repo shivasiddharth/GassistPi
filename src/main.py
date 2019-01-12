@@ -82,6 +82,8 @@ from actions import gaana_playlist_select
 from actions import deezer_playlist_select
 from actions import gender
 from actions import on_ir_receive
+from actions import Youtube_credentials
+from actions import Spotify_credentials
 
 try:
     FileNotFoundError
@@ -579,10 +581,13 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower() and 'kodi' not in str(usrcmd).lower() and 'chromecast' not in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
-                if 'autoplay'.lower() in str(usrcmd).lower():
-                    YouTube_Autoplay(str(usrcmd).lower())
+                if not Youtube_credentials:
+                    say("Hey, you need to enter your google cloud api in the config file first.")
                 else:
-                    YouTube_No_Autoplay(str(usrcmd).lower())
+                    if 'autoplay'.lower() in str(usrcmd).lower():
+                        YouTube_Autoplay(str(usrcmd).lower())
+                    else:
+                        YouTube_No_Autoplay(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
             stop()
         if configuration['Radio_stations']['Radio_Control']=='Enabled':
@@ -722,7 +727,10 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
-                spotify_playlist_select(str(usrcmd).lower())
+                if not Spotify_credentials:
+                    say("Hey, you need to enter your spotify credentials in the config file first.")
+                else:
+                    spotify_playlist_select(str(usrcmd).lower())
         if configuration['Gaana']['Gaana_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['Gaana_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()

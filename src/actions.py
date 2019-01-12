@@ -102,11 +102,16 @@ if configuration['Domoticz']['Domoticz_Control']=='Enabled':
 else:
     Domoticz_Device_Control=False
 
-
+Spotify_credentials=False
+Youtube_credentials=False
+if configuration['Spotify']['client_id']!= 'ENTER YOUR SPOTIFY CLIENT ID HERE' and configuration['Spotify']['client_secret']!='ENTER YOUR SPOTIFY CLIENT SECRET HERE':
+    Spotify_credentials=True
+if configuration['Google_cloud_api_key']!='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE':
+    Youtube_credentials=True
 
 # Spotify Declarations
 # Register with spotify for a developer account to get client-id and client-secret
-if configuration['Spotify']['client_id']!= 'ENTER YOUR SPOTIFY CLIENT ID HERE' and configuration['Spotify']['client_secret']!='ENTER YOUR SPOTIFY CLIENT SECRET HERE':
+if Spotify_credentials:
     client_id = configuration['Spotify']['client_id']
     client_secret = configuration['Spotify']['client_secret']
     username=configuration['Spotify']['username']
@@ -223,6 +228,7 @@ elif configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage!='e
     gender='Female'
 else:
     gender='Female'
+
 
 #Function for google KS custom search engine
 def kickstrater_search(query):

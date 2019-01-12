@@ -74,7 +74,7 @@ Gmusicapi:
   Gmusic_Control: 'Enabled'
 
 #API Key for YouTube and Kickstarter Search Engine
-Google_cloud_api_key: ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE
+Google_cloud_api_key: "ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE"
 
 #GPIOS used in the project. Feel free to change in case.
 Gpios:
