@@ -178,6 +178,7 @@ class Myassistant():
         self.sensitivity = [0.5]*len(models)
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
+        self.mutestatus=False
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
@@ -198,25 +199,18 @@ class Myassistant():
             assistantindicator('unmute')
             if configuration['Wakewords']['Ok_Google']=='Disabled':
                 self.assistant.set_mic_mute(True)
+                print("Mic is open, but Ok-Google is disabled")
             else:
                 self.assistant.set_mic_mute(False)
             # if custom_wakeword:
             #     self.t1.start()
-            if gender=='Male':
-                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-On-Male.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            else:
-                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-On-Female.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print("Turning on the microphone")
+                print("Turning on the microphone")
         else:
             open('{}/.mute'.format(USER_PATH), 'a').close()
             assistantindicator('mute')
             self.assistant.set_mic_mute(True)
             # if custom_wakeword:
             #     self.thread_end(t1)
-            if gender=='Male':
-                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-Off-Male.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            else:
-                subprocess.Popen(["aplay", "{}/sample-audio-files/Mic-Off-Female.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("Turning off the microphone")
 
     def buttondoublepress(self):
@@ -277,6 +271,9 @@ class Myassistant():
         """
         print(event)
         print()
+        if event.type == EventType.ON_MUTED_CHANGED:
+            self.mutestatus=event.args["is_muted"]
+
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
             if GPIOcontrol:
@@ -436,6 +433,9 @@ class Myassistant():
         if self.can_start_conversation == True:
             self.assistant.set_mic_mute(False)
             self.assistant.start_conversation()
+                self.assistant.start_conversation()
+            if not self.mutestatus:
+                self.assistant.start_conversation()
             print('Assistant is listening....')
 
     def start_detector(self):
@@ -581,13 +581,10 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['YouTube_music_stream'][0]).lower() in str(usrcmd).lower() and 'kodi' not in str(usrcmd).lower() and 'chromecast' not in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
-                if not Youtube_credentials:
-                    say("Hey, you need to enter your google cloud api in the config file first.")
+                if 'autoplay'.lower() in str(usrcmd).lower():
+                    YouTube_Autoplay(str(usrcmd).lower())
                 else:
-                    if 'autoplay'.lower() in str(usrcmd).lower():
-                        YouTube_Autoplay(str(usrcmd).lower())
-                    else:
-                        YouTube_No_Autoplay(str(usrcmd).lower())
+                    YouTube_No_Autoplay(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
             stop()
         if configuration['Radio_stations']['Radio_Control']=='Enabled':
@@ -727,10 +724,7 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
-                if not Spotify_credentials:
-                    say("Hey, you need to enter your spotify credentials in the config file first.")
-                else:
-                    spotify_playlist_select(str(usrcmd).lower())
+                spotify_playlist_select(str(usrcmd).lower())
         if configuration['Gaana']['Gaana_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['Gaana_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
