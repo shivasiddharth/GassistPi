@@ -431,8 +431,9 @@ class Myassistant():
 
     def detected(self):
         if self.can_start_conversation == True:
-            self.assistant.set_mic_mute(False)
-            self.assistant.start_conversation()
+            if self.mutestatus:
+                self.assistant.set_mic_mute(False)
+                time.sleep(1)
                 self.assistant.start_conversation()
             if not self.mutestatus:
                 self.assistant.start_conversation()
