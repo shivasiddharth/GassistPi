@@ -222,7 +222,7 @@ translanguage=language.split('-')[0]
 gender=''
 if configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage=='en':
     gender='Male'
-elif translanguage=='it':
+elif translanguage=='it-IT':
     gender='Male'
 elif configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage!='en':
     gender='Female'
