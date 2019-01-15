@@ -26,6 +26,7 @@ then
 fi
 
 sudo apt-get update -y
+sudo apt-get install jq -y
 
 #Check CPU architecture
 if [[ $(uname -m|grep "armv7") ]]; then
