@@ -243,27 +243,24 @@ Open a terminal and execute the following:
 Insert your Project Id and Model Id in quotes in the mentioned places
 
 ************************************************
-## **UPDATING THE PROJECT:**
+## **CHECKING FOR PROJECT UPDATES AND UPDATING THE PROJECT**   
 ************************************************
 1. Change directory
 ```
 cd /home/${USER}/   
 ```
-2. Download script
-```
-wget https://raw.githubusercontent.com/shivasiddharth/GassistPi/update-script/GassistPi-Update-Script.sh
-```
-3. Make the update script executable
+2. Make the update script executable
 ```
 sudo chmod +x /home/${USER}/GassistPi/scripts/update.sh
 ```
-4. Run update-script
+4. Run the update script
 ```
 sudo /home/${USER}/GassistPi/scripts/update.sh
 ```
-5. Reconfigure config.yaml. **The script makes a backup before installing updates eg. GassistPi.bak-20xx-xx-xx**
+5. If there is an update available, the project will be updated else the script will make a smooth exit.  
 
-**NOTE: If its a SDK update, you have run a new installation**
+6. If the Project is updated, reconfigure the **config.yaml** file.   
+**The script makes a backup before updating eg. GassistPi.bak-20xx-xx-xx**   
 
 *******************************************************************
 ## **USING THE CUSTOMIZATIONS**  
