@@ -36,7 +36,7 @@ fi
 
 echo "Checking for updates................"
 echo ""
-wget "http://raw.githubusercontent.com/shivasiddharth/GassistPi/version" /tmp/version
+wget "http://raw.githubusercontent.com/shivasiddharth/GassistPi/master/version" -O /tmp/version
 
 AvailableSDKVersion=($(jq '.Version.SDK' /tmp/version))
 AvailableFeaturesVersion=($(jq '.Version.Features' /tmp/version))
@@ -46,7 +46,7 @@ CurrentSDKVersion=($(jq '.Version.SDK' /home/${USER}/GassistPi/version))
 CurrentFeaturesVersion=($(jq '.Version.Features' /home/${USER}/GassistPi/version))
 CurrentRevisionVersion=($(jq '.Version.Revision' /home/${USER}/GassistPi/version))
 
-if ((AvailableSDKVersion >> CurrentSDKVersion)) or ((AvailableFeaturesVersion >> CurrentFeaturesVersion)) or ((AvailableRevisionVersion >> CurrentRevisionVersion)); then
+if ((AvailableSDKVersion >> CurrentSDKVersion)) || ((AvailableFeaturesVersion >> CurrentFeaturesVersion)) || ((AvailableRevisionVersion >> CurrentRevisionVersion)); then
   echo "A new update is available........."
   echo ""
   echo ""
@@ -113,7 +113,7 @@ if [[$Updatetype = "Revision"]];then
   echo ""
   echo ""
   exit 1
-elif [[$Updatetype = "Feature"]] or [[$Updatetype = "SDK"]];then
+elif [[$Updatetype = "Feature"]] || [[$Updatetype = "SDK"]];then
   echo "Installing new dependencies......................"
   sed 's/#.*//' /home/${USER}/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
   source env/bin/activate
