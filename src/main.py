@@ -459,6 +459,8 @@ class Myassistant():
                 mqtt_query=mqtt_query.replace('custom',"",1)
                 mqtt_query=mqtt_query.strip()
                 self.custom_command(mqtt_query)
+            elif mqtt_query.lower() == 'mute':
+                self.buttonsinglepress()
             else:
                 self.assistant.send_text_query(mqtt_query)
 
