@@ -29,9 +29,9 @@ sudo apt-get update -y
 
 #Check CPU architecture
 if [[ $(uname -m|grep "armv7") ]]; then
-	devmodel="armv7"
+  devmodel="armv7"
 else
-	devmodel="armv6"
+  devmodel="armv6"
 fi
 
 echo "Checking for updates................"
