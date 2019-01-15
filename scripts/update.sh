@@ -133,7 +133,7 @@ else
   echo ""
   echo ""
   if [[ $devmodel = "armv7" ]];then
-  	pip install google-assistant-library --upgrade
+    pip install google-assistant-library --upgrade
   else
     pip install --upgrade --no-binary :all: grpcio
   fi
