@@ -157,8 +157,7 @@ MQTT:
   TOPIC: 'ENTER your MQTT TOPIC here'
 
 #Text to speak notifications (replay after me workaround for mqtt).
-#Say: "notify, Hi I'm new to google assistant or send mqtt message: "notify Hi I'm new to google assistant"
-#You can change command word to something else.  
+#You can change command word to something else if your command is mixed with native functions  
 Notify_TTS:
   Notify_TTS_Control: 'Enabled'
   command: 'notify'
