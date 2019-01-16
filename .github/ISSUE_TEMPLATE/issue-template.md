@@ -61,3 +61,6 @@ Yes/No
 ```
 
 ```
+
+### Attach the log file   
+Log file can be found in /tmp/ directory  
