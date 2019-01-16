@@ -362,6 +362,7 @@ def convert_rgb_xy(red,green,blue):
 def notify_tts(phrase):
     word=(configuration['Notify_TTS']['command']).lower()
     voice_notify = phrase.replace(word, "")
+    voice_notify.strip()
     say(voice_notify)
 
 #Radio Station Streaming
