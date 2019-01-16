@@ -358,6 +358,11 @@ def convert_rgb_xy(red,green,blue):
     except UnboundLocalError:
         say("No RGB values given")
 
+#Custom text to speak notification
+def notify_tts(phrase):
+    word=(configuration['Notify_TTS']['command']).lower()
+    voice_notify = phrase.replace(word, "")
+    say(voice_notify)
 
 #Radio Station Streaming
 def radio(phrase):
