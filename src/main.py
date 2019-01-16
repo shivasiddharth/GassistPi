@@ -85,6 +85,7 @@ from actions import on_ir_receive
 from actions import Youtube_credentials
 from actions import Spotify_credentials
 from actions import notify_tts
+from actions import sendSMS
 
 try:
     FileNotFoundError
@@ -749,6 +750,10 @@ class Myassistant():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
                 deezer_playlist_select(str(usrcmd).lower())
+        if configuration['Clickatell']['Clickatell_Control']=='Enabled':
+            if (configuration['Clickatell']['Command']).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                sendSMS(str(usrcmd).lower())
 
 
     def main(self):
