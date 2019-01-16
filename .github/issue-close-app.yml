@@ -1,0 +1,11 @@
+comment: "Please refer to our issue template. ☺"
+issueConfigs:
+- content:
+  - "cat /proc/cpuinfo"
+  - "cat /etc/os-release "
+  - "Is the assistant service restarting automatically?"
+  - "Does the assistant service start normally"
+- content:
+  - "Describe the bug:"
+  - "Manually start the assistant."
+  - "Is the issue related to assistant installation ?"
