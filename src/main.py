@@ -84,6 +84,7 @@ from actions import gender
 from actions import on_ir_receive
 from actions import Youtube_credentials
 from actions import Spotify_credentials
+from actions import notify_tts
 
 try:
     FileNotFoundError
@@ -593,6 +594,10 @@ class Myassistant():
                         YouTube_No_Autoplay(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
             stop()
+        if configuration['Notify_TTS']['Notify_TTS_Control']=='Enabled':
+            if (configuration['Notify_TTS']['command']).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                notify_tts(str(usrcmd).lower())
         if configuration['Radio_stations']['Radio_Control']=='Enabled':
             if 'radio'.lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
