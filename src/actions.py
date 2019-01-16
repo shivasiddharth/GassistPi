@@ -467,9 +467,32 @@ def feed(phrase):
                 continue
     else:
         print("GPIO controls, is not supported for your device. You need to wait for feeds to automatically stop")
+        
 
+##--------------Start of send clickatell sms----------------------
+#Function to send SMS with Clickatell api
+recivernum=configuration['Clickatell']['Reciever']
+clickatell_api=configuration['Clickatell']['Clickatell_API']
 
-
+def sendSMS(query):
+    if configuration['Clickatell']['Clickatell_API'] != 'ENTER_YOUR_CLICKATELL_API':
+        for num, name in enumerate(configuration['Clickatell']['Name']):
+            if name.lower() in query:
+                conv=recivernum[num]
+                msg=query.replace('clickatell', "")    
+                message=msg.replace(name.lower(), "")
+                message=message.strip()
+                print(message + " , " + name + " , " + conv)
+                say("Sends SMS message " + message + " to " + name)
+                response=requests.get('https://platform.clickatell.com/messages/http/send?apiKey=' + clickatell_api + '&to=' + conv + '&content=' + message)
+                if response.status_code == 202:
+                    say("SMS message sent")
+                else:
+                    say("Error sending SMS message. Check your settings")
+    else:
+        say("You need to enter Clickatell API")
+        
+##---------------End of send clickatell sms-----------------------
 
 ##-------Start of functions defined for Kodi Actions--------------
 #Function to get Kodi Volume and Mute status
