@@ -338,7 +338,9 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
        "custom play all the songs from google music"  
 6. If you are sending a command to be processed by google assistant, there is no need to prefix **custom**.  
    Eg: "what is the time"   
-       "what can you do for me"      
+       "what can you do for me"
+7. To turn on/off microphone just send the simple command **mute**.
+   Eg: "mute" 
 
 For more details on the how to use this feature, refer to the video below:   
 
