@@ -17,6 +17,18 @@ Conversation:
       - 'Nope i am forever alone'
       - 'The whole world is my family'
 
+#Send sms with clickatell
+Clickatell:
+  Clickatell_Control: 'Disabled'
+  Clickatell_API: 'ENTER_YOUR_CLICKATELL_API'
+  Command: 'Clickatell'
+  Name:
+    - 'Bob'
+    - 'Adam'
+  Reciever:
+    - '+48123456789'
+    - '+46123456789'
+    
 # Deezer user credentials
 Deezer:
   Deezer_Control: 'Enabled'
