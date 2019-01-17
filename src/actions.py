@@ -479,14 +479,15 @@ def sendSMS(query):
         for num, name in enumerate(configuration['Clickatell']['Name']):
             if name.lower() in query:
                 conv=recivernum[num]
-                msg=query.replace('clickatell', "")    
+                command=(configuration['Clickatell']['Command']).lower()
+                msg=query.replace(command, "")    
                 message=msg.replace(name.lower(), "")
                 message=message.strip()
                 print(message + " , " + name + " , " + conv)
                 say("Sends SMS message " + message + " to " + name)
                 response=requests.get('https://platform.clickatell.com/messages/http/send?apiKey=' + clickatell_api + '&to=' + conv + '&content=' + message)
                 if response.status_code == 202:
-                    say("SMS message sent")
+                    say("SMS message sent to " + name)
                 else:
                     say("Error sending SMS message. Check your settings")
     else:
