@@ -474,6 +474,13 @@ def feed(phrase):
 recivernum=configuration['Clickatell']['Reciever']
 clickatell_api=configuration['Clickatell']['Clickatell_API']
 
+def sendClickatell(number, message):
+    response=requests.get('https://platform.clickatell.com/messages/http/send?apiKey=' + clickatell_api + '&to=' + number + '&content=' + message)
+    if response.status_code == 202:
+        print("SMS message sent")
+    else:
+        print("Error sending SMS message. Check your settings")
+   
 def sendSMS(query):
     if configuration['Clickatell']['Clickatell_API'] != 'ENTER_YOUR_CLICKATELL_API':
         for num, name in enumerate(configuration['Clickatell']['Name']):
@@ -485,11 +492,7 @@ def sendSMS(query):
                 message=message.strip()
                 print(message + " , " + name + " , " + conv)
                 say("Sends SMS message " + message + " to " + name)
-                response=requests.get('https://platform.clickatell.com/messages/http/send?apiKey=' + clickatell_api + '&to=' + conv + '&content=' + message)
-                if response.status_code == 202:
-                    say("SMS message sent to " + name)
-                else:
-                    say("Error sending SMS message. Check your settings")
+                sendClickatell(conv, message)
     else:
         say("You need to enter Clickatell API")
         
