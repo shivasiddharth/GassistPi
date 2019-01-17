@@ -486,8 +486,8 @@ def sendSMS(query):
         for num, name in enumerate(configuration['Clickatell']['Name']):
             if name.lower() in query:
                 conv=recivernum[num]
-                command=(configuration['Clickatell']['Command']).lower()
-                msg=query.replace(command, "")    
+                command=configuration['Clickatell']['Command']
+                msg=query.replace(command.lower(), "") 
                 message=msg.replace(name.lower(), "")
                 message=message.strip()
                 print(message + " , " + name + " , " + conv)
