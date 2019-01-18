@@ -66,6 +66,10 @@ Keywords:
     - 'gaana.com'
   Deezer_music_streaming:
     - 'deezer'
+  Send_sms_clickatell:
+    - 'clickatell'
+  notify_TTS:
+    - 'notify'
 
 #Do not change the Dict below
 Dict:
