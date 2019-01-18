@@ -596,7 +596,7 @@ class Myassistant():
         if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
             stop()
         if configuration['Notify_TTS']['Notify_TTS_Control']=='Enabled':
-            if (configuration['Notify_TTS']['command']).lower() in str(usrcmd).lower():
+            if (custom_action_keyword['Keywords']['notify_TTS'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 notify_tts(str(usrcmd).lower())
         if configuration['Radio_stations']['Radio_Control']=='Enabled':
@@ -751,7 +751,7 @@ class Myassistant():
                 vlcplayer.stop_vlc()
                 deezer_playlist_select(str(usrcmd).lower())
         if configuration['Clickatell']['Clickatell_Control']=='Enabled':
-            if (configuration['Clickatell']['Command']).lower() in str(usrcmd).lower():
+            if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 sendSMS(str(usrcmd).lower())
 
