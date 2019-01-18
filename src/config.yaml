@@ -21,7 +21,6 @@ Conversation:
 Clickatell:
   Clickatell_Control: 'Disabled'
   Clickatell_API: 'ENTER_YOUR_CLICKATELL_API'
-  Command: 'Clickatell'
   Name:
     - 'Bob'
     - 'Adam'
