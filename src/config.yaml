@@ -171,7 +171,6 @@ MQTT:
 #You can change command word to something else if your command is mixed with native functions  
 Notify_TTS:
   Notify_TTS_Control: 'Enabled'
-  command: 'notify'
   
 #Radio station declarations. Follow a similar pattern to add your own stations.
 #Google may not pickup the pronunciation of radio station names, hence 'Radio 1' etc is required.
