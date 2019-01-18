@@ -360,7 +360,7 @@ def convert_rgb_xy(red,green,blue):
 
 #Custom text to speak notification
 def notify_tts(phrase):
-    word=(configuration['Notify_TTS']['command']).lower()
+    word=(custom_action_keyword['Keywords']['notify_TTS'][0]).lower()
     voice_notify = phrase.replace(word, "")
     say(voice_notify)
 
@@ -486,8 +486,8 @@ def sendSMS(query):
         for num, name in enumerate(configuration['Clickatell']['Name']):
             if name.lower() in query:
                 conv=recivernum[num]
-                command=configuration['Clickatell']['Command']
-                msg=query.replace(command.lower(), "") 
+                command=(custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower()
+                msg=query.replace(command, "") 
                 message=msg.replace(name.lower(), "")
                 message=message.strip()
                 print(message + " , " + name + " , " + conv)
