@@ -360,7 +360,7 @@ def convert_rgb_xy(red,green,blue):
 
 #Custom text to speak notification
 def notify_tts(phrase):
-    word=(configuration['Notify_TTS']['command']).lower()
+    word=(custom_action_keyword['Keywords']['notify_TTS'][0]).lower()
     voice_notify = phrase.replace(word, "")
     voice_notify.strip()
     say(voice_notify)
@@ -468,9 +468,36 @@ def feed(phrase):
                 continue
     else:
         print("GPIO controls, is not supported for your device. You need to wait for feeds to automatically stop")
+        
 
+##--------------Start of send clickatell sms----------------------
+#Function to send SMS with Clickatell api
+recivernum=configuration['Clickatell']['Reciever']
+clickatell_api=configuration['Clickatell']['Clickatell_API']
 
-
+def sendClickatell(number, message):
+    response=requests.get('https://platform.clickatell.com/messages/http/send?apiKey=' + clickatell_api + '&to=' + number + '&content=' + message)
+    if response.status_code == 202:
+        say("SMS message sent")
+    else:
+        say("Error sending SMS message. Check your settings")
+   
+def sendSMS(query):
+    if clickatell_api != 'ENTER_YOUR_CLICKATELL_API':
+        for num, name in enumerate(configuration['Clickatell']['Name']):
+            if name.lower() in query:
+                conv=recivernum[num]
+                command=(custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower()
+                msg=query.replace(command, "") 
+                message=msg.replace(name.lower(), "")
+                message=message.strip()
+                print(message + " , " + name + " , " + conv)
+                say("Sends SMS message " + message + " to " + name)
+                sendClickatell(conv, message)
+    else:
+        say("You need to enter Clickatell API")
+        
+##---------------End of send clickatell sms-----------------------
 
 ##-------Start of functions defined for Kodi Actions--------------
 #Function to get Kodi Volume and Mute status
