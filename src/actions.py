@@ -252,15 +252,15 @@ def gaana_search(query):
     return res
 
 #gTTS
-def gttssay(phrase,saylang):
+def gttssay(phrase,saylang,specgender):
     tts = gTTS(text=phrase, lang=saylang)
     tts.save(femalettsfilename)
-    if gender=='Male':
+    if specgender=='Male':
         os.system('sox ' + femalettsfilename + ' ' + malettsfilename + ' pitch -450')
         os.remove(femalettsfilename)
         os.system('aplay ' + malettsfilename)
         os.remove(malettsfilename)
-    else:
+    elif specgender=='Female':
         os.system("mpg123 "+femalettsfilename)
         os.remove(femalettsfilename)
 
@@ -303,19 +303,24 @@ def trans(words,destlang,srclang):
     return transword
 
 #Text to speech converter with translation
-def say(words,sourcelang=None):
-    if sourcelang==None:
-        sourcelanguage='en'
+def say(words,sourcelang=None,destinationlang=None):
+    if sourcelang!=None and destinationlang!=None:
+        sayword=trans(words,destinationlang,sourcelang)
+        gttssay(sayword,destinationlang,'Female')
     else:
-        sourcelanguage=sourcelang
-    if sourcelanguage!=translanguage:
-        sayword=trans(words,translanguage,sourcelanguage)
-    else:
-        sayword=words
-    if TTSChoice=='GoogleCloud':
-        gcloudsay(sayword,language)
-    elif TTSChoice=='GTTS':
-        gttssay(sayword,translanguage)
+        if sourcelang==None:
+            sourcelanguage='en'
+        else:
+            sourcelanguage=sourcelang
+        if sourcelanguage!=translanguage:
+            sayword=trans(words,translanguage,sourcelanguage)
+        else:
+            sayword=words
+        if TTSChoice=='GoogleCloud':
+            gcloudsay(sayword,language)
+        elif TTSChoice=='GTTS':
+            gttssay(sayword,translanguage,gender)
+
 
 
 #Function to get HEX and RGB values for requested colour
@@ -468,7 +473,7 @@ def feed(phrase):
                 continue
     else:
         print("GPIO controls, is not supported for your device. You need to wait for feeds to automatically stop")
-        
+
 
 ##--------------Start of send clickatell sms----------------------
 #Function to send SMS with Clickatell api
@@ -481,14 +486,14 @@ def sendClickatell(number, message):
         say("SMS message sent")
     else:
         say("Error sending SMS message. Check your settings")
-   
+
 def sendSMS(query):
     if clickatell_api != 'ENTER_YOUR_CLICKATELL_API':
         for num, name in enumerate(configuration['Clickatell']['Name']):
             if name.lower() in query:
                 conv=recivernum[num]
                 command=(custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower()
-                msg=query.replace(command, "") 
+                msg=query.replace(command, "")
                 message=msg.replace(name.lower(), "")
                 message=message.strip()
                 print(message + " , " + name + " , " + conv)
@@ -496,7 +501,7 @@ def sendSMS(query):
                 sendClickatell(conv, message)
     else:
         say("You need to enter Clickatell API")
-        
+
 ##---------------End of send clickatell sms-----------------------
 
 ##-------Start of functions defined for Kodi Actions--------------

@@ -86,6 +86,7 @@ from actions import Youtube_credentials
 from actions import Spotify_credentials
 from actions import notify_tts
 from actions import sendSMS
+from actions import translanguage
 
 try:
     FileNotFoundError
@@ -181,6 +182,10 @@ class Myassistant():
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.mutestatus=False
+        self.interpreter=False
+        self.interpconvcounter=0
+        self.interplang1=translanguage
+        self.interplang2=''
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
@@ -357,13 +362,22 @@ class Myassistant():
                 assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-            if GPIOcontrol:
-                assistantindicator('off')
-            if kodicontrol:
-                try:
-                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
-                except requests.exceptions.ConnectionError:
-                    print("Kodi TV box not online")
+            if self.interpreter:
+                self.assistant.stop_conversation()
+                if (self.interpconvcounter % 2)==0:
+                    print("Local Speaker: "+event.args["text"])
+                elif (self.interpconvcounter % 2)==1:
+                    print("Foreign Speaker: "+event.args["text"])
+                self.interpreter_mode(event.args["text"],self.interpconvcounter)
+                self.interpconvcounter=self.interpconvcounter+1
+            else:
+                if GPIOcontrol:
+                    assistantindicator('off')
+                if kodicontrol:
+                    try:
+                        kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                    except requests.exceptions.ConnectionError:
+                        print("Kodi TV box not online")
 
         if event.type == EventType.ON_RENDER_RESPONSE:
             if GPIOcontrol:
@@ -501,6 +515,27 @@ class Myassistant():
             except RuntimeError:
                 pass
             print("Stopping IR Sensor")
+
+    def interpreter_mode_trigger(self,interlanguage,switch):
+        self.interplang2=interlanguage
+        if switch=="Start":
+            self.interpreter=True
+            say("Starting interpreter.")
+            self.assistant.start_conversation()
+        elif switch=="Stop":
+            self.interpreter=False
+            self.interpconvcounter=0
+            say("Stopping interpreter.")
+        else:
+            self.interpreter=False
+
+    def interpreter_mode(self,text,count):
+        if (count % 2)==0:
+            say(text,self.interplang1,self.interplang2)
+            self.assistant.start_conversation()
+        else:
+            say(text,self.interplang2,self.interplang1)
+            self.assistant.start_conversation()
 
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
@@ -754,6 +789,12 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 sendSMS(str(usrcmd).lower())
+        if interpreter in str(usrcmd).lower():
+            self.assistant.stop_conversation()
+            if 'start' in str(usrcmd).lower():
+                self.interpreter_mode_trigger('hi','Start')
+            else:
+                self.interpreter_mode_trigger('hi','Stop')
 
 
     def main(self):
