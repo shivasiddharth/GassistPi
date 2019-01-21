@@ -1099,8 +1099,9 @@ def YouTube_Autoplay(phrase):
                 vlcplayer.youtube_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-    except:
-        say('It is no longer available in youtube')
+    except Exception as e:
+                         print(e)
+                         say('It is no longer available in youtube')
 
 def YouTube_No_Autoplay(phrase):
     try:
@@ -1124,8 +1125,9 @@ def YouTube_No_Autoplay(phrase):
             vlcplayer.youtube_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-    except:
-        say('It is no longer available in youtube')
+    except Exception as e:
+                         print(e)
+                         say('It is no longer available in youtube')
 
 #-----------------End of Functions for YouTube Streaming---------------------
 
