@@ -516,7 +516,6 @@ class Myassistant():
                 if name.lower() in str(usrcmd).lower():
                     self.assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num],tasmota_deviceportid[num])
-                    break
         if configuration['Conversation']['Conversation_Control']=='Enabled':
             for i in range(1,numques+1):
                 try:
