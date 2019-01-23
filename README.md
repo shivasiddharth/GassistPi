@@ -601,7 +601,10 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 Pi3 and Pi Zero users, assign the device names and device ip addresses in the **config.yaml** in the marked locations.  
 
-**Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
+**Syntax: "Hey Google, Turn _Devicename_ On/Off"**
+
+It is also possible to switch several devices at the same time.
+**Syntax: "Hey Google, Turn _Devicename1_ _Devicename2_ _..._ On/Off"**
 
 Advantage of using Sonoff-Tasmota over webserver is that, with Sonoff-Tasmota you can emulate a Wemo switch and control the NodeMCU using Amazon Alexa (Echo Devices) in addition to the GassistPi.    
 
