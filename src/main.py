@@ -636,6 +636,7 @@ class Myassistant():
         if configuration['Radio_stations']['Radio_Control']=='Enabled':
             if 'radio'.lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
+                vlcplayer.stop_vlc()
                 radio(str(usrcmd).lower())
         if configuration['ESP']['ESP_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
