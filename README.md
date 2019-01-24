@@ -45,6 +45,7 @@
 **32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**
 **33.  Send voice messages from the raspberry to the mobile, using pushbullet.**
 
+
 *******************************************************************************************************************************  
 ### Only OSes suported are:
 - Armbian Stretch    
