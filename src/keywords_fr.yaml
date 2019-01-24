@@ -71,7 +71,7 @@ Keywords:
   notify_TTS:
     - 'notify'
    # Send message vocal to pushbullet
-  Send_Message_control:
+  Send_Message:
     - 'envoyer un message'
 
 #Do not change the Dict below
