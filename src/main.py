@@ -87,6 +87,7 @@ from actions import Spotify_credentials
 from actions import notify_tts
 from actions import sendSMS
 from actions import translanguage
+from actions import message
 
 try:
     FileNotFoundError
@@ -609,6 +610,10 @@ class Myassistant():
             ingrequest=ingrequest.strip()
             ingrequest=ingrequest.replace(" ","%20",1)
             getrecipe(ingrequest)
+        if configuration['Send_Message_Control']['Send_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Send_Message_control'][0]).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                message(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             kickstarter_tracker(str(usrcmd).lower())
