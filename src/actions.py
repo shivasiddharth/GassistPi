@@ -39,9 +39,12 @@ import pychromecast
 import spotipy
 import pprint
 import yaml
+import glob
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
+
+pb = Pushbullet ( ' ENTER-YOUR-PUSHBULLET-KEY-HERE ' )
 
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
@@ -63,7 +66,22 @@ if configuration['TextToSpeech']['Choice']=="Google Cloud":
         client = texttospeech.TextToSpeechClient()
 else:
     TTSChoice='GTTS'
-
+    
+def message(phrase):
+    message = phrase.replace("send message", "")
+    message.strip()
+    say("tell me the message to send")
+    subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(1) # Wait 1 second
+    subprocess.Popen(['arecord', '--duration=10', 'message.mp3'],stdin=subprocess.PIPE,stdout=subprocess.PIPE)#record for 10 seconds
+    time.sleep(15) # Wait 15 seconds
+    types = ('*.mp3', '*.mp4', '*.mkv')
+    list_of_files = glob.glob('/home/pi/message.mp3') 
+    recent_download = max(list_of_files, key=os.path.getctime)
+    with open(recent_download, "rb") as song:
+        file_data = pb.upload_file(song, recent_download)
+    push = pb.push_file(**file_data)
+    
 domoticz_devices=''
 Domoticz_Device_Control=False
 bright=''
