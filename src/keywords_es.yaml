@@ -70,6 +70,9 @@ Keywords:
     - 'clickatell'
   notify_TTS:
     - 'notify'
+  # Send message vocal to pushbullet
+  Send_Message_control:
+    - 'enviar mensaje'
 
 #Do not change the Dict below
 Dict:
