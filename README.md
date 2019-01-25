@@ -42,7 +42,9 @@
 **29.  Stream your playlist from Deezer.**    
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
-**32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**  
+**32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**
+
+**33.  Send Voice Messages from the Raspberry to the Mobile (using pushbullet).**
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -338,13 +340,15 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
        "custom play all the songs from google music"  
 6. If you are sending a command to be processed by google assistant, there is no need to prefix **custom**.  
    Eg: "what is the time"   
-       "what can you do for me"      
+       "what can you do for me"
+7. To turn on/off microphone just send the simple command **mute**.
+   Eg: "mute" 
 
 For more details on the how to use this feature, refer to the video below:   
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=oemsmrdhNP8
 " target="_blank"><img src="http://img.youtube.com/vi/oemsmrdhNP8/0.jpg"
-alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a> 
 
 ************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
@@ -504,7 +508,8 @@ For pushing messages/info, the GassistPi uses pushbullet python package. To use 
 1. Download and install pushbullet app on your tablet/mobile device.  
 2. Visit www.pushbullet.com register for new account or sign in with your existing account.  
 3. Choose Settings-->Account and then choose "Create access token".  
-4. Copy this token and paste in the actions.py script under the pushmessage function.  
+4. Copy this token and paste in the actions.py script under the pushmessage function.
+5. To send a voice message to the phone, say 'send message'.
 
 
 *******************************************************************
@@ -599,7 +604,10 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 Pi3 and Pi Zero users, assign the device names and device ip addresses in the **config.yaml** in the marked locations.  
 
-**Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
+**Syntax: "Hey Google, Turn _Devicename_ On/Off"**
+
+It is also possible to switch several devices at the same time.
+**Syntax: "Hey Google, Turn _Devicename1_ _Devicename2_ _..._ On/Off"**
 
 Advantage of using Sonoff-Tasmota over webserver is that, with Sonoff-Tasmota you can emulate a Wemo switch and control the NodeMCU using Amazon Alexa (Echo Devices) in addition to the GassistPi.    
 

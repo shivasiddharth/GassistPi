@@ -84,6 +84,9 @@ from actions import gender
 from actions import on_ir_receive
 from actions import Youtube_credentials
 from actions import Spotify_credentials
+from actions import notify_tts
+from actions import sendSMS
+from actions import translanguage
 
 try:
     FileNotFoundError
@@ -179,6 +182,10 @@ class Myassistant():
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.mutestatus=False
+        self.interpreter=False
+        self.interpconvcounter=0
+        self.interplang1=translanguage
+        self.interplang2=''
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
@@ -355,13 +362,22 @@ class Myassistant():
                 assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-            if GPIOcontrol:
-                assistantindicator('off')
-            if kodicontrol:
-                try:
-                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
-                except requests.exceptions.ConnectionError:
-                    print("Kodi TV box not online")
+            if self.interpreter:
+                self.assistant.stop_conversation()
+                if (self.interpconvcounter % 2)==0:
+                    print("Local Speaker: "+event.args["text"])
+                elif (self.interpconvcounter % 2)==1:
+                    print("Foreign Speaker: "+event.args["text"])
+                self.interpreter_mode(event.args["text"],self.interpconvcounter)
+                self.interpconvcounter=self.interpconvcounter+1
+            else:
+                if GPIOcontrol:
+                    assistantindicator('off')
+                if kodicontrol:
+                    try:
+                        kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                    except requests.exceptions.ConnectionError:
+                        print("Kodi TV box not online")
 
         if event.type == EventType.ON_RENDER_RESPONSE:
             if GPIOcontrol:
@@ -459,6 +475,8 @@ class Myassistant():
                 mqtt_query=mqtt_query.replace('custom',"",1)
                 mqtt_query=mqtt_query.strip()
                 self.custom_command(mqtt_query)
+            elif mqtt_query.lower() == 'mute':
+                self.buttonsinglepress()
             else:
                 self.assistant.send_text_query(mqtt_query)
 
@@ -498,6 +516,27 @@ class Myassistant():
                 pass
             print("Stopping IR Sensor")
 
+    def interpreter_mode_trigger(self,interlanguage,switch):
+        self.interplang2=interlanguage
+        if switch=="Start":
+            self.interpreter=True
+            say("Starting interpreter.")
+            self.assistant.start_conversation()
+        elif switch=="Stop":
+            self.interpreter=False
+            self.interpconvcounter=0
+            say("Stopping interpreter.")
+        else:
+            self.interpreter=False
+
+    def interpreter_mode(self,text,count):
+        if (count % 2)==0:
+            say(text,self.interplang1,self.interplang2)
+            self.assistant.start_conversation()
+        else:
+            say(text,self.interplang2,self.interplang1)
+            self.assistant.start_conversation()
+
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
             if os.path.isfile('/opt/hue-emulator/config.json'):
@@ -516,7 +555,6 @@ class Myassistant():
                 if name.lower() in str(usrcmd).lower():
                     self.assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num],tasmota_deviceportid[num])
-                    break
         if configuration['Conversation']['Conversation_Control']=='Enabled':
             for i in range(1,numques+1):
                 try:
@@ -571,6 +609,10 @@ class Myassistant():
             ingrequest=ingrequest.strip()
             ingrequest=ingrequest.replace(" ","%20",1)
             getrecipe(ingrequest)
+        if configuration['Pushbullet']['Pushbullet_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Send_Message'][0]).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                message(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             kickstarter_tracker(str(usrcmd).lower())
@@ -591,9 +633,14 @@ class Myassistant():
                         YouTube_No_Autoplay(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
             stop()
+        if configuration['Notify_TTS']['Notify_TTS_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['notify_TTS'][0]).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                notify_tts(str(usrcmd).lower())
         if configuration['Radio_stations']['Radio_Control']=='Enabled':
             if 'radio'.lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
+                vlcplayer.stop_vlc()
                 radio(str(usrcmd).lower())
         if configuration['ESP']['ESP_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
@@ -742,6 +789,16 @@ class Myassistant():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
                 deezer_playlist_select(str(usrcmd).lower())
+        if configuration['Clickatell']['Clickatell_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                sendSMS(str(usrcmd).lower())
+        if interpreter in str(usrcmd).lower():
+            self.assistant.stop_conversation()
+            if 'start' in str(usrcmd).lower():
+                self.interpreter_mode_trigger('hi','Start')
+            else:
+                self.interpreter_mode_trigger('hi','Stop')
 
 
     def main(self):
