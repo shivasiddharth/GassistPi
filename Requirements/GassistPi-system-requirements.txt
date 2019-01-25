@@ -35,4 +35,3 @@ libsox-fmt-mp3
 python
 python-dev
 build-essential
-libmpg123-dev
