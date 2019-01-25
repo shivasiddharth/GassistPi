@@ -43,7 +43,7 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
 **32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**
-**33.  Send Voice Messages from the Raspberry to the Mobile (using pushbullet).**
+**33.  Send Voice Messages from the Raspberry to the Mobile (using Pushbullet).**
 
 
 *******************************************************************************************************************************  
@@ -342,13 +342,13 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
    Eg: "what is the time"   
        "what can you do for me"
 7. To turn on/off microphone just send the simple command **mute**.
-   Eg: "mute" 
+   Eg: "mute"
 
 For more details on the how to use this feature, refer to the video below:   
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=oemsmrdhNP8
 " target="_blank"><img src="http://img.youtube.com/vi/oemsmrdhNP8/0.jpg"
-alt="Detailed Youtube Video" width="240" height="180" border="10" /></a> 
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 ************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
@@ -502,15 +502,16 @@ The Hue app should now prompt you through the rest of the setup. For specific de
 
 
 *******************************************************************
-### **PUSHING MESSAGES/INFO FROM ASSISTANT ON Pi TO ANDROID DEVICE**  
+### **SENDING VOICE MESSAGES FROM ASSISTANT ON Pi TO MOBILE DEVICE**  
 *******************************************************************
-For pushing messages/info, the GassistPi uses pushbullet python package. To use this feature:  
+For pushing voice messages, the GassistPi uses Pushbullet API. To use this feature:  
 1. Download and install pushbullet app on your tablet/mobile device.  
 2. Visit www.pushbullet.com register for new account or sign in with your existing account.  
 3. Choose Settings-->Account and then choose "Create access token".  
-4. Copy this token and paste in the actions.py script under the pushmessage function.
-5. To send a voice message to the phone, say 'send message'.
+4. Copy this token and paste in config.yaml under Pushbullet and Pushbullet_API_KEY.   
 
+Command Syntax:  
+"Hey Google, Send message"    
 
 *******************************************************************
 ### **GETTING RECIPE DETAILS USING ASSISTANT**  
@@ -871,10 +872,6 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | 'Wild Blue Yonder' | 'Wild Strawberry' | 'Wild Watermelon' | 'Wisteria' | 'Yellow' | 'Yellow Green' |  
 | 'Yellow Orange' |  
 
-************************************************  
-### **SENDING VOICE MESSAGES FROM PHONE TO GOOGLE ASSISTANT ON SBCs**  
-************************************************
-1. https://support.google.com/googlehome/answer/7531913.  
 
 ************************************************  
 ### **LIST OF GPIOs USED IN RASPBERRY PI BOARDS**  

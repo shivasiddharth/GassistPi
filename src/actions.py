@@ -39,12 +39,10 @@ import pychromecast
 import spotipy
 import pprint
 import yaml
-import glob
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
-pb = Pushbullet ( ' ENTER-YOUR-PUSHBULLET-KEY-HERE ' )
 
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
@@ -66,22 +64,8 @@ if configuration['TextToSpeech']['Choice']=="Google Cloud":
         client = texttospeech.TextToSpeechClient()
 else:
     TTSChoice='GTTS'
-    
-def message(phrase):
-    message = phrase.replace("send message", "")
-    message.strip()
-    say("tell me the message to send")
-    subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(1) # Wait 1 second
-    subprocess.Popen(['arecord', '--duration=10', 'message.mp3'],stdin=subprocess.PIPE,stdout=subprocess.PIPE)#record for 10 seconds
-    time.sleep(15) # Wait 15 seconds
-    types = ('*.mp3', '*.mp4', '*.mkv')
-    list_of_files = glob.glob('/home/pi/message.mp3') 
-    recent_download = max(list_of_files, key=os.path.getctime)
-    with open(recent_download, "rb") as song:
-        file_data = pb.upload_file(song, recent_download)
-    push = pb.push_file(**file_data)
-    
+
+
 domoticz_devices=''
 Domoticz_Device_Control=False
 bright=''
@@ -247,6 +231,10 @@ elif configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage!='e
 else:
     gender='Female'
 
+if configuration['Pushbullet']['Pushbullet_API_KEY']!='ENTER YOUR PUSHBULLET KEY HERE':
+    pb=Pushbullet(configuration['Pushbullet']['Pushbullet_API_KEY'])
+else:
+    pb=None
 
 #Function for google KS custom search engine
 def kickstrater_search(query):
@@ -1359,8 +1347,10 @@ def kickstarter_tracker(phrase):
 
 #----------------------------------Start of Push Message function-----------------------------------------
 def pushmessage(title,body):
-    pb = Pushbullet('ENTER-YOUR-PUSHBULLET-KEY-HERE')
-    push = pb.push_note(title,body)
+    if pb!=None:
+        push = pb.push_note(title,body)
+    else:
+        say("Pushbullet API key has not been entered.")
 #----------------------------------End of Push Message Function-------------------------------------------
 
 
@@ -1707,6 +1697,15 @@ def on_ir_receive(pinNo, bouncetime=150):
         return None
 
 #-----------------------End of functions for IR code--------------------------
+
+#Send voicenote to phone
+def voicenote(audiofile):
+    if pb!=None:
+        with open(audiofile, "rb") as recordedvoicenote:
+            file_data = pb.upload_file(recordedvoicenote, 'Voicenote.wav')
+        push = pb.push_file(**file_data)
+    else:
+        say("Pushbullet API key has not been entered.")    
 
 #GPIO Device Control
 def Action(phrase):
