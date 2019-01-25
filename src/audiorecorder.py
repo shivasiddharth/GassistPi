@@ -3,7 +3,7 @@
 import pyaudio
 import wave
 
-class Recorder(object):
+class Recorder():
     '''A recorder class for recording audio to a WAV file.
     Records in mono by default.
     '''
@@ -17,7 +17,7 @@ class Recorder(object):
         return RecordingFile(fname, mode, self.channels, self.rate,
                             self.frames_per_buffer)
 
-class RecordingFile(object):
+class RecordingFile():
     def __init__(self, fname, mode, channels,
                 rate, frames_per_buffer):
         self.fname = fname
