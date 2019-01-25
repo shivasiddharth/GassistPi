@@ -66,13 +66,6 @@ Keywords:
     - 'gaana.com'
   Deezer_music_streaming:
     - 'deezer'
-  Send_sms_clickatell:
-    - 'clickatell'
-  notify_TTS:
-    - 'notify'
-   # Send message vocal to pushbullet
-  Send_Message:
-    - 'envoyer un message'
 
 #Do not change the Dict below
 Dict:
