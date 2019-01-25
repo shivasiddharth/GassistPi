@@ -36,7 +36,6 @@ import snowboydecoder
 import sys
 import signal
 import requests
-import audiorecorder
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
@@ -89,6 +88,7 @@ from actions import notify_tts
 from actions import sendSMS
 from actions import translanguage
 from actions import voicenote
+from audiorecorder import Recorder
 
 try:
     FileNotFoundError
@@ -189,11 +189,10 @@ class Myassistant():
         self.interplang1=translanguage
         self.interplang2=''
         self.wavrecorder=False
-        self.recorder=audiorecorder.Recorder()
         self.recfile=None
         self.recordingstatus=False
         self.recordfile='/tmp/recorded.wav'
-        self.rec=self.recorder(channels=1, rate=44100, frames_per_buffer=1024)
+        self.rec=Recorder(channels=1, rate=44100, frames_per_buffer=1024)
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
