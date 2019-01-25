@@ -43,8 +43,8 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
 **32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**
-
 **33.  Send Voice Messages from the Raspberry to the Mobile (using pushbullet).**
+
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:

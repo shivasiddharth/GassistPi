@@ -16,6 +16,10 @@ Conversation:
     2:
       - 'Nope i am forever alone'
       - 'The whole world is my family'
+      
+#Pushbullet
+Pushbullet:
+  Pushbullet_Control: 'Enabled'
 
 #Send sms with clickatell
 Clickatell:
