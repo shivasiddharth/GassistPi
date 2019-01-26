@@ -41,13 +41,13 @@ wget "http://raw.githubusercontent.com/shivasiddharth/GassistPi/master/version" 
 
 AvailableSDKVersion=($(jq '.Version.SDK' /tmp/version))
 AvailableFeaturesVersion=($(jq '.Version.Features' /tmp/version))
-AvailableRevisionVersion= jq '.Version.Revision' /tmp/version
+AvailableRevisionVersion=($(jq '.Version.Revision' /tmp/version))
 
 CurrentSDKVersion=($(jq '.Version.SDK' /home/${USER}/GassistPi/version))
 CurrentFeaturesVersion=($(jq '.Version.Features' /home/${USER}/GassistPi/version))
 CurrentRevisionVersion=($(jq '.Version.Revision' /home/${USER}/GassistPi/version))
 
-if ((AvailableSDKVersion >> CurrentSDKVersion)) || ((AvailableFeaturesVersion >> CurrentFeaturesVersion)) || ((AvailableRevisionVersion >> CurrentRevisionVersion)); then
+if ((AvailableSDKVersion > CurrentSDKVersion)) || ((AvailableFeaturesVersion > CurrentFeaturesVersion)) || ((AvailableRevisionVersion > CurrentRevisionVersion)); then
   echo "A new update is available........."
   echo ""
   echo ""
@@ -58,17 +58,17 @@ else
   exit 1
 fi
 
-if ((AvailableSDKVersion >> CurrentSDKVersion)); then
+if ((AvailableSDKVersion > CurrentSDKVersion)); then
   Updatetype="SDK"
   echo "You have a SDK update.........."
   echo ""
   echo ""
-elif ((AvailableFeaturesVersion >> CurrentFeaturesVersion)); then
+elif ((AvailableFeaturesVersion > CurrentFeaturesVersion)); then
   Updatetype="Feature"
   echo "You have a Feature update.........."
   echo ""
   echo ""
-elif ((AvailableRevisionVersion >> CurrentRevisionVersion)); then
+elif ((AvailableRevisionVersion > CurrentRevisionVersion)); then
   Updatetype="Revision"
   echo "You have updates to the scripts or bug fixes.........."
   echo ""
@@ -97,11 +97,9 @@ sudo cp -a /home/${USER}/GassistPi/ /home/${USER}/${backupfoldername}/
 echo "Updating the scripts..............."
 echo ""
 echo ""
-git init /home/${USER}/GassistPi/
 
-cd /home/${USER}/GassistPi
-
-git pull http://github.com/shivasiddharth/GassistPi
+sudo rm -rf /home/${USER}/GassistPi/
+git clone https://github.com/shivasiddharth/GassistPi
 
 sudo \cp -f /home/${USER}/${backupfoldername}/src/_snowboydetect.so /home/${USER}/GassistPi/src/_snowboydetect.so
 sudo \cp -f /home/${USER}/${backupfoldername}/src/snowboydetect.py /home/${USER}/GassistPi/src/snowboydetect.py
