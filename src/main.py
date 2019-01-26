@@ -825,7 +825,7 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 sendSMS(str(usrcmd).lower())
-        if interpreter in str(usrcmd).lower():
+        if 'interpreter' in str(usrcmd).lower():
             self.assistant.stop_conversation()
             if 'start' in str(usrcmd).lower():
                 self.interpreter_mode_trigger('hi','Start')
