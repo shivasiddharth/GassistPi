@@ -106,13 +106,13 @@ sudo \cp -f /home/${USER}/${backupfoldername}/src/snowboydetect.py /home/${USER}
 
 cd /home/${USER}/
 
-if [[$Updatetype = "Revision"]];then
+if [[ $Updatetype = "Revision" ]];then
   echo "Finsihed updating......."
   echo "Restart your service using: sudo systemctl restart gassistpi.service"
   echo ""
   echo ""
   exit 1
-elif [[$Updatetype = "Feature"]] || [[$Updatetype = "SDK"]];then
+elif [[ $Updatetype = "Feature" ]] || [[ $Updatetype = "SDK" ]];then
   echo "Installing new dependencies......................"
   sed 's/#.*//' /home/${USER}/GassistPi/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
   source env/bin/activate
@@ -121,7 +121,7 @@ elif [[$Updatetype = "Feature"]] || [[$Updatetype = "SDK"]];then
   echo ""
 fi
 
-if [[$Updatetype != "SDK" ]];then
+if [[ $Updatetype != "SDK" ]];then
   echo "Finsihed updating......."
   echo "Restart your service using: sudo systemctl restart gassistpi.service"
   echo ""
