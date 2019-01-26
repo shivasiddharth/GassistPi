@@ -43,7 +43,8 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
 **32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**     
-**33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**    
+**33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**
+**34.  Send SMS via clickatell API**
 
 
 *******************************************************************************************************************************  
@@ -512,6 +513,18 @@ For pushing voice messages, the GassistPi uses Pushbullet API. To use this featu
 
 Command Syntax:  
 "Hey Google, Send message"    
+
+
+************************************************  
+### **SEND SMS VIA CLICKATELL API**  
+************************************************  
+To use this, get a free account at [clickatell.com](https://www.clickatell.com/sign-up/).
+Sign in to Clickatell SMS Platform. Create sms integration.
+Add your generated clickatell api no in config.yaml.
+
+Command Syntax:
+"Hey Google, send clickatell 'message' to 'Bob'
+
 
 *******************************************************************
 ### **GETTING RECIPE DETAILS USING ASSISTANT**  
