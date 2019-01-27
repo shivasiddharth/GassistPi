@@ -1701,8 +1701,9 @@ def on_ir_receive(pinNo, bouncetime=150):
 #Send voicenote to phone
 def voicenote(audiofile):
     if pb!=None:
+        audiofile=('/tmp/recorded.wav')
         with open(audiofile, "rb") as recordedvoicenote:
-            file_data = pb.upload_file(recordedvoicenote, 'Voicenote.wav')
+            file_data = pb.upload_file(recordedvoicenote, audiofile)
         push = pb.push_file(**file_data)
         say("Sending your voicenote")
     else:
