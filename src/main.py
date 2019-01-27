@@ -639,7 +639,9 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_Message'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 say("What is your message?")
-                self.get_audio_recording()                
+                self.get_audio_recording()
+                time.sleep(5)
+                voicenote(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             kickstarter_tracker(str(usrcmd).lower())
