@@ -190,7 +190,6 @@ class Myassistant():
         self.interplang2=''
         self.wavrecorder=False
         self.recfile=None
-        self.recordingstatus=False
         self.recordfile='/tmp/recorded.wav'
         self.rec=Recorder(channels=1, rate=44100, frames_per_buffer=1024)
         self.t1 = Thread(target=self.start_detector)
@@ -306,9 +305,9 @@ class Myassistant():
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             self.can_start_conversation = False
             if self.wavrecorder:
-                with self.rec.open(recordfile, 'wb') as self.recfile:
+                with self.rec.open(self.recordfile, 'wb') as self.recfile:
                     self.recfile.start_recording()
-                    self.recordingstatus=True
+
 
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if kodicontrol:
@@ -347,7 +346,8 @@ class Myassistant():
             self.can_start_conversation = True
             if self.wavrecorder:
                 self.recfile.stop_recording()
-                self.recordingstatus=False
+                self.wavrecorder=False
+                voicenote(self.recfile)
 
             if GPIOcontrol:
                 assistantindicator('off')
@@ -561,10 +561,7 @@ class Myassistant():
     def get_audio_recording(self):
         self.wavrecorder=True
         self.assistant.start_conversation()
-        while self.recordingstatus:
-            time.sleep(.1)
-        self.wavrecorder=False
-        return (self.recordfile)
+
 
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
@@ -642,9 +639,7 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_Message'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 say("What is your message?")
-                note=self.get_audio_recording()
-                voicenote(note)
-                say("Sending your voice message.")
+                self.get_audio_recording()                
         if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             kickstarter_tracker(str(usrcmd).lower())

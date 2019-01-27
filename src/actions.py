@@ -1704,8 +1704,9 @@ def voicenote(audiofile):
         with open(audiofile, "rb") as recordedvoicenote:
             file_data = pb.upload_file(recordedvoicenote, 'Voicenote.wav')
         push = pb.push_file(**file_data)
+        say("Sending your voicenote")
     else:
-        say("Pushbullet API key has not been entered.")    
+        say("Pushbullet API key has not been entered.")
 
 #GPIO Device Control
 def Action(phrase):
