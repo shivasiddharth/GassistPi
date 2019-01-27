@@ -363,7 +363,7 @@ class Myassistant():
             if GPIOcontrol:
                 assistantindicator('off')
 
-        if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:            
+        if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
             if self.interpreter:
                 self.assistant.stop_conversation()
                 if (self.interpconvcounter % 2)==0:
@@ -539,7 +539,7 @@ class Myassistant():
             say(text,self.interplang2,self.interplang1)
             self.assistant.start_conversation()
 
-    def get_audio_recording(self):
+    def voicenote_recording(self):
         recordfilepath='/tmp/audiorecord.wav'
         subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while not record_to_file(recordfilepath):
@@ -622,8 +622,7 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_Message'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 say("What is your message?")
-                self.get_audio_recording()
-
+                self.voicenote_recording()
         if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             kickstarter_tracker(str(usrcmd).lower())
