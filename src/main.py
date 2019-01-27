@@ -88,7 +88,7 @@ from actions import notify_tts
 from actions import sendSMS
 from actions import translanguage
 from actions import voicenote
-from audiorecorder import Recorder
+from audiorecorder import record_to_file
 
 try:
     FileNotFoundError
@@ -188,10 +188,6 @@ class Myassistant():
         self.interpconvcounter=0
         self.interplang1=translanguage
         self.interplang2=''
-        self.wavrecorder=False
-        self.recfile=None
-        self.recordfile='/tmp/recorded.wav'
-        self.rec=Recorder(channels=1, rate=44100, frames_per_buffer=1024)
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
@@ -303,13 +299,8 @@ class Myassistant():
                 self.t4.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-            self.can_start_conversation = False
-            if self.wavrecorder:
-                with self.rec.open(self.recordfile, 'wb') as self.recfile:
-                    self.recfile.start_recording()
-
-
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.can_start_conversation = False
             if kodicontrol:
                 try:
                     status=mutevolstatus()
@@ -344,11 +335,6 @@ class Myassistant():
 
         if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
             self.can_start_conversation = True
-            if self.wavrecorder:
-                self.recfile.stop_recording()
-                self.wavrecorder=False
-                voicenote(self.recfile)
-
             if GPIOcontrol:
                 assistantindicator('off')
             if kodicontrol:
@@ -377,12 +363,7 @@ class Myassistant():
             if GPIOcontrol:
                 assistantindicator('off')
 
-        if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-            if self.wavrecorder:
-                self.assistant.stop_conversation()
-                self.recfile.stop_recording()
-                self.recordingstatus=False
-
+        if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:            
             if self.interpreter:
                 self.assistant.stop_conversation()
                 if (self.interpconvcounter % 2)==0:
@@ -559,9 +540,11 @@ class Myassistant():
             self.assistant.start_conversation()
 
     def get_audio_recording(self):
-        self.wavrecorder=True
-        self.assistant.start_conversation()
-
+        recordfilepath='/tmp/audiorecord.wav'
+        subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        while not record_to_file(recordfilepath):
+            time.sleep(.1)
+        voicenote(recordfilepath)
 
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
@@ -639,7 +622,8 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_Message'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 say("What is your message?")
-                self.get_audio_recording()                
+                self.get_audio_recording()
+
         if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             kickstarter_tracker(str(usrcmd).lower())

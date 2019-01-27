@@ -1701,12 +1701,12 @@ def on_ir_receive(pinNo, bouncetime=150):
 #Send voicenote to phone
 def voicenote(audiofile):
     if pb!=None:
+        say("Sending your voicenote")
         with open(audiofile, "rb") as recordedvoicenote:
             file_data = pb.upload_file(recordedvoicenote, 'Voicenote.wav')
         push = pb.push_file(**file_data)
-        say("Sending your voicenote")
     else:
-        say("Pushbullet API key has not been entered.")
+        say("Pushbullet API key has not been entered.")    
 
 #GPIO Device Control
 def Action(phrase):
