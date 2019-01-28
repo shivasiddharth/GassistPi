@@ -36,11 +36,15 @@ import snowboydecoder
 import sys
 import signal
 import requests
+import io
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
+from google.cloud import speech
+from google.cloud.speech import enums
+from google.cloud.speech import types
 import paho.mqtt.client as mqtt
 from actions import say
 from actions import trans
@@ -364,22 +368,13 @@ class Myassistant():
                 assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-            if self.interpreter:
-                self.assistant.stop_conversation()
-                if (self.interpconvcounter % 2)==0:
-                    print("Local Speaker: "+event.args["text"])
-                elif (self.interpconvcounter % 2)==1:
-                    print("Foreign Speaker: "+event.args["text"])
-                self.interpreter_mode(event.args["text"],self.interpconvcounter)
-                self.interpconvcounter=self.interpconvcounter+1
-            else:
-                if GPIOcontrol:
-                    assistantindicator('off')
-                if kodicontrol:
-                    try:
-                        kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
-                    except requests.exceptions.ConnectionError:
-                        print("Kodi TV box not online")
+            if GPIOcontrol:
+                assistantindicator('off')
+            if kodicontrol:
+                try:
+                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                except requests.exceptions.ConnectionError:
+                    print("Kodi TV box not online")
 
         if event.type == EventType.ON_RENDER_RESPONSE:
             if GPIOcontrol:
@@ -518,26 +513,75 @@ class Myassistant():
                 pass
             print("Stopping IR Sensor")
 
-    def interpreter_mode_trigger(self,interlanguage,switch):
-        self.interplang2=interlanguage
-        if switch=="Start":
-            self.interpreter=True
-            say("Starting interpreter.")
-            self.assistant.start_conversation()
-        elif switch=="Stop":
-            self.interpreter=False
-            self.interpconvcounter=0
-            say("Stopping interpreter.")
-        else:
-            self.interpreter=False
+    def cloud_speech_transcribe(self,file,language):
+        client = speech.SpeechClient()
+        with io.open(speech_file, 'rb') as audio_file:
+            content = audio_file.read()
+        audio = types.RecognitionAudio(content=content)
+        config = types.RecognitionConfig(
+            encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
+            sample_rate_hertz=44100,
+            language_code=language)
+        response = client.recognize(config, audio)
+        for result in response.results:
+            transcribedtext=u'{}'.format(result.alternatives[0].transcript)
+        return transcribedtext
 
-    def interpreter_mode(self,text,count):
+    def interpreter_mode_trigger(self,interlanguage,switch):
+        if configuration['Speechtotext']['Google_Cloud_Speech']['Cloud_Speech_Control']=='Disabled':
+            say("Cloud speech has not been enabled")
+        else:
+            if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
+                if configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']!="ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE"
+                    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']
+                    self.interplang2=interlanguage
+                    if switch=="Start":
+                        self.interpreter=True
+                        say("Starting interpreter.")
+                        self.interpreter_speech_recorder()
+                    elif switch=="Stop":
+                        self.interpreter=False
+                        self.interpconvcounter=0
+                        say("Stopping interpreter.")
+                    else:
+                        self.interpreter=False
+            else:
+                self.interplang2=interlanguage
+                if switch=="Start":
+                    self.interpreter=True
+                    say("Starting interpreter.")
+                    self.interpreter_speech_recorder()
+                elif switch=="Stop":
+                    self.interpreter=False
+                    self.interpconvcounter=0
+                    say("Stopping interpreter.")
+                else:
+                    self.interpreter=False
+
+    def interpreter_speech_recorder(self):
+        if self.interpreter:
+            interpreteraudio='/tmp/interpreter.wav'
+            subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            while not record_to_file(interpreteraudio):
+                time.sleep(.1)
+            if (self.interpconvcounter % 2)==0:
+                text=cloud_speech_transcribe(interpreteraudio,self.interplang1)
+                print("Local Speaker: "+text)
+            elif (self.interpconvcounter % 2)==1:
+                text=cloud_speech_transcribe(interpreteraudio,self.interplang2)
+                print("Foreign Speaker: "+text)
+            self.interpreter_mode_tts(text,self.interpconvcounter)
+            self.interpconvcounter=self.interpconvcounter+1
+        else:
+            say("Interpreter not active.")
+
+    def interpreter_mode_tts(self,text,count):
         if (count % 2)==0:
             say(text,self.interplang1,self.interplang2)
-            self.assistant.start_conversation()
+            self.interpreter_speech_recorder()
         else:
             say(text,self.interplang2,self.interplang1)
-            self.assistant.start_conversation()
+            self.interpreter_speech_recorder()
 
     def voicenote_recording(self):
         recordfilepath='/tmp/audiorecord.wav'
