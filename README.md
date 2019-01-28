@@ -9,9 +9,9 @@
 ## 10-Jan-2019 Update:
 **Added Google Cloud Text to Speech Conversion For A More Natural Custom Text Voice Outs**               
 *******************************************************************************************************************************
-<details><summary>FEATURES</summary>  
+<details><h1>FEATURES</h1>  
 <p>    
-   
+
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
 **1.   Headless auto start on boot.**      
 **2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards - non OSMC).**     
