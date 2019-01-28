@@ -1,0 +1,193 @@
+Languages:
+  Afrikaans:
+    -  'af-ZA'
+    -  'af'
+  Amharic:
+    -  'am-ET'
+    -  'am'
+  Arabic:
+    -  'ar-AE'
+    -  'ar'
+  Armenian:
+    -  'hy-AM'
+    -  'hy'
+  Azerbaijani:
+    -  'az-AZ'
+    -  'az'
+  Basque:
+    -  'eu-ES'
+    -  'eu'
+  Bengali:
+    -  'bn-IN'
+    -  'bn'
+  Bulgarian:
+    -  'bg-BG'
+    -  'bg'
+  Catalan:
+    -  'ca-ES'
+    -  'ca'
+  Chinese:
+    -  'zh-TW'
+    -  'zh'
+  Croatian:
+    -  'hr-HR'
+    -  'hr'
+  Czech:
+    -  'cs-CZ'
+    -  'cs'
+  Danish:
+    -  'da-DK'
+    -  'da'
+  Dutch:
+    -  'nl-NL'
+    -  'nl'
+  English:
+    -  'en-US'
+    -  'en'
+  Filipino:
+    -  'fil-PH'
+    -  'fil'
+  Finnish:
+    -  'fi-FI'
+    -  'fi'
+  French:
+    -  'fr-FR'
+    -  'fr'
+  Galician:
+    -  'gl-ES'
+    -  'gl'
+  Georgian:
+    -  'ka-GE'
+    -  'ka'
+  German:
+    -  'de-DE'
+    -  'de'
+  Greek:
+    -  'el-GR'
+    -  'el'
+  Gujarati:
+    -  'gu-IN'
+    -  'gu'
+  Hebrew:
+    -  'he-IL'
+    -  'he'
+  Hindi:
+    -  'hi-IN'
+    -  'hi'
+  Hungarian:
+    -  'hu-HU'
+    -  'hu'
+  Icelandic:
+    -  'is-IS'
+    -  'is'
+  Indonesian:
+    -  'id-ID'
+    -  'id'
+  Italian:
+    -  'it-IT'
+    -  'it'
+  Japanese:
+    -  'ja-JP'
+    -  'ja'
+  Javanese:
+    -  'jv-ID'
+    -  'jv'
+  Kannada:
+    -  'kn-IN'
+    -  'kn'
+  Khmer:
+    -  'km-KH'
+    -  'km'
+  Korean:
+    -  'ko-KR'
+    -  'ko'
+  Lao:
+    -  'lo-LA'
+    -  'lo'
+  Latvian:
+    -  'lv-LV'
+    -  'lv'
+  Lithuanian:
+    -  'lt-LT'
+    -  'lt'
+  Malay:
+    -  'ms-MY'
+    -  'ms'
+  Malayalam:
+    -  'ml-IN'
+    -  'ml'
+  Marathi:
+    -  'mr-IN'
+    -  'mr'
+  Nepali:
+    -  'ne-NP'
+    -  'ne'
+  Norwegian:
+    -  'nb-NO'
+    -  'nb'
+  Persian:
+    -  'fa-IR'
+    -  'fa'
+  Polish:
+    -  'pl-PL'
+    -  'pl'
+  Portuguese:
+    -  'pt-BR'
+    -  'pt'
+  Portuguese:
+    -  'pt-PT'
+    -  'pt'
+  Romanian:
+    -  'ro-RO'
+    -  'ro'
+  Russian:
+    -  'ru-RU'
+    -  'ru'
+  Serbian:
+    -  'sr-RS'
+    -  'sr'
+  Sinhala:
+    -  'si-LK'
+    -  'si'
+  Slovak:
+    -  'sk-SK'
+    -  'sk'
+  Slovenian:
+    -  'sl-SI'
+    -  'sl'
+  Spanish:
+    -  'es-ES'
+    -  'es'
+  Sundanese:
+    -  'su-ID'
+    -  'su'
+  Swahili:
+    -  'sw-TZ'
+    -  'sw'
+  Swedish:
+    -  'sv-SE'
+    -  'sv'
+  Tamil:
+    -  'ta-IN'
+    -  'ta'
+  Telugu:
+    -  'te-IN'
+    -  'te'
+  Thai:
+    -  'th-TH'
+    -  'th'
+  Turkish:
+    -  'tr-TR'
+    -  'tr'
+  Ukrainian:
+    -  'uk-UA'
+    -  'uk'
+  Urdu:
+    -  'ur-PK'
+    -  'ur'
+  Vietnamese:
+    -  'vi-VN'
+    -  'vi'
+  Zulu:
+    -  'zu-ZA'
+    -  'zu'
