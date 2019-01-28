@@ -9,8 +9,9 @@
 ## 10-Jan-2019 Update:
 **Added Google Cloud Text to Speech Conversion For A More Natural Custom Text Voice Outs**               
 *******************************************************************************************************************************
-
-# Features (All features are applicable to all boards, unless and otherwise mentioned):  
+<details><summary># FEATURES</summary>  
+<p>  
+## Features (All features are applicable to all boards, unless and otherwise mentioned):  
 **1.   Headless auto start on boot.**    
 **2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards - non OSMC).**   
 **3.   Voice control of NodeMCU without IFTTT and MQTT.**  
@@ -45,7 +46,8 @@
 **32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**     
 **33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**
 **34.  Send SMS via clickatell API**
-
+</p>  
+</details>  
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
