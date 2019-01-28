@@ -9,19 +9,19 @@
 ## 10-Jan-2019 Update:
 **Added Google Cloud Text to Speech Conversion For A More Natural Custom Text Voice Outs**               
 *******************************************************************************************************************************
-<details><summary># FEATURES</summary>  
+<details><summary>FEATURES</summary>  
 <p>  
-## Features (All features are applicable to all boards, unless and otherwise mentioned):  
-**1.   Headless auto start on boot.**    
-**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards - non OSMC).**   
-**3.   Voice control of NodeMCU without IFTTT and MQTT.**  
-**4.   Radio streaming.**  
-**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards - non OSMC).**    
-**6.   Safe shutdown RPi using voice command.**  
-**7.   Stream Music from YouTube.**  
-**8.   Indicator lights for assistant listening and speaking events.**  
-**9.   Startup audio and audio feedback for wakeword detection.**   
-**10.  Pushbutton service to stop Music or Radio playback.**   
+## Features (All features are applicable to all boards, unless and otherwise mentioned):    
+**1.   Headless auto start on boot.**      
+**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards - non OSMC).**     
+**3.   Voice control of NodeMCU without IFTTT and MQTT.**    
+**4.   Radio streaming.**    
+**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards - non OSMC).**     
+**6.   Safe shutdown RPi using voice command.**    
+**7.   Stream Music from YouTube.**    
+**8.   Indicator lights for assistant listening and speaking events.**    
+**9.   Startup audio and audio feedback for wakeword detection.**     
+**10.  Pushbutton service to stop Music or Radio playback.**     
 **11.  Parcel tracking using Aftership API.**  
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration.**    
@@ -45,7 +45,7 @@
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
 **32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**     
 **33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**
-**34.  Send SMS via clickatell API**
+**34.  Send SMS via clickatell API**     
 </p>  
 </details>  
 
