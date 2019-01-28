@@ -9,7 +9,7 @@
 ## 10-Jan-2019 Update:
 **Added Google Cloud Text to Speech Conversion For A More Natural Custom Text Voice Outs**               
 *******************************************************************************************************************************
-<h1>FEATURES</h1><details>  
+<details><h2>FEATURES</h2>  
 <p>    
 
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
