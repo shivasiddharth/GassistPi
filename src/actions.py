@@ -44,7 +44,7 @@ ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
 
-with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
+with open('{}/src/config.yaml'.format(ROOT_PATH),'r', encoding='utf8') as conf:
     configuration = yaml.load(conf)
 
 TTSChoice=''
@@ -87,7 +87,7 @@ elif 'sv' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_sv.yaml'.format(ROOT_PATH)
 else:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
-with open(keywordfile,'r') as conf:
+with open(keywordfile,'r' , encoding='utf8') as conf:
     custom_action_keyword = yaml.load(conf)
 
 
@@ -1706,7 +1706,7 @@ def voicenote(audiofile):
             file_data = pb.upload_file(recordedvoicenote, 'Voicenote.wav')
         push = pb.push_file(**file_data)
     else:
-        say("Pushbullet API key has not been entered.")    
+        say("Pushbullet API key has not been entered.")
 
 #GPIO Device Control
 def Action(phrase):
