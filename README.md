@@ -42,9 +42,9 @@
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
 **32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**     
-**33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**
-**34.  Send Clickatell SMS messages.**
-
+**33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**   
+**34.  Send Clickatell SMS messages.**    
+**35.  CES 2019 Like Live Translator or Interpreter (Needs Cloud Speech).**     
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -281,9 +281,30 @@ In the **config.yaml** file, under the **Languages and Choice** option set your 
 Use the Translated versions of the English syntaxes given for all the custom actions.  
 
 ************************************************
+### **USING LIVE TRANSLATOR or INTERPRETER**     
+************************************************   
+**NOTE: THIS MAKES USE OF GOOGLE CLOUD SPEECH API. FREE USAGE IS LIMITED TO 60MINS/MONTH. FOR MORE DETAILS ON THE USAGE LIMITS CHECK THIS LINK(https://cloud.google.com/speech-to-text/pricing)**   
+
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. "From the API and services" option, select library and in the search bar type **speech**, select "Cloud Speech API" and click on "ENABLE".   
+5. You will be prompted to create a billing account if you already have not created one. Follow the onscreen instructions to create a billing account and then Enabled the API.   
+6. Create a service account and generate credentials.  
+7. Copy the downloaded the JSON key and place it /home/pi/ directory **DO NOT RENAME**.   
+8. Enter the path to the Key along with the key name Eg: /home/pi/xxxx.json  in the config.yaml file in the "Google_Cloud_Speech_Credentials_Path" field under "Speechtotext" (you can use one key for Cloud Speech and Cloud Text to Speech, but should enter the same path seperately in config.yaml).     
+
+Command Syntax:   
+To start the interpreter:   
+"Hey Google, Start __Your_Desired_Language__ interpreter.   
+
+To stop the interpreter:   
+"Hey Google, Stop __Your_Desired_Language__ interpreter.    
+
+************************************************
 ### **USING GOOGLE CLOUD TEXT TO SPEECH**   
 ************************************************
-**NOTE: GOOGLE CLOUD TEXT TO SPEECH HAS A LIMITED USAGE ACCESS. ONCE THE QUOTA IS EXHAUSTED, THE PROJECT WILL AUTOMATICALLY SWITCH TO gTTS**  
+**NOTE: GOOGLE CLOUD TEXT TO SPEECH HAS A LIMITED USAGE ACCESS. ONCE THE QUOTA IS EXHAUSTED, THE PROJECT WILL AUTOMATICALLY SWITCH TO gTTS.**  
 
 1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
 2. Select your project from the list.  
@@ -513,7 +534,6 @@ For pushing voice messages, the GassistPi uses Pushbullet API. To use this featu
 Command Syntax:  
 "Hey Google, Send message"    
 
-
 ************************************************  
 ### **SEND SMS VIA CLICKATELL API**  
 ************************************************  
@@ -522,8 +542,7 @@ Sign in to Clickatell SMS Platform. Create sms integration.
 Add your generated clickatell api no in config.yaml.
 
 Command Syntax:
-"Hey Google, send clickatell 'message' to 'Bob'
-
+"Hey Google, send clickatell 'message' to 'Bob'     
 
 *******************************************************************
 ### **GETTING RECIPE DETAILS USING ASSISTANT**  
