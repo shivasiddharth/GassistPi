@@ -283,7 +283,7 @@ Use the Translated versions of the English syntaxes given for all the custom act
 ************************************************
 ### **USING LIVE TRANSLATOR or INTERPRETER**     
 ************************************************   
-**NOTE: THIS MAKES USE OF GOOGLE CLOUD SPEECH API. FREE USAGE IS LIMITED TO 60MINS/MONTH. FOR MORE DETAILS ON THE USAGE LIMITS CHECK THIS LINK(https://cloud.google.com/speech-to-text/pricing)**   
+**NOTE: THIS MAKES USE OF GOOGLE CLOUD SPEECH API. FREE USAGE IS LIMITED TO 60MINS/MONTH. FOR MORE DETAILS ON THE USAGE LIMITS CHECK THIS [LINK](https://cloud.google.com/speech-to-text/pricing)**   
 
 1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
 2. Select your project from the list.  
