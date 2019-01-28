@@ -47,6 +47,9 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r', encoding='utf8') as conf:
     configuration = yaml.load(conf)
 
+with open('{}/src/lang.yaml'.format(ROOT_PATH),'r', encoding='utf8') as lang:
+    langlist = yaml.load(lang)
+
 TTSChoice=''
 if configuration['TextToSpeech']['Choice']=="Google Cloud":
     if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):

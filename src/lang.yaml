@@ -1,193 +1,193 @@
 Languages:
-  Afrikaans:
+  - Afrikaans:
     -  'af-ZA'
     -  'af'
-  Amharic:
+  - Amharic:
     -  'am-ET'
     -  'am'
-  Arabic:
+  - Arabic:
     -  'ar-AE'
     -  'ar'
-  Armenian:
+  - Armenian:
     -  'hy-AM'
     -  'hy'
-  Azerbaijani:
+  - Azerbaijani:
     -  'az-AZ'
     -  'az'
-  Basque:
+  - Basque:
     -  'eu-ES'
     -  'eu'
-  Bengali:
+  - Bengali:
     -  'bn-IN'
     -  'bn'
-  Bulgarian:
+  - Bulgarian:
     -  'bg-BG'
     -  'bg'
-  Catalan:
+  - Catalan:
     -  'ca-ES'
     -  'ca'
-  Chinese:
+  - Chinese:
     -  'zh-TW'
     -  'zh'
-  Croatian:
+  - Croatian:
     -  'hr-HR'
     -  'hr'
-  Czech:
+  - Czech:
     -  'cs-CZ'
     -  'cs'
-  Danish:
+  - Danish:
     -  'da-DK'
     -  'da'
-  Dutch:
+  - Dutch:
     -  'nl-NL'
     -  'nl'
-  English:
+  - English:
     -  'en-US'
     -  'en'
-  Filipino:
+  - Filipino:
     -  'fil-PH'
     -  'fil'
-  Finnish:
+  - Finnish:
     -  'fi-FI'
     -  'fi'
-  French:
+  - French:
     -  'fr-FR'
     -  'fr'
-  Galician:
+  - Galician:
     -  'gl-ES'
     -  'gl'
-  Georgian:
+  - Georgian:
     -  'ka-GE'
     -  'ka'
-  German:
+  - German:
     -  'de-DE'
     -  'de'
-  Greek:
+  - Greek:
     -  'el-GR'
     -  'el'
-  Gujarati:
+  - Gujarati:
     -  'gu-IN'
     -  'gu'
-  Hebrew:
+  - Hebrew:
     -  'he-IL'
     -  'he'
-  Hindi:
+  - Hindi:
     -  'hi-IN'
     -  'hi'
-  Hungarian:
+  - Hungarian:
     -  'hu-HU'
     -  'hu'
-  Icelandic:
+  - Icelandic:
     -  'is-IS'
     -  'is'
-  Indonesian:
+  - Indonesian:
     -  'id-ID'
     -  'id'
-  Italian:
+  - Italian:
     -  'it-IT'
     -  'it'
-  Japanese:
+  - Japanese:
     -  'ja-JP'
     -  'ja'
-  Javanese:
+  - Javanese:
     -  'jv-ID'
     -  'jv'
-  Kannada:
+  - Kannada:
     -  'kn-IN'
     -  'kn'
-  Khmer:
+  - Khmer:
     -  'km-KH'
     -  'km'
-  Korean:
+  - Korean:
     -  'ko-KR'
     -  'ko'
-  Lao:
+  - Lao:
     -  'lo-LA'
     -  'lo'
-  Latvian:
+  - Latvian:
     -  'lv-LV'
     -  'lv'
-  Lithuanian:
+  - Lithuanian:
     -  'lt-LT'
     -  'lt'
-  Malay:
+  - Malay:
     -  'ms-MY'
     -  'ms'
-  Malayalam:
+  - Malayalam:
     -  'ml-IN'
     -  'ml'
-  Marathi:
+  - Marathi:
     -  'mr-IN'
     -  'mr'
-  Nepali:
+  - Nepali:
     -  'ne-NP'
     -  'ne'
-  Norwegian:
+  - Norwegian:
     -  'nb-NO'
     -  'nb'
-  Persian:
+  - Persian:
     -  'fa-IR'
     -  'fa'
-  Polish:
+  - Polish:
     -  'pl-PL'
     -  'pl'
-  Portuguese:
+  - Portuguese:
     -  'pt-BR'
     -  'pt'
-  Portuguese:
+  - Portuguese:
     -  'pt-PT'
     -  'pt'
-  Romanian:
+  - Romanian:
     -  'ro-RO'
     -  'ro'
-  Russian:
+  - Russian:
     -  'ru-RU'
     -  'ru'
-  Serbian:
+  - Serbian:
     -  'sr-RS'
     -  'sr'
-  Sinhala:
+  - Sinhala:
     -  'si-LK'
     -  'si'
-  Slovak:
+  - Slovak:
     -  'sk-SK'
     -  'sk'
-  Slovenian:
+  - Slovenian:
     -  'sl-SI'
     -  'sl'
-  Spanish:
+  - Spanish:
     -  'es-ES'
     -  'es'
-  Sundanese:
+  - Sundanese:
     -  'su-ID'
     -  'su'
-  Swahili:
+  - Swahili:
     -  'sw-TZ'
     -  'sw'
-  Swedish:
+  - Swedish:
     -  'sv-SE'
     -  'sv'
-  Tamil:
+  - Tamil:
     -  'ta-IN'
     -  'ta'
-  Telugu:
+  - Telugu:
     -  'te-IN'
     -  'te'
-  Thai:
+  - Thai:
     -  'th-TH'
     -  'th'
-  Turkish:
+  - Turkish:
     -  'tr-TR'
     -  'tr'
-  Ukrainian:
+  - Ukrainian:
     -  'uk-UA'
     -  'uk'
-  Urdu:
+  - Urdu:
     -  'ur-PK'
     -  'ur'
-  Vietnamese:
+  - Vietnamese:
     -  'vi-VN'
     -  'vi'
-  Zulu:
+  - Zulu:
     -  'zu-ZA'
     -  'zu'

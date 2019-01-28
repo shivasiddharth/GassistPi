@@ -91,7 +91,9 @@ from actions import Spotify_credentials
 from actions import notify_tts
 from actions import sendSMS
 from actions import translanguage
+from actions import language
 from actions import voicenote
+from actions import langlist
 from audiorecorder import record_to_file
 
 try:
@@ -190,8 +192,10 @@ class Myassistant():
         self.mutestatus=False
         self.interpreter=False
         self.interpconvcounter=0
-        self.interplang1=translanguage
-        self.interplang2=''
+        self.interpcloudlang1=language
+        self.interpttslang1=translanguage
+        self.interpcloudlang2=''
+        self.interpttslang2=''
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
@@ -368,6 +372,8 @@ class Myassistant():
                 assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
+            usrcmd=event.args["text"]
+            self.custom_command(usrcmd)
             if GPIOcontrol:
                 assistantindicator('off')
             if kodicontrol:
@@ -527,14 +533,13 @@ class Myassistant():
             transcribedtext=u'{}'.format(result.alternatives[0].transcript)
         return transcribedtext
 
-    def interpreter_mode_trigger(self,interlanguage,switch):
+    def interpreter_mode_trigger(self,switch):
         if configuration['Speechtotext']['Google_Cloud_Speech']['Cloud_Speech_Control']=='Disabled':
             say("Cloud speech has not been enabled")
         else:
             if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
                 if configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']!="ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE"
                     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']
-                    self.interplang2=interlanguage
                     if switch=="Start":
                         self.interpreter=True
                         say("Starting interpreter.")
@@ -546,7 +551,6 @@ class Myassistant():
                     else:
                         self.interpreter=False
             else:
-                self.interplang2=interlanguage
                 if switch=="Start":
                     self.interpreter=True
                     say("Starting interpreter.")
@@ -565,10 +569,10 @@ class Myassistant():
             while not record_to_file(interpreteraudio):
                 time.sleep(.1)
             if (self.interpconvcounter % 2)==0:
-                text=cloud_speech_transcribe(interpreteraudio,self.interplang1)
+                text=cloud_speech_transcribe(interpreteraudio,self.interpcloudlang1)
                 print("Local Speaker: "+text)
             elif (self.interpconvcounter % 2)==1:
-                text=cloud_speech_transcribe(interpreteraudio,self.interplang2)
+                text=cloud_speech_transcribe(interpreteraudio,self.interpcloudlang2)
                 print("Foreign Speaker: "+text)
             self.interpreter_mode_tts(text,self.interpconvcounter)
             self.interpconvcounter=self.interpconvcounter+1
@@ -577,10 +581,10 @@ class Myassistant():
 
     def interpreter_mode_tts(self,text,count):
         if (count % 2)==0:
-            say(text,self.interplang1,self.interplang2)
+            say(text,self.interpttslang1,self.interpttslang2)
             self.interpreter_speech_recorder()
         else:
-            say(text,self.interplang2,self.interplang1)
+            say(text,self.interpttslang2,self.interpttslang1)
             self.interpreter_speech_recorder()
 
     def voicenote_recording(self):
@@ -849,10 +853,20 @@ class Myassistant():
                 sendSMS(str(usrcmd).lower())
         if 'interpreter' in str(usrcmd).lower():
             self.assistant.stop_conversation()
-            if 'start' in str(usrcmd).lower():
-                self.interpreter_mode_trigger('hi','Start')
-            else:
-                self.interpreter_mode_trigger('hi','Stop')
+            reqlang=str(usrcmd).lower()
+            reqlang=reqlang.replace('stop','',1)
+            reqlang=reqlang.replace('start','',1)
+            reqlang=reqlang.replace('interpreter','',1)
+            reqlang=reqlang.strip()
+            for i in range(0,len(langlist['Languages'])):
+                if str(langlist['Languages'][i]).lower()==reqlang:
+                    self.interpcloudlang2=langlist['Languages'][i][0]
+                    self.interpttslang2=langlist['Languages'][i][1]
+                    if 'start' in str(usrcmd).lower():
+                        self.interpreter_mode_trigger(reqlang,'Start')
+                    else:
+                        self.interpreter_mode_trigger(reqlang,'Stop')
+                    break
 
 
     def main(self):
@@ -943,8 +957,6 @@ class Myassistant():
                 if event.type == EventType.ON_START_FINISHED and args.query:
                     assistant.send_text_query(args.query)
                 self.process_event(event)
-                usrcmd=event.args
-                self.custom_command(usrcmd)
 
         if custom_wakeword:
             self.detector.terminate()
