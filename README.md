@@ -9,7 +9,7 @@
 ## 10-Jan-2019 Update:
 **Added Google Cloud Text to Speech Conversion For A More Natural Custom Text Voice Outs**               
 *******************************************************************************************************************************
-<details><h2>FEATURES</h2>  
+<h2>FEATURES</h2>  
 <p>    
 
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
@@ -48,8 +48,7 @@
 **33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**
 **34.  Send SMS via clickatell API**     
 
-</p>  
-</details>  
+</p>
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
