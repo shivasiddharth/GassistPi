@@ -509,8 +509,8 @@ class Myassistant():
 
     def adafruit_message(self,client, feed_id, payload):
         if self.can_start_conversation == True:
-            print("Message from ADAFRUIT MQTT: "+str(payload.decode('utf-8')))
-            adafruit_mqtt_query=str(payload.decode('utf-8'))
+            print("Message from ADAFRUIT MQTT: "+str(payload))
+            adafruit_mqtt_query=str(payload)
             self.custom_command(adafruit_mqtt_query)
 
     def adafruit_mqtt_start(self):
@@ -520,7 +520,7 @@ class Myassistant():
             client.on_disconnect = self.adafruit_disconnected
             client.on_message    = self.adafruit_message
             client.connect()
-            client.loop_background()
+            client.loop_blocking()
         else:
             print("Adafruit_io MQTT client not enabled")
 
