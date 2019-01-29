@@ -571,7 +571,7 @@ class Myassistant():
             say("Cloud speech has not been enabled")
         else:
             if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
-                if configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']!="ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE"
+                if configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']!="ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE":
                     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']
                     if switch=="Start":
                         self.interpreter=True
