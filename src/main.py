@@ -196,6 +196,8 @@ class Myassistant():
         self.interpttslang1=translanguage
         self.interpcloudlang2=''
         self.interpttslang2=''
+        self.singleresposne=False
+        self.singledetectedresponse=''
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
@@ -372,15 +374,19 @@ class Myassistant():
                 assistantindicator('off')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-            usrcmd=event.args["text"]
-            self.custom_command(usrcmd)
             if GPIOcontrol:
                 assistantindicator('off')
-            if kodicontrol:
-                try:
-                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
-                except requests.exceptions.ConnectionError:
-                    print("Kodi TV box not online")
+            if self.singleresposne:
+                self.assistant.stop_conversation()
+                self.singledetectedresponse= event.args["text"]
+            else:
+                usrcmd=event.args["text"]
+                self.custom_command(usrcmd)
+                if kodicontrol:
+                    try:
+                        kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                    except requests.exceptions.ConnectionError:
+                        print("Kodi TV box not online")
 
         if event.type == EventType.ON_RENDER_RESPONSE:
             if GPIOcontrol:
@@ -593,6 +599,16 @@ class Myassistant():
         while not record_to_file(recordfilepath):
             time.sleep(.1)
         voicenote(recordfilepath)
+
+    def single_user_response(self,prompt):
+        self.singledetectedresponse=''
+        self.singleresposne=True
+        say(prompt)
+        self.assistant.start_conversation()
+        while self.singledetectedresponse=='':
+            time.sleep(.1)
+        self.singleresposne=False
+        return self.singledetectedresponse
 
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
