@@ -79,6 +79,7 @@ else:
     irreceiver=None
     GPIOcontrol=False
 from pathlib import Path
+from Adafruit_IO import MQTTClient
 from actions import Domoticz_Device_Control
 from actions import domoticz_control
 from actions import domoticz_devices
@@ -154,8 +155,6 @@ def checkvlcpaused():
         currentstate=False
     return currentstate
 
-
-
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip,devportid):
     try:
@@ -205,6 +204,8 @@ class Myassistant():
             self.t3 = Thread(target=self.mqtt_start)
         if irreceiver!=None:
             self.t4 = Thread(target=self.ircommands)
+        if configuration['ADAFRUIT_IO']['ADAFRUIT_IO_CONTROL']=='Enabled':
+            self.t5 = Thread(target=self.adafruit_mqtt_start)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -307,6 +308,8 @@ class Myassistant():
                 self.t3.start()
             if irreceiver!=None:
                 self.t4.start()
+            if configuration['ADAFRUIT_IO']['ADAFRUIT_IO_CONTROL']=='Enabled':
+                self.t5.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -496,6 +499,30 @@ class Myassistant():
         client.username_pw_set(configuration['MQTT']['UNAME'], configuration['MQTT']['PSWRD'])
         client.connect(configuration['MQTT']['IP'], 1883, 60)
         client.loop_forever()
+
+    def adafruit_connected(self,client):
+        print('Connected to Adafruit IO!  Listening for DemoFeed changes...')
+        client.subscribe(configuration['ADAFRUIT_IO']['FEEDNAME'])
+
+    def adafruit_disconnected(self,client):
+        print('Disconnected from Adafruit IO!')
+
+    def adafruit_message(self,client, feed_id, payload):
+        if self.can_start_conversation == True:
+            print("Message from ADAFRUIT MQTT: "+str(payload.decode('utf-8')))
+            adafruit_mqtt_query=str(payload.decode('utf-8'))
+            self.custom_command(adafruit_mqtt_query)
+
+    def adafruit_mqtt_start(self):
+        if configuration['ADAFRUIT_IO']['ADAFRUIT_IO_CONTROL']=='Enabled':
+            client = MQTTClient(configuration['ADAFRUIT_IO']['ADAFRUIT_IO_USERNAME'], configuration['ADAFRUIT_IO']['ADAFRUIT_IO_KEY'])
+            client.on_connect    = self.adafruit_connected
+            client.on_disconnect = self.adafruit_disconnected
+            client.on_message    = self.adafruit_message
+            client.connect()
+            client.loop_background()
+        else:
+            print("Adafruit_io MQTT client not enabled")
 
     def ircommands(self):
         if irreceiver!=None:

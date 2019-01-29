@@ -24,3 +24,4 @@ git+https://github.com/shivasiddharth/py-googletrans.git
 paho-mqtt==1.4.0
 google-cloud-texttospeech==0.3.0
 google-cloud-speech==0.36.2
+adafruit-io==2.1

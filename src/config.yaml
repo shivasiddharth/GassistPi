@@ -1,5 +1,12 @@
 #Config file for declaring custom actions'parameters. The parameters have been listed here in alphabetical order (A-Z).
 
+#Adafruit_IO. Sending commands from Genuine Google Home/Assistant Devices to control Domoticz Tasmota etc.
+ADAFRUIT_IO:
+  ADAFRUIT_IO_CONTROL: 'Disabled'
+  ADAFRUIT_IO_USERNAME: 'ENTER YOUR ADAFRUIT_IO USERNAME HERE'
+  ADAFRUIT_IO_KEY: 'ENTER YOUR ADAFRUIT_IO KEY HERE'
+  FEEDNAME: 'ENTER YOUR ADAFRUIT_IO FEEDNAME THAT YOU WANT TO MONITOR HERE'
+
 #Custom conversation. Add your queries and expected assistant response. Do not add symbols or special charecters.
 Conversation:
   Conversation_Control: 'Enabled'
