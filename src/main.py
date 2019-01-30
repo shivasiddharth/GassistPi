@@ -501,7 +501,7 @@ class Myassistant():
         client.loop_forever()
 
     def adafruit_connected(self,client):
-        print('Connected to Adafruit IO!  Listening for DemoFeed changes...')
+        print('Connected to Adafruit IO!  Listening for {0} changes...'.format(configuration['ADAFRUIT_IO']['FEEDNAME']))
         client.subscribe(configuration['ADAFRUIT_IO']['FEEDNAME'])
 
     def adafruit_disconnected(self,client):
