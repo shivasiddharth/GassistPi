@@ -42,6 +42,9 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
+from google.cloud import speech
+from google.cloud.speech import enums
+from google.cloud.speech import types     
 import paho.mqtt.client as mqtt
 from actions import say
 from actions import trans
@@ -550,9 +553,6 @@ class Myassistant():
             print("Stopping IR Sensor")
 
     def cloud_speech_transcribe(self,file,language):
-        from google.cloud import speech
-        from google.cloud.speech import enums
-        from google.cloud.speech import types
         client = speech.SpeechClient()
         with io.open(speech_file, 'rb') as audio_file:
             content = audio_file.read()
