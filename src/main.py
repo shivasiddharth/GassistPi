@@ -552,7 +552,7 @@ class Myassistant():
                 pass
             print("Stopping IR Sensor")
 
-    def cloud_speech_transcribe(self,file,language):
+    def cloud_speech_transcribe(self,speech_file,language):
         client = speech.SpeechClient()
         with io.open(speech_file, 'rb') as audio_file:
             content = audio_file.read()
