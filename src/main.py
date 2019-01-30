@@ -44,7 +44,7 @@ from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
 from google.cloud import speech
 from google.cloud.speech import enums
-from google.cloud.speech import types
+from google.cloud.speech import types     
 import paho.mqtt.client as mqtt
 from actions import say
 from actions import trans
@@ -501,7 +501,7 @@ class Myassistant():
         client.loop_forever()
 
     def adafruit_connected(self,client):
-        print('Connected to Adafruit IO!  Listening for DemoFeed changes...')
+        print('Connected to Adafruit IO!  Listening for {0} changes...'.format(configuration['ADAFRUIT_IO']['FEEDNAME']))
         client.subscribe(configuration['ADAFRUIT_IO']['FEEDNAME'])
 
     def adafruit_disconnected(self,client):
@@ -571,7 +571,7 @@ class Myassistant():
             say("Cloud speech has not been enabled")
         else:
             if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
-                if configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']!="ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE"
+                if configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']!="ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE":
                     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']
                     if switch=="Start":
                         self.interpreter=True
