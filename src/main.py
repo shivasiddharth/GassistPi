@@ -512,6 +512,14 @@ class Myassistant():
             print("Message from ADAFRUIT MQTT: "+str(payload))
             adafruit_mqtt_query=str(payload)
             self.custom_command(adafruit_mqtt_query)
+        if 'custom' in adafruit_mqtt_query.lower():
+                mqtt_query=adafruit_mqtt_query.lower()
+                mqtt_queryidx=adafruit_mqtt_query.find('custom')
+                mqtt_query=adafruit_mqtt_query[mqtt_queryidx:]
+                mqtt_query=adafruit_mqtt_query.replace('custom',"",1)
+                mqtt_query=adafruit_mqtt_query.strip()
+                self.custom_command(adafruit_mqtt_query)
+                self.assistant.send_text_query(adafruit_mqtt_query)
 
     def adafruit_mqtt_start(self):
         if configuration['ADAFRUIT_IO']['ADAFRUIT_IO_CONTROL']=='Enabled':
