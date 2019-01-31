@@ -1,193 +1,257 @@
 Languages:
-  - Afrikaans
+  - 0:
+    - Afrikaans
     -  'af-ZA'
     -  'af'
-  - Amharic
+  - 1:
+    - Amharic
     -  'am-ET'
     -  'am'
-  - Arabic
+  - 2:
+    - Arabic
     -  'ar-AE'
     -  'ar'
-  - Armenian
+  - 3:
+    - Armenian
     -  'hy-AM'
     -  'hy'
-  - Azerbaijani
+  - 4:
+    - Azerbaijani
     -  'az-AZ'
     -  'az'
-  - Basque
+  - 5:
+    - Basque
     -  'eu-ES'
     -  'eu'
-  - Bengali
+  - 6:
+    - Bengali
     -  'bn-IN'
     -  'bn'
-  - Bulgarian
+  - 7:
+    - Bulgarian
     -  'bg-BG'
     -  'bg'
-  - Catalan
+  - 8:
+    - Catalan
     -  'ca-ES'
     -  'ca'
-  - Chinese
+  - 9:
+    - Chinese
     -  'zh-TW'
     -  'zh'
-  - Croatian
+  - 10:
+    - Croatian
     -  'hr-HR'
     -  'hr'
-  - Czech
+  - 11:
+    - Czech
     -  'cs-CZ'
     -  'cs'
-  - Danish
+  - 12:
+    - Danish
     -  'da-DK'
     -  'da'
-  - Dutch
+  - 13:
+    - Dutch
     -  'nl-NL'
     -  'nl'
-  - English
+  - 14:
+    - English
     -  'en-US'
     -  'en'
-  - Filipino
+  - 15:
+    - Filipino
     -  'fil-PH'
     -  'fil'
-  - Finnish
+  - 16:
+    - Finnish
     -  'fi-FI'
     -  'fi'
-  - French
+  - 17:
+    - French
     -  'fr-FR'
     -  'fr'
-  - Galician
+  - 18:
+    - Galician
     -  'gl-ES'
     -  'gl'
-  - Georgian
+  - 19:
+    - Georgian
     -  'ka-GE'
     -  'ka'
-  - German
+  - 20:
+    - German
     -  'de-DE'
     -  'de'
-  - Greek
+  - 21:
+    - Greek
     -  'el-GR'
     -  'el'
-  - Gujarati
+  - 22:
+    - Gujarati
     -  'gu-IN'
     -  'gu'
-  - Hebrew
+  - 23:
+    - Hebrew
     -  'he-IL'
     -  'he'
-  - Hindi
+  - 24:
+    - Hindi
     -  'hi-IN'
     -  'hi'
-  - Hungarian
+  - 25:
+    - Hungarian
     -  'hu-HU'
     -  'hu'
-  - Icelandic
+  - 26:
+    - Icelandic
     -  'is-IS'
     -  'is'
-  - Indonesian
+  - 27:
+    - Indonesian
     -  'id-ID'
     -  'id'
-  - Italian
+  - 28:
+    - Italian
     -  'it-IT'
     -  'it'
-  - Japanese
+  - 29:
+    - Japanese
     -  'ja-JP'
     -  'ja'
-  - Javanese
+  - 30:
+    - Javanese
     -  'jv-ID'
     -  'jv'
-  - Kannada
+  - 31:
+    - Kannada
     -  'kn-IN'
     -  'kn'
-  - Khmer
+  - 32:
+    - Khmer
     -  'km-KH'
     -  'km'
-  - Korean
+  - 33:
+    - Korean
     -  'ko-KR'
     -  'ko'
-  - Lao
+  - 34:
+    - Lao
     -  'lo-LA'
     -  'lo'
-  - Latvian
+  - 35:
+    - Latvian
     -  'lv-LV'
     -  'lv'
-  - Lithuanian
+  - 36:
+    - Lithuanian
     -  'lt-LT'
     -  'lt'
-  - Malay
+  - 37:
+    - Malay
     -  'ms-MY'
     -  'ms'
-  - Malayalam
+  - 38:
+    - Malayalam
     -  'ml-IN'
     -  'ml'
-  - Marathi
+  - 39:
+    - Marathi
     -  'mr-IN'
     -  'mr'
-  - Nepali
+  - 40:
+    - Nepali
     -  'ne-NP'
     -  'ne'
-  - Norwegian
+  - 41:
+    - Norwegian
     -  'nb-NO'
     -  'nb'
-  - Persian
+  - 42:
+    - Persian
     -  'fa-IR'
     -  'fa'
-  - Polish
+  - 43:
+    - Polish
     -  'pl-PL'
     -  'pl'
-  - Portuguese
+  - 44:
+    - Portuguese
     -  'pt-BR'
     -  'pt'
-  - Portuguese
+  - 45:
+    - Portuguese
     -  'pt-PT'
     -  'pt'
-  - Romanian
+  - 46:
+    - Romanian
     -  'ro-RO'
     -  'ro'
-  - Russian
+  - 47:
+    - Russian
     -  'ru-RU'
     -  'ru'
-  - Serbian
+  - 48:
+    - Serbian
     -  'sr-RS'
     -  'sr'
-  - Sinhala
+  - 49:
+    - Sinhala
     -  'si-LK'
     -  'si'
-  - Slovak
+  - 50:
+    - Slovak
     -  'sk-SK'
     -  'sk'
-  - Slovenian
+  - 51:
+    - Slovenian
     -  'sl-SI'
     -  'sl'
-  - Spanish
+  - 52:
+    - Spanish
     -  'es-ES'
     -  'es'
-  - Sundanese
+  - 53:
+    - Sundanese
     -  'su-ID'
     -  'su'
-  - Swahili
+  - 54:
+    - Swahili
     -  'sw-TZ'
     -  'sw'
-  - Swedish
+  - 55:
+    - Swedish
     -  'sv-SE'
     -  'sv'
-  - Tamil
+  - 56:
+    - Tamil
     -  'ta-IN'
     -  'ta'
-  - Telugu
+  - 57:
+    - Telugu
     -  'te-IN'
     -  'te'
-  - Thai
+  - 58:
+    - Thai
     -  'th-TH'
     -  'th'
-  - Turkish
+  - 59:
+    - Turkish
     -  'tr-TR'
     -  'tr'
-  - Ukrainian
+  - 60:
+    - Ukrainian
     -  'uk-UA'
     -  'uk'
-  - Urdu
+  - 61:
+    - Urdu
     -  'ur-PK'
     -  'ur'
-  - Vietnamese
+  - 62:
+    - Vietnamese
     -  'vi-VN'
     -  'vi'
-  - Zulu
+  - 63:
+    - Zulu
     -  'zu-ZA'
     -  'zu'
