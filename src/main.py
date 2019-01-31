@@ -44,7 +44,7 @@ from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
 from google.cloud import speech
 from google.cloud.speech import enums
-from google.cloud.speech import types     
+from google.cloud.speech import types
 import paho.mqtt.client as mqtt
 from actions import say
 from actions import trans
@@ -602,17 +602,19 @@ class Myassistant():
             while not record_to_file(interpreteraudio):
                 time.sleep(.1)
             if (self.interpconvcounter % 2)==0:
-                text=cloud_speech_transcribe(interpreteraudio,self.interpcloudlang1)
+                text=self.cloud_speech_transcribe(interpreteraudio,self.interpcloudlang1)
                 print("Local Speaker: "+text)
+                if 'stop' in text.lower():
+                    self.interpreter_mode_trigger('Stop')
             elif (self.interpconvcounter % 2)==1:
-                text=cloud_speech_transcribe(interpreteraudio,self.interpcloudlang2)
+                text=self.cloud_speech_transcribe(interpreteraudio,self.interpcloudlang2)
                 print("Foreign Speaker: "+text)
             self.interpreter_mode_tts(text,self.interpconvcounter)
-            self.interpconvcounter=self.interpconvcounter+1
         else:
             say("Interpreter not active.")
 
     def interpreter_mode_tts(self,text,count):
+        self.interpconvcounter=self.interpconvcounter+1
         if (count % 2)==0:
             say(text,self.interpttslang1,self.interpttslang2)
             self.interpreter_speech_recorder()
@@ -906,10 +908,10 @@ class Myassistant():
                     self.interpcloudlang2=langlist['Languages'][i][0]
                     self.interpttslang2=langlist['Languages'][i][1]
                     if 'start' in str(usrcmd).lower():
-                        self.interpreter_mode_trigger(reqlang,'Start')
-                    else:
-                        self.interpreter_mode_trigger(reqlang,'Stop')
-                    break
+                        self.interpreter_mode_trigger('Start')
+                else:
+                    self.interpreter_mode_trigger('Stop')
+                break
 
 
     def main(self):
