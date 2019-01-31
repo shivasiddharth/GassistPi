@@ -904,9 +904,9 @@ class Myassistant():
             reqlang=reqlang.replace('interpreter','',1)
             reqlang=reqlang.strip()
             for i in range(0,len(langlist['Languages'])):
-                if str(langlist['Languages'][i]).lower()==reqlang:
-                    self.interpcloudlang2=langlist['Languages'][i][0]
-                    self.interpttslang2=langlist['Languages'][i][1]
+                if str(langlist['Languages'][i][i][0]).lower()==reqlang:
+                    self.interpcloudlang2=langlist['Languages'][i][i][1]
+                    self.interpttslang2=langlist['Languages'][i][i][2]
                     if 'start' in str(usrcmd).lower():
                         self.interpreter_mode_trigger('Start')
                 else:
