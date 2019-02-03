@@ -52,6 +52,7 @@
 - Armbian Stretch    
 - Raspbian Stretch   
 - OSMC Stretch   
+- Ubuntu Bionic    
 
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************

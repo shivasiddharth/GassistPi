@@ -91,10 +91,24 @@ elif [[ $(cat /etc/os-release|grep "osmc") ]]; then
     echo ""
     exit 1
   fi
+elif [[ $(cat /etc/os-release|grep "ubuntu") ]]; then
+  if [[ $(cat /etc/os-release|grep "bionic") ]]; then
+    osversion="Ubuntu Bionic"
+    echo ""
+    echo "===========You are running the installer on Bionic=========="
+    echo ""
+  else
+    osversion="Other Ubuntu"
+    echo ""
+    echo "===========You are advised to use the Bionic version of the OS=========="
+    echo "===========Exiting the installer=========="
+    echo ""
+    exit 1
+  fi
 fi
 
 #Check CPU architecture
-if [[ $(uname -m|grep "armv7") ]]; then
+if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]]; then
 	devmodel="armv7"
   echo ""
   echo "===========Your board supports Ok-Google Hotword. You can also trigger the assistant using custom-wakeword=========="
