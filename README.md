@@ -243,7 +243,17 @@ Open a terminal and execute the following:
 /home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
 
 ```
-Insert your Project Id and Model Id in quotes in the mentioned places
+Insert your Project Id and Model Id in quotes in the mentioned places      
+
+### DISABLING AUTO-START ON BOOT      
+
+At any point of time, if you wish to stop the auto start of the assistant:      
+
+Open a terminal and execute the following:     
+```
+sudo systemctl stop gassistpi.service  
+sudo systemctl disable gassistpi.service   
+```    
 
 ************************************************
 ## **CHECKING FOR PROJECT UPDATES AND UPDATING THE PROJECT**   
@@ -283,7 +293,7 @@ Use the Translated versions of the English syntaxes given for all the custom act
 
 ************************************************
 ### **CONTROLLING SONOFF-TASMOTA AND DOMOTICZ DEVICES FROM GOOGLE HOME/OTHER GOOGLE ASSISTRANT DEVICES**     
-************************************************ 
+************************************************
 1. This has been implemented using Adafruit_IO.  
 2. Create an an acount and a feed in adafruit.io website.   
 3. Enter those details in the config.yaml file.   
