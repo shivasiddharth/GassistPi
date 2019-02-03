@@ -6,21 +6,20 @@
 
 ### **Community: For Non-Issue Help and Interaction** [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)
 *******************************************************************************************************************************
-## 10-Jan-2019 Update:
-**Added Google Cloud Text to Speech Conversion For A More Natural Custom Text Voice Outs**               
+## 03-Feb-2019 Update:
+**New features 33-36.**               
 *******************************************************************************************************************************
-
-# Features (All features are applicable to all boards, unless and otherwise mentioned):  
-**1.   Headless auto start on boot.**    
-**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards - non OSMC).**   
-**3.   Voice control of NodeMCU without IFTTT and MQTT.**  
-**4.   Radio streaming.**  
-**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards - non OSMC).**    
-**6.   Safe shutdown RPi using voice command.**  
-**7.   Stream Music from YouTube.**  
-**8.   Indicator lights for assistant listening and speaking events.**  
-**9.   Startup audio and audio feedback for wakeword detection.**   
-**10.  Pushbutton service to stop Music or Radio playback.**   
+## Features (All features are applicable to all boards, unless and otherwise mentioned):    
+**1.   Headless auto start on boot.**      
+**2.   Voice control of GPIOs without IFTTT, api.ai, Actions SDK (Only for Raspberry Pi Boards - non OSMC).**     
+**3.   Voice control of NodeMCU without IFTTT and MQTT.**    
+**4.   Radio streaming.**    
+**5.   Voice control of servo connected to RPi GPIO (Only for Raspberry Pi Boards - non OSMC).**     
+**6.   Safe shutdown RPi using voice command.**    
+**7.   Stream Music from YouTube.**    
+**8.   Indicator lights for assistant listening and speaking events.**    
+**9.   Startup audio and audio feedback for wakeword detection.**     
+**10.  Pushbutton service to stop Music or Radio playback.**     
 **11.  Parcel tracking using Aftership API.**  
 **12.  RSS Feed streaming.**  
 **13.  Control of Kodi or Kodi Integration.**    
@@ -42,7 +41,11 @@
 **29.  Stream your playlist from Deezer.**    
 **30.  Custom actions in French, Italian, German, Dutch and Spanish.**    
 **31.  Send commands over MQTT to the Google Assistant (Only Armv7 boards).**  
-**32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**  
+**32.  Control Assistant using IR Remote (Only Raspberry Armv7 boards).**     
+**33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**   
+**34.  Send Clickatell SMS messages.**    
+**35.  CES 2019 Like Live Translator or Interpreter (Needs Cloud Speech).**     
+**36.  Control Demoticz, Sonoff devices from other assistant devices.**   
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -279,9 +282,39 @@ In the **config.yaml** file, under the **Languages and Choice** option set your 
 Use the Translated versions of the English syntaxes given for all the custom actions.  
 
 ************************************************
+### **CONTROLLING SONOFF-TASMOTA AND DOMOTICZ DEVICES FROM GOOGLE HOME/OTHER GOOGLE ASSISTRANT DEVICES**     
+************************************************ 
+1. This has been implemented using Adafruit_IO.  
+2. Create an an acount and a feed in adafruit.io website.   
+3. Enter those details in the config.yaml file.   
+4. Register or login into [IFTTT](http://www.ifttt.com/) and create an applet to send commands from google assistant to adafruit_io feed.   
+5. For controlling domoticz and sonoff devices, the adafruit.io command should match the syntaxes for the devices given below.   
+
+************************************************
+### **USING LIVE TRANSLATOR or INTERPRETER**     
+************************************************   
+**NOTE: THIS MAKES USE OF GOOGLE CLOUD SPEECH API. FREE USAGE IS LIMITED TO 60MINS/MONTH. FOR MORE DETAILS ON THE USAGE LIMITS CHECK THIS [LINK](https://cloud.google.com/speech-to-text/pricing)**   
+
+1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
+2. Select your project from the list.  
+3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
+4. "From the API and services" option, select library and in the search bar type **speech**, select "Cloud Speech API" and click on "ENABLE".   
+5. You will be prompted to create a billing account if you already have not created one. Follow the onscreen instructions to create a billing account and then Enabled the API.   
+6. Create a service account and generate credentials.  
+7. Copy the downloaded the JSON key and place it /home/pi/ directory **DO NOT RENAME**.   
+8. Enter the path to the Key along with the key name Eg: /home/pi/xxxx.json  in the config.yaml file in the "Google_Cloud_Speech_Credentials_Path" field under "Speechtotext" (you can use one key for Cloud Speech and Cloud Text to Speech, but should enter the same path seperately in config.yaml).     
+
+Command Syntax:   
+To start the interpreter:   
+"Hey Google, Start __Your_Desired_Language__ interpreter.   
+
+To stop the interpreter:   
+"Hey Google, Stop __Your_Desired_Language__ interpreter.    
+
+************************************************
 ### **USING GOOGLE CLOUD TEXT TO SPEECH**   
 ************************************************
-**NOTE: GOOGLE CLOUD TEXT TO SPEECH HAS A LIMITED USAGE ACCESS. ONCE THE QUOTA IS EXHAUSTED, THE PROJECT WILL AUTOMATICALLY SWITCH TO gTTS**  
+**NOTE: GOOGLE CLOUD TEXT TO SPEECH HAS A LIMITED USAGE ACCESS. ONCE THE QUOTA IS EXHAUSTED, THE PROJECT WILL AUTOMATICALLY SWITCH TO gTTS.**  
 
 1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
 2. Select your project from the list.  
@@ -338,13 +371,15 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
        "custom play all the songs from google music"  
 6. If you are sending a command to be processed by google assistant, there is no need to prefix **custom**.  
    Eg: "what is the time"   
-       "what can you do for me"      
+       "what can you do for me"
+7. To turn on/off microphone just send the simple command **mute**.
+   Eg: "mute"
 
 For more details on the how to use this feature, refer to the video below:   
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=oemsmrdhNP8
 " target="_blank"><img src="http://img.youtube.com/vi/oemsmrdhNP8/0.jpg"
-alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>  
+alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 ************************************************
 ### **MUSIC STREAMING FROM DEEZER**  
@@ -498,14 +533,26 @@ The Hue app should now prompt you through the rest of the setup. For specific de
 
 
 *******************************************************************
-### **PUSHING MESSAGES/INFO FROM ASSISTANT ON Pi TO ANDROID DEVICE**  
+### **SENDING VOICE MESSAGES FROM ASSISTANT ON Pi TO MOBILE DEVICE**  
 *******************************************************************
-For pushing messages/info, the GassistPi uses pushbullet python package. To use this feature:  
+For pushing voice messages, the GassistPi uses Pushbullet API. To use this feature:  
 1. Download and install pushbullet app on your tablet/mobile device.  
 2. Visit www.pushbullet.com register for new account or sign in with your existing account.  
 3. Choose Settings-->Account and then choose "Create access token".  
-4. Copy this token and paste in the actions.py script under the pushmessage function.  
+4. Copy this token and paste in config.yaml under Pushbullet and Pushbullet_API_KEY.   
 
+Command Syntax:  
+"Hey Google, Send message"    
+
+************************************************  
+### **SEND SMS VIA CLICKATELL API**  
+************************************************  
+To use this, get a free account at [clickatell.com](https://www.clickatell.com/sign-up/).
+Sign in to Clickatell SMS Platform. Create sms integration.
+Add your generated clickatell api no in config.yaml.
+
+Command Syntax:
+"Hey Google, send clickatell 'message' to 'Bob'     
 
 *******************************************************************
 ### **GETTING RECIPE DETAILS USING ASSISTANT**  
@@ -599,7 +646,10 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 Pi3 and Pi Zero users, assign the device names and device ip addresses in the **config.yaml** in the marked locations.  
 
-**Syntax: "Hey Google, Turn _Devicename_ On/Off"**  
+**Syntax: "Hey Google, Turn _Devicename_ On/Off"**
+
+It is also possible to switch several devices at the same time.
+**Syntax: "Hey Google, Turn _Devicename1_ _Devicename2_ _..._ On/Off"**
 
 Advantage of using Sonoff-Tasmota over webserver is that, with Sonoff-Tasmota you can emulate a Wemo switch and control the NodeMCU using Amazon Alexa (Echo Devices) in addition to the GassistPi.    
 
@@ -863,10 +913,6 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 | 'Wild Blue Yonder' | 'Wild Strawberry' | 'Wild Watermelon' | 'Wisteria' | 'Yellow' | 'Yellow Green' |  
 | 'Yellow Orange' |  
 
-************************************************  
-### **SENDING VOICE MESSAGES FROM PHONE TO GOOGLE ASSISTANT ON SBCs**  
-************************************************
-1. https://support.google.com/googlehome/answer/7531913.  
 
 ************************************************  
 ### **LIST OF GPIOs USED IN RASPBERRY PI BOARDS**  

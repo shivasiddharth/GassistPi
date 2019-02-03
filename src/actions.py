@@ -43,8 +43,12 @@ import yaml
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
-with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
+
+with open('{}/src/config.yaml'.format(ROOT_PATH),'r', encoding='utf8') as conf:
     configuration = yaml.load(conf)
+
+with open('{}/src/lang.yaml'.format(ROOT_PATH),'r', encoding='utf8') as lang:
+    langlist = yaml.load(lang)
 
 TTSChoice=''
 if configuration['TextToSpeech']['Choice']=="Google Cloud":
@@ -63,6 +67,7 @@ if configuration['TextToSpeech']['Choice']=="Google Cloud":
         client = texttospeech.TextToSpeechClient()
 else:
     TTSChoice='GTTS'
+
 
 domoticz_devices=''
 Domoticz_Device_Control=False
@@ -85,7 +90,7 @@ elif 'sv' in configuration['Language']['Choice']:
     keywordfile= '{}/src/keywords_sv.yaml'.format(ROOT_PATH)
 else:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
-with open(keywordfile,'r') as conf:
+with open(keywordfile,'r' , encoding='utf8') as conf:
     custom_action_keyword = yaml.load(conf)
 
 
@@ -229,6 +234,10 @@ elif configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage!='e
 else:
     gender='Female'
 
+if configuration['Pushbullet']['Pushbullet_API_KEY']!='ENTER YOUR PUSHBULLET KEY HERE':
+    pb=Pushbullet(configuration['Pushbullet']['Pushbullet_API_KEY'])
+else:
+    pb=None
 
 #Function for google KS custom search engine
 def kickstrater_search(query):
@@ -252,15 +261,15 @@ def gaana_search(query):
     return res
 
 #gTTS
-def gttssay(phrase,saylang):
+def gttssay(phrase,saylang,specgender):
     tts = gTTS(text=phrase, lang=saylang)
     tts.save(femalettsfilename)
-    if gender=='Male':
+    if specgender=='Male':
         os.system('sox ' + femalettsfilename + ' ' + malettsfilename + ' pitch -450')
         os.remove(femalettsfilename)
         os.system('aplay ' + malettsfilename)
         os.remove(malettsfilename)
-    else:
+    elif specgender=='Female':
         os.system("mpg123 "+femalettsfilename)
         os.remove(femalettsfilename)
 
@@ -303,19 +312,24 @@ def trans(words,destlang,srclang):
     return transword
 
 #Text to speech converter with translation
-def say(words,sourcelang=None):
-    if sourcelang==None:
-        sourcelanguage='en'
+def say(words,sourcelang=None,destinationlang=None):
+    if sourcelang!=None and destinationlang!=None:
+        sayword=trans(words,destinationlang,sourcelang)
+        gttssay(sayword,destinationlang,'Female')
     else:
-        sourcelanguage=sourcelang
-    if sourcelanguage!=translanguage:
-        sayword=trans(words,translanguage,sourcelanguage)
-    else:
-        sayword=words
-    if TTSChoice=='GoogleCloud':
-        gcloudsay(sayword,language)
-    elif TTSChoice=='GTTS':
-        gttssay(sayword,translanguage)
+        if sourcelang==None:
+            sourcelanguage='en'
+        else:
+            sourcelanguage=sourcelang
+        if sourcelanguage!=translanguage:
+            sayword=trans(words,translanguage,sourcelanguage)
+        else:
+            sayword=words
+        if TTSChoice=='GoogleCloud':
+            gcloudsay(sayword,language)
+        elif TTSChoice=='GTTS':
+            gttssay(sayword,translanguage,gender)
+
 
 
 #Function to get HEX and RGB values for requested colour
@@ -358,6 +372,12 @@ def convert_rgb_xy(red,green,blue):
     except UnboundLocalError:
         say("No RGB values given")
 
+#Custom text to speak notification
+def notify_tts(phrase):
+    word=(custom_action_keyword['Keywords']['notify_TTS'][0]).lower()
+    voice_notify = phrase.replace(word, "")
+    voice_notify.strip()
+    say(voice_notify)
 
 #Radio Station Streaming
 def radio(phrase):
@@ -464,7 +484,34 @@ def feed(phrase):
         print("GPIO controls, is not supported for your device. You need to wait for feeds to automatically stop")
 
 
+##--------------Start of send clickatell sms----------------------
+#Function to send SMS with Clickatell api
+recivernum=configuration['Clickatell']['Reciever']
+clickatell_api=configuration['Clickatell']['Clickatell_API']
 
+def sendClickatell(number, message):
+    response=requests.get('https://platform.clickatell.com/messages/http/send?apiKey=' + clickatell_api + '&to=' + number + '&content=' + message)
+    if response.status_code == 202:
+        say("SMS message sent")
+    else:
+        say("Error sending SMS message. Check your settings")
+
+def sendSMS(query):
+    if clickatell_api != 'ENTER_YOUR_CLICKATELL_API':
+        for num, name in enumerate(configuration['Clickatell']['Name']):
+            if name.lower() in query:
+                conv=recivernum[num]
+                command=(custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower()
+                msg=query.replace(command, "")
+                message=msg.replace(name.lower(), "")
+                message=message.strip()
+                print(message + " , " + name + " , " + conv)
+                say("Sends SMS message " + message + " to " + name)
+                sendClickatell(conv, message)
+    else:
+        say("You need to enter Clickatell API")
+
+##---------------End of send clickatell sms-----------------------
 
 ##-------Start of functions defined for Kodi Actions--------------
 #Function to get Kodi Volume and Mute status
@@ -1303,8 +1350,10 @@ def kickstarter_tracker(phrase):
 
 #----------------------------------Start of Push Message function-----------------------------------------
 def pushmessage(title,body):
-    pb = Pushbullet('ENTER-YOUR-PUSHBULLET-KEY-HERE')
-    push = pb.push_note(title,body)
+    if pb!=None:
+        push = pb.push_note(title,body)
+    else:
+        say("Pushbullet API key has not been entered.")
 #----------------------------------End of Push Message Function-------------------------------------------
 
 
@@ -1651,6 +1700,16 @@ def on_ir_receive(pinNo, bouncetime=150):
         return None
 
 #-----------------------End of functions for IR code--------------------------
+
+#Send voicenote to phone
+def voicenote(audiofile):
+    if pb!=None:
+        say("Sending your voicenote")
+        with open(audiofile, "rb") as recordedvoicenote:
+            file_data = pb.upload_file(recordedvoicenote, 'Voicenote.wav')
+        push = pb.push_file(**file_data)
+    else:
+        say("Pushbullet API key has not been entered.")
 
 #GPIO Device Control
 def Action(phrase):

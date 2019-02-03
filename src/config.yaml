@@ -1,5 +1,12 @@
 #Config file for declaring custom actions'parameters. The parameters have been listed here in alphabetical order (A-Z).
 
+#Adafruit_IO. Sending commands from Genuine Google Home/Assistant Devices to control Domoticz Tasmota etc.
+ADAFRUIT_IO:
+  ADAFRUIT_IO_CONTROL: 'Disabled'
+  ADAFRUIT_IO_USERNAME: 'ENTER YOUR ADAFRUIT_IO USERNAME HERE'
+  ADAFRUIT_IO_KEY: 'ENTER YOUR ADAFRUIT_IO KEY HERE'
+  FEEDNAME: 'ENTER YOUR ADAFRUIT_IO FEEDNAME THAT YOU WANT TO MONITOR HERE'
+
 #Custom conversation. Add your queries and expected assistant response. Do not add symbols or special charecters.
 Conversation:
   Conversation_Control: 'Enabled'
@@ -16,6 +23,17 @@ Conversation:
     2:
       - 'Nope i am forever alone'
       - 'The whole world is my family'
+
+#Send sms with clickatell
+Clickatell:
+  Clickatell_Control: 'Disabled'
+  Clickatell_API: 'ENTER_YOUR_CLICKATELL_API'
+  Name:
+    - 'Bob'
+    - 'Adam'
+  Reciever:
+    - '+48123456789'
+    - '+46123456789'
 
 # Deezer user credentials
 Deezer:
@@ -72,6 +90,10 @@ Gaana:
 #Enter your Google Login Credentials
 Gmusicapi:
   Gmusic_Control: 'Enabled'
+
+#Pushbullet
+Pushbullet:
+  Pushbullet_Control: 'Enabled'
 
 #API Key for YouTube and Kickstarter Search Engine
 Google_cloud_api_key: "ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE"
@@ -156,6 +178,16 @@ MQTT:
   PSWRD: 'Enter your MQTT PASSWORD here'
   TOPIC: 'ENTER your MQTT TOPIC here'
 
+#Text to speak notifications (replay after me workaround for mqtt).
+#You can change command word to something else if your command is mixed with native functions
+Notify_TTS:
+  Notify_TTS_Control: 'Enabled'
+
+#Pushbullet
+Pushbullet:
+  Pushbullet_API_KEY: 'ENTER YOUR PUSHBULLET KEY HERE'
+  Pushbullet_Control: 'Enabled'
+
 #Radio station declarations. Follow a similar pattern to add your own stations.
 #Google may not pickup the pronunciation of radio station names, hence 'Radio 1' etc is required.
 Radio_stations:
@@ -189,6 +221,12 @@ Raspberrypi_GPIO_Control:
     - 'kitchen lights'
     - 'bathroom lights'
     - 'bedroom lights'
+
+#Speech to text conversion
+Speechtotext:
+  Google_Cloud_Speech:
+    Cloud_Speech_Control: 'Disabled'
+    Google_Cloud_Speech_Credentials_Path: "ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE"
 
 #Spotify credentials. Register for a spotify developer and get the credentials.
 Spotify:

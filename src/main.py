@@ -36,11 +36,15 @@ import snowboydecoder
 import sys
 import signal
 import requests
+import io
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
+from google.cloud import speech
+from google.cloud.speech import enums
+from google.cloud.speech import types
 import paho.mqtt.client as mqtt
 from actions import say
 from actions import trans
@@ -75,6 +79,7 @@ else:
     irreceiver=None
     GPIOcontrol=False
 from pathlib import Path
+from Adafruit_IO import MQTTClient
 from actions import Domoticz_Device_Control
 from actions import domoticz_control
 from actions import domoticz_devices
@@ -84,6 +89,13 @@ from actions import gender
 from actions import on_ir_receive
 from actions import Youtube_credentials
 from actions import Spotify_credentials
+from actions import notify_tts
+from actions import sendSMS
+from actions import translanguage
+from actions import language
+from actions import voicenote
+from actions import langlist
+from audiorecorder import record_to_file
 
 try:
     FileNotFoundError
@@ -143,8 +155,6 @@ def checkvlcpaused():
         currentstate=False
     return currentstate
 
-
-
 #Function to control Sonoff Tasmota Devices
 def tasmota_control(phrase,devname,devip,devportid):
     try:
@@ -179,6 +189,14 @@ class Myassistant():
         self.callbacks = [self.detected]*len(models)
         self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
         self.mutestatus=False
+        self.interpreter=False
+        self.interpconvcounter=0
+        self.interpcloudlang1=language
+        self.interpttslang1=translanguage
+        self.interpcloudlang2=''
+        self.interpttslang2=''
+        self.singleresposne=False
+        self.singledetectedresponse=''
         self.t1 = Thread(target=self.start_detector)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
@@ -186,6 +204,8 @@ class Myassistant():
             self.t3 = Thread(target=self.mqtt_start)
         if irreceiver!=None:
             self.t4 = Thread(target=self.ircommands)
+        if configuration['ADAFRUIT_IO']['ADAFRUIT_IO_CONTROL']=='Enabled':
+            self.t5 = Thread(target=self.adafruit_mqtt_start)
 
     def signal_handler(self,signal, frame):
         self.interrupted = True
@@ -288,10 +308,12 @@ class Myassistant():
                 self.t3.start()
             if irreceiver!=None:
                 self.t4.start()
+            if configuration['ADAFRUIT_IO']['ADAFRUIT_IO_CONTROL']=='Enabled':
+                self.t5.start()
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-            self.can_start_conversation = False
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.can_start_conversation = False
             if kodicontrol:
                 try:
                     status=mutevolstatus()
@@ -357,11 +379,17 @@ class Myassistant():
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
             if GPIOcontrol:
                 assistantindicator('off')
-            if kodicontrol:
-                try:
-                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
-                except requests.exceptions.ConnectionError:
-                    print("Kodi TV box not online")
+            if self.singleresposne:
+                self.assistant.stop_conversation()
+                self.singledetectedresponse= event.args["text"]
+            else:
+                usrcmd=event.args["text"]
+                self.custom_command(usrcmd)
+                if kodicontrol:
+                    try:
+                        kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                    except requests.exceptions.ConnectionError:
+                        print("Kodi TV box not online")
 
         if event.type == EventType.ON_RENDER_RESPONSE:
             if GPIOcontrol:
@@ -459,6 +487,8 @@ class Myassistant():
                 mqtt_query=mqtt_query.replace('custom',"",1)
                 mqtt_query=mqtt_query.strip()
                 self.custom_command(mqtt_query)
+            elif mqtt_query.lower() == 'mute':
+                self.buttonsinglepress()
             else:
                 self.assistant.send_text_query(mqtt_query)
 
@@ -469,6 +499,30 @@ class Myassistant():
         client.username_pw_set(configuration['MQTT']['UNAME'], configuration['MQTT']['PSWRD'])
         client.connect(configuration['MQTT']['IP'], 1883, 60)
         client.loop_forever()
+
+    def adafruit_connected(self,client):
+        print('Connected to Adafruit IO!  Listening for {0} changes...'.format(configuration['ADAFRUIT_IO']['FEEDNAME']))
+        client.subscribe(configuration['ADAFRUIT_IO']['FEEDNAME'])
+
+    def adafruit_disconnected(self,client):
+        print('Disconnected from Adafruit IO!')
+
+    def adafruit_message(self,client, feed_id, payload):
+        if self.can_start_conversation == True:
+            print("Message from ADAFRUIT MQTT: "+str(payload))
+            adafruit_mqtt_query=str(payload)
+            self.custom_command(adafruit_mqtt_query)
+
+    def adafruit_mqtt_start(self):
+        if configuration['ADAFRUIT_IO']['ADAFRUIT_IO_CONTROL']=='Enabled':
+            client = MQTTClient(configuration['ADAFRUIT_IO']['ADAFRUIT_IO_USERNAME'], configuration['ADAFRUIT_IO']['ADAFRUIT_IO_KEY'])
+            client.on_connect    = self.adafruit_connected
+            client.on_disconnect = self.adafruit_disconnected
+            client.on_message    = self.adafruit_message
+            client.connect()
+            client.loop_blocking()
+        else:
+            print("Adafruit_io MQTT client not enabled")
 
     def ircommands(self):
         if irreceiver!=None:
@@ -498,6 +552,93 @@ class Myassistant():
                 pass
             print("Stopping IR Sensor")
 
+    def cloud_speech_transcribe(self,speech_file,language):
+        client = speech.SpeechClient()
+        with io.open(speech_file, 'rb') as audio_file:
+            content = audio_file.read()
+        audio = types.RecognitionAudio(content=content)
+        config = types.RecognitionConfig(
+            encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
+            sample_rate_hertz=44100,
+            language_code=language)
+        response = client.recognize(config, audio)
+        for result in response.results:
+            transcribedtext=u'{}'.format(result.alternatives[0].transcript)
+        return transcribedtext
+
+    def interpreter_mode_trigger(self,switch):
+        if configuration['Speechtotext']['Google_Cloud_Speech']['Cloud_Speech_Control']=='Disabled':
+            say("Cloud speech has not been enabled")
+        else:
+            if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
+                if configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']!="ENTER THE PATH TO YOUR CLOUD SPEECH CREDENTIALS FILE HERE":
+                    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['Speechtotext']['Google_Cloud_Speech']['Google_Cloud_Speech_Credentials_Path']
+                    if switch=="Start":
+                        self.interpreter=True
+                        say("Starting interpreter.")
+                        self.interpreter_speech_recorder()
+                    elif switch=="Stop":
+                        self.interpreter=False
+                        self.interpconvcounter=0
+                        say("Stopping interpreter.")
+                    else:
+                        self.interpreter=False
+            else:
+                if switch=="Start":
+                    self.interpreter=True
+                    say("Starting interpreter.")
+                    self.interpreter_speech_recorder()
+                elif switch=="Stop":
+                    self.interpreter=False
+                    self.interpconvcounter=0
+                    say("Stopping interpreter.")
+                else:
+                    self.interpreter=False
+
+    def interpreter_speech_recorder(self):
+        if self.interpreter:
+            interpreteraudio='/tmp/interpreter.wav'
+            subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            while not record_to_file(interpreteraudio):
+                time.sleep(.1)
+            if (self.interpconvcounter % 2)==0:
+                text=self.cloud_speech_transcribe(interpreteraudio,self.interpcloudlang1)
+                print("Local Speaker: "+text)
+                if 'stop' in text.lower():
+                    self.interpreter_mode_trigger('Stop')
+            elif (self.interpconvcounter % 2)==1:
+                text=self.cloud_speech_transcribe(interpreteraudio,self.interpcloudlang2)
+                print("Foreign Speaker: "+text)
+            self.interpreter_mode_tts(text,self.interpconvcounter)
+        else:
+            say("Interpreter not active.")
+
+    def interpreter_mode_tts(self,text,count):
+        self.interpconvcounter=self.interpconvcounter+1
+        if (count % 2)==0:
+            say(text,self.interpttslang1,self.interpttslang2)
+            self.interpreter_speech_recorder()
+        else:
+            say(text,self.interpttslang2,self.interpttslang1)
+            self.interpreter_speech_recorder()
+
+    def voicenote_recording(self):
+        recordfilepath='/tmp/audiorecord.wav'
+        subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        while not record_to_file(recordfilepath):
+            time.sleep(.1)
+        voicenote(recordfilepath)
+
+    def single_user_response(self,prompt):
+        self.singledetectedresponse=''
+        self.singleresposne=True
+        say(prompt)
+        self.assistant.start_conversation()
+        while self.singledetectedresponse=='':
+            time.sleep(.1)
+        self.singleresposne=False
+        return self.singledetectedresponse
+
     def custom_command(self,usrcmd):
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
             if os.path.isfile('/opt/hue-emulator/config.json'):
@@ -516,7 +657,6 @@ class Myassistant():
                 if name.lower() in str(usrcmd).lower():
                     self.assistant.stop_conversation()
                     tasmota_control(str(usrcmd).lower(), name.lower(),tasmota_deviceip[num],tasmota_deviceportid[num])
-                    break
         if configuration['Conversation']['Conversation_Control']=='Enabled':
             for i in range(1,numques+1):
                 try:
@@ -571,6 +711,11 @@ class Myassistant():
             ingrequest=ingrequest.strip()
             ingrequest=ingrequest.replace(" ","%20",1)
             getrecipe(ingrequest)
+        if configuration['Pushbullet']['Pushbullet_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Send_Message'][0]).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                say("What is your message?")
+                self.voicenote_recording()
         if (custom_action_keyword['Keywords']['Kickstarter_tracking'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             kickstarter_tracker(str(usrcmd).lower())
@@ -591,9 +736,14 @@ class Myassistant():
                         YouTube_No_Autoplay(str(usrcmd).lower())
         if (custom_action_keyword['Keywords']['Stop_music'][0]).lower() in str(usrcmd).lower():
             stop()
+        if configuration['Notify_TTS']['Notify_TTS_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['notify_TTS'][0]).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                notify_tts(str(usrcmd).lower())
         if configuration['Radio_stations']['Radio_Control']=='Enabled':
             if 'radio'.lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
+                vlcplayer.stop_vlc()
                 radio(str(usrcmd).lower())
         if configuration['ESP']['ESP_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['ESP_control'][0]).lower() in str(usrcmd).lower():
@@ -742,6 +892,26 @@ class Myassistant():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
                 deezer_playlist_select(str(usrcmd).lower())
+        if configuration['Clickatell']['Clickatell_Control']=='Enabled':
+            if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
+                self.assistant.stop_conversation()
+                sendSMS(str(usrcmd).lower())
+        if 'interpreter' in str(usrcmd).lower():
+            self.assistant.stop_conversation()
+            reqlang=str(usrcmd).lower()
+            reqlang=reqlang.replace('stop','',1)
+            reqlang=reqlang.replace('start','',1)
+            reqlang=reqlang.replace('interpreter','',1)
+            reqlang=reqlang.strip()
+            for i in range(0,len(langlist['Languages'])):
+                if str(langlist['Languages'][i][i][0]).lower()==reqlang:
+                    self.interpcloudlang2=langlist['Languages'][i][i][1]
+                    self.interpttslang2=langlist['Languages'][i][i][2]
+                    if 'start' in str(usrcmd).lower():
+                        self.interpreter_mode_trigger('Start')
+                else:
+                    self.interpreter_mode_trigger('Stop')
+                break
 
 
     def main(self):
@@ -832,8 +1002,6 @@ class Myassistant():
                 if event.type == EventType.ON_START_FINISHED and args.query:
                     assistant.send_text_query(args.query)
                 self.process_event(event)
-                usrcmd=event.args
-                self.custom_command(usrcmd)
 
         if custom_wakeword:
             self.detector.terminate()
