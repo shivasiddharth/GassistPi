@@ -45,6 +45,7 @@
 **33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**   
 **34.  Send Clickatell SMS messages.**    
 **35.  CES 2019 Like Live Translator or Interpreter (Needs Cloud Speech).**     
+**36.  Control Demoticz, Sonoff devices from other assistant devices.**   
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -279,6 +280,15 @@ Languages supported: French, Italian, Spanish, Dutch, German and Swedish.
 In the **config.yaml** file, under the **Languages and Choice** option set your desired language.   
 
 Use the Translated versions of the English syntaxes given for all the custom actions.  
+
+************************************************
+### **CONTROLLING SONOFF-TASMOTA AND DOMOTICZ DEVICES FROM GOOGLE HOME/OTHER GOOGLE ASSISTRANT DEVICES**     
+************************************************ 
+1. This has been implemented using Adafruit_IO.  
+2. Create an an acount and a feed in adafruit.io website.   
+3. Enter those details in the config.yaml file.   
+4. Register or login into [IFTTT](http://www.ifttt.com/) and create an applet to send commands from google assistant to adafruit_io feed.   
+5. For controlling domoticz and sonoff devices, the adafruit.io command should match the syntaxes for the devices given below.   
 
 ************************************************
 ### **USING LIVE TRANSLATOR or INTERPRETER**     
