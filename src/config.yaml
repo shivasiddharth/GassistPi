@@ -91,10 +91,6 @@ Gaana:
 Gmusicapi:
   Gmusic_Control: 'Enabled'
 
-#Pushbullet
-Pushbullet:
-  Pushbullet_Control: 'Enabled'
-
 #API Key for YouTube and Kickstarter Search Engine
 Google_cloud_api_key: "ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE"
 
