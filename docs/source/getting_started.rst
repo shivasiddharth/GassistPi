@@ -18,7 +18,7 @@ Boards Supported
 Any board running any of the above listed operating systems.   
 
 
-Clone the Project::
+Clone the Project
 -----------------  
-``sudo apt-get install git           
-git clone https://github.com/shivasiddharth/GassistPi``        
+- ``sudo apt-get install git``              
+- ``git clone https://github.com/shivasiddharth/GassistPi``        
