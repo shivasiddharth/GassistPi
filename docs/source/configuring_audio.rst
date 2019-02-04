@@ -104,5 +104,5 @@ RESPEAKER HAT users
 
 
 **Those using any other DACs or HATs install the cards as per the manufacturer's guide
- and then you can try using the USB-DAC config file after changing the hardware ids**   
+  and then you can try using the USB-DAC config file after changing the hardware ids**   
      
