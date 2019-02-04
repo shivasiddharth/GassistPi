@@ -22,4 +22,4 @@ Any board running any of the above listed operating systems.
 Clone the Project
 -----------------  
 ``sudo apt-get install git``                  
-   ``git clone https://github.com/shivasiddharth/GassistPi``        
+ ``git clone https://github.com/shivasiddharth/GassistPi``        
