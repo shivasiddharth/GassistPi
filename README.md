@@ -52,8 +52,8 @@
 - Armbian Stretch    
 - Raspbian Stretch   
 - OSMC Stretch   
-- Ubuntu Bionic    
-
+- Ubuntu Bionic      
+     
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
@@ -244,6 +244,7 @@ Open a terminal and execute the following:
 /home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
 
 ```
+
 Insert your Project Id and Model Id in quotes in the mentioned places      
 
 ### DISABLING AUTO-START ON BOOT      
@@ -292,9 +293,10 @@ In the **config.yaml** file, under the **Languages and Choice** option set your 
 
 Use the Translated versions of the English syntaxes given for all the custom actions.  
 
-************************************************
-### **CONTROLLING SONOFF-TASMOTA AND DOMOTICZ DEVICES FROM GOOGLE HOME/OTHER GOOGLE ASSISTRANT DEVICES**     
-************************************************
+************************************************      
+### **CONTROLLING SONOFF-TASMOTA AND DOMOTICZ DEVICES FROM GOOGLE HOME/OTHER GOOGLE ASSISTRANT DEVICES**       
+************************************************    
+  
 1. This has been implemented using Adafruit_IO.  
 2. Create an an acount and a feed in adafruit.io website.   
 3. Enter those details in the config.yaml file.   
