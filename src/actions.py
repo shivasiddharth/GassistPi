@@ -1568,7 +1568,7 @@ def getgaanaplaylistinfo(playlisturl):
     response=response.read().decode('utf-8')
     for a in re.finditer('{"title":',response):
         trackstart.append(a.start())
-    for b in re.finditer('"parental_warning":0}',response):
+    for b in re.finditer('"parental_warning":(.*)}',response):
         trackend.append(b.end())
     for c in re.finditer('{"source":',response):
         playliststart=c.start()
