@@ -911,9 +911,9 @@ class Myassistant():
                     self.interpttslang2=langlist['Languages'][i][i][2]
                     if 'start' in str(usrcmd).lower():
                         self.interpreter_mode_trigger('Start')
-                else:
-                    self.interpreter_mode_trigger('Stop')
-                break
+                    else:
+                        self.interpreter_mode_trigger('Stop')
+                    break
 
 
     def main(self):
