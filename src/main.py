@@ -15,6 +15,8 @@
 # limitations under the License.
 
 from __future__ import print_function
+import faulthandler
+faulthandler.enable()
 from kodijson import Kodi, PLAYER_VIDEO
 try:
     import RPi.GPIO as GPIO
