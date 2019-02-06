@@ -142,7 +142,7 @@ def record_hotword_samples():
     for i in range(1,4):
         filename=str(i)+".wav"
         filepath="/tmp/"+filename
-        print("Starting to record sample "+str(1)+" for training model.")
+        print("Starting to record sample "+str(i)+" for training model.")
         print("Say out the hotword........")
         while not record_to_file(filepath):
             time.sleep(.1)
