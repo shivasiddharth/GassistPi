@@ -98,7 +98,8 @@ from actions import language
 from actions import voicenote
 from actions import langlist
 from audiorecorder import record_to_file
-
+from actions import wemocontrol
+from actions import wemodiscovery
 try:
     FileNotFoundError
 except NameError:
@@ -642,6 +643,13 @@ class Myassistant():
         return self.singledetectedresponse
 
     def custom_command(self,usrcmd):
+        if configuration['Wemo']['Wemo_Control']=='Enabled':
+            for i in range(0,len(configuration['Wemo']['Wemo_Devices']['Device_Names'])):
+                if configuration['Wemo']['Wemo_Devices']['Device_Names'][i].lower() in usrcmd.lower():
+                    self.assistant.stop_conversation()
+                    wemocontrol(usrcmd)
+                break
+
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
             if os.path.isfile('/opt/hue-emulator/config.json'):
                 with open('/opt/hue-emulator/config.json', 'r') as config:
@@ -914,7 +922,9 @@ class Myassistant():
                     else:
                         self.interpreter_mode_trigger('Stop')
                     break
-         
+        if custom_action_keyword['Keywords']['Wemo_Discovery'][0].lower() in usrcmd.lower():
+            self.assistant.stop_conversation()
+            wemodiscovery()
 
     def main(self):
         parser = argparse.ArgumentParser(
