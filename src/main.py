@@ -914,7 +914,7 @@ class Myassistant():
                     else:
                         self.interpreter_mode_trigger('Stop')
                     break
-
+         
 
     def main(self):
         parser = argparse.ArgumentParser(
