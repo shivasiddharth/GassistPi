@@ -875,7 +875,11 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
-                gmusicselect(str(usrcmd).lower())
+                try:
+                    gmusicselect(str(usrcmd).lower())
+                except Exception as e:
+                    print(e)
+                    say('Encountered an exception please check the logs.')
         if configuration['Spotify']['Spotify_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
@@ -905,15 +909,21 @@ class Myassistant():
             reqlang=reqlang.replace('start','',1)
             reqlang=reqlang.replace('interpreter','',1)
             reqlang=reqlang.strip()
-            for i in range(0,len(langlist['Languages'])):
-                if str(langlist['Languages'][i][i][0]).lower()==reqlang:
-                    self.interpcloudlang2=langlist['Languages'][i][i][1]
-                    self.interpttslang2=langlist['Languages'][i][i][2]
-                    if 'start' in str(usrcmd).lower():
-                        self.interpreter_mode_trigger('Start')
-                    else:
-                        self.interpreter_mode_trigger('Stop')
-                    break
+            try:
+                for i in range(0,len(langlist['Languages'])):
+                    if str(langlist['Languages'][i][i][0]).lower()==reqlang:
+                        self.interpcloudlang2=langlist['Languages'][i][i][1]
+                        self.interpttslang2=langlist['Languages'][i][i][2]
+                        if 'start' in str(usrcmd).lower():
+                            self.interpreter_mode_trigger('Start')
+                        else:
+                            self.interpreter_mode_trigger('Stop')
+                        break
+            except Exception as e:
+                print(e)
+                say('Encountered an exception please check the logs.')
+
+
 
 
     def main(self):
