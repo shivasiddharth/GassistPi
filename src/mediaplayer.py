@@ -18,14 +18,15 @@ with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
 
 api = Mobileclient()
 logged_in=api.oauth_login(Mobileclient.FROM_MAC_ADDRESS)
+if logged_in:
+    for device in api.get_registered_devices():
+        if device['type']=='ANDROID':
+            deviceid=device['id'][2:]
+            print(deviceid)
+            break
+    api.logout()
+    logged_in=api.oauth_login(deviceid)
 
-for device in api.get_registered_devices():
-    if device['type']=='ANDROID':
-        deviceid=device['id'][2:]
-        print(deviceid)
-        break
-api.logout()
-logged_in=api.oauth_login(deviceid)
 
 
 class vlcplayer():
