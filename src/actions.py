@@ -454,7 +454,7 @@ def feed(phrase):
         URL=sportsnews
     elif 'tech news' in phrase:
         URL=technews
-    elif 'my feed' in phrase:
+    elif (custom_action_keyword['Keywords']['RSS'][1]).lower() in phrase:
         URL=quote
     numfeeds=10
     feed=feedparser.parse(URL)
@@ -1146,9 +1146,9 @@ def YouTube_Autoplay(phrase):
                 vlcplayer.youtube_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-            
-    except Exception as e: 
-        print(e)        
+
+    except Exception as e:
+        print(e)
         say('Encountered an exception please check the logs.')
 
 def YouTube_No_Autoplay(phrase):
@@ -1173,9 +1173,9 @@ def YouTube_No_Autoplay(phrase):
             vlcplayer.youtube_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-            
-    except Exception as e: 
-        print(e)        
+
+    except Exception as e:
+        print(e)
         say('Encountered an exception please check the logs.')
 
 #-----------------End of Functions for YouTube Streaming---------------------
