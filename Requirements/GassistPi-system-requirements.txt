@@ -36,3 +36,7 @@ python
 python-dev
 build-essential
 libmpg123-dev
+cmake
+libgtk2.0-dev
+libatlas3-base
+libopenjp2-7
