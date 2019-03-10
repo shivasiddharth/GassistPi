@@ -1,0 +1,17 @@
+status_camera:
+  resolution:
+    x: 320
+    y: 240
+  
+rotation:
+    degrees: 180
+
+mqtt:
+  ip_server: "mqtt server address"
+
+known_people:
+
+- Mario:
+    file: "/home/pi/recognition/mario.jpg"
+    topic: "mqtt/test"
+
