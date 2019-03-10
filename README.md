@@ -46,8 +46,8 @@
 **33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**   
 **34.  Send Clickatell SMS messages.**    
 **35.  CES 2019 Like Live Translator or Interpreter (Needs Cloud Speech).**     
-**36.  Control Demoticz, Sonoff devices from other assistant devices.**
-**37.  Facial recognition.**
+**36.  Control Demoticz, Sonoff devices from other assistant devices.**  
+**37.  Facial  recognition.**
 
 
 *******************************************************************************************************************************  
