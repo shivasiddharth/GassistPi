@@ -49,6 +49,7 @@
 **36.  Control Demoticz, Sonoff devices from other assistant devices.**
 **37.  Facial recognition.**
 
+
 *******************************************************************************************************************************  
 ### Only OSes suported are:
 - Armbian Stretch    
