@@ -579,9 +579,9 @@ we connect our Pi-camera, taking care to keep the colored part of blue facing th
 
 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbWTSYEWwNbmAbtdlOhgcnNH0IJ0_DxansHsxRO9XIvDJD0_qvbQ"> 
 
-2. From the terminal we recall sudo raspi-config, select Interfacing options, select camera.
-3. From the terminal go to cd GassistPi/recognition
-4. python3 photography.py
+2. From the terminal write: sudo raspi-config, select Interfacing options, select camera.
+3. From the terminal, go to cd GassistPi/recognition
+4. Run: python3 photography.py.
 The image obtained will be renamed as desired, since it will be approached to a person whose recognition we want to carry out as we go to declare continuing the compilation of the config.yaml.
 5. In the section "known_people" we put the name of the person, the reference file and the topic, where we will publish a MQTT message.
 6. We launch the python3 comparison.py script.
