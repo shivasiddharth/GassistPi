@@ -79,7 +79,7 @@ while True:
                 print(greeting)
                 print(" ")
                 try:
-                    mqtt.single(mqtt_person[a], "presence", hostname=ip_mqtt)
+                    mqtt.single(mqtt_person[a], name[a], hostname=ip_mqtt)
                 except:
                     print("error mqtt")
                 recognition = 1
