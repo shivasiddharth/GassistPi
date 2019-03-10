@@ -576,8 +576,8 @@ Command Syntax:
 Connection:  
 1. Before connecting our Raspberry to the power supply,
 we connect our Pi-camera, taking care to keep the colored part of blue facing the slot for the network connection.
-<img src="https://drive.google.com/file/d/1x2qZmfdUGQXPgmqJGpAlc0J2gltoEGyJ/view?usp=sharing"
-width="400" height="400" border="1" /> 
+<img src="https://drive.google.com/file/d/1x2qZmfdUGQXPgmqJGpAlc0J2gltoEGyJ/view"
+width="240" height="180" border="1" /> 
 2. From the terminal we recall the configuration menu of the Raspberry.  
 3. Run sudo raspi-config, select Interfacing options, camera.  
    
