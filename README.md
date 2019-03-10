@@ -577,8 +577,7 @@ Connection:
 1. Before connecting our Raspberry to the power supply,
 we connect our Pi-camera, taking care to keep the colored part of blue facing the slot for the network connection.
 
-<img src="https://drive.google.com/file/d/1O1Vj7w8TJIKiVgssTC1tE8O2rbpKzyG5/view?usp=sharing"
-width="240" height="240" border="1" /> 
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbWTSYEWwNbmAbtdlOhgcnNH0IJ0_DxansHsxRO9XIvDJD0_qvbQ"> 
 
 2. From the terminal we recall the configuration menu of the Raspberry.  
 3. Run sudo raspi-config, select Interfacing options, camera.  
