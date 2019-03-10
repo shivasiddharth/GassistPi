@@ -8,7 +8,7 @@
 
 *******************************************************************************************************************************
 ## 10-Mar-2019 Update:
-**New features 37.**               
+**New feature 37.**               
 *******************************************************************************************************************************
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
 **1.   Headless auto start on boot.**      
@@ -568,8 +568,19 @@ Sign in to Clickatell SMS Platform. Create sms integration.
 Add your generated clickatell api no in config.yaml.
 
 Command Syntax:
-"Hey Google, send clickatell 'message' to 'Bob'     
+"Hey Google, send clickatell 'message' to 'Bob' 
 
+*******************************************************************
+### **FACIAL RECOGNITION WITH PICAMERA**  
+*******************************************************************
+Connection:  
+1. Before connecting our Raspberry to the power supply,
+we connect our Pi-camera, taking care to keep the colored part of blue facing the slot for the network connection.
+<img src="https://drive.google.com/file/d/1x2qZmfdUGQXPgmqJGpAlc0J2gltoEGyJ/view?usp=sharing"
+width="400" height="400" border="1" /> 
+2. From the terminal we recall the configuration menu of the Raspberry.  
+3. Run sudo raspi-config, select Interfacing options, camera.  
+   
 *******************************************************************
 ### **GETTING RECIPE DETAILS USING ASSISTANT**  
 *******************************************************************
