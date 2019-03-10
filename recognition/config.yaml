@@ -1,0 +1,16 @@
+status_camera:
+  resolution:
+    x: 320
+    y: 240
+  rotation:
+    degrees: 180
+
+mqtt:
+  ip_server: "192.168.1.15"
+
+known_people:
+
+- Trump:
+    file: "/home/pi/GassistPi/recognition/trump.jpg"
+    topic: "mqtt/test"
+
