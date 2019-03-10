@@ -2,7 +2,7 @@ import time
 import picamera
 import yaml
 
-file_configuration = "/home/pi/recognition/config.yaml"
+file_configuration = "/home/pi/GassistPi/recognition/config.yaml"
 with open(file_configuration, 'r') as ymlfile:
     configuration = yaml.load(ymlfile)
 

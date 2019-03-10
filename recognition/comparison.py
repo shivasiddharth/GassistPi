@@ -8,7 +8,7 @@ import socket
 import paho.mqtt.publish as mqtt
 
 
-file_configuration = "/home/pi/recognition/config.yaml"
+file_configuration = "/home/pi/GassistPi/recognition/config.yaml"
 with open(file_configuration, 'r') as ymlfile:
     configuration = yaml.load(ymlfile)
 
@@ -71,7 +71,7 @@ while True:
     for face_encoding in face_encodings:
         a = 0
         recognition = 0
-        for faces in image_sample:
+        for faces in sample_images:
             comparison = face_recognition.compare_faces([faces], face_encoding)
             if comparison[0] == True and recognition==0:
                 print(" ")

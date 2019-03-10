@@ -2,16 +2,15 @@ status_camera:
   resolution:
     x: 320
     y: 240
-  
-rotation:
+  rotation:
     degrees: 180
 
 mqtt:
-  ip_server: "mqtt server address"
+  ip_server: "192.168.1.15"
 
 known_people:
 
-- Mario:
-    file: "/home/pi/recognition/mario.jpg"
+- Vincenzo:
+    file: "/home/pi/GassistPi/recognition/vincenzo.jpg"
     topic: "mqtt/test"
 
