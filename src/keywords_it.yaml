@@ -73,6 +73,8 @@ Keywords:
   # Send message vocal to pushbullet
   Send_Message:
     - 'invia messaggio'
+  Wemo_Discovery:
+    - 'discover emulated'
 
 #Do not change the Dict below
 Dict:
