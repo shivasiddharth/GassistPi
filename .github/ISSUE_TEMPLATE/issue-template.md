@@ -62,5 +62,5 @@ Yes/No
 
 ```
 
-### Attach the log file   
+### Attach the log file named Gassistpi.log
 Log file can be found in /tmp/ directory  
