@@ -7,6 +7,14 @@ ADAFRUIT_IO:
   ADAFRUIT_IO_KEY: 'ENTER YOUR ADAFRUIT_IO KEY HERE'
   FEEDNAME: 'ENTER YOUR ADAFRUIT_IO FEEDNAME THAT YOU WANT TO MONITOR HERE'
 
+#Custom scripts. Add your scripts commands.
+Script:
+  Script_Control: 'Disabled'
+  scriptname:
+    - 'Script test'
+  scriptcommand:
+    - 'echo test >> /home/pi/test.txt'
+
 #Custom conversation. Add your queries and expected assistant response. Do not add symbols or special charecters.
 Conversation:
   Conversation_Control: 'Enabled'

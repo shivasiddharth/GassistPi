@@ -169,6 +169,9 @@ if GPIO!=None:
 else:
     GPIOcontrol=False
 
+#Number of scripts and script names should be the same
+scriptname=configuration['Script']['scriptname']
+scriptcommand=configuration['Script']['scriptcommand']
 
 #Number of station names and station links should be the same
 stnname=configuration['Radio_stations']['stationnames']
@@ -378,6 +381,16 @@ def notify_tts(phrase):
     voice_notify = phrase.replace(word, "")
     voice_notify.strip()
     say(voice_notify)
+
+#Run scripts
+def script(phrase):
+    for num, name in enumerate(scriptname):
+        if name.lower() in phrase:
+            conv=scriptname[num]
+            command=scriptcommand[num]
+            print (command)
+            say("Running " +conv)
+            os.system(command)
 
 #Radio Station Streaming
 def radio(phrase):

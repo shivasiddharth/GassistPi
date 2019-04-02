@@ -55,6 +55,7 @@ from actions import YouTube_No_Autoplay
 from actions import YouTube_Autoplay
 from actions import stop
 from actions import radio
+from actions import script
 from actions import ESP
 from actions import track
 from actions import feed
@@ -642,6 +643,9 @@ class Myassistant():
         return self.singledetectedresponse
 
     def custom_command(self,usrcmd):
+        if configuration['Script']['Script_Control']=='Enabled':
+            if 'script'.lower() in str(usrcmd).lower():
+                script(str(usrcmd).lower())
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
             if os.path.isfile('/opt/hue-emulator/config.json'):
                 with open('/opt/hue-emulator/config.json', 'r') as config:
