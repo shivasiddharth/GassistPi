@@ -7,8 +7,8 @@
 ### Do not raise an Issue request for Non-Issue stuff. For Non-Issue Help and Interaction use gitter [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)  
 
 *******************************************************************************************************************************
-## 03-Feb-2019 Update:
-**New features 33-36.**               
+## 04-Apr-2019 Update:
+**New features 37.**               
 *******************************************************************************************************************************
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
 **1.   Headless auto start on boot.**      
@@ -46,7 +46,8 @@
 **33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**   
 **34.  Send Clickatell SMS messages.**    
 **35.  CES 2019 Like Live Translator or Interpreter (Needs Cloud Speech).**     
-**36.  Control Demoticz, Sonoff devices from other assistant devices.**   
+**36.  Control Demoticz, Sonoff devices from other assistant devices.**
+**37.  Run Custom Script by voice.**     
 
 *******************************************************************************************************************************  
 ### Only OSes suported are:
@@ -785,6 +786,13 @@ Shuffle tracks
 Repeat tracks
 
 **Due to the Pi Zero's limitations, and computationally intensive nature of the Google Music streaming feature, this action has not been enabled for Pi Zero.**  
+
+
+************************************************
+### **RUN CUSTOM SCRIPTS**  
+************************************************
+By defualt running custom scripts feature is disabled. To enable it and tell the assistand which scripts to run modify config.yaml.
+Default keyword for running the script is **script**. For example, **run Script test** command will run the corresponding script that prints out test in /home/pi/test.txt file. 
 
 
 ************************************************
