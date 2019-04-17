@@ -1,6 +1,5 @@
 libxml2-dev
 libxslt-dev
-python-dev
 mpv
 mplayer
 vlc
