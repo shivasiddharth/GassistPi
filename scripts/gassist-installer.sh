@@ -139,7 +139,7 @@ if [[ $osversion != "Raspbian Stretch" ]];then
   echo "==========Installing Swig========="
   echo ""
   if [ ! -d /home/${USER}/programs/libraries/swig/ ]; then
-    sudo mkdir -p programs/libraries/ && cd programs/libraries
+    sudo mkdir -p /home/${USER}/programs/libraries/ && cd /home/${USER}/programs/libraries
     sudo git clone https://github.com/swig/swig.git
   fi
   cd /home/${USER}/programs/libraries/swig/
