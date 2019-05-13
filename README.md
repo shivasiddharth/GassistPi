@@ -46,7 +46,7 @@
 **33.  Send Voice Messages from the SBC to the Mobile using Pushbullet (Only Armv7 boards).**   
 **34.  Send Clickatell SMS messages.**    
 **35.  CES 2019 Like Live Translator or Interpreter (Needs Cloud Speech).**     
-**36.  Control Demoticz, Sonoff devices from other assistant devices.**
+**36.  Control Demoticz, Sonoff devices from other assistant devices.**    
 **37.  Run Custom Script by voice.**     
 
 *******************************************************************************************************************************  
@@ -787,13 +787,14 @@ Repeat tracks
 
 **Due to the Pi Zero's limitations, and computationally intensive nature of the Google Music streaming feature, this action has not been enabled for Pi Zero.**  
 
-
 ************************************************
 ### **RUN CUSTOM SCRIPTS**  
 ************************************************
-By defualt running custom scripts feature is disabled. To enable it and tell the assistand which scripts to run modify config.yaml.
-Default keyword for running the script is **script**. For example, **run Script test** command will run the corresponding script that prints out test in /home/pi/test.txt file. 
-
+By defualt running custom scripts feature is disabled.   
+To enable it, change "Script_Control:' in config.yaml from "Disabled" to "Enabled".  
+The number of script names mentioned should match the number of script commands in config.yaml.   
+  
+Example usage: **Run script test** command will run the default command given in config.yaml that prints out **test** in /home/pi/test.txt file.   
 
 ************************************************
 ### **RADIO STREAMING**  
