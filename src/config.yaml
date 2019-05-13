@@ -222,6 +222,14 @@ Raspberrypi_GPIO_Control:
     - 'bathroom lights'
     - 'bedroom lights'
 
+#Custom scripts. Add your scripts commands.
+Script:
+  Script_Control: 'Disabled'
+  scriptname:
+    - 'Script test'
+  scriptcommand:
+    - 'echo test >> /home/pi/test.txt'
+
 #Speech to text conversion
 Speechtotext:
   Google_Cloud_Speech:
