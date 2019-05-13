@@ -7,8 +7,8 @@
 ### Do not raise an Issue request for Non-Issue stuff. For Non-Issue Help and Interaction use gitter [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)  
 
 *******************************************************************************************************************************
-## 04-Apr-2019 Update:
-**New features 37.**               
+## 13-May-2019 Update:
+**Added the ability to run custom scripts.**               
 *******************************************************************************************************************************
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
 **1.   Headless auto start on boot.**      
