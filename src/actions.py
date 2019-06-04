@@ -381,14 +381,16 @@ def notify_tts(phrase):
 
 #Radio Station Streaming
 def radio(phrase):
-    for num, name in enumerate(stnname):
+    for num, name in reversed(list(enumerate(stnname))):
         if name.lower() in phrase:
             station=stnlink[num]
             conv=stnradio[num]
             print (station)
-            say("Tuning into " + conv)
-            vlcplayer.media_manager(station,'Radio')
-            vlcplayer.media_player(station)
+            break
+    say("Tuning into " + conv)
+    vlcplayer.media_manager(station,'Radio')
+    vlcplayer.media_player(station)
+
 
 #ESP6266 Devcies control
 def ESP(phrase):
