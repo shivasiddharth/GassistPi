@@ -24,8 +24,9 @@ if logged_in:
             deviceid=device['id'][2:]
             print(deviceid)
             break
-    api.logout()
-    logged_in=api.oauth_login(deviceid)
+    if deviceid!=[]:
+        api.logout()
+        logged_in=api.oauth_login(deviceid)
 
 
 
