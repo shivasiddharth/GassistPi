@@ -17,6 +17,7 @@ with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
 
 api = Mobileclient()
+deviceid=[]
 logged_in=api.oauth_login(Mobileclient.FROM_MAC_ADDRESS)
 if logged_in:
     for device in api.get_registered_devices():
