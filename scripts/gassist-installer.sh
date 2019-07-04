@@ -48,6 +48,11 @@ if [[ $(cat /etc/os-release|grep "raspbian") ]]; then
     echo ""
     echo "===========You are running the installer on Stretch=========="
     echo ""
+  elif [[ $(cat /etc/os-release|grep "buster") ]]; then
+    osversion="Raspbian Buster"
+    echo ""
+    echo "===========You are running the installer on Buster=========="
+    echo ""
   else
     osversion="Other Raspbian"
     echo ""

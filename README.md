@@ -51,10 +51,10 @@
 *******************************************************************************************************************************  
 ### Only OSes suported are:
 - Armbian Stretch    
-- Raspbian Stretch   
+- Raspbian Stretch/Buster  
 - OSMC Stretch   
 - Ubuntu Bionic      
-     
+
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
@@ -297,7 +297,7 @@ Use the Translated versions of the English syntaxes given for all the custom act
 ************************************************      
 ### **CONTROLLING SONOFF-TASMOTA AND DOMOTICZ DEVICES FROM GOOGLE HOME/OTHER GOOGLE ASSISTRANT DEVICES**       
 ************************************************    
-  
+
 1. This has been implemented using Adafruit_IO.  
 2. Create an an acount and a feed in adafruit.io website.   
 3. Enter those details in the config.yaml file.   
