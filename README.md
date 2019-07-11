@@ -51,7 +51,7 @@
 *******************************************************************************************************************************  
 ### Only OSes suported are:
 - Armbian Stretch    
-- Raspbian Stretch/Buster  
+- Raspbian Stretch  
 - OSMC Stretch   
 - Ubuntu Bionic      
 
