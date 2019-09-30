@@ -381,15 +381,19 @@ def notify_tts(phrase):
 
 #Radio Station Streaming
 def radio(phrase):
+    conv = None
     for num, name in reversed(list(enumerate(stnname))):
         if name.lower() in phrase:
             station=stnlink[num]
             conv=stnradio[num]
             print (station)
             break
-    say("Tuning into " + conv)
-    vlcplayer.media_manager(station,'Radio')
-    vlcplayer.media_player(station)
+    if conv is not None:
+        say("Tuning into " + conv)
+        vlcplayer.media_manager(station,'Radio')
+        vlcplayer.media_player(station)
+    else:
+        say("Station not found")
 
 
 #ESP6266 Devcies control
