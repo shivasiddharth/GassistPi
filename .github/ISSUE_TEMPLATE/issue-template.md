@@ -30,11 +30,7 @@ Yes/No
 ### 2. Is the issue related to assistant installation ?
 Yes/No
 
-### If answer to question 2 is Yes, then paste the contents of the terminal below.
-
-```
-
-```
+### If answer to question 2 is Yes, then attach the "GassistPi-Installation-Proceedings.txt" file from /home/${USER}/ directory.
 
 ### If answer to question 2 is No, then proceed further.
 ### 3. Does the assistant service start normally?
