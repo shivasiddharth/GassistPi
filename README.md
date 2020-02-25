@@ -183,7 +183,7 @@ sudo chmod +x ./GassistPi/scripts/gassist-installer.sh
 
 3.3 Execute the installer. **When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 ```
-sudo  ./GassistPi/scripts/gassist-installer.sh >> /home/${USER}/GassistPi-Installation-Proceedings.txt  
+sudo  ./GassistPi/scripts/gassist-installer.sh
 ```  
 
 4. Copy the google assistant authentication link from terminal and authorize using your google account  
