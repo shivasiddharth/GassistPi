@@ -205,7 +205,7 @@ fi
 
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
 
-python3.6 -m venv env
+python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
 
