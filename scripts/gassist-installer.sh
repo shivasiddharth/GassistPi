@@ -230,8 +230,15 @@ google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-proto
 
 echo ""
 echo ""
+if [[ $(python3 --version|grep "3.7") ]]; then
+   ppath="python3.7"
+elif [[ $(python3 --version|grep "3.6") ]]; then
+   ppath="python3.6"
+elif [[ $(python3 --version|grep "3.5") ]]; then
+   ppath="python3.5"
+fi
 echo "Modifying the assistant core to prevent segfault."
-sudo \cp -f ${GIT_DIR}/Extras/assistant.py /home/${USER}/env/lib/python3.7/site-packages/google/assistant/library/assistant.py
+sudo \cp -f ${GIT_DIR}/Extras/assistant.py /home/${USER}/env/lib/$ppath/site-packages/google/assistant/library/assistant.py
 echo ""
 echo ""
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
