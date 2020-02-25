@@ -33,7 +33,6 @@ echo ""
 read -r -p "Enter the modelid that was generated in the actions console: " modelid
 echo ""
 echo "Your Model-Id: $modelid Project-Id: $projid used for this project" >> /home/${USER}/modelid.txt
-fakemodelid="$modelid""0"
 
 sudo apt-get update -y
 sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
@@ -199,13 +198,13 @@ else
   echo ""
   echo "Changing particulars in service files for Pushbutton/Custom-wakeword"
   sed -i '/main.py/d' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/saved-model-id/'$fakemodelid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
   sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
 fi
 
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
 
-python3 -m venv env
+python3.6 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
 
@@ -216,14 +215,14 @@ if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
 fi
 
 if [[ $devmodel = "armv7" ]];then
-	pip install google-assistant-library==1.0.0
+	pip install google-assistant-library==1.0.1
 else
   pip install --upgrade --no-binary :all: grpcio
 fi
 
-pip install google-assistant-grpc==0.2.0
-pip install google-assistant-sdk==0.5.0
-pip install google-assistant-sdk[samples]==0.5.0
+pip install google-assistant-grpc==0.2.1
+pip install google-assistant-sdk==0.5.1
+pip install google-assistant-sdk[samples]==0.5.1
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
@@ -231,7 +230,7 @@ google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-proto
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 
 if [[ $devmodel = "armv7" ]];then
-	googlesamples-assistant-hotword --project_id $projid --device_model_id $fakemodelid
+	googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
 else
-	googlesamples-assistant-pushtotalk --project-id $projid --device-model-id $fakemodelid
+	googlesamples-assistant-pushtotalk --project-id $projid --device-model-id $modelid
 fi
