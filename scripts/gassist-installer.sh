@@ -192,14 +192,15 @@ if [[ $devmodel = "armv7" ]];then
   echo ""
   echo "Changing particulars in service files for Ok-Google hotword"
   sed -i '/pushbutton.py/d' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/saved-model-id/'$fakemodelid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
 else
   echo ""
   echo ""
   echo "Changing particulars in service files for Pushbutton/Custom-wakeword"
   sed -i '/main.py/d' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
   sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
 fi
 
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
