@@ -228,6 +228,12 @@ google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-proto
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
 
+echo ""
+echo ""
+echo "Modifying the assistant core to prevent segfault."
+sudo \cp -f ${GIT_DIR}/Extras/assistant.py /home/${USER}/env/lib/python3.7/site-packages/google/assistant/library/assistant.py
+echo ""
+echo ""
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 
 if [[ $devmodel = "armv7" ]];then
