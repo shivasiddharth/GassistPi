@@ -1,5 +1,4 @@
 import urllib.request
-import pafy
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
@@ -11,9 +10,6 @@ ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 
 with open('{}/src/config.yaml'.format(ROOT_PATH), 'r') as conf:
     configuration = yaml.load(conf)
-
-# API Key for YouTube and KS Search Engine
-google_cloud_api_key = configuration['Google_cloud_api_key']
 
 # YouTube API Constants
 DEVELOPER_KEY = google_cloud_api_key
@@ -118,13 +114,3 @@ def youtube_search(query, maximum=1):
             return ids
     elif maximum == 1:
         return []
-
-
-# Function to get streaming links for YouTube URLs
-def youtube_stream_link(video_url):
-    video = pafy.new(video_url)
-    best_video = video.getbest()
-    best_audio = video.getbestaudio()
-    audio_streaming_link = best_audio.url
-    video_streaming_link = best_video.url
-    return audio_streaming_link, video_streaming_link

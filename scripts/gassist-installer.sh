@@ -96,47 +96,22 @@ elif [[ $(cat /etc/os-release|grep "osmc") ]]; then
     echo ""
     exit 1
   fi
-elif [[ $(cat /etc/os-release|grep "ubuntu") ]]; then
-  if [[ $(cat /etc/os-release|grep "bionic") ]]; then
-    osversion="Ubuntu Bionic"
-    echo ""
-    echo "You are running the installer on Bionic"
-    echo ""
-  else
-    osversion="Other Ubuntu"
-    echo ""
-    echo "You are advised to use the Bionic version of the OS"
-    echo "Exiting the installer="
-    echo ""
-    exit 1
-  fi
 fi
 
 #Check CPU architecture
 if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]]; then
 	devmodel="armv7"
   echo ""
-  echo "Your board supports Ok-Google Hotword. You can also trigger the assistant using custom-wakeword"
+  echo "Your board supports voice control."
   echo ""
 else
 	devmodel="armv6"
   echo ""
-  echo "=Your board does not support Ok-Google Hotword. You need to trigger the assistant using pushbutton/custom-wakeword"
+  echo "=Your board does not support voice control."
   echo ""
+  exit 1
 fi
 
-#Check Board Model
-if [[ $(cat /proc/cpuinfo|grep "BCM") ]]; then
-	board="Raspberry"
-  echo ""
-  echo "GPIO pins can be used with the assistant"
-  echo ""
-else
-	board="Others"
-  echo ""
-  echo "GPIO pins cannot be used by default with the assistant. You need to figure it out by yourselves"
-  echo ""
-fi
 
 #Copy snowboy wrappers for Stretch or Buster and create new ones for other OSes.
 echo "Copying Snowboy files to GassistPi directory"
@@ -186,23 +161,10 @@ cd /home/${USER}/
 echo ""
 echo ""
 echo "Changing particulars in service files"
-
-if [[ $devmodel = "armv7" ]];then
-  echo ""
-  echo ""
-  echo "Changing particulars in service files for Ok-Google hotword"
-  sed -i '/pushbutton.py/d' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
-else
-  echo ""
-  echo ""
-  echo "Changing particulars in service files for Pushbutton/Custom-wakeword"
-  sed -i '/main.py/d' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
-fi
-
+echo ""
+echo ""
+sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
 
 python3 -m venv env
@@ -211,17 +173,7 @@ source env/bin/activate
 
 pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
-if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
-	pip install RPi.GPIO==0.6.3
-fi
-
-if [[ $devmodel = "armv7" ]];then
-	pip install google-assistant-library==1.0.1
-else
-  pip install --upgrade --no-binary :all: grpcio
-fi
-
-pip install google-assistant-grpc==0.2.1
+pip install google-assistant-library==1.0.1
 pip install google-assistant-sdk==0.5.1
 pip install google-assistant-sdk[samples]==0.5.1
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
@@ -243,8 +195,4 @@ echo ""
 echo ""
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
 
-if [[ $devmodel = "armv7" ]];then
-	googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
-else
-	googlesamples-assistant-pushtotalk --project-id $projid --device-model-id $modelid
-fi
+googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
