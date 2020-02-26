@@ -37,14 +37,14 @@ cd /home/${USER}/
 **Non-Raspberry Pi users, choose the USB-DAC option.    
 The speaker-test command is used to initialize alsa, so please do not skip that.**  
 
-    3.1. USB DAC or USB Sound CARD users,  
+  3.1. USB DAC or USB Sound CARD users,  
 ```
 sudo chmod +x ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
 sudo ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
 speaker-test  
 ```    
 
-    3.2. USB MIC AND HDMI users,  
+  3.2. USB MIC AND HDMI users,  
 ```
 sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
 sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
@@ -55,7 +55,7 @@ sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh
 speaker-test  
 ```
 
-    3.4. USB MIC AND AUDIO JACK users,  
+  3.3. USB MIC AND AUDIO JACK users,  
 ```  
 sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
 sudo ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
@@ -90,12 +90,12 @@ alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 cd /home/${USER}/      
 ```
 
-    3.2 Make the installer Executable  
+  3.2 Make the installer Executable  
 ```
 sudo chmod +x ./GassistPi/scripts/gassist-installer.sh
 ```
 
-    3.3 Execute the installer. **When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
+  3.3 Execute the installer. **When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 ```
 sudo  ./GassistPi/scripts/gassist-installer.sh
 ```  
