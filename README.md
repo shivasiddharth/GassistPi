@@ -104,7 +104,7 @@ sudo  ./GassistPi/scripts/gassist-installer.sh
 
 5. Copy the authorization code from browser onto the terminal and press enter    
 
-6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
+6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "__Custom Wakeword__, Set volume to maximum" command.
 
 7. After verifying the working of assistant, close and exit the terminal    
 
@@ -201,38 +201,38 @@ For Kodi to play the YouTube video, you need to add and enable the YouTube Plugi
 
 | Command Syntax    | What it does                                        |
 |-------------------|------------------------------------------------|
-| Hey Google, Shuffle my songs on kodi               | Shuffles all the songs added to the kodi library      |
-| Hey Google, Play songs from _Album name_ on kodi               | Plays all the songs under the mentioned Album name  |    
-| Hey Google, Play songs by, _Artist name_ on kodi        | Plays all the songs rendered by the mentioned artist      |  
-| Hey Google, Play _Song name_ song on kodi               | Plays the requested song, if it has been added to the library         |
-| Hey Google, Play _Movie name_ movie on kodi         | Plays the requested movie, if it has been added to the library     |  
-| Hey Google, From YouTube, Play _Youtube Video_ on kodi        | Fetches the YouTube video and plays it on Kodi                  |
-| Hey Google, What is playing? on kodi                  | Tells you by voice as to what is currently playing |
-| Hey Google, Repeat this or Repeat one on kodi  | Repeats the current track playing|
-| Hey Google, Repeat all on kodi| Changes repeat mode to all |
-| Hey Google, Repeat off on kodi| Turns off Repeat|
-| Hey Google, Turn Shuffle On on kodi| Turns on shuffle mode|
-| Hey Google, Turn Shuffle Off on kodi| Turns off shuffle mode|
-| Hey Google, Play Next on kodi| Plays the next track|
-| Hey Google, Play Previous on kodi| Plays the previous track|
-| Hey Google, Scroll a bit forward on kodi| Fast forwards a movie/music by a small amount|
-| Hey Google, Scroll forward on kodi| Fast forwards a movie/track by a large margin |
-| Hey Google, Scroll a bit backward on kodi| Rewinds a movie/track by a small amount|
-| Hey Google, Scroll backward on kodi| Rewinds a movie/track by a large margin|
-| Hey Google, Set volume _Vol level number between 0 and 100_ on kodi | Sets the volume to the mentioned number |
-| Hey Google, Get volume on kodi| Tells you the current volume level by voice |
-| Hey Google, Toggle mute on kodi| Either mutes or unmutes, depending on mute status|
-| Hey Google, Pause on kodi| Pauses the current video/track |
-| Hey Google, Resume on kodi| Resumes playing the video/track|
-| Hey Google, Stop on kodi| Stops playing and closes the player |
-| Hey Goolge, goto _Home_ on kodi| Opens the appropriate menu or window mentioned |
-| Hey Goolge, goto  _Settings_ on kodi | Opens the settings menu or window |
-| Hey Goolge, goto _Videos_ on kodi | Opens the videos menu or window |
-| Hey Goolge, goto _Weather_ on kodi | Opens the weather menu or window |
-| Hey Google, goto _Music_ on kodi | Opens the music menu or window |
-| Hey Google, Move Up on kodi| Moves selection pointer up |
-| Hey Google, Move Down on kodi | Moves selection pointer down |
-| Hey Google, Move Left on kodi | Moves selection pointer left |
-| Hey Google, Move Right on kodi | Moves selection pointer right |
-| Hey Google, Move Back on kodi| Goes back, equivalent to esc key |
-| Hey Google, Move Select on kodi| Makes a sletion, equivalent to enter key |
+| __Custom Wakeword__, Shuffle my songs                | Shuffles all the songs added to the kodi library      |
+| __Custom Wakeword__, Play songs from _Album name_                | Plays all the songs under the mentioned Album name  |    
+| __Custom Wakeword__, Play songs by, _Artist name_         | Plays all the songs rendered by the mentioned artist      |  
+| __Custom Wakeword__, Play _Song name_ song                | Plays the requested song, if it has been added to the library         |
+| __Custom Wakeword__, Play _Movie name_ movie          | Plays the requested movie, if it has been added to the library     |  
+| __Custom Wakeword__, From YouTube, Play _Youtube Video_         | Fetches the YouTube video and plays it on Kodi                  |
+| __Custom Wakeword__, What is playing?                   | Tells you by voice as to what is currently playing |
+| __Custom Wakeword__, Repeat this or Repeat one   | Repeats the current track playing|
+| __Custom Wakeword__, Repeat all | Changes repeat mode to all |
+| __Custom Wakeword__, Repeat off | Turns off Repeat|
+| __Custom Wakeword__, Turn Shuffle On | Turns on shuffle mode|
+| __Custom Wakeword__, Turn Shuffle Off | Turns off shuffle mode|
+| __Custom Wakeword__, Play Next | Plays the next track|
+| __Custom Wakeword__, Play Previous | Plays the previous track|
+| __Custom Wakeword__, Scroll a bit forward | Fast forwards a movie/music by a small amount|
+| __Custom Wakeword__, Scroll forward | Fast forwards a movie/track by a large margin |
+| __Custom Wakeword__, Scroll a bit backward | Rewinds a movie/track by a small amount|
+| __Custom Wakeword__, Scroll backward | Rewinds a movie/track by a large margin|
+| __Custom Wakeword__, Set volume _Vol level number between 0 and 100_  | Sets the volume to the mentioned number |
+| __Custom Wakeword__, Get volume | Tells you the current volume level by voice |
+| __Custom Wakeword__, Toggle mute | Either mutes or unmutes, depending on mute status|
+| __Custom Wakeword__, Pause | Pauses the current video/track |
+| __Custom Wakeword__, Resume | Resumes playing the video/track|
+| __Custom Wakeword__, Stop | Stops playing and closes the player |
+| __Custom Wakeword__, goto _Home_ | Opens the appropriate menu or window mentioned |
+| __Custom Wakeword__, goto  _Settings_  | Opens the settings menu or window |
+| __Custom Wakeword__, goto _Videos_  | Opens the videos menu or window |
+| __Custom Wakeword__, goto _Weather_  | Opens the weather menu or window |
+| __Custom Wakeword__, goto _Music_  | Opens the music menu or window |
+| __Custom Wakeword__, Move Up | Moves selection pointer up |
+| __Custom Wakeword__, Move Down  | Moves selection pointer down |
+| __Custom Wakeword__, Move Left  | Moves selection pointer left |
+| __Custom Wakeword__, Move Right  | Moves selection pointer right |
+| __Custom Wakeword__, Move Back | Goes back, equivalent to esc key |
+| __Custom Wakeword__, Move Select | Makes a sletion, equivalent to enter key |
