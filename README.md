@@ -42,7 +42,7 @@ The speaker-test command is used to initialize alsa, so please do not skip that.
 sudo chmod +x ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
 sudo ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
 speaker-test  
-```
+```    
 
     3.2. USB MIC AND HDMI users,  
 ```
