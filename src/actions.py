@@ -4,6 +4,8 @@
 #Copying and Pasting AIY Kit's actions commands will not work
 
 from kodijson import Kodi, PLAYER_VIDEO
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
 from youtube_search_engine import google_cloud_api_key
 from youtube_search_engine import youtube_search
