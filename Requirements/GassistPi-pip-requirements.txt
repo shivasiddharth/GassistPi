@@ -27,3 +27,4 @@ google-cloud-speech==0.36.0
 adafruit-io==2.1
 cryptography==2.4.2
 mock==3.0.5
+oauth2client
