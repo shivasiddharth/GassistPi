@@ -11,3 +11,4 @@ pyyaml==3.13
 numpy>=1.15.4
 pycryptodomex==3.7.2
 cryptography==2.4.2
+mock==3.0.5
