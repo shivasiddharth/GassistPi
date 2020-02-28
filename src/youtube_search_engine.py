@@ -12,7 +12,7 @@ with open('{}/src/config.yaml'.format(ROOT_PATH), 'r') as conf:
     configuration = yaml.load(conf)
 
 # YouTube API Constants
-DEVELOPER_KEY = google_cloud_api_key
+DEVELOPER_KEY = configuration['Google_cloud_api_key']
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
