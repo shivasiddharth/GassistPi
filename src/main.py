@@ -39,6 +39,7 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
+from actions import gender
 from actions import say
 from actions import kodiactions
 from actions import mutevolstatus
@@ -60,13 +61,7 @@ WARNING_NOT_REGISTERED = """
     https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device
 """
 
-logging.root.handlers = []
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG , filename='/tmp/GassistPi.log')
-console = logging.StreamHandler()
-console.setLevel(logging.ERROR)
-formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s')
-console.setFormatter(formatter)
-logging.getLogger("").addHandler(console)
+
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
@@ -75,7 +70,7 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 #kodi = Kodi("http://localhost:8080/jsonrpc")
 
 #Login with custom credentials
-# Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
+#Kodi("http://IP-ADDRESS-OF-KODI:8080/jsonrpc", "username", "password")
 kodiurl=("http://"+str(configuration['Kodi']['ip'])+":"+str(configuration['Kodi']['port'])+"/jsonrpc")
 kodi = Kodi(kodiurl, configuration['Kodi']['username'], configuration['Kodi']['password'])
 if configuration['Kodi']['Kodi_Control']=='Enabled':
@@ -94,7 +89,7 @@ models=configuration['Wakewords']['Custom_wakeword_models']
 class Myassistant():
 
     def __init__(self):
-        self.customwakewordkoditrigger == True
+        self.customwakewordkoditrigger=False
         self.interrupted=False
         self.can_start_conversation=False
         self.assistant=None
@@ -167,8 +162,10 @@ class Myassistant():
                     print("Kodi TV box not online")
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
+           print(event.args)
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
+           print(event.args)
 
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
@@ -237,9 +234,9 @@ class Myassistant():
     def detected(self):
         if self.can_start_conversation == True:
             if kodicontrol == True:
-                self.customwakewordkoditrigger == True
+                self.customwakewordkoditrigger = True
             else:
-                self.customwakewordkoditrigger == False
+                self.customwakewordkoditrigger = False
             self.assistant.start_conversation()
             print('Assistant is listening....')
 
@@ -313,8 +310,8 @@ class Myassistant():
         # from what we previously registered with.
         should_register = (
             args.device_model_id and args.device_model_id != device_model_id)
-
         device_model_id = args.device_model_id or device_model_id
+        
         with Assistant(credentials, device_model_id) as assistant:
             self.assistant = assistant
             if gender=='Male':
@@ -354,4 +351,4 @@ if __name__ == '__main__':
     try:
         Myassistant().main()
     except Exception as error:
-        logger.exception(error)
+        print(error)

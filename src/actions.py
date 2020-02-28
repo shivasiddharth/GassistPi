@@ -4,9 +4,11 @@
 #Copying and Pasting AIY Kit's actions commands will not work
 
 from kodijson import Kodi, PLAYER_VIDEO
-from oauth2client.tools import argparser
-from youtube_search_engine import google_cloud_api_key
+
 from youtube_search_engine import youtube_search
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from oauth2client.tools import argparser
 from gtts import gTTS
 import requests
 import os
@@ -52,18 +54,21 @@ window=configuration['Kodi']['window']
 ##Speech declarations
 femalettsfilename="/tmp/female-say.mp3"
 malettsfilename="/tmp/male-say.wav"
+gender=configuration['TextToSpeech']['Voice_Gender']
 
 #gTTS
 def gttssay(phrase):
-    tts = gTTS(text=phrase, 'en-US')
+    tts = gTTS(text=phrase)
     tts.save(femalettsfilename)
-    if specgender=='Male':
+    print("Saving")
+    if gender=='Male':
         os.system('sox ' + femalettsfilename + ' ' + malettsfilename + ' pitch -450')
         os.remove(femalettsfilename)
         os.system('aplay ' + malettsfilename)
         os.remove(malettsfilename)
-    elif specgender=='Female':
+    elif gender=='Female':
         os.system("mpg123 "+femalettsfilename)
+        print("Playing")
         os.remove(femalettsfilename)
 
 
@@ -71,8 +76,6 @@ def gttssay(phrase):
 def say(words):
     gttssay(words)
 
-
-##---------------End of send clickatell sms-----------------------
 
 ##-------Start of functions defined for Kodi Actions--------------
 #Function to get Kodi Volume and Mute status
