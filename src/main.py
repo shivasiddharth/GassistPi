@@ -94,7 +94,7 @@ models=configuration['Wakewords']['Custom_wakeword_models']
 class Myassistant():
 
     def __init__(self):
-        self.customwakewordkoditrigger == True
+        self.customwakewordkoditrigger=True
         self.interrupted=False
         self.can_start_conversation=False
         self.assistant=None
