@@ -16,6 +16,7 @@
 
 ```
 sudo apt-get install git  
+sudo apt-get install alsa-utils   
 git clone https://github.com/shivasiddharth/GassistPi -b OSMC
 ```
 

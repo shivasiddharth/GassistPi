@@ -130,7 +130,7 @@ class Myassistant():
         print(event)
         print()
         if event.type == EventType.ON_MUTED_CHANGED:
-            print(event.args["is_muted"])
+            print("Mic mute is set to: " + str(event.args["is_muted"]))
 
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
@@ -146,7 +146,7 @@ class Myassistant():
                     with open('{}/.volume.json'.format(USER_PATH), 'w') as f:
                            json.dump(vollevel, f)
                     kodi.Application.SetVolume({"volume": 0})
-                    kodi.GUI.ShowNotification({"title": "", "message": ".....Listening.....", "image": "{}/GoogleAssistantImages/GoogleAssistantBarsTransparent.gif".format(ROOT_PATH)})
+                    #kodi.GUI.ShowNotification({"title": "", "message": ".....Listening.....", "image": "{}/GoogleAssistantImages/GoogleAssistantBarsTransparent.gif".format(ROOT_PATH)})
                 except requests.exceptions.ConnectionError:
                     print("Kodi TV box not online")
 
@@ -162,29 +162,29 @@ class Myassistant():
                     print("Kodi TV box not online")
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-           print(event.args)
+            print(event.args)
 
         if event.type == EventType.ON_RESPONDING_FINISHED:
-           print(event.args)
-
+            print(event.args)
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
             usrcmd=event.args["text"]
             if self.customwakewordkoditrigger == True:
                 usrcmd=usrcmd + ""
             self.custom_command(usrcmd)
-            if kodicontrol:
-                try:
-                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
-                except requests.exceptions.ConnectionError:
-                    print("Kodi TV box not online")
+            #if kodicontrol:
+                #try:
+                    #kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantDotsTransparent.gif".format(ROOT_PATH)})
+                #except requests.exceptions.ConnectionError:
+                    #print("Kodi TV box not online")
 
         if event.type == EventType.ON_RENDER_RESPONSE:
-            if kodicontrol:
-                try:
-                    kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantTransparent.gif".format(ROOT_PATH),"displaytime": 20000})
-                except requests.exceptions.ConnectionError:
-                    print("Kodi TV box not online")
+            print(event.args)
+            #if kodicontrol:
+                #try:
+                    #kodi.GUI.ShowNotification({"title": "", "message": event.args["text"], "image": "{}/GoogleAssistantImages/GoogleAssistantTransparent.gif".format(ROOT_PATH),"displaytime": 20000})
+                #except requests.exceptions.ConnectionError:
+                    #print("Kodi TV box not online")
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
@@ -250,6 +250,7 @@ class Myassistant():
             try:
                self.assistant.stop_conversation()
                kodiactions(str(usrcmd).lower())
+               self.customwakewordkoditrigger = False
             except requests.exceptions.ConnectionError:
                 say("Kodi TV box not online")
 
@@ -311,7 +312,7 @@ class Myassistant():
         should_register = (
             args.device_model_id and args.device_model_id != device_model_id)
         device_model_id = args.device_model_id or device_model_id
-        
+
         with Assistant(credentials, device_model_id) as assistant:
             self.assistant = assistant
             if gender=='Male':
