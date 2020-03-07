@@ -7,8 +7,8 @@
 ### Do not raise an Issue request for Non-Issue stuff. For Non-Issue Help and Interaction use gitter [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)  
 
 *******************************************************************************************************************************
-## 26-Feb-2020 Update:
-**Support for Raspbian Buster Added with Assistant Library 1.0.1**               
+## 07-Mar-2020 Update:
+**Bumped Assistant Library to 1.1.0 and SDK to 0.6.0**               
 *******************************************************************************************************************************
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
 **1.   Headless auto start on boot.**      
