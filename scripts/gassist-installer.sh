@@ -173,24 +173,12 @@ source env/bin/activate
 
 pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
-pip install google-assistant-library==1.0.1
-pip install google-assistant-sdk==0.5.1
-pip install google-assistant-sdk[samples]==0.5.1
+pip install google-assistant-library==1.1.0
+pip install google-assistant-sdk==0.6.0
+pip install google-assistant-sdk[samples]==0.6.0
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
-
-echo ""
-echo ""
-if [[ $(python3 --version|grep "3.7") ]]; then
-   ppath="python3.7"
-elif [[ $(python3 --version|grep "3.6") ]]; then
-   ppath="python3.6"
-elif [[ $(python3 --version|grep "3.5") ]]; then
-   ppath="python3.5"
-fi
-echo "Modifying the assistant core to prevent segfault."
-sudo \cp -f ${GIT_DIR}/Extras/assistant.py /home/${USER}/env/lib/$ppath/site-packages/google/assistant/library/assistant.py
 echo ""
 echo ""
 echo "Testing the installed google assistant. Make a note of the generated Device-Id"
