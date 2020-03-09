@@ -209,3 +209,13 @@ sudo systemctl disable gassistpi.service
 6. Restart the assistant for the changes to take effect.     
 
 ************************************************
+
+************************************************  
+### **LIST OF GPIOs USED IN RASPBERRY PI BOARDS**  
+************************************************  
+| GPIO Number (BCM) | Purpose                                        |
+|-------------------|------------------------------------------------|
+| 25                | Assistant activity indicator for AIY Kits      |        
+| 05 and 06         | Google assistant listening and responding      |         
+
+**Note: some HATS may use GPIOs 18, 19, 20, 21 for I2S audio please refer to the manufacturer's pinouts**          
