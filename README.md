@@ -1,6 +1,6 @@
 
 
-# Bare Google Assistant for Linux Systems   
+# Bare Voice Activated Google Assistant for Linux Systems   
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
