@@ -40,122 +40,20 @@ sudo pip install pyaudio
 
 #Check OS Version
 echo ""
-echo "Checking OS Compatability"
-echo ""
-if [[ $(cat /etc/os-release|grep "raspbian") ]]; then
-  if [[ $(cat /etc/os-release|grep "stretch") ]]; then
-    osversion="Raspbian Stretch"
-    echo ""
-    echo "You are running the installer on Stretch="
-    echo ""
-  elif [[ $(cat /etc/os-release|grep "buster") ]]; then
-    osversion="Raspbian Buster"
-    echo ""
-    echo "You are running the installer on Buster"
-    echo ""
-  else
-    osversion="Other Raspbian"
-    echo ""
-    echo "You are advised to use the Stretch or Buster version of the OS"
-    echo "Exiting the installer="
-    echo ""
-    exit 1
-  fi
-elif [[ $(cat /etc/os-release|grep "armbian") ]]; then
-  if [[ $(cat /etc/os-release|grep "stretch") ]]; then
-    osversion="Armbian Stretch"
-    echo ""
-    echo "You are running the installer on Stretch"
-    echo ""
-  else
-    osversion="Other Armbian"
-    echo ""
-    echo "You are advised to use the Stretch version of the OS"
-    echo "Exiting the installer="
-    echo ""
-    exit 1
-  fi
-elif [[ $(cat /etc/os-release|grep "osmc") ]]; then
-  osmcversion=$(grep VERSION_ID /etc/os-release)
-  osmcversion=${osmcversion//VERSION_ID=/""}
-  osmcversion=${osmcversion//'"'/""}
-  osmcversion=${osmcversion//./-}
-  osmcversiondate=$(date -d $osmcversion +%s)
-  export LC_ALL=C.UTF-8
-  export LANG=C.UTF-8
-  if (($osmcversiondate > 1512086400)); then
-    osversion="OSMC Stretch"
-    echo ""
-    echo "You are running the installer on Stretch="
-    echo ""
-  else
-    osversion="Other OSMC"
-    echo ""
-    echo "You are advised to use the Stretch version of the OS"
-    echo "Exiting the installer="
-    echo ""
-    exit 1
-  fi
-fi
-
 #Check CPU architecture
 if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]]; then
 	devmodel="armv7"
   echo ""
-  echo "Your board supports voice control."
+  echo "Your board supports voice controlled Google Assistant."
   echo ""
 else
 	devmodel="armv6"
   echo ""
-  echo "=Your board does not support voice control."
+  echo "Your board does not support voice control."
   echo ""
   exit 1
 fi
 
-
-#Copy snowboy wrappers for Stretch or Buster and create new ones for other OSes.
-echo "Copying Snowboy files to GassistPi directory"
-echo ""
-if [[ $osversion = "Raspbian Buster" ]]; then
-  sudo \cp -f ${GIT_DIR}/src/resources/Buster-wrapper/_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
-  sudo \cp -f ${GIT_DIR}/src/resources/Buster-wrapper/snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
-elif [[ $osversion = "Raspbian Stretch" ]]; then
-  sudo \cp -f ${GIT_DIR}/src/resources/Stretch-wrapper/_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
-  sudo \cp -f ${GIT_DIR}/src/resources/Stretch-wrapper/snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
-fi
-
-if [[ $osversion != "Raspbian Stretch" ]] && [[ $osversion != "Raspbian Buster" ]]; then
-  echo "Snowboy wrappers provied with the project are for Raspberry Pi boards running Raspbian Stretch or Buster. Custom snowboy wrappers need to be compiled for your setup. Grab a coffee or a beer this will take quite a while."
-  echo ""
-  echo "Installing Swig"
-  echo ""
-  if [ ! -d /home/${USER}/programs/libraries/swig/ ]; then
-    sudo mkdir -p programs/libraries/ && cd programs/libraries
-    sudo git clone https://github.com/swig/swig.git
-  fi
-  cd /home/${USER}/programs/libraries/swig/
-  sudo ./autogen.sh
-  sudo ./configure
-  sudo make
-  sudo make install
-  echo ""
-  echo "Compiling custom Snowboy Python3 wrapper"
-  echo ""
-  cd ~/programs
-  if [ ! -d /home/${USER}/programs/snowboy/ ]; then
-    sudo git clone https://github.com/Kitt-AI/snowboy.git
-  fi
-  cd /home/${USER}/programs/snowboy/swig/Python3
-  sudo make
-
-  if [ -e /home/${USER}/programs/snowboy/swig/Python3/_snowboydetect.so ]; then
-    echo "Copying Snowboy files to GassistPi directory"
-    sudo \cp -f ./_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
-    sudo \cp -f ./snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
-  else
-    echo "Something has gone wrong while compiling the wrappers. Try again or go through the errors above"
-  fi
-fi
 
 cd /home/${USER}/
 echo ""

@@ -1,6 +1,6 @@
 
 
-# Voice control OSMC with Goolge Assistant Built-in    
+# Bare Google Assistant for Linux Systems   
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
@@ -17,7 +17,7 @@
 ```
 sudo apt-get install git  
 sudo apt-get install alsa-utils   
-git clone https://github.com/shivasiddharth/GassistPi -b OSMC
+git clone https://github.com/shivasiddharth/GassistPi -b Just-Google-Assistant
 ```
 
 *************************************************  
@@ -166,68 +166,3 @@ Open a terminal and execute the following:
 sudo systemctl stop gassistpi.service  
 sudo systemctl disable gassistpi.service   
 ```    
-
-************************************************  
-### **KODI INTEGRATION**  
-************************************************  
-### Enabling Kodi control    
-In the config.yaml, under kodi, change control option from **'Disabled'** to **'Enabled'**.  
-
-### Adding YouTube API and Generating API Key
-The Kodi integration uses YouTube Data API v3  for getting video links. First step is to add the API to the project and create an API KEY.
-1. Go to the projects page on your Google Cloud Console-> https://console.cloud.google.com/project  
-2. Select your project from the list.  
-3. On the left top corner, click on the hamburger icon or three horizontal stacked lines.  
-4. Move your mouse pointer over "API and services" and choose "credentials".
-5. Click on create credentials and select API Key and choose close. Make a note of the created API Key and enter it in the config.yaml at the indicated location.  
-6. "From the API and services" option, select library and in the search bar type youtube, select "YouTube Data API v3" API and click on "ENABLE".
-7. In the API window, click on "All API Credentials" and in the drop down, make sure to have a tick (check mark) against the API Key that you just generated.  
-
-### Enabling HTTP Control on Kodi
-The webserver is disabled by default and has to be manually enabled by the user.
-1. This can be done in Settings → Services → Control → Allow remote control via HTTP.   
-2. Set the port number to 8080, username to kodi and password to kodi  
-(username and password should be in lowercase).
-
-### Adding YouTube plugin on Kodi
-For Kodi to play the YouTube video, you need to add and enable the YouTube Plugin on Kodi.  
-
-### Command Sytanxes for Kodi Control  
-
-| Command Syntax    | What it does                                        |
-|-------------------|------------------------------------------------|
-| __Custom Wakeword__, Shuffle my songs                | Shuffles all the songs added to the kodi library      |
-| __Custom Wakeword__, Play songs from _Album name_                | Plays all the songs under the mentioned Album name  |    
-| __Custom Wakeword__, Play songs by, _Artist name_         | Plays all the songs rendered by the mentioned artist      |  
-| __Custom Wakeword__, Play _Song name_ song                | Plays the requested song, if it has been added to the library         |
-| __Custom Wakeword__, Play _Movie name_ movie          | Plays the requested movie, if it has been added to the library     |  
-| __Custom Wakeword__, From YouTube, Play _Youtube Video_         | Fetches the YouTube video and plays it on Kodi                  |
-| __Custom Wakeword__, What is playing?                   | Tells you by voice as to what is currently playing |
-| __Custom Wakeword__, Repeat this or Repeat one   | Repeats the current track playing|
-| __Custom Wakeword__, Repeat all | Changes repeat mode to all |
-| __Custom Wakeword__, Repeat off | Turns off Repeat|
-| __Custom Wakeword__, Turn Shuffle On | Turns on shuffle mode|
-| __Custom Wakeword__, Turn Shuffle Off | Turns off shuffle mode|
-| __Custom Wakeword__, Play Next | Plays the next track|
-| __Custom Wakeword__, Play Previous | Plays the previous track|
-| __Custom Wakeword__, Scroll a bit forward | Fast forwards a movie/music by a small amount|
-| __Custom Wakeword__, Scroll forward | Fast forwards a movie/track by a large margin |
-| __Custom Wakeword__, Scroll a bit backward | Rewinds a movie/track by a small amount|
-| __Custom Wakeword__, Scroll backward | Rewinds a movie/track by a large margin|
-| __Custom Wakeword__, Set volume _Vol level number between 0 and 100_  | Sets the volume to the mentioned number |
-| __Custom Wakeword__, Get volume | Tells you the current volume level by voice |
-| __Custom Wakeword__, Toggle mute | Either mutes or unmutes, depending on mute status|
-| __Custom Wakeword__, Pause | Pauses the current video/track |
-| __Custom Wakeword__, Resume | Resumes playing the video/track|
-| __Custom Wakeword__, Stop | Stops playing and closes the player |
-| __Custom Wakeword__, goto _Home_ | Opens the appropriate menu or window mentioned |
-| __Custom Wakeword__, goto  _Settings_  | Opens the settings menu or window |
-| __Custom Wakeword__, goto _Videos_  | Opens the videos menu or window |
-| __Custom Wakeword__, goto _Weather_  | Opens the weather menu or window |
-| __Custom Wakeword__, goto _Music_  | Opens the music menu or window |
-| __Custom Wakeword__, Move Up | Moves selection pointer up |
-| __Custom Wakeword__, Move Down  | Moves selection pointer down |
-| __Custom Wakeword__, Move Left  | Moves selection pointer left |
-| __Custom Wakeword__, Move Right  | Moves selection pointer right |
-| __Custom Wakeword__, Move Back | Goes back, equivalent to esc key |
-| __Custom Wakeword__, Move Select | Makes a sletion, equivalent to enter key |
