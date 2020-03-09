@@ -198,3 +198,14 @@ Open a terminal and execute the following:
 sudo systemctl stop gassistpi.service  
 sudo systemctl disable gassistpi.service   
 ```    
+************************************************
+### **CUSTOM WAKEWORD ACTIVATION**  
+************************************************
+1. You can choose to either Enable or Disable the custom wakeword activation in the config.yaml file.  
+2. In the config.yaml file, under Wakewords, change the **"Custom_Wakeword"** to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
+3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
+4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/GassistPi/src/resources**  directory. Or you can also use the **train_snowboy.py** file placed in the **Extras folder**.   
+5. Change the paths to the models in the config.yaml file.  
+6. Restart the assistant for the changes to take effect.     
+
+************************************************
