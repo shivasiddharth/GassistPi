@@ -1023,4 +1023,4 @@ if __name__ == '__main__':
     try:
         Myassistant().main()
     except Exception as error:
-        logger.exception(error)
+        logging.exception(error)
