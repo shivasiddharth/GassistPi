@@ -190,9 +190,7 @@ sudo  ./GassistPi/scripts/gassist-installer.sh
 
 5. Copy the authorization code from browser onto the terminal and press enter    
 
-6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
-
-7. After verifying the working of assistant, close and exit the terminal    
+6. After successful authentication, the Google Assistant installation will finish.   
 
 
 *************************************************  
