@@ -57,6 +57,7 @@ def process_event(event):
     Args:
         event(event.Event): The current event to process.
     """
+    print(event)
     if event.type == EventType.ON_MUTED_CHANGED:
         print("Mic mute is set to: " + str(event.args["is_muted"]))
 
