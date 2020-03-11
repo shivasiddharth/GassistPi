@@ -199,6 +199,4 @@ google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-proto
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
 echo ""
-echo "Testing the installed google assistant. Make a note of the generated Device-Id"
-echo ""
-googlesamples-assistant-hotword --project_id $projid --device_model_id $modelid
+echo "Finished installing Google Assistant........."
