@@ -32,6 +32,7 @@ import snowboydecoder
 import sys
 import signal
 import requests
+import yaml
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
@@ -209,7 +210,7 @@ class Myassistant():
 
     def detected(self):
         if self.can_start_conversation == True:
-                self.assistant.start_conversation()
+            self.assistant.start_conversation()
             print('Assistant is listening....')
 
     def start_detector(self):
