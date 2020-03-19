@@ -234,7 +234,7 @@ At any point of time, if you wish to manually start the assistant:
 **Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --project_id 'replace this with the project id '--device_model_id 'replace this with the model id'
 
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
