@@ -24,7 +24,7 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..',
 
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r', encoding='utf8') as conf:
     configuration = yaml.load(conf)
-    
+
 
 if os.path.isfile("{}/audiosetup".format(USER_PATH)):
     with open('{}/audiosetup'.format(USER_PATH)) as f:
@@ -51,10 +51,6 @@ aiyindicator=configuration['Gpios']['AIY_indicator'][0]
 listeningindicator=configuration['Gpios']['assistant_indicators'][0]
 speakingindicator=configuration['Gpios']['assistant_indicators'][1]
 
-#Stopbutton
-stoppushbutton=configuration['Gpios']['stopbutton_music_AIY_pushbutton'][0]
-GPIO.setup(stoppushbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-GPIO.add_event_detect(stoppushbutton,GPIO.FALLING)
 
 if (audiosetup=='AIY'):
     GPIO.setup(aiyindicator, GPIO.OUT)

@@ -121,9 +121,21 @@ if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]]; then
 else
 	devmodel="armv6"
   echo ""
-  echo "=Your board does not support Ok-Google Hotword. Exiting.."
+  echo "=Your board does not support Ok-Google Hotword. You need to trigger the assistant using pushbutton/custom-wakeword"
   echo ""
-  exit 1
+fi
+
+#Check Board Model
+if [[ $(cat /proc/cpuinfo|grep "BCM") ]]; then
+	board="Raspberry"
+  echo ""
+  echo "GPIO pins can be used with the assistant"
+  echo ""
+else
+	board="Others"
+  echo ""
+  echo "GPIO pins cannot be used by default with the assistant. You need to figure it out by yourselves"
+  echo ""
 fi
 
 #Copy snowboy wrappers for Stretch or Buster and create new ones for other OSes.
@@ -174,10 +186,22 @@ cd /home/${USER}/
 echo ""
 echo ""
 echo "Changing particulars in service files"
-sed -i '/main.py/d' ${GIT_DIR}/systemd/gassistpi.service
-sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
-sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
 
+if [[ $devmodel = "armv7" ]];then
+  echo ""
+  echo ""
+  echo "Changing particulars in service files for Ok-Google hotword"
+  sed -i '/pushbutton.py/d' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
+else
+  echo ""
+  echo ""
+  echo "Changing particulars in service files for Pushbutton/Custom-wakeword"
+  sed -i '/main.py/d' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
+fi
 
 sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
 
@@ -191,7 +215,12 @@ if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
 	pip install RPi.GPIO==0.6.3
 fi
 
-pip install google-assistant-library==1.1.0
+if [[ $devmodel = "armv7" ]];then
+	pip install google-assistant-library==1.1.0
+else
+  pip install --upgrade --no-binary :all: grpcio
+fi
+
 pip install google-assistant-grpc==0.3.0
 pip install google-assistant-sdk==0.6.0
 pip install google-assistant-sdk[samples]==0.6.0
@@ -199,4 +228,4 @@ google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-proto
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
 echo ""
-echo "Finished installing Google Assistant........."
+echo "Finished installing Google Assistant......."
