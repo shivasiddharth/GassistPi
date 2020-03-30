@@ -20,7 +20,7 @@ except ImportError:
 
 audiosetup=''
 
-USER_PATH = os.path.realpath(os.path.join(__file__, '..',
+USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r', encoding='utf8') as conf:
     configuration = yaml.load(conf)
