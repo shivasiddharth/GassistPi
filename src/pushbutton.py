@@ -143,9 +143,6 @@ class SampleAssistant(object):
         self.device_id = device_id
         self.conversation_stream = conversation_stream
         self.display = display
-        if GPIOcontrol:
-            self.t3 = Thread(target=self.stopbutton)
-            self.t3.start()
         # Opaque blob provided in AssistResponse that,
         # when provided in a follow-up AssistRequest,
         # gives the Assistant a context marker within the current state
