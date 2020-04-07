@@ -32,7 +32,7 @@ read -r -p "Enter the your Google Cloud Console Project-Id: " projid
 echo ""
 read -r -p "Enter the modelid that was generated in the actions console: " modelid
 echo ""
-echo "Your Model-Id: $modelid Project-Id: $projid used for this project" >> /home/${USER}/modelid.txt
+
 
 sudo apt-get update -y
 sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
@@ -183,27 +183,6 @@ if [[ $osversion != "Raspbian Stretch" ]] && [[ $osversion != "Raspbian Buster" 
 fi
 
 cd /home/${USER}/
-echo ""
-echo ""
-echo "Changing particulars in service files"
-
-if [[ $devmodel = "armv7" ]];then
-  echo ""
-  echo ""
-  echo "Changing particulars in service files for Ok-Google hotword"
-  sed -i '/pushbutton.py/d' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
-else
-  echo ""
-  echo ""
-  echo "Changing particulars in service files for Pushbutton/Custom-wakeword"
-  sed -i '/main.py/d' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
-  sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
-fi
-
-sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
 
 python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
@@ -227,5 +206,34 @@ pip install google-assistant-sdk[samples]==0.6.0
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
+
+echo ""
+echo ""
+echo ""
+if [ -f /home/${USER}/modelid.txt ] ; then
+  echo "Auto modification of the service file is not feasible. Manually check your username, project id and model id....."
+else
+  echo "Changing particulars in service files......"
+  if [[ $devmodel = "armv7" ]];then
+    echo ""
+    echo ""
+    echo "Changing particulars in service files for Ok-Google hotword......."
+    sed -i '/pushbutton.py/d' ${GIT_DIR}/systemd/gassistpi.service
+    sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+    sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  else
+    echo ""
+    echo ""
+    echo "Changing particulars in service files for Pushbutton/Custom-wakeword......."
+    sed -i '/main.py/d' ${GIT_DIR}/systemd/gassistpi.service
+    sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+    sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
+  fi
+  sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
+fi
+echo ""
+echo ""
+
+echo "Your Model-Id: $modelid Project-Id: $projid used for this project" >> /home/${USER}/modelid.txt
 echo ""
 echo "Finished installing Google Assistant......."
