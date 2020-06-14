@@ -140,6 +140,9 @@ def process_event(event):
         usrcmd=str(usrcmd).lower()
         custom_command(usrcmd)
 
+    if event.type == EventType.ON_RENDER_RESPONSE:
+        print(event.args)
+
     if event.type == EventType.ON_DEVICE_ACTION:
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
