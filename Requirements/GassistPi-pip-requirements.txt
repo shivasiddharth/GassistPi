@@ -7,3 +7,4 @@ pycryptodomex==3.7.2
 cryptography==2.4.2
 mock==3.0.5
 oauth2client
+requests

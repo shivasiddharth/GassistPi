@@ -25,6 +25,8 @@ then
     exec sudo -u $RUN_AS $0
 fi
 clear
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
 echo ""
 read -r -p "Enter the your full credential file name including the path and .json extension: " credname
 echo ""
@@ -54,17 +56,6 @@ else
   exit 1
 fi
 
-
-cd /home/${USER}/
-echo ""
-echo ""
-echo "Changing particulars in service files"
-echo ""
-echo ""
-sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
-sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
-sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
-
 python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
@@ -78,5 +69,15 @@ google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-proto
           --scope https://www.googleapis.com/auth/gcm \
           --save --headless --client-secrets $credname
 echo ""
+cd /home/${USER}/
 echo ""
+echo ""
+echo "Changing particulars in service files"
+echo ""
+echo ""
+sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
+sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
+sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
+echo ""
+
 echo "Finished installing Google Assistant........."

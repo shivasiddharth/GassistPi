@@ -22,6 +22,8 @@ import os.path
 import pathlib2 as pathlib
 import os
 import subprocess
+import requests
+import time
 import google.oauth2.credentials
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
@@ -48,6 +50,60 @@ WARNING_NOT_REGISTERED = """
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
+needstatuschange=False
+
+def check_volumio_status():
+    try:
+        output = subprocess.check_output("volumio status", shell=True)
+        decodeoutput=output.decode("UTF-8")
+        outputjs=json.loads(dd)
+        status=outputjs["status"]
+        if status=="stop" or status=="pause":
+            needstatuschange=False
+        elif status=="play":
+            needstatuschange=True
+        return needstatuschange
+    except KeyError:
+        needstatuschange=False
+        return needstatuschange
+
+def custom_command(command):
+    if "play" in command:
+        assistant.stop_conversation()
+        requests.get("http://localhost:3000/api/v1/commands/?cmd=play")
+    if "pause" in command:
+        assistant.stop_conversation()
+        requests.get("http://localhost:3000/api/v1/commands/?cmd=pause")
+    if "next" in command:
+        if needstatuschange:
+            assistant.stop_conversation()
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=play")
+            time.sleep(1000)
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=next")
+        else:
+            print("Unable to help")
+    if "previous" in command:
+        if needstatuschange:
+            assistant.stop_conversation()
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=play")
+            time.sleep(1000)
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=prev")
+        else:
+            print("Unable to help")
+    if "speaker volume" in command:
+        if "hundred" in command or "maximum" in command:
+            settingvollevel=100
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=volume&volume=100")
+        elif "zero" in command or "minimum" in command:
+            settingvollevel=0
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=volume&volume=0")
+        else:
+            for vollevel in re.findall(r"[-+]?\d*\.\d+|\d+", command):
+                settingvollevel=vollevel
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=volume&volume="+str(settingvollevel))
+
+
+
 def process_event(event):
     """Pretty prints events.
 
@@ -62,11 +118,15 @@ def process_event(event):
         print("Mic mute is set to: " + str(event.args["is_muted"]))
 
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
+        if needstatuschange:
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=pause")
         subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print()
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
+        if needstatuschange:
+            requests.get("http://localhost:3000/api/v1/commands/?cmd=play")
         print()
 
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
@@ -77,6 +137,8 @@ def process_event(event):
 
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
         usrcmd=event.args["text"]
+        usrcmd=str(usrcmd).lower()
+        custom_command(usrcmd)
 
     if event.type == EventType.ON_DEVICE_ACTION:
         for command, params in event.actions:
@@ -168,6 +230,7 @@ def main():
             if event.type == EventType.ON_START_FINISHED and args.query:
                 assistant.send_text_query(args.query)
             process_event(event)
+
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 
+![github-small](https://user-images.githubusercontent.com/18142081/84596026-d7ea8180-ae78-11ea-938f-5911cf7771ce.png)
 
-# Bare Voice Activated Google Assistant for Linux Systems   
+# Google Assistant Interface for Volumio Speaker   
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
@@ -10,16 +11,55 @@
 
 ### NOTE: "${USER}" will automatically take your username. No need to change that. Just copy pasting the following commands on terminal will work.  
 
+*************************************************    
+## **ADD RASPBIAN SOURCES**      
+*************************************************   
+1. Open the sources list using:   
+```
+sudo nano /etc/sources.list
+```
+
+2. Add the following lines:   
+```   
+deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi firmware
+deb http://archive.raspberrypi.org/debian/ stretch main ui
+```   
+
+3. Press **Ctrl+X** followed by **Y** and **Enter/Return** to save and exit.   
+
 *************************************************
-## **FIRST STEP- CLONE the PROJECT on to Pi**   
+## **CLONE the PROJECT on to Pi**   
 *************************************************
 1. Open the terminal and execute the following  
 
 ```
 sudo apt-get install git  
 sudo apt-get install alsa-utils   
-git clone https://github.com/shivasiddharth/GassistPi -b Just-Google-Assistant
+git clone https://github.com/shivasiddharth/GassistPi -b Volumio
 ```
+
+*************************************************    
+## **CONFIGURE AUDIO IN VOLUMIO**    
+*************************************************   
+1. Configure your audio output device according to your setup as shown below.    
+
+<img src="https://drive.google.com/uc?id=1LnDG0GyQg5T-StvfNn_Yq0E9kaLTBbqd"   
+width="600" height="400" border="1" />     
+
+2. If you are using an USB DAC or an I2S DAC:    
+**Note: Anytime you make changes to the volume configuration, it will change the audio device setting. So you need to change the device option as mentioned in the steps below.**    
+
+2.1 In the volume options, change the **Mixer Type** to **Software** as shown below. Otherwise set it to     **Hardware**.      
+
+<img src="https://drive.google.com/uc?id=1OrxUnLeTyWDJEOuvxNwDOXzlHn09BnQA"   
+width="600" height="400" border="1" />    
+
+2.2 . Open Volumio configuration using:   
+```
+sudo nano /etc/mpd.conf    
+```
+
+2.3 . Under audio_output option, change the device to **"plug:dmixer"**    
 
 *************************************************  
 ## **INSTALL AUDIO CONFIG FILES**
@@ -37,10 +77,6 @@ cd /home/${USER}/
 
 3. Choose the audio configuration according to your setup.   
 
-**Non-Raspberry Pi users, choose the USB-DAC option.    
-The speaker-test command is used to initialize alsa, so please do not skip that.  
-AIY-HAT and CUSTOM-HAT users, please reboot the Pi at places mentioned, else it will lead to audio and taskbar issues.**    
-
 3.1. USB DAC or USB Sound CARD users,  
 ```
 sudo chmod +x ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
@@ -48,18 +84,7 @@ sudo ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
 speaker-test  
 ```
 
-3.2. AIY-HAT users,  
-```
-sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/configure-driver.sh  
-sudo reboot  
-cd /home/${USER}/  
-sudo chmod +x ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
-sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh  
-speaker-test  
-```
-
-3.3. USB MIC AND HDMI users,  
+3.2. USB MIC AND HDMI users,  
 ```
 sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
 sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
@@ -70,38 +95,31 @@ sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh
 speaker-test  
 ```
 
-3.4. USB MIC AND AUDIO JACK users,  
+3.3. USB MIC AND AUDIO JACK users,  
 ```  
 sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
 sudo ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
 speaker-test  
-```       
-3.5. CUSTOM VOICE HAT users,  
-```
-sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh  
-sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/install-i2s.sh
-sudo reboot  
-cd /home/${USER}/  
-sudo chmod +x ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh  
-speaker-test   
-```
+```             
 
-3.6. RESPEAKER HAT users,  
+**Note: Any other I2S DAC users, choose USB DAC Option**   
+
+4. Check the audio in and out device or card numbers using:
 ```
-git clone https://github.com/shivasiddharth/seeed-voicecard
-cd ./seeed-voicecard/  
-sudo ./install.sh  
-sudo reboot   
-speaker-test     
+arecord -l   
+aplay -l    
 ```  
 
-**Those using any other DACs or HATs install the cards as per the manufacturer's guide
- and then you can try using the USB-DAC config file after changing the hardware ids**        
+5. Open the .asoundrc and asound.conf files one by one using:
+```
+sudo nano ./.asoundrc   
+sudo nano /etc/asound.conf  
+```  
+Change the device card numbers in the files depending upon the numbers that you got from Step-4 above.  
 
-4. Restart Pi
+6. Restart Pi
 
-5. Check the speaker using the following command    
+7. Check the speaker using the following command    
 
 ```
 speaker-test -t wav  
