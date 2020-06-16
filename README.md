@@ -12,6 +12,18 @@
 ### NOTE: "${USER}" will automatically take your username. No need to change that. Just copy pasting the following commands on terminal will work.  
 
 *************************************************    
+## **CONNECTING TO VOLUMIO via SSH**      
+*************************************************  
+1.  By default, SSH is disabled. To enable SSH, open the Volumio client's developer console from a browser using:  
+```  
+http://ADDRESS_OF_YOUR_VOLUMIO/dev
+```   
+
+2. In that window, under SSH, choose Enable.   
+
+3. Now You can connect to the Volumio client via SSH using a software like Putty.   
+
+*************************************************    
 ## **ADD RASPBIAN SOURCES**      
 *************************************************   
 1. Open the sources list using:   
@@ -25,7 +37,12 @@ deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free r
 deb http://archive.raspberrypi.org/debian/ stretch main ui
 ```   
 
-3. Press **Ctrl+X** followed by **Y** and **Enter/Return** to save and exit.   
+3. Press **Ctrl+X** followed by **Y** and **Enter/Return** to save and exit.
+
+4. Update using (must, do not skip):
+```   
+sudo apt-get update
+```   
 
 *************************************************
 ## **CLONE the PROJECT on to Pi**   
@@ -81,7 +98,6 @@ cd /home/${USER}/
 ```
 sudo chmod +x ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh  
 sudo ./GassistPi/audio-drivers/USB-DAC/scripts/install-usb-dac.sh
-speaker-test  
 ```
 
 3.2. USB MIC AND HDMI users,  
@@ -92,14 +108,12 @@ sudo reboot
 cd /home/${USER}/  
 sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
 sudo ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/install-usb-mic-hdmi.sh  
-speaker-test  
 ```
 
 3.3. USB MIC AND AUDIO JACK users,  
 ```  
 sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
 sudo ./GassistPi/audio-drivers/USB-MIC-JACK/scripts/usb-mic-onboard-jack.sh  
-speaker-test  
 ```             
 
 **Note: Any other I2S DAC users, choose USB DAC Option**   
