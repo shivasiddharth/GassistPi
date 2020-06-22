@@ -28,7 +28,7 @@ http://ADDRESS_OF_YOUR_VOLUMIO/dev
 *************************************************   
 1. Open the sources list using:   
 ```
-sudo nano /etc/sources.list
+sudo nano /etc/apt/sources.list
 ```
 
 2. Add the following lines:   
