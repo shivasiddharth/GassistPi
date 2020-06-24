@@ -183,7 +183,7 @@ sudo systemctl start gassistpi.service
 At any point of time, if you wish to manually start the assistant:
 Open a terminal and execute the following:
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id' --project_id 'replace this with the project id'
 
 ```
 
