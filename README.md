@@ -145,8 +145,8 @@ speaker-test -t wav
 
 1. Follow the instructions [here](https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account) to Configure a Developer Project and Account Settings. Then follow this [guide](https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device) to register the device and obtain the credentials file. Refer to the video below for step by step guidelines.  
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=dMNtmp8z52M
-" target="_blank"><img src="http://img.youtube.com/vi/dMNtmp8z52M/0.jpg"
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=pC4WLy45Zok
+" target="_blank"><img src="http://img.youtube.com/vi/pC4WLy45Zok/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
