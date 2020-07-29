@@ -9,6 +9,8 @@ If you do not complete the template below it is likely that your issue will not 
 
 **FAILURE TO COMPLETE THE REQUESTED INFORMATION WILL RESULT IN YOUR ISSUE BEING CLOSED**    
 
+### Which branch of the GassistPi are you using?
+
 ### Board and OS details:    
 Open a terminal and run   
 ```
