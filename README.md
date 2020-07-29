@@ -1,6 +1,9 @@
 
 
-# Bare Voice Activated Google Assistant for Linux Systems   
+# Google Assistant SDK Smart Screen   
+
+![github-small](https://user-images.githubusercontent.com/18142081/88792241-8bed6500-d1b8-11ea-8411-7242b7fa3c46.jpg)
+
 *******************************************************************************************************************************
 ### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
@@ -18,7 +21,7 @@
 ```
 sudo apt-get install git  
 sudo apt-get install alsa-utils   
-git clone https://github.com/shivasiddharth/GassistPi -b Just-Google-Assistant
+git clone https://github.com/shivasiddharth/GassistPi -b Google-Assistant-SDK-Smart-Screen    
 ```
 
 *************************************************  
@@ -144,57 +147,12 @@ sudo  ./GassistPi/scripts/gassist-installer.sh
 6. After successful authentication, the Google Assistant installation will finish.   
 
 
-*************************************************  
-## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
-*************************************************  
-1. Open the service files in the /GassistPi/systemd/ directory and verify your project and model ids and save the file.
-
-2. Change directory
-```
-cd /home/${USER}   
-```
-
-3. Make the service installer executable  
-
-```
-sudo chmod +x ./GassistPi/scripts/service-installer.sh  
-```  
-
-4. Run the service installer  
-
-```
-sudo ./GassistPi/scripts/service-installer.sh    
-```  
-
-5. Enable the service    
-```
-sudo systemctl enable gassistpi.service  
-```  
-
-6. Start the service     
-```
-sudo systemctl start gassistpi.service  
-```  
-
-**RESTART and ENJOY**  
-
-### MANUALLY START THE ASSISTANT
-
+**********************************************************************   
+## MANUALLY START THE ASSISTANT
+**********************************************************************   
 At any point of time, if you wish to manually start the assistant:
 Open a terminal and execute the following:
-```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id' --project_id 'replace this with the project id'
+```     
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id' --project_id 'replace this with the project id'    
 
-```
-
-Insert your Project Id and Model Id in quotes in the mentioned places      
-
-### DISABLING AUTO-START ON BOOT      
-
-At any point of time, if you wish to stop the auto start of the assistant:      
-
-Open a terminal and execute the following:     
-```
-sudo systemctl stop gassistpi.service  
-sudo systemctl disable gassistpi.service   
 ```    

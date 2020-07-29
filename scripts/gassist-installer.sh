@@ -58,12 +58,6 @@ fi
 cd /home/${USER}/
 echo ""
 echo ""
-echo "Changing particulars in service files"
-echo ""
-echo ""
-sed -i 's/created-project-id/'$projid'/g' ${GIT_DIR}/systemd/gassistpi.service
-sed -i 's/saved-model-id/'$modelid'/g' ${GIT_DIR}/systemd/gassistpi.service
-sed -i 's/__USER__/'${USER}'/g' ${GIT_DIR}/systemd/gassistpi.service
 
 python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
