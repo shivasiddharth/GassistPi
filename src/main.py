@@ -21,8 +21,7 @@ from kodijson import Kodi, PLAYER_VIDEO
 try:
     import RPi.GPIO as GPIO
 except Exception as e:
-    if str(e) == 'No module named \'RPi\'':
-        GPIO = None
+    GPIO = None
 import argparse
 import json
 import os.path
@@ -888,7 +887,11 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 vlcplayer.stop_vlc()
-                gmusicselect(str(usrcmd).lower())
+                try:
+                    gmusicselect(str(usrcmd).lower())
+                except Exception as e:
+                    print(e)
+                    say('Encountered an exception please check the logs.')
         if configuration['Spotify']['Spotify_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
@@ -911,6 +914,9 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 sendSMS(str(usrcmd).lower())
+        if custom_action_keyword['Keywords']['Wemo_Discovery'][0].lower() in usrcmd.lower():
+            self.assistant.stop_conversation()
+            wemodiscovery()
         if 'interpreter' in str(usrcmd).lower():
             self.assistant.stop_conversation()
             reqlang=str(usrcmd).lower()
@@ -927,9 +933,21 @@ class Myassistant():
                     else:
                         self.interpreter_mode_trigger('Stop')
                     break
-        if custom_action_keyword['Keywords']['Wemo_Discovery'][0].lower() in usrcmd.lower():
-            self.assistant.stop_conversation()
-            wemodiscovery()
+            try:
+                for i in range(0,len(langlist['Languages'])):
+                    if str(langlist['Languages'][i][i][0]).lower()==reqlang:
+                        self.interpcloudlang2=langlist['Languages'][i][i][1]
+                        self.interpttslang2=langlist['Languages'][i][i][2]
+                        if 'start' in str(usrcmd).lower():
+                            self.interpreter_mode_trigger('Start')
+                        else:
+                            self.interpreter_mode_trigger('Stop')
+                        break
+            except Exception as e:
+                print(e)
+                say('Encountered an exception please check the logs.')
+           
+
 
     def main(self):
         parser = argparse.ArgumentParser(
@@ -1028,4 +1046,4 @@ if __name__ == '__main__':
     try:
         Myassistant().main()
     except Exception as error:
-        logger.exception(error)
+        logging.exception(error)

@@ -25,8 +25,7 @@ import os.path
 try:
     import RPi.GPIO as GPIO
 except Exception as e:
-    if str(e) == 'No module named \'RPi\'':
-        GPIO = None
+    GPIO = None
 import time
 import re
 import subprocess
@@ -395,14 +394,20 @@ def script(phrase):
 
 #Radio Station Streaming
 def radio(phrase):
-    for num, name in enumerate(stnname):
+    conv = None
+    for num, name in reversed(list(enumerate(stnname))):
         if name.lower() in phrase:
             station=stnlink[num]
             conv=stnradio[num]
             print (station)
-            say("Tuning into " + conv)
-            vlcplayer.media_manager(station,'Radio')
-            vlcplayer.media_player(station)
+            break
+    if conv is not None:
+        say("Tuning into " + conv)
+        vlcplayer.media_manager(station,'Radio')
+        vlcplayer.media_player(station)
+    else:
+        say("Station not found")
+
 
 #ESP6266 Devcies control
 def ESP(phrase):
@@ -468,7 +473,7 @@ def feed(phrase):
         URL=sportsnews
     elif 'tech news' in phrase:
         URL=technews
-    elif 'my feed' in phrase:
+    elif (custom_action_keyword['Keywords']['RSS'][1]).lower() in phrase:
         URL=quote
     numfeeds=10
     feed=feedparser.parse(URL)
@@ -1160,8 +1165,10 @@ def YouTube_Autoplay(phrase):
                 vlcplayer.youtube_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-    except:
-        say('It is no longer available in youtube')
+
+    except Exception as e:
+        print(e)
+        say('Encountered an exception please check the logs.')
 
 def YouTube_No_Autoplay(phrase):
     try:
@@ -1185,8 +1192,10 @@ def YouTube_No_Autoplay(phrase):
             vlcplayer.youtube_player(currenttrackid)
         else:
             say("Unable to find songs matching your request")
-    except:
-        say('It is no longer available in youtube')
+
+    except Exception as e:
+        print(e)
+        say('Encountered an exception please check the logs.')
 
 #-----------------End of Functions for YouTube Streaming---------------------
 

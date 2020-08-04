@@ -9,6 +9,8 @@ If you do not complete the template below it is likely that your issue will not 
 
 **FAILURE TO COMPLETE THE REQUESTED INFORMATION WILL RESULT IN YOUR ISSUE BEING CLOSED**    
 
+### Which branch of GassistPi are you using ?
+
 ### Board and OS details:    
 Open a terminal and run   
 ```
@@ -24,14 +26,13 @@ Paste your Board and OS details here.
 
 ```
 
-### Did you go through or search the issues section to check if your issue was already discussed (either currently open issues or closed issues).
+### Did you go through or search the issues section to check if your issue was already discussed (either currently open issues or closed issues)?
 Yes/No
 
 ### 2. Is the issue related to assistant installation ?
 Yes/No
 
-### If answer to question 2 is Yes, then paste the contents of the terminal below.
-
+### If answer to question 2 is Yes, then attach the contents of terminal as a file or paste it below.
 ```
 
 ```
@@ -61,6 +62,4 @@ Yes/No
 ```
 
 ```
-
-### Attach the log file   
-Log file can be found in /tmp/ directory  
+  

@@ -7,8 +7,10 @@
 ### Do not raise an Issue request for Non-Issue stuff. For Non-Issue Help and Interaction use gitter [![Join the chat at https://gitter.im/publiclab/publiclab](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GassistPi/Lobby/)  
 
 *******************************************************************************************************************************
-## 13-May-2019 Update:
-**Added the ability to run custom scripts.**               
+
+## 04-Aug-2020 Update:
+**Added the ability to run custom scripts.**                
+
 *******************************************************************************************************************************
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
 **1.   Headless auto start on boot.**      
@@ -52,10 +54,10 @@
 *******************************************************************************************************************************  
 ### Only OSes suported are:
 - Armbian Stretch    
-- Raspbian Stretch   
+- Raspbian Stretch and Buster  
 - OSMC Stretch   
 - Ubuntu Bionic      
-     
+
 **Raspberry Pi users please use the latest Raspbian Desktop/Lite image- [Link](https://www.raspberrypi.org/downloads/raspbian/). Other board users please use the lastest Armbian image- [Link](https://www.armbian.com/download/)**  
 *******************************************************************************************************************************
 
@@ -161,14 +163,14 @@ speaker-test -t wav
 ## **CONTINUE after SETTING UP AUDIO**
 **********************************************************************   
 
-1. Follow the instructions [here](https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account) to Configure a Developer Project and Account Settings. Then follow this [guide](https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device) to register the device and obtain the credentials.json file. Refer to the video below for step by step guidelines.  
+1. Follow the instructions [here](https://developers.google.com/assistant/sdk/guides/library/python/embed/config-dev-project-and-account) to Configure a Developer Project and Account Settings. Then follow this [guide](https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device) to register the device and obtain the credentials file. Refer to the video below for step by step guidelines.  
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=dMNtmp8z52M
-" target="_blank"><img src="http://img.youtube.com/vi/dMNtmp8z52M/0.jpg"
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=pC4WLy45Zok
+" target="_blank"><img src="http://img.youtube.com/vi/pC4WLy45Zok/0.jpg"
 alt="Detailed Youtube Video" width="240" height="180" border="10" /></a>
 
 
-2. Place the credentials.json file in/home/${USER}/ directory **DO NOT RENAME**  
+2. Place the credentials file in/home/${USER}/ directory **DO NOT RENAME**  
 
 3. Use the one-line installer for installing Google Assistant    
 
@@ -184,16 +186,14 @@ sudo chmod +x ./GassistPi/scripts/gassist-installer.sh
 
 3.3 Execute the installer. **When Prompted, enter your Google Cloud console Project-Id, A name for your Assistant and the Full Name of your credentials file, including the json extension.**  
 ```
-sudo  ./GassistPi/scripts/gassist-installer.sh   
+sudo  ./GassistPi/scripts/gassist-installer.sh
 ```  
 
 4. Copy the google assistant authentication link from terminal and authorize using your google account  
 
 5. Copy the authorization code from browser onto the terminal and press enter    
 
-6. After successful authentication, the Google Assistant Demo test will automatically start. At the start, the volume might be low, the assistant volume is independent of the Pi volume, so increase the volume by using "Hey Google, Set volume to maximum" command.
-
-7. After verifying the working of assistant, close and exit the terminal    
+6. After successful authentication, the Google Assistant installation will finish.   
 
 
 *************************************************  
@@ -237,13 +237,13 @@ At any point of time, if you wish to manually start the assistant:
 **Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id' --project_id 'replace this with the project id' 
 
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
 Open a terminal and execute the following:
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --project-id 'replace this with your project id'  --device-model-id 'replace this with the model id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --device-model-id 'replace this with the model id' --project-id 'replace this with your project id'
 
 ```
 
@@ -298,7 +298,7 @@ Use the Translated versions of the English syntaxes given for all the custom act
 ************************************************      
 ### **CONTROLLING SONOFF-TASMOTA AND DOMOTICZ DEVICES FROM GOOGLE HOME/OTHER GOOGLE ASSISTRANT DEVICES**       
 ************************************************    
-  
+
 1. This has been implemented using Adafruit_IO.  
 2. Create an an acount and a feed in adafruit.io website.   
 3. Enter those details in the config.yaml file.   
@@ -773,7 +773,7 @@ Run the Google Music Authenticator once using:
 ### What you can do:
 Play all your songs in loop using the syntax: **"Hey Google, Play all the songs from Google Music"**
 
-Play songs added to the user created playlist (does not include: most played playlist, thumsup playlist, etc) using the syntax: **"Hey Google, Play songs from the first playlist in Google Music"**
+Play songs added to the user created playlist (does not include: most played playlist, thumsup playlist, etc) using the syntax: **"Hey Google, Play songs from the first playlist from Google Music"**
 Playlists are sorted by date created, if you have multiple playlists, use a similar syntax replacing first with second, third etc. Also you need to make suitable changes in the main.py (It has been commented in the script to help)
 
 Play songs by a particular artist using the syntax: **"Hey Google, Play songs by artist YOUR_ARTIST_NAME from Google Music"**
