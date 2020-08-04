@@ -191,7 +191,7 @@ source env/bin/activate
 pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
 if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
-	pip install RPi.GPIO==0.6.3
+	pip install RPi.GPIO>=0.6.3
 fi
 
 if [[ $devmodel = "armv7" ]];then
