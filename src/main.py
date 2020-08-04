@@ -54,6 +54,7 @@ from actions import YouTube_No_Autoplay
 from actions import YouTube_Autoplay
 from actions import stop
 from actions import radio
+from actions import script
 from actions import ESP
 from actions import track
 from actions import feed
@@ -97,7 +98,8 @@ from actions import language
 from actions import voicenote
 from actions import langlist
 from audiorecorder import record_to_file
-
+from actions import wemocontrol
+from actions import wemodiscovery
 try:
     FileNotFoundError
 except NameError:
@@ -641,6 +643,17 @@ class Myassistant():
         return self.singledetectedresponse
 
     def custom_command(self,usrcmd):
+        if configuration['Script']['Script_Control']=='Enabled':
+            if 'script'.lower() in str(usrcmd).lower():
+                script(str(usrcmd).lower())
+        
+        if configuration['Wemo']['Wemo_Control']=='Enabled':
+            for i in range(0,len(configuration['Wemo']['Wemo_Devices']['Device_Names'])):
+                if configuration['Wemo']['Wemo_Devices']['Device_Names'][i].lower() in usrcmd.lower():
+                    self.assistant.stop_conversation()
+                    wemocontrol(usrcmd)
+                break
+
         if configuration['DIYHUE']['DIYHUE_Control']=='Enabled':
             if os.path.isfile('/opt/hue-emulator/config.json'):
                 with open('/opt/hue-emulator/config.json', 'r') as config:
@@ -901,6 +914,9 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 sendSMS(str(usrcmd).lower())
+        if custom_action_keyword['Keywords']['Wemo_Discovery'][0].lower() in usrcmd.lower():
+            self.assistant.stop_conversation()
+            wemodiscovery()
         if 'interpreter' in str(usrcmd).lower():
             self.assistant.stop_conversation()
             reqlang=str(usrcmd).lower()
@@ -908,6 +924,15 @@ class Myassistant():
             reqlang=reqlang.replace('start','',1)
             reqlang=reqlang.replace('interpreter','',1)
             reqlang=reqlang.strip()
+            for i in range(0,len(langlist['Languages'])):
+                if str(langlist['Languages'][i][i][0]).lower()==reqlang:
+                    self.interpcloudlang2=langlist['Languages'][i][i][1]
+                    self.interpttslang2=langlist['Languages'][i][i][2]
+                    if 'start' in str(usrcmd).lower():
+                        self.interpreter_mode_trigger('Start')
+                    else:
+                        self.interpreter_mode_trigger('Stop')
+                    break
             try:
                 for i in range(0,len(langlist['Languages'])):
                     if str(langlist['Languages'][i][i][0]).lower()==reqlang:
@@ -921,8 +946,7 @@ class Myassistant():
             except Exception as e:
                 print(e)
                 say('Encountered an exception please check the logs.')
-
-
+           
 
 
     def main(self):

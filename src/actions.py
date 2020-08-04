@@ -38,6 +38,7 @@ import pychromecast
 import spotipy
 import pprint
 import yaml
+import pywemo
 
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
@@ -168,6 +169,9 @@ if GPIO!=None:
 else:
     GPIOcontrol=False
 
+#Number of scripts and script names should be the same
+scriptname=configuration['Script']['scriptname']
+scriptcommand=configuration['Script']['scriptcommand']
 
 #Number of station names and station links should be the same
 stnname=configuration['Radio_stations']['stationnames']
@@ -377,6 +381,16 @@ def notify_tts(phrase):
     voice_notify = phrase.replace(word, "")
     voice_notify.strip()
     say(voice_notify)
+
+#Run scripts
+def script(phrase):
+    for num, name in enumerate(scriptname):
+        if name.lower() in phrase:
+            conv=scriptname[num]
+            command=scriptcommand[num]
+            print (command)
+            say("Running " +conv)
+            os.system(command)
 
 #Radio Station Streaming
 def radio(phrase):
@@ -1709,6 +1723,41 @@ def on_ir_receive(pinNo, bouncetime=150):
         return None
 
 #-----------------------End of functions for IR code--------------------------
+
+#-----------------------Start of functions for Wemo/Emulated Wemo-------------
+
+def wemodiscovery():
+    devices = pywemo.discover_devices()
+    if devices!=[]:
+        with open('{}/wemodevicelist.json'.format(USER_PATH), 'w') as devicelist:
+               json.dump(devices, devicelist)
+        if len(devices)>1:
+            say("Found "+str(len(devices))+" devices.")
+        else:
+            say("Found "+str(len(devices))+" device.")
+    else:
+        say("Unable to find any active device.")
+
+def wemocontrol(command):
+    if os.path.isfile("{}/wemodevicelist.json".format(USER_PATH)):
+        with open('{}/wemodevicelist.json'.format(USER_PATH), 'r') as devicelist:
+            wemodevices = json.load(devicelist)
+        if wemodevices!=[]:
+            for i in range(0,len(wemodevices)):
+                if wemodevices[i] in command:
+                    if (' ' + custom_action_keyword['Dict']['On'] + ' ') in command or (' ' + custom_action_keyword['Dict']['On']) in query or (custom_action_keyword['Dict']['On'] + ' ') in command:
+                        wemodevices[i].on()
+                        say("Turning on "+wemodevices[i])
+                    elif custom_action_keyword['Dict']['Off'] in command:
+                        wemodevices[i].on()
+                        say("Turning off "+wemodevices[i])
+                    break
+        else:
+            say("Device list is empty. Try running the device discovery.")
+    else:
+        say("Unable to find device registry. Try running the device discovery.")
+
+#-----------------------End of functions for Wemo/Emulated Wemo-------------
 
 #Send voicenote to phone
 def voicenote(audiofile):

@@ -222,6 +222,14 @@ Raspberrypi_GPIO_Control:
     - 'bathroom lights'
     - 'bedroom lights'
 
+#Custom scripts. Add your scripts commands.
+Script:
+  Script_Control: 'Disabled'
+  scriptname:
+    - 'Script test'
+  scriptcommand:
+    - 'echo test >> /home/pi/test.txt'
+
 #Speech to text conversion
 Speechtotext:
   Google_Cloud_Speech:
@@ -268,5 +276,17 @@ Wakewords:
     - '/home/pi/GassistPi/src/resources/alexa.umdl'
     - '/home/pi/GassistPi/src/resources/snowboy.umdl'
 
+#Wemo/Emulated Wemo devices
+Wemo:
+  Wemo_Control: 'Disabled'
+  Wemo_Devices:
+    IP_Address:
+      - 'Enter wemo device 1 ip here'
+      - 'Enter wemo device 2 ip here'
+    Device_Names:
+      - 'Enter wemo device 1 name here'
+      - 'Enter wemo device 1 name here'
+
+#Youtube music streaming
 YouTube:
   YouTube_Control: 'Enabled'
