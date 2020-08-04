@@ -9,7 +9,7 @@
 *******************************************************************************************************************************
 
 ## 04-Aug-2020 Update:
-**Added the ability to run custom scripts.**                
+**Added the ability to run custom scripts and control of emulated Wemo devices.**                
 
 *******************************************************************************************************************************
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
