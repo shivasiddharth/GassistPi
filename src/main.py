@@ -43,8 +43,7 @@ from pathlib import Path
 try:
     import RPi.GPIO as GPIO
 except Exception as e:
-    if str(e) == 'No module named \'RPi\'':
-        GPIO = None
+    GPIO = None
 if GPIO!=None:
     from indicator import assistantindicator
     GPIOcontrol=True
