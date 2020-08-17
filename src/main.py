@@ -114,6 +114,10 @@ WARNING_NOT_REGISTERED = """
     https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device
 """
 
+# Remove old logs
+if os.path.isfile('/tmp/GassistPi.log'):
+    os.system('sudo rm /tmp/GassistPi.log')
+
 logging.root.handlers = []
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG , filename='/tmp/GassistPi.log')
 console = logging.StreamHandler()
@@ -646,7 +650,7 @@ class Myassistant():
         if configuration['Script']['Script_Control']=='Enabled':
             if 'script'.lower() in str(usrcmd).lower():
                 script(str(usrcmd).lower())
-        
+
         if configuration['Wemo']['Wemo_Control']=='Enabled':
             for i in range(0,len(configuration['Wemo']['Wemo_Devices']['Device_Names'])):
                 if configuration['Wemo']['Wemo_Devices']['Device_Names'][i].lower() in usrcmd.lower():
@@ -946,7 +950,7 @@ class Myassistant():
             except Exception as e:
                 print(e)
                 say('Encountered an exception please check the logs.')
-           
+
 
 
     def main(self):
