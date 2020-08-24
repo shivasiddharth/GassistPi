@@ -195,6 +195,10 @@ sudo  ./GassistPi/scripts/gassist-installer.sh
 
 6. After successful authentication, the Google Assistant installation will finish.   
 
+7. Those using Seeedstudio's Respeaker HAT types run:  
+```   
+sudo apt-get purge pulseaudio   
+```    
 
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
