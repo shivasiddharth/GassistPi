@@ -110,7 +110,7 @@ sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh
 speaker-test  
 ```
 
-**Pi users on May 2020 or a later release, who want to setup HDMI or AUDIO Jack as the output device, please go through issue number 1035 before you run the following commands.**         
+**Pi users on May 2020 or a later release, who want to setup HDMI or AUDIO Jack as the output device, replace the folders under the audio-drivers directory with the folders from the /Extras/May2020 directory. Copy the USB-MIC-HDMI and USB-MIC-JACK folders from the /Extras/May2020 directory and paste them in the audio-drivers directory and then proceed with the instructions below.**            
 
 3.3. USB MIC AND HDMI users,  
 ```
@@ -240,7 +240,7 @@ At any point of time, if you wish to manually start the assistant:
 **Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id' --project_id 'replace this with the project id' 
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id' --project_id 'replace this with the project id'
 
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
@@ -796,7 +796,7 @@ Repeat tracks
 By defualt running custom scripts feature is disabled.   
 To enable it, change "Script_Control:' in config.yaml from "Disabled" to "Enabled".  
 The number of script names mentioned should match the number of script commands in config.yaml.   
-  
+
 Example usage: **Run script test** command will run the default command given in config.yaml that prints out **test** in /home/pi/test.txt file.   
 
 ************************************************
