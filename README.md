@@ -110,6 +110,8 @@ sudo ./GassistPi/audio-drivers/AIY-HAT/scripts/install-alsa-config.sh
 speaker-test  
 ```
 
+**Pi users on May 2020 or a later release, who want to setup HDMI or AUDIO Jack as the output device, please go through issue number 1035 before you run the following commands.**         
+
 3.3. USB MIC AND HDMI users,  
 ```
 sudo chmod +x ./GassistPi/audio-drivers/USB-MIC-HDMI/scripts/configure.sh  
@@ -144,6 +146,7 @@ speaker-test
 git clone https://github.com/shivasiddharth/seeed-voicecard
 cd ./seeed-voicecard/  
 sudo ./install.sh  
+sudo apt-get purge pulseaudio
 sudo reboot   
 speaker-test     
 ```  
@@ -195,10 +198,6 @@ sudo  ./GassistPi/scripts/gassist-installer.sh
 
 6. After successful authentication, the Google Assistant installation will finish.   
 
-7. Those using Seeedstudio's Respeaker HAT types run:  
-```   
-sudo apt-get purge pulseaudio   
-```    
 
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
