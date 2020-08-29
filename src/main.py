@@ -249,9 +249,13 @@ class Myassistant():
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
             usrcmd=event.args["text"]
-            response_text, response_html = self.grpcassistant.assist(text_query=usrcmd)
-            if display and response_html:
-               system_browser.display(response_html)
+            if usrcmd != "":
+                response_text, response_html = self.grpcassistant.assist(text_query=usrcmd)
+                if display and response_html:
+                   system_browser.display(response_html)
+            else:
+                print("No speech was deciphered....")
+                system_browser.idle()            
 
         if event.type == EventType.ON_RENDER_RESPONSE:
             print(event.args)
