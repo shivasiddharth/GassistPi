@@ -141,12 +141,21 @@ sudo ./GassistPi/audio-drivers/CUSTOM-VOICE-HAT/scripts/custom-voice-hat.sh
 speaker-test   
 ```
 
-3.6. RESPEAKER HAT users,  
-```
+3.6. RESPEAKER HAT users, 
+Respeaker 2-Mic Hat Users alone:    
+```   
+sudo apt-get purge pulseaudio   
 git clone https://github.com/shivasiddharth/seeed-voicecard
 cd ./seeed-voicecard/  
 sudo ./install.sh  
-sudo apt-get purge pulseaudio
+sudo reboot   
+speaker-test  
+```   
+Others:    
+```  
+git clone https://github.com/shivasiddharth/seeed-voicecard
+cd ./seeed-voicecard/  
+sudo ./install.sh  
 sudo reboot   
 speaker-test     
 ```  
