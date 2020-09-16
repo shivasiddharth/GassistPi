@@ -207,6 +207,7 @@ sudo  ./GassistPi/scripts/gassist-installer.sh
 
 6. After successful authentication, the Google Assistant installation will finish.   
 
+**Note:  The volume levels will be low at the first start after installation. "Hey google, set volume to maximum" command will increase the volume.**      
 
 *************************************************  
 ## **HEADLESS AUTOSTART on BOOT SERVICE SETUP**  
