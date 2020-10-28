@@ -247,16 +247,16 @@ sudo systemctl start gassistpi.service
 
 At any point of time, if you wish to manually start the assistant:
 
-**Ok-Google Hotword/Pi3/Pi2/Armv7 users**   
+**Ok-Google Hotword/Pi4/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py --device_model_id 'replace this with the model id' --project_id 'replace this with the project id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py  --project_id 'replace this with the project id' --device_model_id 'replace this with the model id'
 
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
 Open a terminal and execute the following:
 ```
-/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --device-model-id 'replace this with the model id' --project-id 'replace this with your project id'
+/home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --project-id 'replace this with your project id' --device-model-id 'replace this with the model id'
 
 ```
 
