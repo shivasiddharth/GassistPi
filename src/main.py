@@ -225,7 +225,7 @@ class Myassistant():
         self.interpttslang2=''
         self.singleresposne=False
         self.singledetectedresponse=''
-        if if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
+        if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
             self.t1 = Thread(target=self.start_detector)
         elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
             self.t1 = Thread(target=self.picovoice_run)
@@ -535,8 +535,6 @@ class Myassistant():
             while True:
                 pcm = audio_stream.read(porcupine.frame_length)
                 pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
-                if self._output_path is not None:
-                    self._recorded_frames.append(pcm)
                 result = porcupine.process(pcm)
                 if result >= 0:
                     self.detected()
