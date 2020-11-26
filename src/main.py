@@ -27,13 +27,22 @@ import json
 import os.path
 import pathlib2 as pathlib
 import os
+import struct
 import subprocess
 import re
 import psutil
 import logging
 import time
 import random
+#Wakeword--------
+#Snowboy
 import snowboydecoder
+#Picovoice
+import numpy as np
+import pvporcupine
+import pyaudio
+import soundfile
+#--------------
 import sys
 import signal
 import requests
@@ -180,7 +189,15 @@ if configuration['Wakewords']['Custom_Wakeword']=='Enabled':
 else:
     custom_wakeword=False
 
-models=configuration['Wakewords']['Custom_wakeword_models']
+
+snowboy_models=configuration['Wakewords']['Snowboy_wakeword_models']
+picovoice_models=configuration['Wakewords']['Picovoice_wakeword_models']
+
+if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
+    wakeword_length=len(snowboy_models)
+elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
+    wakeword_length=len(picovoice_models)
+
 
 #Custom Conversation
 numques=len(configuration['Conversation']['question'])
@@ -192,9 +209,13 @@ class Myassistant():
         self.interrupted=False
         self.can_start_conversation=False
         self.assistant=None
-        self.sensitivity = [0.5]*len(models)
-        self.callbacks = [self.detected]*len(models)
-        self.detector = snowboydecoder.HotwordDetector(models, sensitivity=self.sensitivity)
+        self._library_path = pvporcupine.LIBRARY_PATH
+        self._model_path = pvporcupine.MODEL_PATH
+        self._keyword_paths = picovoice_models
+        self._input_device_index = None
+        self._sensitivities = [0.5]*wakeword_length
+        self.callbacks = [self.detected]*len(snowboy_models)
+        self.detector = snowboydecoder.HotwordDetector(snowboy_models, sensitivity=self._sensitivities)
         self.mutestatus=False
         self.interpreter=False
         self.interpconvcounter=0
@@ -204,7 +225,10 @@ class Myassistant():
         self.interpttslang2=''
         self.singleresposne=False
         self.singledetectedresponse=''
-        self.t1 = Thread(target=self.start_detector)
+        if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
+            self.t1 = Thread(target=self.start_detector)
+        elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
+            self.t1 = Thread(target=self.picovoice_run)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
         if configuration['MQTT']['MQTT_Control']=='Enabled':
@@ -478,6 +502,52 @@ class Myassistant():
         self.detector.start(detected_callback=self.callbacks,
             interrupt_check=self.interrupt_callback,
             sleep_time=0.03)
+
+    def picovoice_run(self):
+        """
+         Creates an input audio stream, instantiates an instance of Porcupine object, and monitors the audio stream for
+         occurrences of the wake word(s). It prints the time of detection for each occurrence and the wake word.
+         """
+        keywords = list()
+        for x in self._keyword_paths:
+            keywords.append(os.path.basename(x).replace('.ppn', '').split('_')[0])
+
+        porcupine = None
+        pa = None
+        audio_stream = None
+        try:
+            porcupine = pvporcupine.create(
+                library_path=self._library_path,
+                model_path=self._model_path,
+                keyword_paths=self._keyword_paths,
+                sensitivities=self._sensitivities)
+
+            pa = pyaudio.PyAudio()
+
+            audio_stream = pa.open(
+                rate=porcupine.sample_rate,
+                channels=1,
+                format=pyaudio.paInt16,
+                input=True,
+                frames_per_buffer=porcupine.frame_length,
+                input_device_index=self._input_device_index)
+
+            while True:
+                pcm = audio_stream.read(porcupine.frame_length)
+                pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
+                result = porcupine.process(pcm)
+                if result >= 0:
+                    self.detected()
+
+        except KeyboardInterrupt:
+            print('Stopping ...')
+        finally:
+            if porcupine is not None:
+                porcupine.delete()
+            if audio_stream is not None:
+                audio_stream.close()
+            if pa is not None:
+                pa.terminate()
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected with result code "+str(rc))

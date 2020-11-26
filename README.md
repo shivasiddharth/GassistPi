@@ -8,8 +8,8 @@
 
 *******************************************************************************************************************************
 
-## 04-Aug-2020 Update:
-**Added the ability to run custom scripts and control of Wemo devices.**                
+## 26-Nov-2020 Update:
+**Added a new Picovoice wakeword engine. Users can now use either Snowboy or Picovoice. Please refer to https://github.com/shivasiddharth/GassistPi#custom-wakeword-activation for updated info.**                  
 
 *******************************************************************************************************************************
 ## Features (All features are applicable to all boards, unless and otherwise mentioned):    
@@ -485,11 +485,13 @@ Hey Google, Change  _Name of your light_ to _desired color_ .
 ************************************************
 1. You can choose to either Enable or Disable the custom wakeword activation in the config.yaml file.  
 2. In the config.yaml file, under Wakewords, change the **"Custom_Wakeword"** to 'Enabled' if you want to use the custom wakeword or set it to 'Disabled' if you dont want to use the custom wakeword option.  
-3. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
-4. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/GassistPi/src/resources**  directory.
-5. Change the paths to the models in the config.yaml file.  
-6. To disable the default **"Ok Google"** hotword, set the **Ok_Google option to "Disabled"**.  
-7. Users using pushbutton.py or Pi Zero users have an option between using custom wakeword and GPIO trigerring. If custom wakeword is enabled, then GPIO trigger will not work. To enable GPIO triggering, set custom wakeword to 'Disabled'.    
+3. You have a choice between Snowboy and Picovoice for the custom wakeword engine.
+4. For Snowboy, change **"Wakeword_Engine"** to **Snowboy** and for Picovoice, change **"Wakeword_Engine"** to **Picovoice**.   
+5. For changes to take effect, you need to restart the assistant. Changing status while an instance of assistant is already running will not cause any change.  
+6. Create your custom snowboy model [here](https://snowboy.kitt.ai). Add the models to **/GassistPi/src/resources**  directory.
+7. Sample Snowboy and Picovoice models have been provided and placed in the /GassistPi/src/resources/ folder. Set your desired models by setting their paths in the config.yaml file.  
+8. To disable the default **"Ok Google"** hotword, set the **Ok_Google option to "Disabled"**.  
+9. Users using pushbutton.py or Pi Zero users have an option between using custom wakeword and GPIO trigerring. If custom wakeword is enabled, then GPIO trigger will not work. To enable GPIO triggering, set custom wakeword to 'Disabled'.    
 
 ************************************************
 ### **PLAYING SPOTIFY PLAYLIST**  
