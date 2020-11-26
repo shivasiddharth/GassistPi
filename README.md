@@ -250,12 +250,14 @@ At any point of time, if you wish to manually start the assistant:
 **Ok-Google Hotword/Pi4/Pi3/Pi2/Armv7 users**   
 Open a terminal and execute the following:
 ```
+export MPG123_MODDIR=/home/${USER}/mpg123-1.25.13/src/libout123/modules/.libs
 /home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/main.py  --project_id 'replace this with the project id' --device_model_id 'replace this with the model id'
 
 ```
 **Pushbutton/Pi Zero/Pi B+ and other users**   
 Open a terminal and execute the following:
 ```
+export MPG123_MODDIR=/home/${USER}/mpg123-1.25.13/src/libout123/modules/.libs
 /home/${USER}/env/bin/python -u /home/${USER}/GassistPi/src/pushbutton.py --project-id 'replace this with your project id' --device-model-id 'replace this with the model id'
 
 ```
