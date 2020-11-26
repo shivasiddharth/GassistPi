@@ -3,7 +3,6 @@ libxslt-dev
 mpv
 mplayer
 vlc
-portaudio19-dev
 libffi-dev
 libssl-dev
 python3
@@ -12,7 +11,6 @@ python3-venv
 python3-pip
 python3-setuptools
 socat
-mpg123
 nmap
 python-setuptools
 python-pip
@@ -33,4 +31,3 @@ python
 python-dev
 build-essential
 libmpg123-dev
-pulseaudio
