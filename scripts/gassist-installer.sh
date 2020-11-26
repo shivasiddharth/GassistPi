@@ -36,7 +36,7 @@ echo ""
 
 sudo apt-get update -y
 sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
-sudo pip install pyaudio
+
 
 #Check OS Version
 echo ""
@@ -131,7 +131,7 @@ if [[ $(cat /proc/cpuinfo|grep "BCM") ]]; then
   echo ""
   echo "GPIO pins can be used with the assistant"
   echo ""
-  sudo apt-get install pulseaudio
+  sudo apt-get install pulseaudio -y
   echo "Building portaudio"
   wget "https://gist.githubusercontent.com/shivasiddharth/6950bbd9393f855d588e4a3d6fe68278/raw/0490eadcf24b2224368a6cd2090ba453ad9cf4cf/portaudioinstaller.sh"
   sudo chmod +x ./portaudioinstaller.sh
@@ -150,10 +150,10 @@ fi
 
 echo ""
 echo "Compiling mpg123.........."
-ehco ""
+echo ""
 wget "https://excellmedia.dl.sourceforge.net/project/mpg123/mpg123/1.25.13/mpg123-1.25.13.tar.bz2"
 tar -xf mpg123-1.25.13.tar.bz2
-cd mpg123-1.25.13.tar.bz2
+cd mpg123-1.25.13
 ./configure && make
 sudo make install
 echo ""
