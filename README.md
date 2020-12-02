@@ -9,7 +9,7 @@
 *******************************************************************************************************************************
 
 ## 26-Nov-2020 Update:
-**Added a new Picovoice wakeword engine. Users can now use either Snowboy or Picovoice. Please refer to https://github.com/shivasiddharth/GassistPi#custom-wakeword-activation for updated info.**                  
+**Added a new Picovoice wakeword engine. Users can now use either Snowboy or Picovoice. Please refer to https://gassistpi-documentation.readthedocs.io/en/latest/customization.html#custom-wakeword-activation for updated info.**                  
 
 *******************************************************************************************************************************
 
