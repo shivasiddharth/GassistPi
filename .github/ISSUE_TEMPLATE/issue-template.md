@@ -16,6 +16,7 @@ Open a terminal and run
 ```
 cat /proc/cpuinfo  
 cat /etc/os-release  
+cat /etc/rpi-issue
 ```
 ```
 Paste your Board and OS details here.   
