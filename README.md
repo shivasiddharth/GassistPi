@@ -13,4 +13,6 @@
 
 *******************************************************************************************************************************
 
+## Please **do not** use the Dec Raspberry Pi OS release for now. The audio has not yet been tested. Watch out this space for an update.   
+
 ## GassistPi Documentation: https://gassistpi-documentation.readthedocs.io/en/latest/index.html
