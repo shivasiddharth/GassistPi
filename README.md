@@ -9,10 +9,11 @@
 *******************************************************************************************************************************
 
 ## 26-Nov-2020 Update:
-**Added a new Picovoice wakeword engine. Users can now use either Snowboy or Picovoice. Please refer to https://gassistpi-documentation.readthedocs.io/en/latest/customization.html#custom-wakeword-activation for updated info.**                  
+**Added a new Picovoice wakeword engine. Users can now use either Snowboy or Picovoice. Please refer to https://gassistpi-documentation.readthedocs.io/en/latest/customization.html#custom-wakeword-activation for updated info.**   
+
+## 06-Dec-2020 Update:    
+**Assisant fully works with the new audio configuration of Raspberry Pi OS.  Instructions have been updated for configuring audio.**                   
 
 *******************************************************************************************************************************
-
-## Please **do not** use the Dec Raspberry Pi OS release for now. The audio has not yet been tested. Watch out this space for an update.   
 
 ## GassistPi Documentation: https://gassistpi-documentation.readthedocs.io/en/latest/index.html

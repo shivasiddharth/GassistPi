@@ -86,12 +86,12 @@ elif [[ $(cat /etc/os-release|grep "osmc") ]]; then
   if (($osmcversiondate > 1512086400)); then
     osversion="OSMC Stretch"
     echo ""
-    echo "You are running the installer on Stretch="
+    echo "Compatible OSMC version"
     echo ""
   else
     osversion="Other OSMC"
     echo ""
-    echo "You are advised to use the Stretch version of the OS"
+    echo "You are advised to use atleast the Stretch version of the OS"
     echo "Exiting the installer="
     echo ""
     exit 1
@@ -113,7 +113,7 @@ elif [[ $(cat /etc/os-release|grep "ubuntu") ]]; then
 fi
 
 #Check CPU architecture
-if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]]; then
+if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]] || [[ $(uname -m|grep "armv8") ]]; then
 	devmodel="armv7"
   echo ""
   echo "Your board supports Ok-Google Hotword. You can also trigger the assistant using custom-wakeword"
@@ -131,31 +131,13 @@ if [[ $(cat /proc/cpuinfo|grep "BCM") ]]; then
   echo ""
   echo "GPIO pins can be used with the assistant"
   echo ""
-  sudo apt-get install pulseaudio -y
-  echo "Building portaudio"
-  wget "https://gist.githubusercontent.com/shivasiddharth/6950bbd9393f855d588e4a3d6fe68278/raw/0490eadcf24b2224368a6cd2090ba453ad9cf4cf/portaudioinstaller.sh"
-  sudo chmod +x ./portaudioinstaller.sh
-  bash ./portaudioinstaller.sh
-  sudo ldconfig
-  cd /home/${USER}/
 else
 	board="Others"
   echo ""
   echo "GPIO pins cannot be used by default with the assistant. You need to figure it out by yourselves"
   echo ""
-  sudo apt-get install pulseaudio
-  echo "Installing portaudio........."
-  sudo apt-get install portaudio19-dev
 fi
 
-echo ""
-echo "Compiling mpg123.........."
-echo ""
-wget "https://excellmedia.dl.sourceforge.net/project/mpg123/mpg123/1.25.13/mpg123-1.25.13.tar.bz2"
-tar -xf mpg123-1.25.13.tar.bz2
-cd mpg123-1.25.13
-./configure && make
-sudo make install
 echo ""
 cd /home/${USER}/
 
@@ -166,12 +148,6 @@ if [[ $osversion = "Raspbian Buster" ]]; then
   sudo \cp -f ${GIT_DIR}/src/resources/Buster-wrapper/_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
   sudo \cp -f ${GIT_DIR}/src/resources/Buster-wrapper/snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
   echo ""
-  echo "Downgrading alsa............"
-  wget "https://gist.githubusercontent.com/shivasiddharth/1dfc42bad32198940d5cc5d5cf10d57a/raw/6edfd73081f9f0267a04aa889ea0f5376aa0bc29/alsadowngrade.sh"
-  sudo chmod +x ./alsadowngrade.sh
-  bash ./alsadowngrade.sh
-  echo ""
-  echo "Finished downgrading alsa.........."
   cd /home/${USER}/
 elif [[ $osversion = "Raspbian Stretch" ]]; then
   sudo \cp -f ${GIT_DIR}/src/resources/Stretch-wrapper/_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
