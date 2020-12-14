@@ -177,7 +177,7 @@ elif GPIOcontrol==False:
 else:
     custom_wakeword=False
 
-models=configuration['Wakewords']['Custom_wakeword_models']
+models=configuration['Wakewords']['Snowboy_wakeword_models']
 interrupted=False
 def signal_handler(signal, frame):
     global interrupted
