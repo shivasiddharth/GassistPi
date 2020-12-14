@@ -316,10 +316,6 @@ def trans(words,destlang,srclang):
 def say(words,sourcelang=None,destinationlang=None):
     if sourcelang!=None and destinationlang!=None:
         sayword=trans(words,destinationlang,sourcelang)
-        if TTSChoice=='GoogleCloud':
-            gcloudsay(sayword,language)
-        elif TTSChoice=='GTTS':
-            gttssay(sayword,translanguage,gender)
     else:
         if sourcelang==None:
             sourcelanguage='en'
