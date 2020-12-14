@@ -228,11 +228,9 @@ ttsfilename="/tmp/gcloud.mp3"
 language=configuration['Language']['Choice']
 translanguage=language.split('-')[0]
 gender=''
-if configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage=='en':
+if configuration['TextToSpeech']['Voice_Gender']=='Male':
     gender='Male'
-elif translanguage=='it':
-    gender='Male'
-elif configuration['TextToSpeech']['Voice_Gender']=='Male' and translanguage!='en':
+elif configuration['TextToSpeech']['Voice_Gender']=='Female':
     gender='Female'
 else:
     gender='Female'
@@ -318,7 +316,10 @@ def trans(words,destlang,srclang):
 def say(words,sourcelang=None,destinationlang=None):
     if sourcelang!=None and destinationlang!=None:
         sayword=trans(words,destinationlang,sourcelang)
-        gttssay(sayword,destinationlang,'Female')
+        if TTSChoice=='GoogleCloud':
+            gcloudsay(sayword,language)
+        elif TTSChoice=='GTTS':
+            gttssay(sayword,translanguage,gender)
     else:
         if sourcelang==None:
             sourcelanguage='en'
