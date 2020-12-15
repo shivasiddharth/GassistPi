@@ -315,10 +315,11 @@ def trans(words,destlang,srclang):
 #Text to speech converter with translation
 def say(words,sourcelang=None,destinationlang=None):
     if sourcelang!=None and destinationlang!=None:
-        sayword=trans(words,destinationlang,sourcelang)
         if TTSChoice=='GoogleCloud':
+            sayword=trans(words,destinationlang,sourcelang)
             gcloudsay(sayword,language)
         elif TTSChoice=='GTTS':
+            sayword=trans(words,destinationlang,sourcelang)
             gttssay(sayword,translanguage,gender)
     else:
         if sourcelang==None:
