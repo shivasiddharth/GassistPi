@@ -196,9 +196,7 @@ pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
 if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
 	pip install RPi.GPIO>=0.6.3
-  sed -i \
-   -e "s/^autospawn=on/#\0/" \
-   /etc/pulse/client.conf.d/00-disable-autospawn.conf
+  sudo sed -i -e "s/^autospawn=no/#\0/" /etc/pulse/client.conf.d/00-disable-autospawn.conf
 fi
 
 if [[ $devmodel = "armv7" ]];then
