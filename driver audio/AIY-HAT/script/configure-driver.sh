@@ -29,3 +29,12 @@ grep -q "dtoverlay=googlevoicehat-soundcard" /boot/config.txt || \
   echo "dtoverlay=googlevoicehat-soundcard" >> /boot/config.txt
 grep -q "dtparam=i2s=on" /boot/config.txt || \
   echo "dtparam=i2s=on" >> /boot/config.txt
+  
+audioconfig=/home/${SUDO_USER}/audiosetup
+if [ -f $audioconfig ] ; then
+    sudo rm $audioconfig
+fi
+
+echo 'AIY-HAT' >> $audioconfig
+
+  
