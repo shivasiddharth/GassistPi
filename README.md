@@ -16,7 +16,7 @@
 *************************************************
 ## **FIRST STEP- CLONE the PROJECT on to Pi**   
 *************************************************
-1. Open the terminal and execute the following  
+1. Open the terminal and execute the following  (warning: clone the repo using your user account, do not use root)
 
 ```
 sudo apt-get install git  
