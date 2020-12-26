@@ -33,7 +33,7 @@ echo ""
 read -r -p "Enter the modelid that was generated in the actions console: " modelid
 echo ""
 
-
+sudo apt remove unattended-upgrades -y
 sudo apt-get update -y
 sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
 
@@ -198,8 +198,6 @@ if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
 	pip install RPi.GPIO>=0.6.3
   sudo sed -i -e "s/^autospawn=no/#\0/" /etc/pulse/client.conf.d/00-disable-autospawn.conf
 fi
-
-sudo apt remove unattended-upgrades -y
 
 if [[ $devmodel = "armv7" ]];then
 	pip install google-assistant-library==1.1.0
