@@ -199,6 +199,8 @@ if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
   sudo sed -i -e "s/^autospawn=no/#\0/" /etc/pulse/client.conf.d/00-disable-autospawn.conf
 fi
 
+sudo apt remove unattended-upgrades -y
+
 if [[ $devmodel = "armv7" ]];then
 	pip install google-assistant-library==1.1.0
 else
