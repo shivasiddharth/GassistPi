@@ -37,4 +37,5 @@ fi
 
 echo 'AIY-HAT' >> $audioconfig
 sudo rm /lib/udev/rules.d/91-pulseaudio-rpi.rules
+echo 'remember to reboot your system now'
   
