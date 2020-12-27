@@ -33,7 +33,11 @@ echo ""
 read -r -p "Enter the modelid that was generated in the actions console: " modelid
 echo ""
 
-
+dpkg-query -l unattended-upgrade > /dev/null
+case $? in
+	1) echo unattended-upgrade is already uninstalled;;
+	0) sudo apt remove unattended-upgrade -y;;
+esac
 sudo apt-get update -y
 sed 's/#.*//' ${GIT_DIR}/Requirements/GassistPi-system-requirements.txt | xargs sudo apt-get install -y
 
