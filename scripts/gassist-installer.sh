@@ -197,6 +197,9 @@ pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
 	pip install RPi.GPIO>=0.6.3
   sudo sed -i -e "s/^autospawn=no/#\0/" /etc/pulse/client.conf.d/00-disable-autospawn.conf
+  if [ -f /lib/udev/rules.d/91-pulseaudio-rpi.rules ] ; then
+      sudo rm /lib/udev/rules.d/91-pulseaudio-rpi.rules
+  fi
 fi
 
 if [[ $devmodel = "armv7" ]];then
@@ -241,4 +244,8 @@ echo ""
 
 echo "Your Model-Id: $modelid Project-Id: $projid used for this project" >> /home/${USER}/modelid.txt
 echo ""
+echo ""
 echo "Finished installing Google Assistant......."
+echo ""
+echo ""
+echo "Please reboot........"
