@@ -75,6 +75,11 @@ Keywords:
     - 'stuur bericht'
   Wemo_Discovery:
     - 'discover emulated'
+  # System volume adjustment
+  Volume_up:
+    - 'het volume hoger zetten'
+  Volume_down:
+    - 'Zet het geluid zachter'
 
 #Do not change the Dict below
 Dict:

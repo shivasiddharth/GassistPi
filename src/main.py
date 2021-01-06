@@ -988,6 +988,14 @@ class Myassistant():
             if (custom_action_keyword['Keywords']['Send_sms_clickatell'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()
                 sendSMS(str(usrcmd).lower())
+        if (custom_action_keyword['Keywords']['Volume_up'][0]).lower() in str(usrcmd).lower():
+            self.assistant.stop_conversation()
+            os.system("amixer set Master 5%+")
+            say("I turn up the volume")
+        if (custom_action_keyword['Keywords']['Volume_down'][0]).lower() in str(usrcmd).lower():
+            self.assistant.stop_conversation()
+            os.system("amixer set Master 5%-")
+            say("I turn down the volume")
         if custom_action_keyword['Keywords']['Wemo_Discovery'][0].lower() in usrcmd.lower():
             self.assistant.stop_conversation()
             wemodiscovery()
