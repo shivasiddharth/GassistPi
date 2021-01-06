@@ -208,10 +208,11 @@ for i in range(0,len(colours)):
 #Parcel Tracking declarations
 #If you want to use parcel tracking, register for a free account at: https://www.aftership.com
 #Add the API number and uncomment next two lines
-#parcelapi = aftership.APIv4('YOUR-AFTERSHIP-API-NUMBER')
-#couriers = parcelapi.couriers.all.get()
-number = ''
+#aftership.api_key='YOUR-AFTERSHIP-API-NUMBER'
+#couriers = aftership.courier.list_couriers()
+tracking_number = ''
 slug=''
+tracking_id=''
 
 #RSS feed URLS
 worldnews = "http://feeds.bbci.co.uk/news/world/rss.xml"
@@ -445,7 +446,10 @@ def stop():
 
 #Parcel Tracking
 def track():
-    text=parcelapi.trackings.get(tracking=dict(slug=slug, tracking_number=number))
+    text=aftership.tracking.get_tracking(tracking_id=tracking_id,
+                                                 slug=slug,
+                                                 tracking_number=tracking_number,
+                                                 fields=','.join(fields))
     numtrack=len(text['trackings'])
     print("Total Number of Parcels: " + str(numtrack))
     if numtrack==0:
