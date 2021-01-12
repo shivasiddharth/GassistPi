@@ -206,12 +206,15 @@ for i in range(0,len(colours)):
 
 
 #Parcel Tracking declarations
-#If you want to use parcel tracking, register for a free account at: https://www.aftership.com
-#Add the API number and uncomment next two lines
-#parcelapi = aftership.APIv4('YOUR-AFTERSHIP-API-NUMBER')
-#couriers = parcelapi.couriers.all.get()
-number = ''
-slug=''
+aftership.api_key=configuration['AFTERSHIP']['Key']
+aftershiptracking=False
+if configuration['AFTERSHIP']['Key']=='ENTER YOUR AFTERSHIP KEY HERE':
+    aftershiptracking=False
+else:
+    aftershiptracking=True
+    couriers = configuration['AFTERSHIP']['Parcels']['Courier_Name']
+    trackingids = configuration['AFTERSHIP']['Parcels']['Tracking_Code']
+
 
 #RSS feed URLS
 worldnews = "http://feeds.bbci.co.uk/news/world/rss.xml"
@@ -444,26 +447,32 @@ def stop():
     vlcplayer.stop_vlc()
 
 #Parcel Tracking
+def parcel_tracking(*, tracking_id=None, slug=None, tracking_number=None, fields=None):
+    try:
+        result = aftership.tracking.get_tracking(tracking_id=tracking_id,
+                                                 slug=slug,
+                                                 tracking_number=tracking_number,
+                                                 fields=','.join(fields))
+    except aftership.exception.NotFound:
+        return None
+    return result['tracking']
+
 def track():
-    text=parcelapi.trackings.get(tracking=dict(slug=slug, tracking_number=number))
-    numtrack=len(text['trackings'])
-    print("Total Number of Parcels: " + str(numtrack))
-    if numtrack==0:
-        parcelnotify=("You have no parcel to track")
-        say(parcelnotify)
-    elif numtrack==1:
-        parcelnotify=("You have one parcel to track")
-        say(parcelnotify)
-    elif numtrack>1:
-        parcelnotify=( "You have " + str(numtrack) + " parcels to track")
-        say(parcelnotify)
-    for x in range(0,numtrack):
-        numcheck=len(text[ 'trackings'][x]['checkpoints'])
-        description = text['trackings'][x]['checkpoints'][numcheck-1]['message']
-        parcelid=text['trackings'][x]['tracking_number']
-        trackinfo= ("Parcel Number " + str(x+1)+ " with tracking id " + parcelid + " is "+ description)
-        say(trackinfo)
-        #time.sleep(10)
+    if aftershiptracking==False:
+        say("Aftership API key has not been entered in the config file.")
+    else:
+        if len(couriers) != len(trackingids):
+            say("Number of courier names and the tracking ids are not matching. Please check the config file.")
+        else:
+            for x in range(0,len(couriers)):
+                trackinginfo=parcel_tracking(slug=couriers[x],tracking_number=trackingids[x],fields=[])
+                numcheck=len(trackinginfo['checkpoints'])
+                description = trackinginfo['checkpoints'][numcheck-1]['message']
+                parcelid=trackinginfo['tracking_number']
+                trackinfo= ("Parcel Number " + str(x+1)+ " with tracking id " + parcelid + " has "+ description)
+                say(trackinfo)
+                time.sleep(5)
+
 
 #RSS Feed Reader
 def feed(phrase):
