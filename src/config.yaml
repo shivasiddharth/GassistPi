@@ -7,6 +7,18 @@ ADAFRUIT_IO:
   ADAFRUIT_IO_KEY: 'ENTER YOUR ADAFRUIT_IO KEY HERE'
   FEEDNAME: 'ENTER YOUR ADAFRUIT_IO FEEDNAME THAT YOU WANT TO MONITOR HERE'
 
+#Aftership API to Track Parcels. Create a developer account with Aftership and generate a key.
+#The number of couriers should match the number of tracking codes. 
+AFTERSHIP:
+  Key: 'ENTER YOUR AFTERSHIP KEY HERE'
+  Parcels:
+    Courier_Name:
+      - 'usps'
+      - 'fedex'
+    Tracking_Code:
+      - '9400111699000119607527'
+      - '953255692957'
+
 #Custom conversation. Add your queries and expected assistant response. Do not add symbols or special charecters.
 Conversation:
   Conversation_Control: 'Enabled'
