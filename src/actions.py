@@ -466,12 +466,15 @@ def track():
         else:
             for x in range(0,len(couriers)):
                 trackinginfo=parcel_tracking(slug=couriers[x],tracking_number=trackingids[x],fields=[])
-                numcheck=len(trackinginfo['checkpoints'])
-                description = trackinginfo['checkpoints'][numcheck-1]['message']
-                parcelid=trackinginfo['tracking_number']
-                trackinfo= ("Parcel Number " + str(x+1)+ " with tracking id " + parcelid + " has "+ description)
-                say(trackinfo)
-                time.sleep(5)
+                if trackinginfo==None:
+                    say("Looks like the details have not been added to the Aftership tracking database.")
+                else:
+                    numcheck=len(trackinginfo['checkpoints'])
+                    description = trackinginfo['checkpoints'][numcheck-1]['message']
+                    parcelid=trackinginfo['tracking_number']
+                    trackinfo= ("Parcel Number " + str(x+1)+ " with tracking id " + parcelid + " has "+ description)
+                    say(trackinfo)
+                    #time.sleep(5)
 
 
 #RSS Feed Reader
