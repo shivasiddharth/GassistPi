@@ -75,6 +75,11 @@ Keywords:
     - 'invia messaggio'
   Wemo_Discovery:
     - 'discover emulated'
+  # System volume adjustment
+  Volume_up:
+    - 'Alza il volume'
+  Volume_down:
+    - 'Abbassa il volume'
 
 #Do not change the Dict below
 Dict:
