@@ -37,7 +37,9 @@ Eli Lesteberg With	| 10|
 George Law	| 25|
 Syed Mohammed Sulaiman | 8|
 Enzo Decorart di Randazzo Vincenzo 	| 20|    
-Brian Peacock                       | 10|    
+Brian Peacock                       | 10|     
+Michael Beljaars                    | 10|       
+Enzo Decorart di Randazzo Vincenzo 	| 50|  
 
 If any of you have donated, but your name is not in the list, please get in touch with me in Gitter.   
 
