@@ -69,7 +69,7 @@ from actions import track
 from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
-from actions import gmusicselect
+# from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
@@ -957,15 +957,15 @@ class Myassistant():
         if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             refreshlists()
-        if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
-            if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
-                self.assistant.stop_conversation()
-                vlcplayer.stop_vlc()
-                try:
-                    gmusicselect(str(usrcmd).lower())
-                except Exception as e:
-                    print(e)
-                    say('Encountered an exception please check the logs.')
+        # if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
+        #     if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
+        #         self.assistant.stop_conversation()
+        #         vlcplayer.stop_vlc()
+        #         try:
+        #             gmusicselect(str(usrcmd).lower())
+        #         except Exception as e:
+        #             print(e)
+        #             say('Encountered an exception please check the logs.')
         if configuration['Spotify']['Spotify_Control']=='Enabled':
             if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
                 self.assistant.stop_conversation()

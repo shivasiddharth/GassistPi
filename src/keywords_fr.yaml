@@ -55,9 +55,9 @@ Keywords:
   Music_index_refresh:
     - 'rafraichis'
     - 'musique'
-  # Streaming music from google music
-  Google_music_streaming:
-    - 'google music'
+  # # Streaming music from google music
+  # Google_music_streaming:
+  #   - 'google music'
   # Streaming music from spotify
   Spotify_music_streaming:
     - 'spotify'

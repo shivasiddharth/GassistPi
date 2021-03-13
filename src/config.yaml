@@ -8,7 +8,7 @@ ADAFRUIT_IO:
   FEEDNAME: 'ENTER YOUR ADAFRUIT_IO FEEDNAME THAT YOU WANT TO MONITOR HERE'
 
 #Aftership API to Track Parcels. Create a developer account with Aftership and generate a key.
-#The number of couriers should match the number of tracking codes. 
+#The number of couriers should match the number of tracking codes.
 AFTERSHIP:
   Key: 'ENTER YOUR AFTERSHIP KEY HERE'
   Parcels:
@@ -99,9 +99,9 @@ Gaana:
     - 'https://gaana.com/playlist/gaana-dj-bollywood-top-50-1'
     - 'https://gaana.com/playlist/alka-yagnik-bday'
 
-#Enter your Google Login Credentials
-Gmusicapi:
-  Gmusic_Control: 'Enabled'
+# #Enter your Google Login Credentials
+# Gmusicapi:
+#   Gmusic_Control: 'Enabled'
 
 #Pushbullet
 Pushbullet:

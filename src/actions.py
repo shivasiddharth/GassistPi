@@ -11,7 +11,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 import spotipy.oauth2 as oauth2
 from pushbullet import Pushbullet
-from mediaplayer import api
+# from mediaplayer import api
 from youtube_search_engine import google_cloud_api_key
 from googletrans import Translator
 from youtube_search_engine import youtube_search
@@ -1010,148 +1010,148 @@ def fetchautoplaylist(url,numvideos):
 
 
 
-##-------Start of functions defined for Google Music-------------------
-
-def loadsonglist():
-    song_ids=[]
-    if os.path.isfile("{}/songs.json".format(USER_PATH)):
-        with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
-            songs_list= json.load(input_file)
-##            print(songs_list)
-    else:
-        songs_list= api.get_all_songs()
-        with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
-            json.dump(songs_list, output_file)
-    for i in range(0,len(songs_list)):
-        song_ids.append(songs_list[i]['id'])
-    songsnum=len(songs_list)
-    return song_ids, songsnum
-
-def loadartist(artistname):
-    song_ids=[]
-    artist=str(artistname)
-    if os.path.isfile("{}/songs.json".format(USER_PATH)):
-        with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
-            songs_list= json.load(input_file)
-##            print(songs_list)
-    else:
-        songs_list= api.get_all_songs()
-        with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
-            json.dump(songs_list, output_file)
-    for i in range(0,len(songs_list)):
-        if artist.lower() in (songs_list[i]['albumArtist']).lower():
-            song_ids.append(songs_list[i]['id'])
-        else:
-            print("Artist not found")
-    songsnum=len(song_ids)
-    return song_ids, songsnum
-
-def loadalbum(albumname):
-    song_ids=[]
-    album=str(albumname)
-    if os.path.isfile("{}/songs.json".format(USER_PATH)):
-        with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
-            songs_list= json.load(input_file)
-##            print(songs_list)
-    else:
-        songs_list= api.get_all_songs()
-        with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
-            json.dump(songs_list, output_file)
-    for i in range(0,len(songs_list)):
-        if album.lower() in (songs_list[i]['album']).lower():
-            song_ids.append(songs_list[i]['id'])
-        else:
-            print("Album not found")
-    songsnum=len(song_ids)
-    return song_ids, songsnum
-
-def loadplaylist(playlistnum):
-    track_ids=[]
-    if os.path.isfile("{}/playlist.json".format(USER_PATH)):
-        with open('{}/playlist.json'.format(USER_PATH),'r') as input_file:
-            playlistcontents= json.load(input_file)
-    else:
-        playlistcontents=api.get_all_user_playlist_contents()
-        with open('{}/playlist.json'.format(USER_PATH), 'w') as output_file:
-            json.dump(playlistcontents, output_file)
-##        print(playlistcontents[0]['tracks'])
-
-    for k in range(0,len(playlistcontents[playlistnum]['tracks'])):
-        track_ids.append(playlistcontents[playlistnum]['tracks'][k]['trackId'])
-##        print(track_ids)
-    tracksnum=len(playlistcontents[playlistnum]['tracks'])
-    return track_ids, tracksnum
-
-def refreshlists():
-    playlist_list=api.get_all_user_playlist_contents()
-    songs_list=api.get_all_songs()
-    with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
-        json.dump(songs_list, output_file)
-    with open('{}/playlist.json'.format(USER_PATH), 'w') as output_file:
-        json.dump(playlist_list, output_file)
-    say("Music list synchronised")
-
-
-
-def gmusicselect(phrase):
-    currenttrackid=0
-    if 'all the songs'.lower() in phrase:
-        say("Looking for your songs")
-        tracks,numtracks=loadsonglist()
-        if not tracks==[]:
-            vlcplayer.media_manager(tracks,'Google Music')
-            vlcplayer.googlemusic_player(currenttrackid)
-        else:
-            say("Unable to find songs matching your request")
-
-
-    if 'playlist'.lower() in phrase:
-        if 'first'.lower() in phrase or 'one'.lower() in phrase  or '1'.lower() in phrase:
-            say("Playing songs from your playlist")
-            tracks,numtracks=loadplaylist(0)
-            if not tracks==[]:
-                vlcplayer.media_manager(tracks,'Google Music')
-                vlcplayer.googlemusic_player(currenttrackid)
-            else:
-                say("Unable to find songs matching your request")
-
-
-    if (custom_action_keyword['Dict']['Album']).lower() in phrase:
-        req=phrase
-        idx1=req.find(custom_action_keyword['Dict']['Album'])
-        idx2=req.find(custom_action_keyword['Dict']['From_google_music'])
-        album=req[idx1:idx2]
-        album = album.replace(custom_action_keyword['Dict']['Album'],'',1)
-        album = album.replace(custom_action_keyword['Dict']['From_google_music'],'',1)
-        album=album.strip()
-        print(album)
-        say("Looking for songs from the album")
-        tracks,numtracks=loadalbum(album)
-        if not tracks==[]:
-            vlcplayer.media_manager(tracks,'Google Music')
-            vlcplayer.googlemusic_player(currenttrackid)
-        else:
-            say("Unable to find songs matching your request")
-
-    if (custom_action_keyword['Dict']['Artist']).lower() in phrase:
-        req=phrase
-        idx1=req.find(custom_action_keyword['Dict']['Artist'])
-        idx2=req.find(custom_action_keyword['Dict']['From_google_music'])
-        artist=req[idx1:idx2]
-        artist = artist.replace(custom_action_keyword['Dict']['Artist'],'',1)
-        artist = artist.replace(custom_action_keyword['Dict']['From_google_music'],'',1)
-        artist=artist.strip()
-        print(artist)
-        say("Looking for songs rendered by the artist")
-        tracks,numtracks=loadartist(artist)
-        if not tracks==[]:
-            vlcplayer.media_manager(tracks,'Google Music')
-            vlcplayer.googlemusic_player(currenttrackid)
-        else:
-            say("Unable to find songs matching your request")
-
-
-#----------End of functions defined for Google Music---------------------------
+# ##-------Start of functions defined for Google Music-------------------
+#
+# def loadsonglist():
+#     song_ids=[]
+#     if os.path.isfile("{}/songs.json".format(USER_PATH)):
+#         with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
+#             songs_list= json.load(input_file)
+# ##            print(songs_list)
+#     else:
+#         songs_list= api.get_all_songs()
+#         with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
+#             json.dump(songs_list, output_file)
+#     for i in range(0,len(songs_list)):
+#         song_ids.append(songs_list[i]['id'])
+#     songsnum=len(songs_list)
+#     return song_ids, songsnum
+#
+# def loadartist(artistname):
+#     song_ids=[]
+#     artist=str(artistname)
+#     if os.path.isfile("{}/songs.json".format(USER_PATH)):
+#         with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
+#             songs_list= json.load(input_file)
+# ##            print(songs_list)
+#     else:
+#         songs_list= api.get_all_songs()
+#         with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
+#             json.dump(songs_list, output_file)
+#     for i in range(0,len(songs_list)):
+#         if artist.lower() in (songs_list[i]['albumArtist']).lower():
+#             song_ids.append(songs_list[i]['id'])
+#         else:
+#             print("Artist not found")
+#     songsnum=len(song_ids)
+#     return song_ids, songsnum
+#
+# def loadalbum(albumname):
+#     song_ids=[]
+#     album=str(albumname)
+#     if os.path.isfile("{}/songs.json".format(USER_PATH)):
+#         with open('{}/songs.json'.format(USER_PATH),'r') as input_file:
+#             songs_list= json.load(input_file)
+# ##            print(songs_list)
+#     else:
+#         songs_list= api.get_all_songs()
+#         with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
+#             json.dump(songs_list, output_file)
+#     for i in range(0,len(songs_list)):
+#         if album.lower() in (songs_list[i]['album']).lower():
+#             song_ids.append(songs_list[i]['id'])
+#         else:
+#             print("Album not found")
+#     songsnum=len(song_ids)
+#     return song_ids, songsnum
+#
+# def loadplaylist(playlistnum):
+#     track_ids=[]
+#     if os.path.isfile("{}/playlist.json".format(USER_PATH)):
+#         with open('{}/playlist.json'.format(USER_PATH),'r') as input_file:
+#             playlistcontents= json.load(input_file)
+#     else:
+#         playlistcontents=api.get_all_user_playlist_contents()
+#         with open('{}/playlist.json'.format(USER_PATH), 'w') as output_file:
+#             json.dump(playlistcontents, output_file)
+# ##        print(playlistcontents[0]['tracks'])
+#
+#     for k in range(0,len(playlistcontents[playlistnum]['tracks'])):
+#         track_ids.append(playlistcontents[playlistnum]['tracks'][k]['trackId'])
+# ##        print(track_ids)
+#     tracksnum=len(playlistcontents[playlistnum]['tracks'])
+#     return track_ids, tracksnum
+#
+# def refreshlists():
+#     playlist_list=api.get_all_user_playlist_contents()
+#     songs_list=api.get_all_songs()
+#     with open('{}/songs.json'.format(USER_PATH), 'w') as output_file:
+#         json.dump(songs_list, output_file)
+#     with open('{}/playlist.json'.format(USER_PATH), 'w') as output_file:
+#         json.dump(playlist_list, output_file)
+#     say("Music list synchronised")
+#
+#
+#
+# def gmusicselect(phrase):
+#     currenttrackid=0
+#     if 'all the songs'.lower() in phrase:
+#         say("Looking for your songs")
+#         tracks,numtracks=loadsonglist()
+#         if not tracks==[]:
+#             vlcplayer.media_manager(tracks,'Google Music')
+#             vlcplayer.googlemusic_player(currenttrackid)
+#         else:
+#             say("Unable to find songs matching your request")
+#
+#
+#     if 'playlist'.lower() in phrase:
+#         if 'first'.lower() in phrase or 'one'.lower() in phrase  or '1'.lower() in phrase:
+#             say("Playing songs from your playlist")
+#             tracks,numtracks=loadplaylist(0)
+#             if not tracks==[]:
+#                 vlcplayer.media_manager(tracks,'Google Music')
+#                 vlcplayer.googlemusic_player(currenttrackid)
+#             else:
+#                 say("Unable to find songs matching your request")
+#
+#
+#     if (custom_action_keyword['Dict']['Album']).lower() in phrase:
+#         req=phrase
+#         idx1=req.find(custom_action_keyword['Dict']['Album'])
+#         idx2=req.find(custom_action_keyword['Dict']['From_google_music'])
+#         album=req[idx1:idx2]
+#         album = album.replace(custom_action_keyword['Dict']['Album'],'',1)
+#         album = album.replace(custom_action_keyword['Dict']['From_google_music'],'',1)
+#         album=album.strip()
+#         print(album)
+#         say("Looking for songs from the album")
+#         tracks,numtracks=loadalbum(album)
+#         if not tracks==[]:
+#             vlcplayer.media_manager(tracks,'Google Music')
+#             vlcplayer.googlemusic_player(currenttrackid)
+#         else:
+#             say("Unable to find songs matching your request")
+#
+#     if (custom_action_keyword['Dict']['Artist']).lower() in phrase:
+#         req=phrase
+#         idx1=req.find(custom_action_keyword['Dict']['Artist'])
+#         idx2=req.find(custom_action_keyword['Dict']['From_google_music'])
+#         artist=req[idx1:idx2]
+#         artist = artist.replace(custom_action_keyword['Dict']['Artist'],'',1)
+#         artist = artist.replace(custom_action_keyword['Dict']['From_google_music'],'',1)
+#         artist=artist.strip()
+#         print(artist)
+#         say("Looking for songs rendered by the artist")
+#         tracks,numtracks=loadartist(artist)
+#         if not tracks==[]:
+#             vlcplayer.media_manager(tracks,'Google Music')
+#             vlcplayer.googlemusic_player(currenttrackid)
+#         else:
+#             say("Unable to find songs matching your request")
+#
+#
+# #----------End of functions defined for Google Music---------------------------
 
 
 #-----------------Start of Functions for YouTube Streaming---------------------

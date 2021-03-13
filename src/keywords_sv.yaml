@@ -55,9 +55,9 @@ Keywords:
   Music_index_refresh:
     - 'refresh'
     - 'music'
-  # Streaming music from google music
-  Google_music_streaming:
-    - 'google music'
+  # # Streaming music from google music
+  # Google_music_streaming:
+  #   - 'google music'
   # Streaming music from spotify
   Spotify_music_streaming:
     - 'spotify'
@@ -80,7 +80,7 @@ Keywords:
     - 'Höj volymen'
   Volume_down:
     - 'Sänk volymen'
-    
+
 #Do not change the Dict below
 Dict:
   Album: 'album'

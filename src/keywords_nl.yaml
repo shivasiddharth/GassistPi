@@ -55,9 +55,9 @@ Keywords:
   Music_index_refresh:
     - 'refresh'
     - 'muziek'
-  # Streaming music from google music
-  Google_music_streaming:
-    - 'google muziek'
+  # # Streaming music from google music
+  # Google_music_streaming:
+  #   - 'google muziek'
   # Streaming music from spotify
   Spotify_music_streaming:
     - 'spotify'

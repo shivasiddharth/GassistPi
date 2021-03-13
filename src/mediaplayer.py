@@ -4,7 +4,7 @@
 import vlc
 import os
 import json
-from gmusicapi import Mobileclient
+# from gmusicapi import Mobileclient
 import os.path
 from youtube_search_engine import youtube_search
 from youtube_search_engine import youtube_stream_link
@@ -16,18 +16,18 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
     configuration = yaml.load(conf)
 
-api = Mobileclient()
-deviceid=[]
-logged_in=api.oauth_login(Mobileclient.FROM_MAC_ADDRESS)
-if logged_in:
-    for device in api.get_registered_devices():
-        if device['type']=='ANDROID':
-            deviceid=device['id'][2:]
-            print(deviceid)
-            break
-    if deviceid!=[]:
-        api.logout()
-        logged_in=api.oauth_login(deviceid)
+# api = Mobileclient()
+# deviceid=[]
+# logged_in=api.oauth_login(Mobileclient.FROM_MAC_ADDRESS)
+# if logged_in:
+#     for device in api.get_registered_devices():
+#         if device['type']=='ANDROID':
+#             deviceid=device['id'][2:]
+#             print(deviceid)
+#             break
+#     if deviceid!=[]:
+#         api.logout()
+#         logged_in=api.oauth_login(deviceid)
 
 
 
@@ -183,11 +183,11 @@ class vlcplayer():
         with open('{}/.player.json'.format(USER_PATH), 'w') as output_file:
             json.dump(playerinfo, output_file)
 
-    def googlemusic_player(self,trackid):
-        with open('{}/.trackqueue.json'.format(USER_PATH),'r') as input_file:
-            tracks= json.load(input_file)
-        streamurl=api.get_stream_url(tracks[trackid])
-        self.media_player(streamurl)
+    # def googlemusic_player(self,trackid):
+    #     with open('{}/.trackqueue.json'.format(USER_PATH),'r') as input_file:
+    #         tracks= json.load(input_file)
+    #     streamurl=api.get_stream_url(tracks[trackid])
+    #     self.media_player(streamurl)
 
     def youtube_player(self,trackid):
         with open('{}/.trackqueue.json'.format(USER_PATH),'r') as input_file:

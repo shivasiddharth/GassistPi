@@ -53,7 +53,7 @@ from actions import track
 from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
-from actions import gmusicselect
+# from actions import gmusicselect
 from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
@@ -548,11 +548,11 @@ class SampleAssistant(object):
                     if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
                         refreshlists()
                         return continue_conversation
-                    if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
-                        if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
-                            vlcplayer.stop_vlc()
-                            gmusicselect(str(usrcmd).lower())
-                            return continue_conversation
+                    # if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
+                    #     if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
+                    #         vlcplayer.stop_vlc()
+                    #         gmusicselect(str(usrcmd).lower())
+                    #         return continue_conversation
                     if configuration['Spotify']['Spotify_Control']=='Enabled':
                         if (custom_action_keyword['Keywords']['Spotify_music_streaming'][0]).lower() in str(usrcmd).lower():
                             vlcplayer.stop_vlc()
