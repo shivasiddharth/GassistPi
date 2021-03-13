@@ -54,7 +54,7 @@ from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
 # from actions import gmusicselect
-from actions import refreshlists
+# from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
 from actions import kickstarter_tracker
@@ -545,9 +545,9 @@ class SampleAssistant(object):
                         else:
                             say("Sorry nothing is playing right now")
                         return continue_conversation
-                    if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
-                        refreshlists()
-                        return continue_conversation
+                    # if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
+                    #     refreshlists()
+                    #     return continue_conversation
                     # if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
                     #     if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
                     #         vlcplayer.stop_vlc()

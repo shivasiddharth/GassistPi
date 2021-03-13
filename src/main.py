@@ -70,7 +70,7 @@ from actions import feed
 from actions import kodiactions
 from actions import mutevolstatus
 # from actions import gmusicselect
-from actions import refreshlists
+# from actions import refreshlists
 from actions import chromecast_play_video
 from actions import chromecast_control
 from actions import kickstarter_tracker
@@ -954,9 +954,9 @@ class Myassistant():
                     say("Sorry I could not help you")
             else:
                 say("Sorry nothing is playing right now")
-        if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
-            self.assistant.stop_conversation()
-            refreshlists()
+        # if (custom_action_keyword['Keywords']['Music_index_refresh'][0]).lower() in str(usrcmd).lower() and (custom_action_keyword['Keywords']['Music_index_refresh'][1]).lower() in str(usrcmd).lower():
+        #     self.assistant.stop_conversation()
+        #     refreshlists()
         # if configuration['Gmusicapi']['Gmusic_Control']=='Enabled':
         #     if (custom_action_keyword['Keywords']['Google_music_streaming'][0]).lower() in str(usrcmd).lower():
         #         self.assistant.stop_conversation()
