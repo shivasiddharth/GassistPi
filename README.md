@@ -53,7 +53,10 @@ If any of you have donated, but your name is not in the list, please get in touc
 **Added a new Picovoice wakeword engine. Users can now use either Snowboy or Picovoice. Please refer to this [document](https://gassistpi-documentation.readthedocs.io/en/latest/customization.html#custom-wakeword-activation) for updated info.**   
 
 ## 06-Dec-2020 Update:    
-**Assisant fully works with the new audio configuration of Raspberry Pi OS.  Instructions have been updated for configuring audio.**                   
+**Assisant fully works with the new audio configuration of Raspberry Pi OS.  Instructions have been updated for configuring audio.**    
+
+## 13-Mar-2021 Update:    
+**Removed music streaming from Google music option Due to Google shutting down the Google Music service/app.**    
 
 *******************************************************************************************************************************
 
