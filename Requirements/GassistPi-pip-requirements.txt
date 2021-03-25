@@ -14,7 +14,7 @@ requests>=2.20.1
 pushbullet.py>=0.11.0
 python-vlc>=3.0.4106
 git+https://github.com/plamere/spotipy.git
-pyyaml==3.13
+pyyaml==5.4
 spidev>=3.2
 gpiozero>=1.4.1
 numpy>=1.15.4
