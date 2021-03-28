@@ -41,6 +41,8 @@ Brian Peacock                       | 10|
 Michael Beljaars                    | 10|       
 Enzo Decorart di Randazzo Vincenzo 	| 50|     
 Soubhik Khan                        | 10|      
+Sagafon As                          | 60|      
+
 
 If any of you have donated, but your name is not in the list, please get in touch with me in Gitter.   
 
