@@ -22,6 +22,55 @@ try:
     import RPi.GPIO as GPIO
 except Exception as e:
     GPIO = None
+from google.cloud import speech
+from google.cloud.speech import enums
+from google.cloud.speech import types
+import paho.mqtt.client as mqtt
+from actions import say
+from actions import trans
+from actions import Action
+from actions import YouTube_No_Autoplay
+from actions import YouTube_Autoplay
+from actions import stop
+from actions import radio
+from actions import script
+from actions import ESP
+from actions import track
+from actions import feed
+from actions import kodiactions
+from actions import mutevolstatus
+# from actions import gmusicselect
+# from actions import refreshlists
+from actions import chromecast_play_video
+from actions import chromecast_control
+from actions import kickstarter_tracker
+from actions import getrecipe
+from actions import hue_control
+from actions import vlcplayer
+from actions import spotify_playlist_select
+from actions import configuration
+from actions import custom_action_keyword
+from threading import Thread
+from pathlib import Path
+from Adafruit_IO import MQTTClient
+from actions import Domoticz_Device_Control
+from actions import domoticz_control
+from actions import domoticz_devices
+from actions import gaana_playlist_select
+from actions import deezer_playlist_select
+from actions import gender
+from actions import on_ir_receive
+from actions import Youtube_credentials
+from actions import Spotify_credentials
+from actions import notify_tts
+from actions import sendSMS
+from actions import translanguage
+from actions import language
+from actions import voicenote
+from actions import langlist
+from audiorecorder import record_to_file
+from actions import wemocontrol
+from actions import wemodiscovery
 import argparse
 import json
 import os.path
@@ -52,35 +101,6 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
-from google.cloud import speech
-from google.cloud.speech import enums
-from google.cloud.speech import types
-import paho.mqtt.client as mqtt
-from actions import say
-from actions import trans
-from actions import Action
-from actions import YouTube_No_Autoplay
-from actions import YouTube_Autoplay
-from actions import stop
-from actions import radio
-from actions import script
-from actions import ESP
-from actions import track
-from actions import feed
-from actions import kodiactions
-from actions import mutevolstatus
-# from actions import gmusicselect
-# from actions import refreshlists
-from actions import chromecast_play_video
-from actions import chromecast_control
-from actions import kickstarter_tracker
-from actions import getrecipe
-from actions import hue_control
-from actions import vlcplayer
-from actions import spotify_playlist_select
-from actions import configuration
-from actions import custom_action_keyword
-from threading import Thread
 if GPIO!=None:
     from indicator import assistantindicator
     from indicator import stoppushbutton
@@ -89,26 +109,7 @@ if GPIO!=None:
 else:
     irreceiver=None
     GPIOcontrol=False
-from pathlib import Path
-from Adafruit_IO import MQTTClient
-from actions import Domoticz_Device_Control
-from actions import domoticz_control
-from actions import domoticz_devices
-from actions import gaana_playlist_select
-from actions import deezer_playlist_select
-from actions import gender
-from actions import on_ir_receive
-from actions import Youtube_credentials
-from actions import Spotify_credentials
-from actions import notify_tts
-from actions import sendSMS
-from actions import translanguage
-from actions import language
-from actions import voicenote
-from actions import langlist
-from audiorecorder import record_to_file
-from actions import wemocontrol
-from actions import wemodiscovery
+
 try:
     FileNotFoundError
 except NameError:
@@ -214,8 +215,10 @@ class Myassistant():
         self._keyword_paths = picovoice_models
         self._input_device_index = None
         self._sensitivities = [0.5]*wakeword_length
-        self.callbacks = [self.detected]*len(snowboy_models)
-        self.detector = snowboydecoder.HotwordDetector(snowboy_models, sensitivity=self._sensitivities)
+        if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
+            self.callbacks = [self.detected]*len(snowboy_models)
+            print("Donw")
+            self.detector = snowboydecoder.HotwordDetector(snowboy_models, sensitivity=self._sensitivities)
         self.mutestatus=False
         self.interpreter=False
         self.interpconvcounter=0

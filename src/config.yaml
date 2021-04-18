@@ -283,9 +283,9 @@ TextToSpeech:
 #To enable custom wakeword, change status to Enabled and restart the assistant.
 Wakewords:
   Ok_Google: 'Enabled'
-  Custom_Wakeword: 'Enabled'
+  Custom_Wakeword: 'Disabled'
   #Set below to 'Picovoice' or 'Snowboy' as per your choice.
-  Wakeword_Engine: 'Snowboy'
+  Wakeword_Engine: 'Picovoice'
   Snowboy_wakeword_models:
     - '/home/pi/GassistPi/src/resources/snowboy_models/alexa.umdl'
     - '/home/pi/GassistPi/src/resources/snowboy_models/snowboy.umdl'
