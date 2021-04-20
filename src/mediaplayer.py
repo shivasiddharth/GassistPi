@@ -14,7 +14,7 @@ ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r') as conf:
-    configuration = yaml.load(conf)
+    configuration = yaml.load(conf, Loader=yaml.FullLoader)
 
 # api = Mobileclient()
 # deviceid=[]

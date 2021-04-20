@@ -45,10 +45,10 @@ USER_PATH = os.path.realpath(os.path.join(__file__, '..', '..','..'))
 
 
 with open('{}/src/config.yaml'.format(ROOT_PATH),'r', encoding='utf8') as conf:
-    configuration = yaml.load(conf)
+    configuration = yaml.load(conf, Loader=yaml.FullLoader)
 
 with open('{}/src/lang.yaml'.format(ROOT_PATH),'r', encoding='utf8') as lang:
-    langlist = yaml.load(lang)
+    langlist = yaml.load(lang, Loader=yaml.FullLoader)
 
 TTSChoice=''
 if configuration['TextToSpeech']['Choice']=="Google Cloud":
@@ -91,7 +91,7 @@ elif 'sv' in configuration['Language']['Choice']:
 else:
     keywordfile= '{}/src/keywords_en.yaml'.format(ROOT_PATH)
 with open(keywordfile,'r' , encoding='utf8') as conf:
-    custom_action_keyword = yaml.load(conf)
+    custom_action_keyword = yaml.load(conf, Loader=yaml.FullLoader)
 
 
 # Get devices list from domoticz server
