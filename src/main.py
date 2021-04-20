@@ -217,7 +217,6 @@ class Myassistant():
         self._sensitivities = [0.5]*wakeword_length
         if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
             self.callbacks = [self.detected]*len(snowboy_models)
-            print("Donw")
             self.detector = snowboydecoder.HotwordDetector(snowboy_models, sensitivity=self._sensitivities)
         self.mutestatus=False
         self.interpreter=False
