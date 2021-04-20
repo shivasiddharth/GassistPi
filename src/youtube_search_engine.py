@@ -10,7 +10,7 @@ import os
 ROOT_PATH = os.path.realpath(os.path.join(__file__, '..', '..'))
 
 with open('{}/src/config.yaml'.format(ROOT_PATH), 'r') as conf:
-    configuration = yaml.load(conf)
+    configuration = yaml.load(conf, Loader=yaml.FullLoader)
 
 # API Key for YouTube and KS Search Engine
 google_cloud_api_key = configuration['Google_cloud_api_key']
