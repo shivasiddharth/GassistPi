@@ -65,6 +65,12 @@ from actions import spotify_playlist_select
 from actions import configuration
 from actions import custom_action_keyword
 import snowboydecoder
+#Picovoice
+import numpy as np
+import pvporcupine
+import pyaudio
+import soundfile
+#--------------
 import signal
 from threading import Thread
 if GPIO!=None:
@@ -177,7 +183,15 @@ elif GPIOcontrol==False:
 else:
     custom_wakeword=False
 
-models=configuration['Wakewords']['Snowboy_wakeword_models']
+
+snowboy_models=configuration['Wakewords']['Snowboy_wakeword_models']
+picovoice_models=configuration['Wakewords']['Picovoice_wakeword_models']
+
+if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
+    wakeword_length=len(snowboy_models)
+elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
+    wakeword_length=len(picovoice_models)
+
 interrupted=False
 def signal_handler(signal, frame):
     global interrupted
@@ -918,9 +932,65 @@ def main(api_endpoint, credentials, project_id,
                 assistant.assist()
 
         signal.signal(signal.SIGINT, signal_handler)
-        sensitivity = [0.5]*len(models)
-        callbacks = [detected]*len(models)
-        detector = snowboydecoder.HotwordDetector(models, sensitivity=sensitivity)
+        _sensitivities = [0.5]*wakeword_length
+
+
+        _library_path = pvporcupine.LIBRARY_PATH
+        _model_path = pvporcupine.MODEL_PATH
+        _keyword_paths = picovoice_models
+        _input_device_index = None
+
+        if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
+            callbacks = [detected]*len(models)
+            detector = snowboydecoder.HotwordDetector(models, sensitivity=_sensitivities)
+
+
+        def picovoice_run():
+            """
+             Creates an input audio stream, instantiates an instance of Porcupine object, and monitors the audio stream for
+             occurrences of the wake word(s). It prints the time of detection for each occurrence and the wake word.
+             """
+            keywords = list()
+            for x in _keyword_paths:
+                keywords.append(os.path.basename(x).replace('.ppn', '').split('_')[0])
+
+            porcupine = None
+            pa = None
+            audio_stream = None
+            try:
+                porcupine = pvporcupine.create(
+                    library_path=_library_path,
+                    model_path=_model_path,
+                    keyword_paths=_keyword_paths,
+                    sensitivities=_sensitivities)
+
+                pa = pyaudio.PyAudio()
+
+                audio_stream = pa.open(
+                    rate=porcupine.sample_rate,
+                    channels=1,
+                    format=pyaudio.paInt16,
+                    input=True,
+                    frames_per_buffer=porcupine.frame_length,
+                    input_device_index=self._input_device_index)
+
+                while True:
+                    pcm = audio_stream.read(porcupine.frame_length)
+                    pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
+                    result = porcupine.process(pcm)
+                    if result >= 0:
+                        self.detected()
+
+            except KeyboardInterrupt:
+                print('Stopping ...')
+            finally:
+                if porcupine is not None:
+                    porcupine.delete()
+                if audio_stream is not None:
+                    audio_stream.close()
+                if pa is not None:
+                    pa.terminate()
+
         def start_detector():
             detector.start(detected_callback=callbacks,
                                    interrupt_check=interrupt_callback,
@@ -935,7 +1005,11 @@ def main(api_endpoint, credentials, project_id,
         while True:
             if wait_for_user_trigger:
                 if custom_wakeword:
-                    start_detector()
+                    if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
+                        start_detector()
+                    elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
+                        picovoice_run()
+
                 else:
                     button_state=GPIO.input(pushbuttontrigger)
                     if button_state==True:
