@@ -25,6 +25,7 @@ import pathlib2 as pathlib
 import sys
 import time
 import uuid
+import struct
 try:
     import RPi.GPIO as GPIO
 except Exception as e:
@@ -972,14 +973,14 @@ def main(api_endpoint, credentials, project_id,
                     format=pyaudio.paInt16,
                     input=True,
                     frames_per_buffer=porcupine.frame_length,
-                    input_device_index=self._input_device_index)
+                    input_device_index=_input_device_index)
 
                 while True:
                     pcm = audio_stream.read(porcupine.frame_length)
                     pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
                     result = porcupine.process(pcm)
                     if result >= 0:
-                        self.detected()
+                        detected()
 
             except KeyboardInterrupt:
                 print('Stopping ...')
