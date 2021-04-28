@@ -28,7 +28,7 @@ pywemo==0.4.39
 cryptography==3.3.2
 mock==3.0.5
 oauth2client
-pvporcupine==1.8.7
+pvporcupine==1.9.5
 soundfile
 grpcio
 pyusb
