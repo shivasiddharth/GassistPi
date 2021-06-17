@@ -29,6 +29,8 @@ echo ""
 read -r -p "Enter the your full credential file name including the path and .json extension: " credname
 echo ""
 
+cd /home/${USER}/
+
 source env/bin/activate
 
 google-oauthlib-tool --scope https://www.googleapis.com/auth/assistant-sdk-prototype \
