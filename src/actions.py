@@ -7,7 +7,7 @@ from kodijson import Kodi, PLAYER_VIDEO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from oauth2client.tools import argparser
-from spotipy.oauth2 import SpotifyClientCredentials
+import spotipy
 import spotipy.util as util
 import spotipy.oauth2 as oauth2
 from pushbullet import Pushbullet
@@ -117,11 +117,12 @@ if configuration['Google_cloud_api_key']!='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
 # Spotify Declarations
 # Register with spotify for a developer account to get client-id and client-secret
 if Spotify_credentials:
+    thescope='playlist-read-private'
+    redirecturi='http://localhost:8888'
     client_id = configuration['Spotify']['client_id']
     client_secret = configuration['Spotify']['client_secret']
     username=configuration['Spotify']['username']
-    credentials = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-    spotify_token = credentials.get_access_token()
+    spotify_token = util.prompt_for_user_token(username,scope=thescope,client_id=clientid,client_secret=clientsecret,redirect_uri=redirecturi)
 
 
 #Import VLC player
