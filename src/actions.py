@@ -119,8 +119,8 @@ if configuration['Google_cloud_api_key']!='ENTER-YOUR-GOOGLE-CLOUD-API-KEY-HERE'
 if Spotify_credentials:
     thescope='playlist-read-private'
     redirecturi='http://localhost:8888'
-    client_id = configuration['Spotify']['client_id']
-    client_secret = configuration['Spotify']['client_secret']
+    clientid = configuration['Spotify']['client_id']
+    clientsecret = configuration['Spotify']['client_secret']
     username=configuration['Spotify']['username']
     spotify_token = util.prompt_for_user_token(username,scope=thescope,client_id=clientid,client_secret=clientsecret,redirect_uri=redirecturi)
 
