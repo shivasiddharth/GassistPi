@@ -65,7 +65,6 @@ from actions import vlcplayer
 from actions import spotify_playlist_select
 from actions import configuration
 from actions import custom_action_keyword
-import snowboydecoder
 #Picovoice
 import numpy as np
 import pvporcupine
@@ -185,22 +184,15 @@ else:
     custom_wakeword=False
 
 
-snowboy_models=configuration['Wakewords']['Snowboy_wakeword_models']
 picovoice_models=configuration['Wakewords']['Picovoice_wakeword_models']
 
-if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
-    wakeword_length=len(snowboy_models)
-elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
-    wakeword_length=len(picovoice_models)
+wakeword_length=len(picovoice_models)
 
 interrupted=False
 def signal_handler(signal, frame):
     global interrupted
     interrupted = True
 
-def interrupt_callback():
-    global interrupted
-    return interrupted
 
 
 mediastopbutton=True
@@ -941,10 +933,6 @@ def main(api_endpoint, credentials, project_id,
         _keyword_paths = picovoice_models
         _input_device_index = None
 
-        if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
-            callbacks = [detected]*len(models)
-            detector = snowboydecoder.HotwordDetector(models, sensitivity=_sensitivities)
-
 
         def picovoice_run():
             """
@@ -992,11 +980,6 @@ def main(api_endpoint, credentials, project_id,
                 if pa is not None:
                     pa.terminate()
 
-        def start_detector():
-            detector.start(detected_callback=callbacks,
-                                   interrupt_check=interrupt_callback,
-                                   sleep_time=0.03)
-
         # If no file arguments supplied:
         # keep recording voice requests using the microphone
         # and playing back assistant response using the speaker.
@@ -1006,10 +989,7 @@ def main(api_endpoint, credentials, project_id,
         while True:
             if wait_for_user_trigger:
                 if custom_wakeword:
-                    if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
-                        start_detector()
-                    elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
-                        picovoice_run()
+                    picovoice_run()
 
                 else:
                     button_state=GPIO.input(pushbuttontrigger)
@@ -1026,9 +1006,6 @@ def main(api_endpoint, credentials, project_id,
             if once and (not continue_conversation):
                 break
 
-
-
-    detector.terminate()
 
 if __name__ == '__main__':
     main()

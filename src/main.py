@@ -84,8 +84,6 @@ import logging
 import time
 import random
 #Wakeword--------
-#Snowboy
-import snowboydecoder
 #Picovoice
 import numpy as np
 import pvporcupine
@@ -191,13 +189,8 @@ else:
     custom_wakeword=False
 
 
-snowboy_models=configuration['Wakewords']['Snowboy_wakeword_models']
 picovoice_models=configuration['Wakewords']['Picovoice_wakeword_models']
-
-if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
-    wakeword_length=len(snowboy_models)
-elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
-    wakeword_length=len(picovoice_models)
+wakeword_length=len(picovoice_models)
 
 
 #Custom Conversation
@@ -215,9 +208,6 @@ class Myassistant():
         self._keyword_paths = picovoice_models
         self._input_device_index = None
         self._sensitivities = [0.5]*wakeword_length
-        if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
-            self.callbacks = [self.detected]*len(snowboy_models)
-            self.detector = snowboydecoder.HotwordDetector(snowboy_models, sensitivity=self._sensitivities)
         self.mutestatus=False
         self.interpreter=False
         self.interpconvcounter=0
@@ -227,10 +217,7 @@ class Myassistant():
         self.interpttslang2=''
         self.singleresposne=False
         self.singledetectedresponse=''
-        if configuration['Wakewords']['Wakeword_Engine']=='Snowboy':
-            self.t1 = Thread(target=self.start_detector)
-        elif configuration['Wakewords']['Wakeword_Engine']=='Picovoice':
-            self.t1 = Thread(target=self.picovoice_run)
+        self.t1 = Thread(target=self.picovoice_run)
         if GPIOcontrol:
             self.t2 = Thread(target=self.pushbutton)
         if configuration['MQTT']['MQTT_Control']=='Enabled':
@@ -243,8 +230,6 @@ class Myassistant():
     def signal_handler(self,signal, frame):
         self.interrupted = True
 
-    def interrupt_callback(self,):
-        return self.interrupted
 
     def buttonsinglepress(self):
         if os.path.isfile("{}/.mute".format(USER_PATH)):
@@ -500,10 +485,6 @@ class Myassistant():
                 self.assistant.start_conversation()
             print('Assistant is listening....')
 
-    def start_detector(self):
-        self.detector.start(detected_callback=self.callbacks,
-            interrupt_check=self.interrupt_callback,
-            sleep_time=0.03)
 
     def picovoice_run(self):
         """
@@ -1121,9 +1102,6 @@ class Myassistant():
                 if event.type == EventType.ON_START_FINISHED and args.query:
                     assistant.send_text_query(args.query)
                 self.process_event(event)
-
-        if custom_wakeword:
-            self.detector.terminate()
 
 
 if __name__ == '__main__':
