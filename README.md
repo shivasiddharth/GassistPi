@@ -2,7 +2,7 @@
 
 # GassistPi -- Google Assistant for Single Board Computers    
 *******************************************************************************************************************************
-### **If you like the work, find it useful and if you would like to get me a :coffee: :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
+### **A lot of resources (Pi hardware, other SBCs, Pi HATS, my precious time, etc) have been spent on this project's development. If you would like to support the development of this project, you can make some donations by clicking here --> :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)
 
 | List of Donors  | Contribution in USD |
 | ------------- | --------------------- |
@@ -44,7 +44,8 @@ Soubhik Khan                        | 10|
 Sagafon As                          | 60|      
 Kufirre Ebong                       | 10|       
 Drew Barthlow                       | 40|    
-Olivier Cabon                       | 10|                       
+Olivier Cabon                       | 10|    
+John Doan                           | 20|  
 
 
 If any of you have donated, but your name is not in the list, please get in touch with me in Gitter.   
