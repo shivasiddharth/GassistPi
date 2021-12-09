@@ -56,12 +56,12 @@ if [[ $(cat /etc/os-release|grep "raspbian") ]]; then
   elif [[ $(cat /etc/os-release|grep "bullseye") ]]; then
     osversion="Raspbian Bullseye"
     echo ""
-    echo "You are running the installer on Buster"
+    echo "You are running the installer on Bullseye"
     echo ""
   else
     osversion="Other Raspbian"
     echo ""
-    echo "You are advised to use the Stretch or Buster version of the OS"
+    echo "You are advised to use the Stretch or Buster or Bullseye version of the OS"
     echo "Exiting the installer="
     echo ""
     exit 1
@@ -78,7 +78,7 @@ elif [[ $(cat /etc/os-release|grep "armbian") ]]; then
     echo "You are running the installer on Buster"
     echo ""
   elif [[ $(cat /etc/os-release|grep "bullseye") ]]; then
-    osversion="Armbian Stretch"
+    osversion="Armbian Bullseye"
     echo ""
     echo "You are running the installer on Bullseye"
     echo ""
@@ -128,7 +128,7 @@ elif [[ $(cat /etc/os-release|grep "ubuntu") ]]; then
 fi
 
 #Check CPU architecture
-if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]] || [[ $(uname -m|grep "armv8") || [[ $(uname -m|grep "aarch64") ]]; then
+if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]] || [[ $(uname -m|grep "armv8") ]] || [[ $(uname -m|grep "aarch64") ]]; then
 	devmodel="armv7"
   echo ""
   echo "Your board supports Ok-Google Hotword. You can also trigger the assistant using custom-wakeword"
