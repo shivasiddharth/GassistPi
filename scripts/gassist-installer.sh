@@ -163,7 +163,7 @@ source env/bin/activate
 pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 
 if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
-	pip install RPi.GPIO>=0.6.3
+	pip install RPi.GPIO==0.7.1a4
   sudo sed -i -e "s/^autospawn=no/#\0/" /etc/pulse/client.conf.d/00-disable-autospawn.conf
   if [ -f /lib/udev/rules.d/91-pulseaudio-rpi.rules ] ; then
       sudo rm /lib/udev/rules.d/91-pulseaudio-rpi.rules
