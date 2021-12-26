@@ -193,6 +193,7 @@ env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
 
 pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
+pip install git+https://github.com/shivasiddharth/pafy.git
 
 if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
 	pip install RPi.GPIO>=0.6.3
