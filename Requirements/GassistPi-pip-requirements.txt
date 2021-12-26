@@ -30,5 +30,5 @@ mock==3.0.5
 oauth2client
 pvporcupine==1.9.5
 soundfile
-grpcio==1.38.1
+grpcio
 pyusb
