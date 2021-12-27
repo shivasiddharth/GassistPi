@@ -702,11 +702,9 @@ class Myassistant():
             self.interpreter_speech_recorder()
 
     def voicenote_recording(self):
-        recordfilepath='/tmp/audiorecord.wav'
         subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        while not record_to_file(recordfilepath):
-            time.sleep(.1)
-        voicenote(recordfilepath)
+        subprocess.check_call([sys.executable, '/home/pi/GassistPi/src/audiorecorder.py'])
+        voicenote('demo.wav')
 
     def single_user_response(self,prompt):
         self.singledetectedresponse=''
