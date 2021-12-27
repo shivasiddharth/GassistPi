@@ -82,7 +82,7 @@ def record():
         r.extend(snd_data)
 
         silent = is_silent(snd_data)
-        print( [ "NOISE", "SILENCE"][silent], max(snd_data))
+        print( [ "NOISE", "SILENCE"][silent], max(snd_data)) # useful to have a print to adjust THRESHOLD based on how your microphone listens
 
 
         if silent and snd_started:
