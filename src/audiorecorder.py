@@ -5,8 +5,8 @@ from struct import pack
 import pyaudio
 import wave
 
-THRESHOLD = 1000
-CHUNK_SIZE = 1024
+THRESHOLD = 100 #variable adjustment between silence and speech
+CHUNK_SIZE = 4096
 FORMAT = pyaudio.paInt16
 RATE = 44100
 
@@ -59,7 +59,6 @@ def record():
     """
     Record a word or words from the microphone and
     return the data as an array of signed shorts.
-
     Normalizes the audio, trims silence from the
     start and end, and pads with 0.5 seconds of
     blank sound to make sure VLC et al can play
@@ -83,14 +82,16 @@ def record():
         r.extend(snd_data)
 
         silent = is_silent(snd_data)
+        print( [ "NOISE", "SILENCE"][silent], max(snd_data))
+
 
         if silent and snd_started:
-            num_silent += 1
+             num_silent += 1
         elif not silent and not snd_started:
-            snd_started = True
-
-        if snd_started and num_silent > 400:
-            break
+             snd_started = True
+        
+        if snd_started and num_silent > 30:
+             break
 
     sample_width = p.get_sample_size(FORMAT)
     stream.stop_stream()
@@ -113,4 +114,8 @@ def record_to_file(path):
     wf.setframerate(RATE)
     wf.writeframes(data)
     wf.close()
-    return True
+
+if __name__ == '__main__':
+    print("please speak a word into the microphone")
+    record_to_file('demo.wav')
+    print("done - result written to demo.wav")
