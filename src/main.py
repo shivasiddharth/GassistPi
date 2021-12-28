@@ -676,10 +676,9 @@ class Myassistant():
 
     def interpreter_speech_recorder(self):
         if self.interpreter:
-            interpreteraudio='/tmp/interpreter.wav'
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            while not record_to_file(interpreteraudio):
-                time.sleep(.1)
+            subprocess.check_call([sys.executable,"{}/src/interpreter.py".format(ROOT_PATH)])
+            interpreteraudio='/tmp/interpreter.wav'
             if (self.interpconvcounter % 2)==0:
                 text=self.cloud_speech_transcribe(interpreteraudio,self.interpcloudlang1)
                 print("Local Speaker: "+text)
