@@ -31,3 +31,4 @@ pvporcupine==1.9.5
 soundfile
 grpcio==1.43.0
 pyusb
+futures==3.1.1
