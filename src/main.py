@@ -68,7 +68,6 @@ from actions import translanguage
 from actions import language
 from actions import voicenote
 from actions import langlist
-from audiorecorder import record_to_file
 from actions import wemocontrol
 from actions import wemodiscovery
 import argparse
@@ -657,10 +656,9 @@ class Myassistant():
 
     def interpreter_speech_recorder(self):
         if self.interpreter:
-            interpreteraudio='/tmp/interpreter.wav'
             subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            while not record_to_file(interpreteraudio):
-                time.sleep(.1)
+            subprocess.check_call([sys.executable,"{}/src/interpreter.py".format(ROOT_PATH)])
+            interpreteraudio='/tmp/interpreter.wav'
             if (self.interpconvcounter % 2)==0:
                 text=self.cloud_speech_transcribe(interpreteraudio,self.interpcloudlang1)
                 print("Local Speaker: "+text)
@@ -683,11 +681,9 @@ class Myassistant():
             self.interpreter_speech_recorder()
 
     def voicenote_recording(self):
-        recordfilepath='/tmp/audiorecord.wav'
         subprocess.Popen(["aplay", "{}/sample-audio-files/Fb.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        while not record_to_file(recordfilepath):
-            time.sleep(.1)
-        voicenote(recordfilepath)
+        subprocess.check_call([sys.executable,"{}/src/audiorecorder.py".format(ROOT_PATH)])
+        voicenote('demo.wav')
 
     def single_user_response(self,prompt):
         self.singledetectedresponse=''

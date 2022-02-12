@@ -1,18 +1,40 @@
 from sys import byteorder
 from array import array
 from struct import pack
-
+import audioop
 import pyaudio
 import wave
+import time
 
 THRESHOLD = 1000
-CHUNK_SIZE = 1024
+CHUNK_SIZE = 4096
 FORMAT = pyaudio.paInt16
 RATE = 44100
+
+
+def check_validity(snd_data):
+    """
+    Returns 0 if the mean value of snd_data is between
+    100 and 300, 
+    If the value is smaller than 100, it returns -1
+    else cases, it returns +1
+    """
+    rms_value = audioop.rms(snd_data, 2)
+    if 98 <= max(snd_data) <= 300:
+        return 0
+    elif max(snd_data) > 300:
+        # Apply moving average method
+        if rms_value < 300:
+            return 0
+        return 1
+    else:
+        return -1
+
 
 def is_silent(snd_data):
     "Returns 'True' if below the 'silent' threshold"
     return max(snd_data) < THRESHOLD
+
 
 def normalize(snd_data):
     "Average the volume out"
@@ -24,6 +46,7 @@ def normalize(snd_data):
         r.append(int(i*times))
     return r
 
+
 def trim(snd_data):
     "Trim the blank spots at the start and end"
     def _trim(snd_data):
@@ -31,7 +54,7 @@ def trim(snd_data):
         r = array('h')
 
         for i in snd_data:
-            if not snd_started and abs(i)>THRESHOLD:
+            if not snd_started and abs(i) > THRESHOLD:
                 snd_started = True
                 r.append(i)
 
@@ -48,6 +71,7 @@ def trim(snd_data):
     snd_data.reverse()
     return snd_data
 
+
 def add_silence(snd_data, seconds):
     "Add silence to the start and end of 'snd_data' of length 'seconds' (float)"
     r = array('h', [0 for i in range(int(seconds*RATE))])
@@ -55,24 +79,25 @@ def add_silence(snd_data, seconds):
     r.extend([0 for i in range(int(seconds*RATE))])
     return r
 
+
 def record():
     """
     Record a word or words from the microphone and
     return the data as an array of signed shorts.
-
     Normalizes the audio, trims silence from the
     start and end, and pads with 0.5 seconds of
     blank sound to make sure VLC et al can play
     it without getting chopped off.
     """
+
     p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT, channels=1, rate=RATE,
-        input=True, output=True,
-        frames_per_buffer=CHUNK_SIZE)
+    stream = p.open(format=FORMAT, 
+                    channels=1, rate=RATE,
+                    input=True, output=True,
+                    frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
     snd_started = False
-
     r = array('h')
 
     while 1:
@@ -80,17 +105,22 @@ def record():
         snd_data = array('h', stream.read(CHUNK_SIZE))
         if byteorder == 'big':
             snd_data.byteswap()
-        r.extend(snd_data)
 
-        silent = is_silent(snd_data)
+        print("Testing ===> num_silent:{},\tmax_value:{}, \tlength:{}".format(
+            num_silent, max(snd_data), len(snd_data)))
 
-        if silent and snd_started:
-            num_silent += 1
-        elif not silent and not snd_started:
+        result = check_validity(snd_data)
+        if result == 0:
             snd_started = True
-
-        if snd_started and num_silent > 400:
+            r.extend(snd_data)
+        elif result == 1:
+            continue
+        else:
+            if snd_started:
+                num_silent += 1
+        if snd_started and num_silent > 10:
             break
+        #time.sleep(0.2)     
 
     sample_width = p.get_sample_size(FORMAT)
     stream.stop_stream()
@@ -101,6 +131,7 @@ def record():
     r = trim(r)
     r = add_silence(r, 0.5)
     return sample_width, r
+
 
 def record_to_file(path):
     "Records from the microphone and outputs the resulting data to 'path'"
@@ -114,3 +145,9 @@ def record_to_file(path):
     wf.writeframes(data)
     wf.close()
     return True
+
+
+if __name__ == '__main__':
+    print("please speak a word into the microphone")
+    record_to_file('/tmp/interpreter.wav')
+    print("done - result written to /tmp/interpreter.wav")
