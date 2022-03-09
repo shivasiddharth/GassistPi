@@ -48,8 +48,8 @@ Kufirre Ebong                       | 10|
 Drew Barthlow                       | 40|    
 Olivier Cabon                       | 10|    
 John Doan                           | 20|  
-Michael Weinmann                    | 10|     
-
+Michael Weinmann                    | 10|       
+Stephan van Dongen                  | 15|     
 
 If any of you have donated, but your name is not in the list, please get in touch with me in Gitter.   
 
