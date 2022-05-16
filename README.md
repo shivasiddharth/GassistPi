@@ -3,10 +3,11 @@
 # GassistPi -- Google Assistant for Single Board Computers    
 *******************************************************************************************************************************
 ### **A lot of resources (Pi hardware, other SBCs, Pi HATS, my precious time, etc) have been spent on this project's development. If you would like to support the development of this project, you can make some donations by clicking here --> :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)                                                                 
-                                                                       
+                         
+ *******************************************************************************************************************************                           
  ## 16-May-2022 Update:     
 **I am no longer maintaining this project due to lack of resources.**     
-
+*******************************************************************************************************************************    
         
 
 | List of Donors  | Contribution in USD |
@@ -62,8 +63,4 @@ If any of you have donated, but your name is not in the list, please get in touc
 *******************************************************************************************************************************
 
   
-
-
-*******************************************************************************************************************************
-
 ## GassistPi Documentation: https://gassistpi-documentation.readthedocs.io/en/latest/index.html
