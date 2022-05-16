@@ -5,7 +5,7 @@
 ### **A lot of resources (Pi hardware, other SBCs, Pi HATS, my precious time, etc) have been spent on this project's development. If you would like to support the development of this project, you can make some donations by clicking here --> :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)                                                                 
                                                                        
  ## 16-May-2022 Update:     
-## **I am no longer maintaining this project and future developments will also not be made.**     
+**I am no longer maintaining this project due to lack of resources.**     
 
         
 
