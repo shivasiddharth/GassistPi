@@ -16,7 +16,7 @@ git+https://github.com/plamere/spotipy.git
 pyyaml>=3.13
 spidev>=3.2
 gpiozero>=1.4.1
-numpy==1.21.1
+numpy==1.22.0
 pycryptodomex==3.7.2
 googletrans==3.1.0a0
 paho-mqtt==1.4.0
