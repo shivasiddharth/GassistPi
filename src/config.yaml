@@ -284,11 +284,7 @@ TextToSpeech:
 Wakewords:
   Ok_Google: 'Enabled'
   Custom_Wakeword: 'Disabled'
-  #Set below to 'Picovoice' or 'Snowboy' as per your choice.
   Wakeword_Engine: 'Picovoice'
-  Snowboy_wakeword_models:
-    - '/home/pi/GassistPi/src/resources/snowboy_models/alexa.umdl'
-    - '/home/pi/GassistPi/src/resources/snowboy_models/snowboy.umdl'
   Picovoice_wakeword_models:
     - '/home/pi/GassistPi/src/resources/picovoice_models/americano_raspberry-pi.ppn'
 

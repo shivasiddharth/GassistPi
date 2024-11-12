@@ -3,8 +3,12 @@
 # GassistPi -- Google Assistant for Single Board Computers    
 *******************************************************************************************************************************
 ### **A lot of resources (Pi hardware, other SBCs, Pi HATS, my precious time, etc) have been spent on this project's development. If you would like to support the development of this project, you can make some donations by clicking here --> :smile:** [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GH3YDCHZ36QN)                                                                 
-                                                                       
-                                                                         
+                         
+ *******************************************************************************************************************************                           
+ ## 16-May-2022 Update:     
+**I am no longer maintaining this project due to lack of resources.**     
+*******************************************************************************************************************************    
+        
 
 | List of Donors  | Contribution in USD |
 | ------------- | --------------------- |
@@ -48,8 +52,9 @@ Kufirre Ebong                       | 10|
 Drew Barthlow                       | 40|    
 Olivier Cabon                       | 10|    
 John Doan                           | 20|  
-Michael Weinmann                    | 10|     
-
+Michael Weinmann                    | 10|       
+Stephan van Dongen                  | 15|    
+David Benucci                       | 15|      
 
 If any of you have donated, but your name is not in the list, please get in touch with me in Gitter.   
 
@@ -58,15 +63,5 @@ If any of you have donated, but your name is not in the list, please get in touc
 
 *******************************************************************************************************************************
 
-## 26-Nov-2020 Update:
-**Added a new Picovoice wakeword engine. Users can now use either Snowboy or Picovoice. Please refer to this [document](https://gassistpi-documentation.readthedocs.io/en/latest/customization.html#custom-wakeword-activation) for updated info.**   
-
-## 06-Dec-2020 Update:    
-**Assisant fully works with the new audio configuration of Raspberry Pi OS.  Instructions have been updated for configuring audio.**    
-
-## 13-Mar-2021 Update:    
-**Removed music streaming from Google music option Due to Google shutting down the Google Music service/app.**    
-
-*******************************************************************************************************************************
-
+  
 ## GassistPi Documentation: https://gassistpi-documentation.readthedocs.io/en/latest/index.html

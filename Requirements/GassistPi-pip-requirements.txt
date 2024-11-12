@@ -16,7 +16,7 @@ git+https://github.com/plamere/spotipy.git
 pyyaml>=3.13
 spidev>=3.2
 gpiozero>=1.4.1
-numpy>=1.15.4
+numpy==1.21.1
 pycryptodomex==3.7.2
 googletrans==3.1.0a0
 paho-mqtt==1.4.0
@@ -29,5 +29,6 @@ mock==3.0.5
 oauth2client
 pvporcupine==1.9.5
 soundfile
-grpcio==1.38.1
+grpcio==1.43.0
 pyusb
+futures==3.1.1

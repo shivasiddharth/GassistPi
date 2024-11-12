@@ -53,10 +53,15 @@ if [[ $(cat /etc/os-release|grep "raspbian") ]]; then
     echo ""
     echo "You are running the installer on Buster"
     echo ""
+  elif [[ $(cat /etc/os-release|grep "bullseye") ]]; then
+    osversion="Raspbian Bullseye"
+    echo ""
+    echo "You are running the installer on Bullseye"
+    echo ""
   else
     osversion="Other Raspbian"
     echo ""
-    echo "You are advised to use the Stretch or Buster version of the OS"
+    echo "You are advised to use the Stretch or Buster or Bullseye version of the OS"
     echo "Exiting the installer="
     echo ""
     exit 1
@@ -66,6 +71,16 @@ elif [[ $(cat /etc/os-release|grep "armbian") ]]; then
     osversion="Armbian Stretch"
     echo ""
     echo "You are running the installer on Stretch"
+    echo ""
+  elif [[ $(cat /etc/os-release|grep "buster") ]]; then
+    osversion="Armbian Buster"
+    echo ""
+    echo "You are running the installer on Buster"
+    echo ""
+  elif [[ $(cat /etc/os-release|grep "bullseye") ]]; then
+    osversion="Armbian Bullseye"
+    echo ""
+    echo "You are running the installer on Bullseye"
     echo ""
   else
     osversion="Other Armbian"
@@ -113,7 +128,7 @@ elif [[ $(cat /etc/os-release|grep "ubuntu") ]]; then
 fi
 
 #Check CPU architecture
-if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]] || [[ $(uname -m|grep "armv8") ]]; then
+if [[ $(uname -m|grep "armv7") ]] || [[ $(uname -m|grep "x86_64") ]] || [[ $(uname -m|grep "armv8") ]] || [[ $(uname -m|grep "aarch64") ]]; then
 	devmodel="armv7"
   echo ""
   echo "Your board supports Ok-Google Hotword. You can also trigger the assistant using custom-wakeword"
@@ -141,53 +156,6 @@ fi
 echo ""
 cd /home/${USER}/
 
-#Copy snowboy wrappers for Stretch or Buster and create new ones for other OSes.
-echo "Copying Snowboy files to GassistPi directory"
-echo ""
-if [[ $osversion = "Raspbian Buster" ]]; then
-  sudo \cp -f ${GIT_DIR}/src/resources/Buster-wrapper/_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
-  sudo \cp -f ${GIT_DIR}/src/resources/Buster-wrapper/snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
-  echo ""
-  cd /home/${USER}/
-elif [[ $osversion = "Raspbian Stretch" ]]; then
-  sudo \cp -f ${GIT_DIR}/src/resources/Stretch-wrapper/_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
-  sudo \cp -f ${GIT_DIR}/src/resources/Stretch-wrapper/snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
-fi
-
-if [[ $osversion != "Raspbian Stretch" ]] && [[ $osversion != "Raspbian Buster" ]]; then
-  echo "Snowboy wrappers provied with the project are for Raspberry Pi boards running Raspbian Stretch or Buster. Custom snowboy wrappers need to be compiled for your setup. Grab a coffee or a beer this will take quite a while."
-  echo ""
-  echo "Installing Swig"
-  echo ""
-  if [ ! -d /home/${USER}/programs/libraries/swig/ ]; then
-    sudo mkdir -p programs/libraries/ && cd programs/libraries
-    sudo git clone https://github.com/swig/swig.git
-  fi
-  cd /home/${USER}/programs/libraries/swig/
-  sudo ./autogen.sh
-  sudo ./configure
-  sudo make
-  sudo make install
-  echo ""
-  echo "Compiling custom Snowboy Python3 wrapper"
-  echo ""
-  cd ~/programs
-  if [ ! -d /home/${USER}/programs/snowboy/ ]; then
-    sudo git clone https://github.com/Kitt-AI/snowboy.git
-  fi
-  cd /home/${USER}/programs/snowboy/swig/Python3
-  sudo make
-
-  if [ -e /home/${USER}/programs/snowboy/swig/Python3/_snowboydetect.so ]; then
-    echo "Copying Snowboy files to GassistPi directory"
-    sudo \cp -f ./_snowboydetect.so ${GIT_DIR}/src/_snowboydetect.so
-    sudo \cp -f ./snowboydetect.py ${GIT_DIR}/src/snowboydetect.py
-  else
-    echo "Something has gone wrong while compiling the wrappers. Try again or go through the errors above"
-  fi
-fi
-
-cd /home/${USER}/
 python3 -m venv env
 env/bin/python -m pip install --upgrade pip setuptools wheel
 source env/bin/activate
@@ -196,8 +164,7 @@ pip install -r ${GIT_DIR}/Requirements/GassistPi-pip-requirements.txt
 pip install git+https://github.com/shivasiddharth/pafy.git
 
 if [[ $board = "Raspberry" ]] && [[ $osversion != "OSMC Stretch" ]];then
-	pip install RPi.GPIO>=0.6.3
-  sudo sed -i -e "s/^autospawn=no/#\0/" /etc/pulse/client.conf.d/00-disable-autospawn.conf
+	pip install RPi.GPIO==0.7.1a4
   if [ -f /lib/udev/rules.d/91-pulseaudio-rpi.rules ] ; then
       sudo rm /lib/udev/rules.d/91-pulseaudio-rpi.rules
   fi
