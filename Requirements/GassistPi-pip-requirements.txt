@@ -13,7 +13,7 @@ requests>=2.20.1
 pushbullet.py>=0.11.0
 python-vlc>=3.0.4106
 spotipy==2.20.0
-pyyaml>=3.13
+PyYAML==6.0.1
 spidev>=3.2
 gpiozero>=1.4.1
 numpy==1.21.1
@@ -32,4 +32,4 @@ soundfile
 grpcio==1.40.0
 pyusb
 futures==3.1.1
-PyYAML==6.0.1
+
