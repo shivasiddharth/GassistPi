@@ -29,7 +29,7 @@ mock==3.0.5
 oauth2client
 pvporcupine==1.9.5
 soundfile
-grpcio==1.40.0
+grpcio==1.44.0
 pyusb
 futures==3.1.1
 
