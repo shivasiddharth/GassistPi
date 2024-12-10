@@ -24,7 +24,7 @@ google-cloud-texttospeech==0.3.0
 google-cloud-speech==0.36.0
 adafruit-io==2.1
 pywemo==0.4.39
-cryptography==3.3.2
+cryptography==44.0.0
 mock==3.0.5
 oauth2client
 pvporcupine==1.9.5
