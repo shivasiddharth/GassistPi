@@ -15,7 +15,7 @@ python-vlc>=3.0.4106
 spotipy==2.20.0
 PyYAML==6.0.1
 spidev>=3.2
-gpiozero>=1.4.1
+gpiozero==1.4.1
 numpy==1.21.1
 pycryptodomex==3.7.2
 googletrans==3.1.0a0
@@ -32,4 +32,6 @@ soundfile
 grpcio==1.44.0
 pyusb
 futures==3.1.1
+google-auth==1.32.0
+
 
