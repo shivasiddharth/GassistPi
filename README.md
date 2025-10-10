@@ -45,7 +45,7 @@ Syed Mohammed Sulaiman | 8|
 Enzo Decorart di Randazzo Vincenzo 	| 20|    
 Brian Peacock                       | 10|     
 Michael Beljaars                    | 10|       
-Enzo Decorart di Randazzo Vincenzo 	| 50|     
+Enzo  	| 50|     
 Soubhik Khan                        | 10|      
 Sagafon As                          | 60|      
 Kufirre Ebong                       | 10|       
