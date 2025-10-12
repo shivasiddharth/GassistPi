@@ -42,7 +42,7 @@ Alan Ng	| 10|
 Eli Lesteberg With	| 10|
 George Law	| 25|
 Syed Mohammed Sulaiman | 8|
-Enzo Decorart di Randazzo Vincenzo 	| 20|    
+Enzo   	| 20|    
 Brian Peacock                       | 10|     
 Michael Beljaars                    | 10|       
 Enzo  	| 50|     
